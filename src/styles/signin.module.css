@@ -1,0 +1,25 @@
+@import url(global.css);
+@import url(../styles/signup.module.css);
+
+.container{
+    box-shadow: var(--bs);
+    border-radius: 50px;
+}
+.submisions{
+    padding-bottom: 20px;
+}
+
+.forgotPasswordInput input{
+    width: 100%;
+}
+
+.body{
+    height: 90vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.text{
+    margin: 20px 0;
+}

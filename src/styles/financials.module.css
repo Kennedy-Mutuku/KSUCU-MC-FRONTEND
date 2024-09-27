@@ -1,0 +1,138 @@
+@import url(global.css);
+body{
+    height: 100vh;
+}
+.header{
+    padding-bottom: 20px;
+}
+.main{
+    text-align: center;
+}
+.main-financial--title---text{
+    color:#730051 ;
+}
+.offerring{
+    margin: 0 auto;
+    width: 80%;
+    padding: 1.5em;
+}
+
+.offerring div{
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+.offerring div label{
+    width: 50%;
+}
+.offerring div input,
+.offerring div select{
+    width: 100%;
+}
+
+.inputs{
+    background: #C8C0A4;
+    border: none;
+}
+
+.inputs:focus,
+.inputs:hover{
+    border: none;
+    outline: none;
+    opacity: .7;
+    padding: 5px 1px;
+}
+
+.btn-submit{
+    background:#00c6ff ;
+    display: inline;
+
+    padding: 5px 30px;
+    border-radius: 20px;
+}
+
+.btn-submit:focus,
+.btn-submit:hover{
+    cursor: pointer;
+}
+
+.nav{
+    justify-content: center;
+    width: 100%;
+    margin-top: 0px;
+}
+
+.dropdown-icon{
+    position: relative;
+    fill: var(--cl-white);
+
+    width: 30px;
+    height: 30px;
+
+    display: inline-block;
+}
+.dropdown-icon:hover{
+    cursor: pointer;
+}
+.rotate {
+    transform: rotate(180deg); 
+}
+.payment-history,
+.financial-statements{
+    margin-top: 20px;
+}
+
+.payment-history--title,
+.financial-statement--title{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.payment-history--record,
+.financial-statement--record{
+    background: #bdbdbd;
+    margin: 0 auto;
+    width: 80%;
+    max-height: 0;
+    overflow: hidden; 
+    transition:  0.5s ease; 
+}
+
+.payment-history--record.active,
+.financial-statement--record.active{
+    max-height: 1000px;
+    padding: 10px 0;
+}
+.record-flex{
+    margin-bottom: 75px;
+}
+
+@media(min-width:600px){
+    .main-financial--title---text{
+        font-size: 2rem;
+    }
+
+    .offerring{
+        width: 30%;
+    }
+    .inputs{
+        width: 80%;
+    }
+    .finantial-description{
+        margin: 0 auto;
+        width: 70%;
+        margin-bottom: 40px;
+    }
+
+    .record-flex{
+        margin-top: 40px;
+        margin-bottom: 120px;
+        display: flex;
+        justify-content: space-around;
+    }
+
+    .financial-statements,
+    .payment-history{
+        width: 50%;
+    }
+}

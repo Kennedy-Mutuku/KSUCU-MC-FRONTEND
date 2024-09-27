@@ -1,0 +1,74 @@
+@import url(global.css);
+.header{
+    padding-bottom: 30px;
+}
+.main{
+    text-align: center;
+}
+
+.ET-section{
+    margin: 20px 0;
+}
+
+.ET-img{
+    aspect-ratio: 16/9;
+    background: #1d1d1d82;
+    width: 80%;
+    margin: 0 auto;
+}
+.nav{
+    justify-content: center;
+    width: 100%;
+    margin-top: 0px;
+}
+
+.ET--title{
+    color: #00C6FF;
+    font-weight: 500;
+}
+
+.hr-et{
+    display: block;
+    height: .5px;
+    width: 100%;
+    margin:  0 auto;
+    opacity: .7;
+    background: rgb(53, 53, 53);
+}
+
+@media(min-width:600px){
+    .ET-section{
+        display: flex;
+
+        margin: 50px 100px;
+    }
+    .ET-img,
+    .ET-section--flex{
+        width: 50%;
+    }
+    .ET-section--reverse{
+        flex-direction: row-reverse;
+    }
+
+    .ET-img{
+        background: #fff;
+    }
+
+    .ET-img img{
+        aspect-ratio: 16/9;
+        background: #1d1d1d82;
+        width: 80%;
+        margin: 0 auto;
+    }
+
+    .hr-et{
+        width: 90%;
+    }
+
+    .ET--title{
+        font-size: 2.5rem;
+        font-weight: 900;
+        margin-bottom: 100px;
+    }
+
+}

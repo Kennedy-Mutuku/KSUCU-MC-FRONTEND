@@ -1,0 +1,80 @@
+@import url(global.css);
+html{
+    scroll-behavior: smooth;
+}
+
+.header{
+    padding-bottom: 30px;
+}
+.main{
+    text-align: center;
+}
+.ministry-section{
+    margin: 20px 0;
+}
+
+.ministry-img{
+    aspect-ratio: 16/9;
+    background: #1d1d1d82;
+    width: 80%;
+    margin: 0 auto;
+}
+
+.ministries--title{
+    color: #00C6FF;
+    font-weight: 500;
+}
+
+.nav{
+    justify-content: center;
+    width: 100%;
+    margin-top: 0px;
+}
+
+.hr-ministries{
+    display: block;
+    height: .5px;
+    width: 100%;
+    margin:  0 auto;
+    opacity: .7;
+    background: rgb(53, 53, 53);
+}
+
+@media(min-width:600px){
+    .ministry-section{
+        display: flex;
+
+        margin: 50px 100px;
+    }
+    .ministry-img,
+    .ministry-section--flex{
+        width: 50%;
+    }
+    .ministry-section--reverse{
+        flex-direction: row-reverse;
+    }
+
+    .ministry-img{
+        background: #fff;
+    }
+
+    .ministry-img img{
+        aspect-ratio: 16/9;
+        background: #1d1d1d82;
+        width: 80%;
+        margin: 0 auto;
+    }
+
+    .hr-ministries{
+        width: 90%;
+    }
+
+    .ministries--title{
+        font-size: 2.5rem;
+        font-weight: 900;
+        margin-bottom: 100px;
+    }
+
+}
+
+

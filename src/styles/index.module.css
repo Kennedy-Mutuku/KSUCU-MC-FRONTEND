@@ -1,0 +1,503 @@
+@import url(global.css);
+html{
+    scroll-behavior: smooth;
+}
+.nav-toggle__btn{
+    background: transparent;
+    padding: .8em .6em;
+    border: none;
+    cursor: pointer;
+    position: relative;
+}
+
+.hambuger{
+    display: block;
+    position: relative; 
+}
+
+.newsReport{
+    width: 100%;
+    display: flex;
+    gap: 10px;
+    background: #00c6ff;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px;
+}
+.newsReport img{
+    width: 50px;
+    height: 50px;
+}
+.newsReport span{
+    width: 70%;
+}
+
+.hambuger,
+.hambuger::before,
+.hambuger::after{
+    background-color: rgb(252, 252, 252);
+    width: 2em;
+    height: 3px;
+    border-radius: 1em;
+    transition: transform 250ms ease-in-out;
+}
+
+.hambuger::before,
+.hambuger::after{
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+}
+.category-list,
+.category-title{
+    text-align: left;
+}
+
+.hambuger::before {
+     top: 8px; 
+}
+
+.hambuger::after {
+     bottom: 8px; 
+}
+
+.newsReportimg{
+    background: #0e0e0e;
+}
+
+.nav-open .hambuger{
+    transform: rotate(.625turn);
+}
+.nav-open .hambuger::after{
+    opacity: 0;
+}
+.nav-open .hambuger::before{
+   transform: rotate(90deg) translateX(-8px);
+}
+
+.video-intro{
+    aspect-ratio: 16/9;
+    margin: 20px  auto 0 auto;
+    opacity: .8;
+    width: 90%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main{
+    padding: 20px;
+}
+
+.main-quick--links{
+    background: #dddddd;
+    margin: 10px -10px;
+
+    max-height: 0;
+    padding: 0;
+    overflow: hidden; 
+    transition:  0.5s ease; 
+}
+
+.nav-open .main-quick--links{
+    max-height: 1000px;
+    padding: 5px;
+}
+.main-quick--links---text{
+    color: #000;
+    text-align: center;
+}
+
+.quick-nav--links{
+    list-style: disc;
+    margin: 0;
+}
+
+.quick-item--link{
+    text-decoration: none;
+    color: #000000;
+}
+
+.call-to-action-text{
+    padding:5px 10px;
+    border-radius: 20px;
+    width: 80%;
+    text-align: center;
+    margin: -40px auto;
+
+    background-color: #fff;
+    box-shadow: 0.25em 0.25em 0.75em rgba(0,0,0,.25),
+    0.125em 0.125em 0.25em rgba(0,0,0,.15);;
+}
+
+.cta-text{
+    margin: 0;
+}
+
+.main-section--flex{
+    margin: 60px 0;
+    /* border: 2px solid red; */
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+.ministries,
+.ET,
+.committees,
+.boards{
+    width: 50%;
+}
+
+.ET-title,
+.ministries-title,
+.comm-title,
+.boards-title{
+    margin:10px 30px ;
+}
+
+
+.ministries-item,
+.ET-item,
+.boards-item,
+.comm-item,
+.ministries-item--link,
+.ET-item--link,
+.boards-item--link,
+.comm-item--link
+{
+    text-decoration: none;
+    color: #730051;
+    font-weight: 700;
+}
+.ministries-item,
+.ET-item,
+.boards-item,
+.comm-item{
+    margin-bottom: 7px;
+}
+
+
+.products-splitter{
+    display: block;
+    transform: rotate(180deg);
+    width: .5px;
+    opacity: .7;
+    background: rgb(36, 36, 36);
+}
+
+.cta-text{
+    font-weight: 700;
+    font-size: .75rem;
+    letter-spacing: .5px;
+    color: #730051;
+}
+.side-bar--links{
+    display: none;
+}
+.products-splitter--hidden{
+    display: none;
+}
+
+.video-intro{
+    position: relative;
+    background-color: #161616;
+}
+
+.commission-claimer{
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    display: inline-block;
+    border-radius: 50%;
+    display: flex;
+    justify-content:center;
+    align-items: center;
+    font-size: 2rem;
+    bottom: 0;
+    right: 0;
+    transform: translate(50%, 50%);
+
+    background-color: var(--blue-color);
+    box-shadow: var(--bs);
+    text-shadow: var(--bs);
+}
+
+.commission-claimer:hover,
+.cancelBtn:hover{
+    cursor: pointer;
+}
+
+.commission2024{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #000000c0;
+    top: 0;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: flex-start;
+    z-index: 100;
+}
+
+.commissionTitle,
+.commissionCountDown,
+.commissionButtonDiv{
+    font-size: 1.2rem;
+    text-shadow: var(--bs);
+
+    background: #00c6ff;
+    width: 100%;
+    text-align: center;
+    margin: 0;
+    padding: 25px 0;
+}
+.commissionRegistrationButton{
+    background: #730051;
+    color:#fff;
+    outline: none;
+    border: none;
+    padding: 5px 15px;
+    font-size: 1em;
+    letter-spacing: 1px;
+    box-shadow: var(--bs);
+}
+.commissionRegistrationButton:hover{
+    cursor: pointer;
+}
+
+.commissionTitle{
+    margin-top: 70%;
+}
+
+.cancelBtn{
+    background: #fff;
+    color: #000000;
+    padding: 5px;
+    height: 50px;
+    width: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    text-shadow: var(--bs);
+    border-radius: 50%;
+}
+
+.category-title{
+    margin: 10px 0 10PX 20PX;
+}
+
+.aboutTitle{
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-decoration: underline;
+
+}
+.containerAbout{
+    background: #b3b3b328;
+}
+.about{
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    margin: auto;
+}
+.containerOthers{
+    background: #1b1b1b;
+    color: #fff;
+}
+.containerOthersRow{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 30px;
+    padding-bottom: 40px;
+}
+.appreciatingTitleText{
+    text-align: center;
+    padding-top: 20px;
+    padding-bottom: 10px;
+}
+.othersColumns {
+    color: #00c6ff;
+    position: relative;
+    width: 100%;
+}
+.othersDisplayDiv{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: #00c6ff;
+    color: #000;
+    width: 100%;
+    z-index: 10;
+    box-shadow: var(--bs);
+}
+.closeOtherDisplayDiv{
+    width: 100%;
+    text-align: right;
+    transform: translateY(100%);
+    opacity: .5;
+}
+.closeOtherDisplayIcon{
+    background: #000000;
+    color: #00c6ff;
+    padding: 10px;
+    font-size: 1rem;
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    margin-right: 20px;
+}
+.closeOtherDisplayIcon:hover{
+    cursor: pointer;
+}
+.othersImg{
+    width: 100%;
+    height: 400px;
+    margin:20px auto 20px auto ;
+}
+.othersDisplayDivTitle{
+    font-size: 1.5rem;
+}
+
+.othersColumns span{
+    color: #fff;
+}
+.othersIcon{
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+.othersIcon:hover{
+    cursor: pointer;
+}
+.about{
+    padding-bottom: 20px;
+}
+
+hr{
+    margin: .5rem 0 !important ;
+}
+
+.error{
+    color: #fff;
+}
+
+@media(min-width:600px) {
+
+    .containerOthers{
+        padding: 20px 0px 30px 0px;
+    }
+
+    .containerOthersRow{
+        flex-direction: row;
+        justify-content: center;
+        gap: 50px;
+    }
+    .appreciatingTitleText{
+        align-self: flex-start;
+        padding: 0;
+        margin-bottom: 50px;
+    }
+    .othersImg{
+        width: 100%;
+        height: auto;
+        margin:20px auto 20px auto ;
+    }
+    .othersDisplayDiv{
+        transform:translateY(-50%);
+        width: 200%;
+        
+    }
+    .closeOtherDisplayIcon{
+        font-size: .5rem;
+        transform: translateY(-70%);
+    }
+
+    .intro-video--header{
+        display: flex;
+
+        /* margin-top: 30px; */
+        margin-bottom: 40px;
+    }
+    .main-quick--links{
+        display: none;
+    }
+
+    .video-intro{
+        width: 50%;
+    }
+
+    .quick-links{
+        font-size: 1.5rem;
+    }
+
+    .side-bar--links{
+        display: inline;
+        width: 20%;
+        margin-top: 20px;
+    }
+
+    .products-splitter--hidden{
+        display: block;
+    }
+
+    .quick-item--link{
+        display: inline-block ;
+        margin: 10px;
+        color: #fff;
+    }
+    .cta-text{
+        font-size: 1.2rem;
+    }
+
+    .call-to-action-text{
+        padding: 10px;
+    }
+
+    .main-flex{
+        display: flex;
+        justify-content: space-around;
+        margin: 0 auto;
+        width: 70%;
+    }
+
+    .main-section--flex{
+        /* margin: 70px auto; */
+        width: 50%;
+    }
+
+    .commissionTitle{
+        margin-top: 0;
+    }
+    .about{
+        width: 70%;
+        padding: 50px 0 50px 0;
+    }
+
+    .containerOthersRow{
+        width: 60%;
+        margin: 0 auto;
+    }
+
+    .newsReportDiv{
+        background: var(--blue-color);
+        width: 100%;
+        margin: 1px 0 10px 0;
+    }
+
+    .newsReport{
+        width: 20%;
+        margin: 0 auto;
+        margin-top: 20px;
+        margin-bottom: 10px;
+    }
+
+}
+
+

@@ -1,0 +1,102 @@
+@import url(global.css);
+.container{
+    background-color:#7300511d;
+    margin: 20px auto;
+    width: 90%;
+}
+.logo_signUp{
+    text-align: center;
+    background: #fff;
+    display: block;
+}
+.logo_signUp img{
+    height: 15vh;
+}
+.text{
+    text-align: center;
+}
+.form{
+    /* border: 2px solid red; */
+    margin: 0 auto;
+    width: 90%;
+
+    position: relative;
+}
+.form div{
+    /* border: 2px solid purple; */
+    margin:0 auto 20px auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 78%;
+}
+.form label{
+    width: 40%;
+}
+.form input,
+.form select{
+    width: 60%;
+    margin: 0;
+}
+.img_selct{
+    gap: 30px;
+}
+.passwords{
+    /* border: 2px solid red; */
+    margin-top: 40px;
+}
+.submisions{
+    display: flex;
+    width: 70%;
+    margin: 0 auto ;
+    padding:10px 10px 50px 10px;
+    justify-content: space-between;
+
+    gap: 10px;
+}
+.submitData{
+    background: #00c6ff;
+    color: #000;
+}
+.clearForm{
+    background:#980000 ;
+    color: #F5ECC9;
+}
+
+.clearForm,
+.submitData{
+    padding: 3px 20px;
+    border-radius: 20px;
+    font-size: 1.1em;
+}
+.clearForm:hover,
+.clearForm:focus,
+.submitData:hover,
+.submitData:focus{
+    opacity: .7;
+    cursor: pointer;
+}
+
+.form-footer{
+    text-align: center;
+    padding-bottom: 10px;
+}
+select{
+    width: 60%;
+}
+
+
+@media(min-width:600px){
+    .container{
+        width: 25%;
+    }
+    .passwords{
+        margin-top: 60px;
+    }
+    .img_selct{
+        gap: 70px;
+    }
+    .submisions{
+        padding-bottom: 50px;
+    }
+}
