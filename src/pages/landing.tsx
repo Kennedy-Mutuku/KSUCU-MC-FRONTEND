@@ -99,7 +99,7 @@ const LandingPage = () => {
 
         document.body.style.overflow = 'hidden';            
 
-        const response = await fetch('http://localhost:3000/users/data', {
+        const response = await fetch('https://ksucu-mc-backend.onrender.com/users/data', {
             credentials: 'include'
         });
 
