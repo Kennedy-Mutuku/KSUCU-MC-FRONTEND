@@ -111,6 +111,9 @@ const LandingPage = () => {
         }
         setUserData(data);
 
+        console.log(userData);
+        
+
         console.log(data);
         
 
