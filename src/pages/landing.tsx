@@ -99,7 +99,7 @@ const LandingPage = () => {
 
         document.body.style.overflow = 'hidden';            
 
-        const response = await fetch('https://ksucu-mc-backend.onrender.com/users/data', {
+        const response = await fetch('http://localhost:3000/users/data', {
             credentials: 'include'
         });
 
@@ -110,9 +110,6 @@ const LandingPage = () => {
             throw new Error(data.message || 'Failed to fetch user data');
         }
         setUserData(data);
-
-        console.log(userData);
-        
 
         console.log(data);
         
