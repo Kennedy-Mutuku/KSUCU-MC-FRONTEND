@@ -1,9 +1,15 @@
 @import url(global.css);
 @import url(../styles/signup.module.css);
 
+.body{
+    background-image: url("../assets/loginbg.png");
+}
+
 .container{
     box-shadow: var(--bs);
     border-radius: 50px;
+    background: #fff;
+    padding: 20px 0;
 }
 .submisions{
     padding-bottom: 20px;
@@ -14,7 +20,7 @@
 }
 
 .body{
-    height: 90vh;
+    height: calc(100vh + 50px);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -22,4 +28,8 @@
 
 .text{
     margin: 20px 0;
+}
+
+.logo_signUp{
+    background-color: transparent;
 }

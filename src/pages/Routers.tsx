@@ -14,6 +14,7 @@ import ClassesSection from "./classes";
 import BoardsPage from "./boards";
 import ChangeDetails from "../components/changeDetails";
 import NewsPage from "./NewsPage";
+import PhotoUploadPage from "./newsadminText";
 
 export const router = createBrowserRouter([
     {
@@ -35,6 +36,7 @@ export const router = createBrowserRouter([
             {path: "/boards", element: <BoardsPage />},
             {path: "/changeDetails", element: <ChangeDetails />},
             {path: "/news", element: <NewsPage />},
+            {path: "/adminnews", element: <PhotoUploadPage />},
             {path: "*", element: <NoPage />}
         ]
     }

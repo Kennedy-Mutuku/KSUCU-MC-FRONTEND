@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import cuLogo from '../assets/cuLogoUAR.png';
+import cuLogo from '../assets/KSUCU logo updated document.png';
 import { Link } from 'react-router-dom';
 import styles from '../styles/signup.module.css'; 
 
@@ -68,7 +68,7 @@ const SignUp: React.FC = () => {
   };
 
   return (
-    <>
+    <div className={styles.body}>
       <div className={styles['container']}>
         <Link to={"/"}>
           <div className={styles['logo_signUp']}><img src={cuLogo} alt="CU logo" /></div>
@@ -166,7 +166,7 @@ const SignUp: React.FC = () => {
           <p>Already have an account? <Link to={"/signIn"}>Click Here</Link></p>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

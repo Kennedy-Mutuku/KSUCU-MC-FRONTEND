@@ -1,12 +1,21 @@
 @import url(global.css);
+.body{    
+    background-image: url("../assets/loginbg.png");
+    height: calc(100vh + 30px);
+    padding-top: 40px;
+}
+
 .container{
-    background-color:#7300511d;
-    margin: 20px auto;
+    margin: 0 auto;
     width: 90%;
+    padding: 20px 0;
+    box-shadow: var(--bs);
+    border-radius: 30px;
+    background: #fff;
+
 }
 .logo_signUp{
     text-align: center;
-    background: #fff;
     display: block;
 }
 .logo_signUp img{
@@ -87,6 +96,9 @@ select{
 
 
 @media(min-width:600px){
+    .body{
+        height: calc(100vh + 100px);
+    }
     .container{
         width: 25%;
     }

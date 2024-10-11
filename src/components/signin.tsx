@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import styles from '../styles/signin.module.css';
-import cuLogo from '../assets/cuLogoUAR.png';
+import cuLogo from '../assets/KSUCU logo updated document.png';
 import { Link, useNavigate } from 'react-router-dom';
 import loadingAnime from '../assets/Animation - 1716747954931.gif';
 
@@ -20,31 +20,49 @@ const SignIn: React.FC = () => {
     };
 
     const handleSubmit = async () => {
-        //check if the user in online
+        // Check if the user is online
         if (!navigator.onLine) {
-            setError('check your internet and try again...')
+            setError('Check your internet and try again...');
             return;
         }
-
+    
         window.scrollTo({
             top: 0,
-            behavior: 'auto' // 'auto' for instant scroll
+            behavior: 'auto', // 'auto' for instant scroll
         });
-
+    
         setgeneralLoading(true);
-
+    
         try {
             const response = await axios.post('http://localhost:3000/users/login', formData, {
                 withCredentials: true, // This is necessary to include cookies in the request
             });
             console.log('Response:', response.data);
             navigate('/');
-
-        } catch (error) {
+    
+        } catch (error: any) {
             console.error('Error:', error);
-            // Handle error (e.g., show an error message)
-        }finally{
-            setgeneralLoading(false); 
+    
+            // Check if the error response status is 400
+            if (error.response && error.response.status === 401) {
+                try {
+                    // Try logging in to the admin endpoint
+                    const adminResponse = await axios.post('http://localhost:3000/adminnews/login', formData, {
+                        withCredentials: true,
+                    });
+                    console.log('Admin Response:', adminResponse.data);
+                    navigate('/adminnews'); // Navigate to the admin dashboard or relevant page
+    
+                } catch (adminError) {
+                    console.error(' Login Error:', adminError);
+                    setError('Please check your credentials.');
+                }
+            } else {
+                // Handle other errors
+                setError('Login failed. Please try again.');
+            }
+        } finally {
+            setgeneralLoading(false);
         }
     };
     
