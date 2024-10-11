@@ -111,7 +111,7 @@ const LandingPage = () => {
         }
         setUserData(data);
 
-        console.log(data);
+        console.log(userData);
         
 
     } catch (error) {

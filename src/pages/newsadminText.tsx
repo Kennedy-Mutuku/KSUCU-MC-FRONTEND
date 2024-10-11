@@ -8,11 +8,6 @@ import Footer from '../components/footer';
 
 import 'react-image-crop/dist/ReactCrop.css';
 
-interface FormData {
-  title: string;
-  body: string;
-  image: File | null;
-}
 
 const PhotoUploadPage: React.FC = () => {
   const [title, setTitle] = useState<string>('');
@@ -85,7 +80,7 @@ const PhotoUploadPage: React.FC = () => {
   };
 
   const getCroppedImage = (image: HTMLImageElement, crop: PixelCrop): Promise<Blob> => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       const canvas = document.createElement('canvas');
       const scaleX = image.naturalWidth / image.width;
       const scaleY = image.naturalHeight / image.height;
