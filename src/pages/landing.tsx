@@ -152,7 +152,7 @@ const LandingPage = () => {
       const data = await response.json();
       setNewsData(data);
     } catch (error: any) {
-      setError(error.message);
+      console.log(error)
     }
   };
 
