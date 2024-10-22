@@ -26,7 +26,6 @@ const NewsPage: React.FC = () => {
         if (!response.ok) {
           throw new Error('Failed to fetch news data');
         }
-
         const data = await response.json();
         setNewsData(data);
         setLoading(false);
@@ -44,7 +43,7 @@ const NewsPage: React.FC = () => {
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <div>Error: {error}, Log in if you haven't and try again</div>;
   }
 
   if (!newsData) {

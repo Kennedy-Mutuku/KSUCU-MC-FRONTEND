@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import styles from '../styles/index.module.css';
 import cuLogo from '../assets/cuLogoUAR.png';
 import introVid from '../assets/20230501_091418.jpg';
-import newsImg from '../assets/WhatsApp Image 2024-07-29 at 14.59.22_e12f802c.jpg'
 import Footer from '../components/footer';
 import { Link } from 'react-router-dom';
 import loadingAnime from '../assets/Animation - 1716747954931.gif';
@@ -27,8 +26,15 @@ interface Countdown {
   seconds: number;
 }
 
+interface NewsData {
+  title: string;
+  body: string;
+  imageUrl: string;
+}
+
 const LandingPage = () => {
   
+  const [newsData, setNewsData] = useState<NewsData | null>(null);
   const [openCommission, setOpenCommision] = useState(false);
   const [openPrayerJoint, setOpenPrayerJoint] = useState(false);
   const [openBibleStudy, setOpenBibleStudy] = useState(false);
@@ -39,6 +45,10 @@ const LandingPage = () => {
   const [userData, setUserData] = useState<{ username: string; email: string; yos: number; phone: string; et: string; ministry: string } | null>(null);
   const [error, setError] = useState('');
   const [generalLoading, setgeneralLoading] = useState(false);
+  const [showMinistries, setShowMinistries] = useState(false);
+  const [showClasses, setShowClasses] = useState(false);
+  const [showBoards, setShowBoards] = useState(false);
+  const [showEvangelisticTeams, setShowEvangelisticTeams] = useState(false);
 
   const handleNavToggle = () => {
     document.body.classList.toggle(styles['nav-open']);
@@ -54,6 +64,7 @@ const LandingPage = () => {
   useEffect(() => {
 
     fetchUserData()
+    fetchNewsData()
 
     // Target date: December 27th, 23:59:59 of the current year
     const targetDate = new Date(new Date().getFullYear(), 11, 27, 23, 59, 59).getTime();
@@ -128,6 +139,23 @@ const LandingPage = () => {
     }
   };
 
+  const fetchNewsData = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/adminnews/news', {
+        method: 'GET',
+        credentials: 'include'  // Ensures cookies (for authentication) are sent with the request
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch news data');
+      }
+      const data = await response.json();
+      setNewsData(data);
+    } catch (error: any) {
+      setError(error.message);
+    }
+  };
+
   function handleOpenCommission(): void {
     setOpenCommision(true)
   }
@@ -177,6 +205,11 @@ const LandingPage = () => {
     setOpenCairosCourse(false)
   }
 
+    // Method to handle the toggling behavior
+    const handleToggle = (setShow: React.Dispatch<React.SetStateAction<boolean>>, currentState: boolean) => {
+      setShow(!currentState);
+    };
+
   return (
     <>
 
@@ -198,8 +231,17 @@ const LandingPage = () => {
               <h3 className={styles['title-text']}>KISII UNIVERSITY CHRISTIAN </h3>
               <h3 className={styles['title-text']}>UNION MAIN CAMPUS</h3>
               <div className={styles['nav-one--hidden']}>
-                <Link to="/signUp" className={styles['signUp-btn']}>Sign up</Link>
-                <Link to="/signIn" className={styles['Login-btn']}>Log in</Link>
+                {userData ? 
+                  <Link to="/changeDetails" className={styles['signUp-btn']}>User</Link>
+                 : <Link to="/signUp" className={styles['signUp-btn']}>Sign up</Link>
+                }
+                
+                {userData ?
+                 <Link to="/signIn" className={styles['Login-btn']}>Log out</Link> : 
+                  <Link to="/signIn" className={styles['Login-btn']}>Log in</Link>
+                }
+
+
                 <div className={styles['About-btn']}>
                   <a href="#about" className={styles['nav-link']}>
                     About us
@@ -210,8 +252,15 @@ const LandingPage = () => {
           </div>
           <div className={styles.nav}>
             <div className={styles['nav-one']}>
-              <Link to="/signUp" className={styles['signUp-btn']}>Sign up</Link>
-              <Link to="/signIn" className={styles['Login-btn']}>Log in</Link>
+            {userData ? 
+                  <Link to="/changeDetails" className={styles['signUp-btn']}>User</Link>
+                 : <Link to="/signUp" className={styles['signUp-btn']}>Sign up</Link>
+                }
+                
+                {userData ?
+                 <Link to="/signIn" className={styles['Login-btn']}>Log out</Link> : 
+                  <Link to="/signIn" className={styles['Login-btn']}>Log in</Link>
+                }
               <div className={styles['About-btn']}>
               <a href="#about" className={styles['nav-link']}>
                     About us
@@ -285,10 +334,23 @@ const LandingPage = () => {
               </button>
             </p>
             <div className={styles.newsReportDiv}>
-              <p className={styles.newsReport}>
-                  <img className={styles.newsReportimg} src={newsImg} alt="news image" />
-                  <span className={styles.newsReportImage}>See how grace lifted Ksucu-mc drummer today <Link to="/news">...readmore</Link></span>
-              </p>
+              {/* <p className={styles.newsReport}>
+                  <img className={styles.newsReportimg} src={newsData.imageUrl} alt="news image" />
+                  <span className={styles.newsReportImage}>{newsData.title}<Link to="/news">...readmore</Link></span>
+              </p> */}
+
+              {newsData ? (
+                <p className={styles.newsReport}>
+                  <img className={styles.newsReportimg} src={newsData.imageUrl} alt="news image" />
+                  <span className={styles.newsReportImage}>
+                    {newsData.title}
+                    <Link className={styles.newsReportLink} to="/news">...read more</Link>
+                  </span>
+                </p>
+              ) : (
+                <p>Loading news data...</p>  // Or any placeholder content while loading
+              )}
+
             </div>
 
             <p className={styles.cancelBtn} onClick={handleCloseCommission}>
@@ -300,68 +362,179 @@ const LandingPage = () => {
         }
 
         <div className={styles.main}>
-          <div className={styles['call-to-action-text']}>
-            <p className={styles['cta-text']}>JOIN A NON-DENOMINATIONAL CHRISTIAN STUDENT ASSOCIATION</p>
-          </div>
-          <div className={styles['main-flex']}>
-            <div className={styles['main-section--flex']}>
-              <div className={styles.ministries}>
-                <h3 className={`${styles['ministries-title']} ${styles['category-title']}`}>KSUCU-MC <br /> MINISTRIES</h3>
-                <ol className={`${styles['ministries-list']} ${styles['category-list']}`}>
-                  <li className={styles['ministries-item']}><Link to="/ministries#wananzambe" className={styles['ministries-item--link']}>Wananzambe</Link></li>
-                  <li className={styles['ministries-item']}><Link to="/ministries#pw" className={styles['ministries-item--link']}>P&W</Link></li>
-                  <li className={styles['ministries-item']}><Link to="/ministries#hs" className={styles['ministries-item--link']}>High School</Link></li>
-                  <li className={styles['ministries-item']}><Link to="/ministries#creativity" className={styles['ministries-item--link']}>Creativity</Link></li>
-                  <li className={styles['ministries-item']}><Link to="/ministries#ushering" className={styles['ministries-item--link']}>Ushering</Link></li>
-                  <li className={styles['ministries-item']}><Link to="/ministries#cs" className={styles['ministries-item--link']}>Church School</Link></li>
-                  <li className={styles['ministries-item']}><Link to="/ministries#compassion" className={styles['ministries-item--link']}>Compassion</Link></li>
-                  <li className={styles['ministries-item']}><Link to="/ministries#intercessory" className={styles['ministries-item--link']}>Intercessory</Link></li>
-                </ol>
-              </div>
-              <div className={styles['products-splitter']}></div>
-              <div className={styles.committees}>
-                <h3 className={`${styles['comm-title']} ${styles['category-title']}`}>CLASSES AND <br /> FELLOWSHIPS </h3>
-                <ol className={`${styles['comm-list']} ${styles['category-list']}`}>
-                  <li className={styles['comm-item']}><Link to="/fellowshipsandclasses" className={styles['comm-item--link']}>Best-p classes</Link></li>
-                  <li className={styles['comm-item']}><Link to="/fellowshipsandclasses" className={styles['comm-item--link']}>Discipleship classes</Link></li>
-                  <li className={styles['comm-item']}><Link to="/fellowshipsandclasses" className={styles['comm-item--link']}>Class fellowships</Link></li>
-                  <li className={styles['comm-item']}><Link to="/fellowshipsandclasses" className={styles['comm-item--link']}>Brothers fellowship</Link></li>
-                  <li className={styles['comm-item']}><Link to="/fellowshipsandclasses" className={styles['comm-item--link']}>Sisters fellowship</Link></li>
-                </ol>
-              </div>
-              <div className={`${styles['products-splitter']} ${styles['products-splitter--hidden']}`}></div>
-            </div>
-            <div className={styles['main-section--flex']}>
-              <div className={styles.boards}>
-                <h3 className={`${styles['boards-title']} ${styles['category-title']}`}>KSUCU-MC <br /> BOARDS</h3>
-                <ol className={`${styles['boards-list']} ${styles['category-list']}`}>
-                  <li className={styles['boards-item']}><Link to="/boards" className={styles['boards-item--link']}>ICT board</Link></li>
-                  <li className={styles['boards-item']}><Link to="/boards" className={styles['boards-item--link']}>Communication board</Link></li>
-                  <li className={styles['boards-item']}><Link to="/boards" className={styles['boards-item--link']}>Media Production</Link></li>
-                  <li className={styles['boards-item']}><Link to="/boards" className={styles['boards-item--link']}>Editorial board</Link></li>
-                </ol>
-              </div>
-              <div className={styles['products-splitter']}></div>
-              <div className={styles.ET}>
-                <h3 className={`${styles['ET-title']} ${styles['category-title']}`}>EVANGELISTIC <br /> TEAMS</h3>
-                <ol className={`${styles['ET-list']} ${styles['category-list']}`}>
-                  <li className={styles['ET-item']}><Link to="/ets#rivet" className={styles['ET-item--link']}>RIVET</Link></li>
-                  <li className={styles['ET-item']}><Link to="/ets#weso" className={styles['ET-item--link']}>WESO</Link></li>
-                  <li className={styles['ET-item']}><Link to="/ets#eset" className={styles['ET-item--link']}>ESET</Link></li>
-                  <li className={styles['ET-item']}><Link to="/ets#cet" className={styles['ET-item--link']}>CET</Link></li>
-                  <li className={styles['ET-item']}><Link to="/ets#net" className={styles['ET-item--link']}>NET</Link></li>
-                </ol>
-              </div>
-            </div>
 
-          </div>
+              <div className={styles['call-to-action-text']}>
+                <p className={styles['cta-text']}>JOIN A NON-DENOMINATIONAL CHRISTIAN STUDENT ASSOCIATION</p>
+              </div>
 
+              <div className={styles['main-flex']}>
+
+                <div className={styles['main-section--flex']}>
+                  {/* Boards Section */}
+                  <div className={styles.boards}>
+                    <div className={styles.boardsCategoryDiv}>
+                      <h3 className={`${styles['boards-title']} ${styles['category-title']}`}>
+                        KSUCU-MC BOARDS
+                      </h3>
+                      <svg
+                        className={`${styles['dropdown-icon']} ${showBoards ? styles.rotate : ''}`}
+                        onClick={() => handleToggle(setShowBoards, showBoards)}
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z" />
+                      </svg>
+                    </div>
+
+                    <div className={`${styles['dropdown-content']} ${showBoards ? styles.show : ''}`}>
+                    <ol className={`${styles['boards-list']} ${styles['category-list']}`}>
+                      <li className={styles['boards-item']}>
+                        <Link to="/boards" className={styles['boards-item--link']}>ICT board</Link>
+                      </li>
+                      <li className={styles['boards-item']}>
+                        <Link to="/boards" className={styles['boards-item--link']}>Editorial board</Link>
+                      </li>
+                      <li className={styles['boards-item']}>
+                        <Link to="/boards" className={styles['boards-item--link']}>Media Production</Link>
+                      </li>
+                      <li className={styles['boards-item']}>
+                        <Link to="/boards" className={styles['boards-item--link']}>Communication board</Link>
+                      </li>
+                    </ol>
+                    </div>
+                  </div>
+
+                  {/* Evangelistic Teams Section */}
+                  <div className={styles.ET}>
+                    <div className={styles.boardsCategoryDiv}>
+                      <h3 className={`${styles['ET-title']} ${styles['category-title']}`}>
+                        EVANGELISTIC TEAMS
+                      </h3>
+                      <svg
+                        className={`${styles['dropdown-icon']} ${showEvangelisticTeams ? styles.rotate : ''}`}
+                        onClick={() => handleToggle(setShowEvangelisticTeams, showEvangelisticTeams)}
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z" />
+                      </svg>
+                    </div>
+
+                    <div className={`${styles['dropdown-content']} ${showEvangelisticTeams ? styles.show : ''}`}>
+                    <ol className={`${styles['ET-list']} ${styles['category-list']}`}>
+                      <li className={styles['ET-item']}>
+                        <Link to="/ets#cet" className={styles['ET-item--link']}>CET</Link>
+                      </li>
+                      <li className={styles['ET-item']}>
+                        <Link to="/ets#net" className={styles['ET-item--link']}>NET</Link>
+                      </li>
+                      <li className={styles['ET-item']}>
+                        <Link to="/ets#eset" className={styles['ET-item--link']}>ESET</Link>
+                      </li>
+                      <li className={styles['ET-item']}>
+                        <Link to="/ets#rivet" className={styles['ET-item--link']}>RIVET</Link>
+                      </li>
+                      <li className={styles['ET-item']}>
+                        <Link to="/ets#weso" className={styles['ET-item--link']}>WESO</Link>
+                      </li>
+                    </ol>
+                    </div>
+                  </div>
+                </div>
+
+                <div className={styles['main-section--flex']}>
+                  {/* Ministries Section */}
+                  <div className={styles.ministries}>
+                    <div className={styles.boardsCategoryDiv}>
+                      <h3 className={`${styles['ministries-title']} ${styles['category-title']}`}>
+                        KSUCU-MC MINISTRIES
+                      </h3>
+                      <svg
+                        className={`${styles['dropdown-icon']} ${showMinistries ? styles.rotate : ''}`}
+                        onClick={() => handleToggle(setShowMinistries, showMinistries)}
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z" />
+                      </svg>
+                    </div>
+
+                    <div className={`${styles['dropdown-content']} ${showMinistries ? styles.show : ''}`}>
+                    <ol className={`${styles['ministries-list']} ${styles['category-list']}`}>
+                      <li className={styles['ministries-item']}>
+                        <Link to="/ministries#ushering" className={styles['ministries-item--link']}>Ushering</Link>
+                      </li>
+                      <li className={styles['ministries-item']}>
+                        <Link to="/ministries#creativity" className={styles['ministries-item--link']}>Creativity</Link>
+                      </li>
+                      <li className={styles['ministries-item']}>
+                        <Link to="/ministries#compassion" className={styles['ministries-item--link']}>Compassion</Link>
+                      </li>
+                      <li className={styles['ministries-item']}>
+                        <Link to="/ministries#intercessory" className={styles['ministries-item--link']}>Intercessory</Link>
+                      </li>
+                      <li className={styles['ministries-item']}>
+                        <Link to="/ministries#hs" className={styles['ministries-item--link']}>High School</Link>
+                      </li>
+                      <li className={styles['ministries-item']}>
+                        <Link to="/ministries#wananzambe" className={styles['ministries-item--link']}>Wananzambe</Link>
+                      </li>
+                      <li className={styles['ministries-item']}>
+                        <Link to="/ministries#cs" className={styles['ministries-item--link']}>Church School</Link>
+                      </li>
+                      <li className={styles['ministries-item']}>
+                        <Link to="/ministries#pw" className={styles['ministries-item--link']}>Praise and Worship</Link>
+                      </li>
+                    </ol>
+                    </div>
+                  </div>
+
+                  {/* Classes and Fellowships Section */}
+                  <div className={styles.committees}>
+                    <div className={styles.boardsCategoryDiv}>
+                      <h3 className={`${styles['comm-title']} ${styles['category-title']}`}>
+                        CLASSES AND FELLOWSHIPS
+                      </h3>
+                      <svg
+                        className={`${styles['dropdown-icon']} ${showClasses ? styles.rotate : ''}`}
+                        onClick={() => handleToggle(setShowClasses, showClasses)}
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z" />
+                      </svg>
+                    </div>
+
+                    <div className={`${styles['dropdown-content']} ${showClasses ? styles.show : ''}`}>
+                    <ol className={`${styles['comm-list']} ${styles['category-list']}`}>
+                      <li className={styles['comm-item']}>
+                        <Link to="/fellowshipsandclasses" className={styles['comm-item--link']}>Best-p classes</Link>
+                      </li>
+                      <li className={styles['comm-item']}>
+                        <Link to="/fellowshipsandclasses" className={styles['comm-item--link']}>Class fellowships</Link>
+                      </li>
+                      <li className={styles['comm-item']}>
+                        <Link to="/fellowshipsandclasses" className={styles['comm-item--link']}>Sisters fellowship</Link>
+                      </li>
+                      <li className={styles['comm-item']}>
+                        <Link to="/fellowshipsandclasses" className={styles['comm-item--link']}>Brothers fellowship</Link>
+                      </li>
+                      <li className={styles['comm-item']}>
+                        <Link to="/fellowshipsandclasses" className={styles['comm-item--link']}>Discipleship classes</Link>
+                      </li>
+                    </ol>
+                    </div>
+                  </div>
+                </div>
+                
+              </div>
+              
         </div>
 
         <div className={styles.containerOthers}>
           
           <div className={styles.appreciatingTitleText}>
-                        <h2>Appreciating the opportunity to fellowship with KSUCU-MC, other interesting forums are:</h2>
+            <h2>Appreciating the opportunity to fellowship with KSUCU-MC, other interesting forums are:</h2>
           </div>
 
           <div className={styles.containerOthersRow}>
@@ -370,7 +543,7 @@ const LandingPage = () => {
                       {/* <span class="fa fa-clock-o size"></span> */}
                       <FontAwesomeIcon icon={faClock} className={styles.othersIcon} onClick={handleOpenPrayerJoint} />
                       <br />
-                      <span>Joint Prayer<br /> Time</span>
+                      <span>Joint Prayer Time</span>
 
                       { openPrayerJoint && <div className={styles.othersDisplayDiv}>
                         <div className={styles.closeOtherDisplayDiv}>
@@ -390,7 +563,7 @@ const LandingPage = () => {
                       {/* <span class="fa fa-coffee size"></span> */}
                       <FontAwesomeIcon icon={faCoffee} className={styles.othersIcon} onClick={handleOpenBibleStudy} />
                       <br />
-                      <span>Bible Study<br /> Nights</span>
+                      <span>Bible Study Nights</span>
 
                       { openBibleStudy && <div className={styles.othersDisplayDiv}>
                         <div className={styles.closeOtherDisplayDiv}>
@@ -410,7 +583,7 @@ const LandingPage = () => {
                       {/* <span class="fa fa-trophy size"></span> */}
                       <FontAwesomeIcon icon={faTrophy} className={styles.othersIcon} onClick={handleOpenDevelopment} />
                       < br />
-                      <span>Development <br />Projects</span>
+                      <span>Development Projects</span>
 
                     
                       { openDevelopment && <div className={styles.othersDisplayDiv}>
@@ -431,7 +604,7 @@ const LandingPage = () => {
                       {/* <span class="fa fa-code size"></span> */}
                       <FontAwesomeIcon icon={faCode} className={styles.othersIcon} onClick={handleOpenGraphics} />
                       <br />
-                      <span>Graphic Design <br />Classes</span>
+                      <span>Graphic Design Classes</span>
 
                       { openGraphicDesign && <div className={styles.othersDisplayDiv}>
                         <div className={styles.closeOtherDisplayDiv}>
@@ -451,7 +624,7 @@ const LandingPage = () => {
                       {/* <span class="fa fa-globe size"></span> */}
                       <FontAwesomeIcon icon={faGlobe} className={styles.othersIcon} onClick={handleOpenCairos} />
                       <br />
-                      <span>Kairos Course<br /> Training</span>
+                      <span>Kairos Course Training</span>
 
                       { openKairosCourse && <div className={styles.othersDisplayDiv}>
                         <div className={styles.closeOtherDisplayDiv}>
@@ -470,7 +643,7 @@ const LandingPage = () => {
                       {/* <span class="fa fa-rocket size"></span> */}
                       <FontAwesomeIcon icon={faRocket} className={styles.othersIcon} onClick={handleOpenFocus} />
                       <br />
-                      <span>FOCUS <br />conferences</span>
+                      <span>FOCUS conferences</span>
 
                       { openFocus && <div className={styles.othersDisplayDiv}>
                         <div className={styles.closeOtherDisplayDiv}>
