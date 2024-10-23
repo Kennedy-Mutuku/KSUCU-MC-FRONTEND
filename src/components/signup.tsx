@@ -83,7 +83,7 @@ const SignUp: React.FC = () => {
     setLoading(true)
 
     try {
-      const response = await axios.post('http://localhost:3000/users/signup', dataToSend);
+      const response = await axios.post('https://ksucu-mc-backend.onrender.com/users/signup', dataToSend);
       if(response.status = 200){
         setLoadingText('check your email...')
         clearForm();

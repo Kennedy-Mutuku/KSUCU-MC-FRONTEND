@@ -34,7 +34,7 @@ const Bs: React.FC = () => {
             setError('')
         }
       
-        axios.post('http://localhost:3000/users/bibleStudy', formData)
+        axios.post('https://ksucu-mc-backend.onrender.com/users/bibleStudy', formData)
         .then((response) => {
           console.log('Response:', response.status);
           // Handle success, e.g., show a success message or reset form

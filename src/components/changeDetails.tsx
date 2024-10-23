@@ -37,7 +37,7 @@ const ChangeDetails: React.FC = () => {
     setLoading(true)
     const fetchUserData = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/users/data', { withCredentials: true } );
+        const response = await axios.get('https://ksucu-mc-backend.onrender.com/users/data', { withCredentials: true } );
         console.log(response.data);
         
         setFormData(response.data);
@@ -62,7 +62,7 @@ const ChangeDetails: React.FC = () => {
   const handleSubmit = async () => {
     setLoading(true)
     try {
-      const response = await axios.put('http://localhost:3000/users/update', formData, { withCredentials: true });
+      const response = await axios.put('https://ksucu-mc-backend.onrender.com/users/update', formData, { withCredentials: true });
       console.log(response.data);
       setSuccessMessage('Details updated successfully')
     } catch (error) {

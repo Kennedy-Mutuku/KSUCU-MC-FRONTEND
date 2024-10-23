@@ -34,7 +34,7 @@ const SignIn: React.FC = () => {
         setgeneralLoading(true);
     
         try {
-            const response = await axios.post('http://localhost:3000/users/login', formData, {
+            const response = await axios.post('https://ksucu-mc-backend.onrender.com/users/login', formData, {
                 withCredentials: true, // This is necessary to include cookies in the request
             });
             console.log('Response:', response.data);
@@ -47,7 +47,7 @@ const SignIn: React.FC = () => {
             if (error.response && error.response.status === 401) {
                 try {
                     // Try logging in to the admin endpoint
-                    const adminResponse = await axios.post('http://localhost:3000/adminnews/login', formData, {
+                    const adminResponse = await axios.post('https://ksucu-mc-backend.onrender.com/adminnews/login', formData, {
                         withCredentials: true,
                     });
                     console.log('Admin Response:', adminResponse.data);

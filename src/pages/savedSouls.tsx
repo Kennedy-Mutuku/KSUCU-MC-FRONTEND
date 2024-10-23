@@ -13,7 +13,7 @@ const SavedSouls: React.FC = () => {
   const [error, setError] = useState('');
   const [userCount, setUserCount] = useState<number | null>(null);
 
-  const backEndURL = 'http://localhost:3000';
+  const backEndURL = 'https://ksucu-mc-backend.onrender.com';
 
   useEffect(() => {
     fetchUserCount()
@@ -64,7 +64,7 @@ const SavedSouls: React.FC = () => {
   
   const fetchUserCount = async () => {
     try {
-      const response = await axios.get<{ count: number }>('http://localhost:3000/users/countSaved');
+      const response = await axios.get<{ count: number }>('https://ksucu-mc-backend.onrender.com/users/countSaved');
       setUserCount(response.data.count);
     } catch (err) {
       console.error('Error fetching user count:');
