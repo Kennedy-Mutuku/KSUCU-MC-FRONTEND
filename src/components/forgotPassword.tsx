@@ -8,6 +8,10 @@ const Forgotpassword: React.FC = () => {
     const [formData, setFormData] = useState({
         email: '',
     });
+    
+  const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const [loading, setLoading] = useState(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
@@ -15,23 +19,35 @@ const Forgotpassword: React.FC = () => {
     };
 
     const handleSubmit = async () => {
+        setLoading(true)
         try {
-            const response = await axios.post('YOUR_SERVER_ENDPOINT', formData);
+            const response = await axios.post('http://localhost:3000/users/forget-password', formData);
             console.log('Response:', response.data);
             // Handle success (e.g., show a success message, redirect, etc.)
-        } catch (error) {
-            console.error('Error:', error);
+            if(response.status = 200){
+                setSuccessMessage('Email sent succesfully check your inbox')
+            }
+        } catch (error: any) {
+            console.error('Error:');
             // Handle error (e.g., show an error message)
+            if(error.response.status = 404){
+                setError('email not found')
+            }
+        }finally{
+            setLoading(false)
         }
     };
 
     return (
-        <>
+        <div className={styles.body}>
             <div className={styles['container']}>
                 <Link to={"/"}>
                     <div className={styles['logo_signUp']}><img src={cuLogo} alt="CU logo" /></div>
                 </Link>
                 <h2 className={styles['text']}>input your e-mail</h2>
+
+                {error && <p className={styles.error}>{error}</p>}
+                {successMessage && <p className={styles.success}>{successMessage}</p>}
 
                 <form action="" className={styles['form']}>
 
@@ -39,12 +55,13 @@ const Forgotpassword: React.FC = () => {
                         <input type="text" id="email" value={formData.email} onChange={handleChange} />
                     </div>
 
-
                 </form>
 
                 <div className={styles['submisions']}>
                     <div className={styles['clearForm']} onClick={() => setFormData({ email: '' })}>Clear</div>
+                    {loading ? <div className={styles['submitData']}>Sending...</div> : 
                     <div className={styles['submitData']} onClick={handleSubmit}>Next</div>
+                    }
                 </div>
 
                 <div className={styles['form-footer']}>
@@ -52,8 +69,13 @@ const Forgotpassword: React.FC = () => {
                 </div>
 
             </div>
-        </>
+
+        </ div>
     );
 };
 
 export default Forgotpassword;
+
+
+
+

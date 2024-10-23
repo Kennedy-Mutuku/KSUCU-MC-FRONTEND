@@ -151,8 +151,9 @@ html{
 .ministries-title,
 .comm-title,
 .boards-title{
-    margin:10px 30px ;
+    margin:10px 30px;
 }
+
 
 
 .ministries-item,
@@ -164,6 +165,7 @@ html{
 .boards-item--link,
 .comm-item--link
 {
+    /* display: inline-block; */
     text-decoration: none;
     color: #730051;
     font-weight: 700;
@@ -327,7 +329,7 @@ html{
 
 .category-title{
     margin: 10px 0 10PX 20PX;
-    font-size: 1.2em;
+    font-size: 1em;
 }
 
 .aboutTitle{
@@ -338,6 +340,7 @@ html{
 }
 .containerAbout{
     background: #b3b3b328;
+    padding: 20px 0;
 }
 .about{
     display: flex;
@@ -348,6 +351,7 @@ html{
 .containerOthers{
     background: #1b1b1b;
     color: #fff;
+    padding: 30px 0;
 }
 .containerOthersRow{
     display: flex;
@@ -359,8 +363,11 @@ html{
 }
 .appreciatingTitleText{
     text-align: center;
-    padding-top: 20px;
-    padding-bottom: 10px;
+    padding-top: 10px;
+    padding-bottom: 30px;
+}
+.appreciatingTitleh2Text{
+    font-size: 1.2em;
 }
 .othersColumns {
     color: #00c6ff;
@@ -434,6 +441,11 @@ hr{
 .newsReportLink{
     color: #fff;
 }
+
+.aboutFlex h4{
+    margin-top: 20px;
+}
+
 @media(min-width:600px) {
 
     .containerOthers{
@@ -514,7 +526,7 @@ hr{
     .main-flex{
         /* display: flex;
         justify-content: space-around; */
-        margin: 100px auto 60px auto;
+        margin: 60px auto 10px auto;
         width: 30%;
     }
 
@@ -526,7 +538,12 @@ hr{
         width: 70%;
         padding: 50px 0 50px 0;
     }
-
+    .containerOthers{
+        padding: 50px 0;
+    }
+    .appreciatingTitleh2Text{
+        margin-bottom: 40px;
+    }
     .containerOthersRow{
         width: 60%;
         margin: 0 auto;
@@ -544,5 +561,19 @@ hr{
         margin-top: 20px;
         margin-bottom: 10px;
     }
+
+    .appreciatingTitleh2Text{
+        font-size: 2em;
+    }
+
+    .aboutTitle{
+        text-align: center;
+    }
+
+    .aboutCol1{
+        gap: 100px;
+    }
+
+
 
 }

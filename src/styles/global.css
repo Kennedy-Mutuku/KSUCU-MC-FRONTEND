@@ -11,7 +11,45 @@ html{
 *,*::before,*::after{
     box-sizing: border-box;
 }
+.container{
+    margin: 0 auto;
+    width: 100%;
+    max-width: 1600px;
+}
 
+/* loading */
+
+/* Loading div at the bottom with smooth transition */
+.loading {
+    position: fixed;
+    bottom: -100px; /* Initially out of view */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.959);
+    color: white;
+    padding: 10px 20px;
+    font-size: 26px;
+    transition: bottom 0.5s ease-in-out; /* Smooth transition */
+    z-index: 1000;
+    width: 100%;
+    padding: 30px;
+
+    display: flex;
+    justify-content: center;
+}
+.loading p{
+    margin-bottom: 0;
+}
+
+.success{
+    text-align: center;
+    color: green;
+}
+  
+/* When loading is active, slide it into view */
+.loading-active {
+    bottom: 0px; /* Adjust to where you want it to appear from the bottom */
+}
 
 .error{
     width: 100%;
@@ -92,10 +130,10 @@ select{
 }
 .title{
     width: 100%;
-
 }
 .title-text{
     margin-top: 0;
+    font-size: 16px;
 }
 .logo{
     align-self: flex-start;
@@ -123,9 +161,9 @@ select{
 }
 .signUp-btn,
 .Login-btn,
-.About-btn{
-    background: #fff;
-    color: rgb(6, 6, 6);
+.nav-link{
+    background: #ffffff;
+    color: #000000;
     padding: 5px 10px;
     font-size: .75rem;
 
@@ -200,7 +238,11 @@ select{
     cursor: pointer;
 }
 
-
+@media(min-width:347px){
+    .title-text{
+        font-size: 18px;
+    }
+}
 
 @media(min-width:600px){
     .header{
@@ -233,18 +275,25 @@ select{
     justify-content: space-evenly;
    }
 
-    .signUp-btn,
-    .Login-btn,
-    .About-btn{
-        font-size: 1rem;
-        padding: 5px 30px;
-    }
+   .About-btn{
+    align-self:center ;
+   }
 
     .hr{
         width: 20%;
     }
     .social--links{
         width: 20%;
+    }
+    .signUp-btn,
+    .Login-btn,
+    .nav-link{
+        background: #ffffff;
+        color: #000000;
+        padding: 5px 25px;
+        font-size: 1rem;
+    
+        border-radius: 20px;
     }
       
 }

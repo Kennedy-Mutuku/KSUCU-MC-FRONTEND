@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import cuLogo from '../assets/cuLogoUAR.png';
+import cuLogo from '../assets/KSUCU logo updated document.png';
 import { Link } from 'react-router-dom';
 import styles from '../styles/signup.module.css'; 
 
@@ -13,6 +13,7 @@ type FormData = {
   yos: string;
   ministry: string;
   et: string;
+  password: string;
 };
 
 const ChangeDetails: React.FC = () => {
@@ -24,22 +25,31 @@ const ChangeDetails: React.FC = () => {
     reg: '',
     yos: '',
     ministry: '',
-    et: ''
+    et: '',
+    password: ''
   });
+  
+  const [loading, setLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    // Fetch data from the server when the component loads
-    const fetchData = async () => {
+    setLoading(true)
+    const fetchUserData = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/users/details'); // Adjust the API endpoint as necessary
-        setFormData(response.data); // Assuming the API response returns the correct shape
+        const response = await axios.get('http://localhost:3000/users/data', { withCredentials: true } );
+        console.log(response.data);
+        
+        setFormData(response.data);
       } catch (error) {
-        console.error('Error fetching user details:', error);
+        console.error("Error fetching user data", error);
+      }finally{
+        setLoading(false)
       }
     };
 
-    fetchData();
-  }, []); // Empty dependency array ensures this runs only once when the component mounts
+    fetchUserData();
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { id, value } = e.target;
@@ -50,27 +60,33 @@ const ChangeDetails: React.FC = () => {
   };
 
   const handleSubmit = async () => {
+    setLoading(true)
     try {
-      const response = await axios.post('http://localhost:3000/users/signup', formData);
+      const response = await axios.put('http://localhost:3000/users/update', formData, { withCredentials: true });
       console.log(response.data);
-      // Handle the response as needed
+      setSuccessMessage('Details updated successfully')
     } catch (error) {
-      console.error(error);
-      // Handle the error as needed
+      console.error("Error updating details", error);
+      setError('Error updating details')
+    }finally{
+      setLoading(false)
     }
   };
 
   return (
-    <>
+    <div className={styles.body}>
       <div className={styles['container']}>
         <Link to={"/"}>
           <div className={styles['logo_signUp']}><img src={cuLogo} alt="CU logo" /></div>
         </Link>
-        <h2 className={styles['text']}>Change Details</h2>
+        <h2 className={styles['text']}>Update Details</h2>
+        
+        {error && <p className={styles.error}>{error}</p>}
+        {successMessage && <p className={styles.success}>{successMessage}</p>}
 
         <div className={styles['form']}>
           <div>
-            <label htmlFor="name">NAME</label>
+            <label htmlFor="username">NAME</label>
             <input type="text" id="username" className={styles['input']} value={formData.username} onChange={handleChange} />
           </div>
 
@@ -81,7 +97,7 @@ const ChangeDetails: React.FC = () => {
 
           <div>
             <label htmlFor="email">E-mail</label>
-            <input type="email" id="email" className={styles['input']} value={formData.email} onChange={handleChange} disabled /> {/* Disable email field */}
+            <input type="email" id="email" className={styles['input']} value={formData.email} onChange={handleChange}  disabled={true} />
           </div>
 
           <div>
@@ -127,26 +143,26 @@ const ChangeDetails: React.FC = () => {
           </div>
         </div>
 
-        <div className={styles['submisions']}>
-          <div className={styles['clearForm']} onClick={() => setFormData({
-            username: '',
-            phone: '',
-            email: '',
-            course: '',
-            reg: '',
-            yos: '',
-            ministry: '',
-            et: '',
-          })}>Clear</div>
-          <div className={styles['submitData']} onClick={handleSubmit}>Next</div>
+        <div className={`${styles['submisions']} ${styles['submissions-change-details']}`}>
+          {loading ? <div className={styles['submitData']} >Updating</div> : 
+          <div className={styles['submitData']} onClick={handleSubmit}>Update</div>
+          }
         </div>
 
         <div className={styles['form-footer']}>
-          <p>Already have an account? <Link to={"/signIn"}>Click Here</Link></p>
+          <p> <Link to={"/"}>Home</Link></p>
         </div>
       </div>
-    </>
+
+        {/* Loading animation */}
+        <div className={`${styles.loading} ${loading ? styles['loading-active'] : ''}`}>
+          <p>Loading...</p>
+        </div>
+
+    </div>
   );
 };
 
 export default ChangeDetails;
+
+

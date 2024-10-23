@@ -21,6 +21,9 @@
 .logo_signUp img{
     height: 15vh;
 }
+
+
+
 .text{
     text-align: center;
 }
@@ -63,6 +66,9 @@
 
     gap: 10px;
 }
+.submissions-change-details{
+    justify-content: center;
+}
 .submitData{
     background: #00c6ff;
     color: #000;
@@ -93,7 +99,7 @@
 select{
     width: 60%;
 }
-
+  
 
 @media(min-width:600px){
     .body{
@@ -112,3 +118,5 @@ select{
         padding-bottom: 50px;
     }
 }
+
+

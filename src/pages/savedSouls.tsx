@@ -40,6 +40,7 @@ const SavedSouls: React.FC = () => {
       })
       .then(() => {
         // Clear input fields upon success
+        fetchUserCount()
         setName('');
         setPhone('');
         setRegion('');
@@ -66,11 +67,10 @@ const SavedSouls: React.FC = () => {
       const response = await axios.get<{ count: number }>('http://localhost:3000/users/countSaved');
       setUserCount(response.data.count);
     } catch (err) {
-      console.error('Error fetching user count:', err);
-      setError('Failed to fetch user count');
+      console.error('Error fetching user count:');
+      setError('Failed to fetch soul count');
     }
   };
-
 
 
   return (
@@ -78,13 +78,13 @@ const SavedSouls: React.FC = () => {
         <Header />
         <div className={styles.container}>
 
-            <h1 className={styles.title}>MISSION DEPARTMENT</h1>
-            <h3 className={styles['title-sub']}>...teach all nations, baptizing them in the name of the father of the son and of the Holy Ghost (Math 28vs19)</h3>
+            <h4 className={styles.title}>MISSION DEPARTMENT</h4>
+            <h6 className={styles['title-sub']}>...teach all nations, baptizing them in the name of the father of the son and of the Holy Ghost (Math 28vs19)</h6>
 
             <div className={styles.flex}>
               
-                <form className={styles.row} id="postForm">
-                <h2 className={styles['sub-title']}>Win a Soul For Christ</h2>
+              <form className={styles.row} id="postForm">
+                <h4 className={styles['sub-title']}>Win a Soul For Christ</h4>
                 {error && <div className={styles.error}>{error}</div>}
                 <label htmlFor="name">Name:</label>
                 <input
@@ -126,7 +126,7 @@ const SavedSouls: React.FC = () => {
                     {loading ? 'Adding...' : 'Add'}
                 </button>
 
-                </form>
+              </form>
 
             </div>
 
