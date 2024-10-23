@@ -14,18 +14,30 @@
   margin:0 auto ;
 }
 
-
-.title{
-  margin-bottom: 0px;
-}
-.title-sub{
-  margin-top: 10px;
-  color: #730051;
-}
 .title,
 .title-sub,
 .sub-title{
   text-align: center;
+}
+
+.row input{
+  margin-bottom: 10px;
+}
+
+.title{
+  margin: 30px 10px 10px 10px;
+  font-size: 18px;
+  width: inherit;
+}
+
+.title-sub{
+  margin-top: 0px;
+  color: #730051;
+  font-size: 16px;
+}
+.sub-title{
+  font-size: 18px;
+  margin-top: 30px;
 }
 
 #postForm{
@@ -38,7 +50,7 @@
   border: 0;
   padding: .25em .75em;
   border-radius: 5px;
-  margin-bottom: 50px;
+  margin: 10px auto;
 }
 th{
   text-align: left;
@@ -63,7 +75,7 @@ table{
 }
 
 .numberWon{
-  margin-bottom: 60px;
+  margin-bottom: 20px;
 }
 
 .submit-btn{
@@ -85,6 +97,10 @@ table{
 @media(min-width:1100px){
   .container{
       width: 30%;
+  }
+  .title{
+    width: 100%;
+    font-size: 25px;
   }
 }
   

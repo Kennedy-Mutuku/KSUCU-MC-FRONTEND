@@ -107,7 +107,12 @@ const SignIn: React.FC = () => {
                     <p>Have no account <Link to={"/signUp"}>click Here</Link></p>
                 </div>
 
+                <div className={styles['form-footer']}>
+                    <p><Link to={"/Home"}>Home</Link></p>
+                </div>
+
             </div>
+
         </div>
     );
 };

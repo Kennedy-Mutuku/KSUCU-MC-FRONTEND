@@ -5,7 +5,7 @@
     margin: 20px auto 0px auto;
     width: 80%;
     text-align: center;
-    font-size: 2rem;
+    font-size: 22px;
 }
 
 .form div{
@@ -22,11 +22,12 @@
 
 .container{
     padding: 20px 0 50px 0;
-    margin: 50px auto;
+    margin: 20px auto;
 }
 
 .text{
     margin-bottom: 30px;
+    font-size: 16px;
 }
 
 .submitDataButton{
@@ -35,3 +36,4 @@
     font-size: 1.1em;
     font-weight: 400;
 }
+

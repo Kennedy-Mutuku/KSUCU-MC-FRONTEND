@@ -3,7 +3,7 @@ import styles from '../styles/index.module.css';
 import cuLogo from '../assets/cuLogoUAR.png';
 import introVid from '../assets/20230501_091418.jpg';
 import Footer from '../components/footer';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import loadingAnime from '../assets/Animation - 1716747954931.gif';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestion } from '@fortawesome/free-solid-svg-icons';
@@ -49,6 +49,7 @@ const LandingPage = () => {
   const [showClasses, setShowClasses] = useState(false);
   const [showBoards, setShowBoards] = useState(false);
   const [showEvangelisticTeams, setShowEvangelisticTeams] = useState(false);
+  const navigate = useNavigate();
 
   const handleNavToggle = () => {
     document.body.classList.toggle(styles['nav-open']);
@@ -116,15 +117,18 @@ const LandingPage = () => {
 
         const data = await response.json();
         
-
         if (!response.ok) {
             throw new Error(data.message || 'Failed to fetch user data');
         }
-        setUserData(data);
 
-        console.log(userData);
+        // Set username to only the first name (first word) if there are multiple names
+        const firstName = data.username.split(' ')[0];
+
+        setUserData({
+            ...data,
+            username: firstName
+        });
         
-
     } catch (error) {
         if (error instanceof Error && error.message === 'Authentication failed: jwt expired') {
             setError('session timed out, log in again')
@@ -140,6 +144,7 @@ const LandingPage = () => {
   };
 
   const fetchNewsData = async () => {
+    setgeneralLoading(true)
     try {
       const response = await fetch('http://localhost:3000/adminnews/news', {
         method: 'GET',
@@ -153,7 +158,30 @@ const LandingPage = () => {
       setNewsData(data);
     } catch (error: any) {
       console.log(error)
+    }finally{
+      setgeneralLoading(false)
     }
+  };
+
+  const handleLogout = async () => {
+    setgeneralLoading(true)
+      try {
+          const response = await fetch('http://localhost:3000/users/logout', {
+              method: 'POST',
+              credentials: 'include'
+          });
+
+          if (!response.ok) {
+              throw new Error('Logout failed');
+          }
+          setUserData(null);
+          navigate('/signIn');
+      } catch (error) {
+          console.error('Error during logout:');
+          setError('An error occurred during logout');
+      }finally{
+        setgeneralLoading(false)
+      }
   };
 
   function handleOpenCommission(): void {
@@ -213,7 +241,7 @@ const LandingPage = () => {
   return (
     <>
 
-      <div className={styles.body}>
+    <div className={styles.body}>
         
       {generalLoading && (
                 <div className={styles['loading-screen']}>
@@ -223,96 +251,96 @@ const LandingPage = () => {
       )}
 
         <header className={styles.header}>
-          <div className={styles['flex-title']}>
-            <div className={styles.logo}>
-              <img src={cuLogo} alt="Cu-logo" className={styles['logo-image']} />
-            </div>
-            <div className={styles.title}>
-              <h3 className={styles['title-text']}>KISII UNIVERSITY CHRISTIAN </h3>
-              <h3 className={styles['title-text']}>UNION MAIN CAMPUS</h3>
-              <div className={styles['nav-one--hidden']}>
-                {userData ? 
-                  <Link to="/changeDetails" className={styles['signUp-btn']}>User</Link>
-                 : <Link to="/signUp" className={styles['signUp-btn']}>Sign up</Link>
-                }
-                
-                {userData ?
-                 <Link to="/signIn" className={styles['Login-btn']}>Log out</Link> : 
-                  <Link to="/signIn" className={styles['Login-btn']}>Log in</Link>
-                }
 
-
-                <div className={styles['About-btn']}>
-                  <a href="#about" className={styles['nav-link']}>
-                    About us
-                  </a>
+          <div className={styles.container}>
+            <div className={styles['flex-title']}>
+              <div className={styles.logo}>
+                <img src={cuLogo} alt="Cu-logo" className={styles['logo-image']} />
+              </div>
+              <div className={styles.title}>
+                <h5 className={styles['title-text']}>KISII UNIVERSITY CHRISTIAN </h5>
+                <h5 className={styles['title-text']}>UNION MAIN CAMPUS</h5>
+                <div className={styles['nav-one--hidden']}>
+                  {userData ?
+                    <Link to="/changeDetails" className={styles['signUp-btn']}>{userData.username}</Link>
+                   : <Link to="/signUp" className={styles['signUp-btn']}>Sign up</Link>
+                  }
+            
+                  {userData ?
+                   <Link to="/signIn" className={styles['Login-btn']} onClick={handleLogout}>Log out</Link> :
+                    <Link to="/signIn" className={styles['Login-btn']}>Log in</Link>
+                  }
+                  <div className={styles['About-btn']}>
+                    <a href="#about" className={styles['nav-link']}>
+                      About us
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div className={styles.nav}>
-            <div className={styles['nav-one']}>
-            {userData ? 
-                  <Link to="/changeDetails" className={styles['signUp-btn']}>User</Link>
-                 : <Link to="/signUp" className={styles['signUp-btn']}>Sign up</Link>
-                }
-                
-                {userData ?
-                 <Link to="/signIn" className={styles['Login-btn']}>Log out</Link> : 
-                  <Link to="/signIn" className={styles['Login-btn']}>Log in</Link>
-                }
-              <div className={styles['About-btn']}>
-              <a href="#about" className={styles['nav-link']}>
-                    About us
-                  </a>
+            <div className={styles.nav}>
+              <div className={styles['nav-one']}>
+              {userData ?
+                    <Link to="/changeDetails" className={styles['signUp-btn']}>{userData.username}</Link>
+                   : <Link to="/signUp" className={styles['signUp-btn']}>Sign up</Link>
+                  }
+            
+                  {userData ?
+                   <Link to="/signIn" className={styles['Login-btn']}>Log out</Link> :
+                    <Link to="/signIn" className={styles['Login-btn']}>Log in</Link>
+                  }
+                <div className={styles['About-btn']}>
+                <a href="#about" className={styles['nav-link']}>
+                      About us
+                    </a>
+                </div>
+              </div>
+              <div className={styles.row} id="hambuger">
+                <button className={styles['nav-toggle__btn']} onClick={handleNavToggle}>
+                  <div className={styles.hambuger}></div>
+                </button>
               </div>
             </div>
-            <div className={styles.row} id="hambuger">
-              <button className={styles['nav-toggle__btn']} onClick={handleNavToggle}>
-                <div className={styles.hambuger}></div>
-              </button>
-            </div>
-          </div>
-          <div className={styles['main-quick--links']}>
-            <h3 className={styles['main-quick--links---text']}>Quick Links</h3>
-            <ul className={styles['quick-nav--links']}>
-              <li className={styles['quick-item']}><Link to="/save" className={styles['quick-item--link']}>Win a Soul</Link></li>
-              <hr />
-              <li className={styles['quick-item']}><a href="#" className={styles['quick-item--link']}>Media</a></li>
-              <hr />
-              <li className={styles['quick-item']}><a href="#" className={styles['quick-item--link']}>Constitution</a></li>
-              <hr />
-              <li className={styles['quick-item']}><a href="#" className={styles['quick-item--link']}>Library</a></li>
-              <hr />
-              <li className={styles['quick-item']}><Link to="/financial" className={styles['quick-item--link']}>Financials</Link></li>
-              <hr />
-              <li className={styles['quick-item']}><Link to="/Bs" className={styles['quick-item--link']}>Bible Study</Link></li>
-              <hr />
-            </ul>
-          </div>
-          
-          {error && <div className={styles.error}>{error}</div>}
-
-          <div className={styles['intro-video--header']}>
-            <div className={styles['video-intro']}>
-              <img src={introVid} alt="Intro Video" />
-                <span className={styles["commission-claimer"]} onClick={handleOpenCommission}>
-                  <FontAwesomeIcon icon={faQuestion} beatFade />
-                </span>
-            </div>
-            <div className={styles['side-bar--links']}>
-              <h3 className={styles['quick-links']}>Quick Links</h3>
+            <div className={styles['main-quick--links']}>
+              <h3 className={styles['main-quick--links---text']}>Quick Links</h3>
               <ul className={styles['quick-nav--links']}>
-              <li className={styles['quick-item']}><Link to="/save" className={styles['quick-item--link']}>Win a Soul</Link></li>
+                <li className={styles['quick-item']}><Link to="/save" className={styles['quick-item--link']}>Win a Soul</Link></li>
+                <hr />
                 <li className={styles['quick-item']}><a href="#" className={styles['quick-item--link']}>Media</a></li>
+                <hr />
                 <li className={styles['quick-item']}><a href="#" className={styles['quick-item--link']}>Constitution</a></li>
+                <hr />
                 <li className={styles['quick-item']}><a href="#" className={styles['quick-item--link']}>Library</a></li>
+                <hr />
                 <li className={styles['quick-item']}><Link to="/financial" className={styles['quick-item--link']}>Financials</Link></li>
-                <li className={styles['quick-item']}><Link to="/Bs" className={styles['quick-item--link']}>bible study</Link></li>
+                <hr />
+                <li className={styles['quick-item']}><Link to="/Bs" className={styles['quick-item--link']}>Bible Study</Link></li>
+                <hr />
               </ul>
             </div>
-
+            
+            {error && <div className={styles.error}>{error}</div>}
+            <div className={styles['intro-video--header']}>
+              <div className={styles['video-intro']}>
+                <img src={introVid} alt="Intro Video" />
+                  <span className={styles["commission-claimer"]} onClick={handleOpenCommission}>
+                    <FontAwesomeIcon icon={faQuestion} beatFade />
+                  </span>
+              </div>
+              <div className={styles['side-bar--links']}>
+                <h3 className={styles['quick-links']}>Quick Links</h3>
+                <ul className={styles['quick-nav--links']}>
+                <li className={styles['quick-item']}><Link to="/save" className={styles['quick-item--link']}>Win a Soul</Link></li>
+                  <li className={styles['quick-item']}><a href="#" className={styles['quick-item--link']}>Media</a></li>
+                  <li className={styles['quick-item']}><a href="#" className={styles['quick-item--link']}>Constitution</a></li>
+                  <li className={styles['quick-item']}><a href="#" className={styles['quick-item--link']}>Library</a></li>
+                  <li className={styles['quick-item']}><Link to="/financial" className={styles['quick-item--link']}>Financials</Link></li>
+                  <li className={styles['quick-item']}><Link to="/Bs" className={styles['quick-item--link']}>bible study</Link></li>
+                </ul>
+              </div>
+            </div>
           </div>
+
         </header>
 
         {  openCommission &&
@@ -534,7 +562,7 @@ const LandingPage = () => {
         <div className={styles.containerOthers}>
           
           <div className={styles.appreciatingTitleText}>
-            <h2>Appreciating the opportunity to fellowship with KSUCU-MC, other interesting forums are:</h2>
+            <h2 className={styles.appreciatingTitleh2Text}>Appreciating the opportunity to fellowship with KSUCU-MC, other interesting forums are:</h2>
           </div>
 
           <div className={styles.containerOthersRow}>
@@ -666,29 +694,43 @@ const LandingPage = () => {
 
         <div className={styles.containerAbout}>
           <div className={styles.about}>
-
+          <p id="about" className={styles.aboutTitle}>About us</p>
               <div className={styles.aboutFlex}>
-                <p id="about" className={styles.aboutTitle}>About us</p>
-                <h4><b>MISSION</b></h4>
-                      <p>To impact Christian core values and skills to students through equipping, empowering and offering conducive environment for effective living in and out of campus.
-                          <br />
+                      <div className={`${styles.aboutCol} ${styles.aboutCol1}`}>
+
+                        <div className={styles.aboutCol1Mission}>
+                          <h4><b>MISSION</b></h4>
+                          <p>
+                            To impact Christian core values and skills to students through equipping, empowering and offering conducive environment for effective living in and out of campus.
+                          </p>
+                        </div>
+
+
+                        <div className={styles.aboutCol1Vision}>
                           <h4><b>VISION</b></h4>
-                          A relevant and effective Christian to the church and society.
-                      </p>
-                      <h4><b>OBJECTIVES</b></h4>
-                      <b>1.Discipleship</b><br /> i. To deepen and strengthen spiritual lives of its members through the study of The Bible, prayers, Christian fellowships and obedience to God.<br /> ii. To encourage responsible membership through the exercise
-                      of various spiritual gifts.
-                      <br />
-                      <b>2.Evangelism</b><br /> To encourage members to witness to the Lord Jesus, in and outside campus as the incarnate Son of God and seek to lead others to a personal faith in Him.
-                      <br />
-                      <b>3.Mission and Compassion</b><br /> To prepare Christian students to take good news to all nations of the world and to play active role in. communities where they live.
-                      <br />
-                      <b>4.Leadership Development</b><br /> To identify and develop Christian leaders through training and experience.
+                          <p>
+                            A relevant and effective Christian to the church and society.
+                          </p>
+                        </div>
+                        
+                      </div>
+
+                      <div className={`${styles.aboutCol} ${styles.aboutCol2}`}>
+                        <h4><b>OBJECTIVES</b></h4>
+                        <b>1.Discipleship</b><br /> i. To deepen and strengthen spiritual lives of its members through the study of The Bible, prayers, Christian fellowships and obedience to God.<br /> ii. To encourage responsible membership through the exercise
+                        of various spiritual gifts.
+                        <br />
+                        <b>2.Evangelism</b><br /> To encourage members to witness to the Lord Jesus, in and outside campus as the incarnate Son of God and seek to lead others to a personal faith in Him.
+                        <br />
+                        <b>3.Mission and Compassion</b><br /> To prepare Christian students to take good news to all nations of the world and to play active role in. communities where they live.
+                        <br />
+                        <b>4.Leadership Development</b><br /> To identify and develop Christian leaders through training and experience.
+                      </div>
               </div>
             </div>
           </div>
         <Footer />
-      </div>
+    </div>
 
     </>
   );

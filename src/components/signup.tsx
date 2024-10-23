@@ -30,6 +30,9 @@ const SignUp: React.FC = () => {
     password: '',
     retype_p: ''
   });
+  const [loading, setLoading] = useState(false);
+  const [loadingText, setLoadingText] = useState('Loading...');
+  const [error, setError] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { id, value } = e.target;
@@ -44,26 +47,58 @@ const SignUp: React.FC = () => {
     return passwordRegex.test(password);
   };
 
+  const clearForm = () => setFormData({
+    username: '',
+    phone: '',
+    email: '',
+    course: '',
+    reg: '',
+    yos: '',
+    ministry: '',
+    et: '', 
+    password: '',
+    retype_p: ''
+  })
+
   const handleSubmit = async () => {
     const { retype_p, ...dataToSend } = formData;
 
+      // Check if any field is empty
+      for (const [key, value] of Object.entries(formData)) {
+        if (!value) {
+            setError(`Please fill in the ${key} field.`);
+            return;
+        }
+    }
+
     if (!validatePassword(formData.password)) {
-      alert("Password must be at least 8 characters long and contain at least one digit and one uppercase letter.");
+      setError('Password must be at least 8 characters long and contain at least one digit and one uppercase letter.');
       return;
     }
 
     if (formData.password !== formData.retype_p) {
-      alert("Passwords do not match.");
+      setError('Passwords do not match.');
       return;
     }
+    setLoading(true)
 
     try {
       const response = await axios.post('http://localhost:3000/users/signup', dataToSend);
-      console.log(response.data);
+      if(response.status = 200){
+        setLoadingText('check your email...')
+        clearForm();
+      }
       // Handle the response as needed
-    } catch (error) {
-      console.error(error);
-      // Handle the error as needed
+    } catch (error: any) {
+      if(error.response.status = 400){
+        setError('Email/Reg/Phone already exist')
+        setLoading(false)
+      }else{
+      setError('Unexpected error occured ')
+      setLoading(false)
+      }
+    }finally{
+      // setLoading(false)
     }
   };
 
@@ -74,6 +109,8 @@ const SignUp: React.FC = () => {
           <div className={styles['logo_signUp']}><img src={cuLogo} alt="CU logo" /></div>
         </Link>
         <h2 className={styles['text']}>Sign Up</h2>
+        
+        {error && <p className={styles.error}>{error}</p>}
 
         <div className={styles['form']}>
           <div>
@@ -147,7 +184,8 @@ const SignUp: React.FC = () => {
         </div>
 
         <div className={styles['submisions']}>
-          <div className={styles['clearForm']} onClick={() => setFormData({
+          <div className={styles['clearForm']} onClick={() =>{
+           setFormData({
             username: '',
             phone: '',
             email: '',
@@ -155,17 +193,37 @@ const SignUp: React.FC = () => {
             reg: '',
             yos: '',
             ministry: '',
-            et: '', // Reset to 'rivet' for default
+            et: '', 
             password: '',
             retype_p: ''
-          })}>Clear</div>
+          });
+          setError('')
+        
+          }
+          
+          }>Clear</div>
+
+          {loading ? <div className={styles['submitData']}>Next</div> : 
           <div className={styles['submitData']} onClick={handleSubmit}>Next</div>
+          }
+          
         </div>
 
         <div className={styles['form-footer']}>
           <p>Already have an account? <Link to={"/signIn"}>Click Here</Link></p>
         </div>
+
+        <div className={styles['form-footer']}>
+          <p><Link to={"/Home"}>Home</Link></p>
+        </div>
+
       </div>
+
+        {/* Loading animation */}
+        <div className={`${styles.loading} ${loading ? styles['loading-active'] : ''}`}>
+          <p>{loadingText}</p>
+        </div>
+
     </div>
   );
 };
