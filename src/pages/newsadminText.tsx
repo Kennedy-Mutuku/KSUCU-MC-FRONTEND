@@ -55,7 +55,7 @@ const PhotoUploadPage: React.FC = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:3000/adminnews/upload', {
+      const response = await fetch('https://ksucu-mc-backend.onrender.com/adminnews/upload', {
         method: 'POST',
         body: formData,
         credentials: 'include'

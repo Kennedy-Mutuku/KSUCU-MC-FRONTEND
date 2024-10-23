@@ -21,7 +21,7 @@ const Forgotpassword: React.FC = () => {
     const handleSubmit = async () => {
         setLoading(true)
         try {
-            const response = await axios.post('http://localhost:3000/users/forget-password', formData);
+            const response = await axios.post('https://ksucu-mc-backend.onrender.com/users/forget-password', formData);
             console.log('Response:', response.data);
             // Handle success (e.g., show a success message, redirect, etc.)
             if(response.status = 200){
