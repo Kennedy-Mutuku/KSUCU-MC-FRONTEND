@@ -134,19 +134,17 @@ html{
 .cta-text{
     margin: 0;
 }
+.main-flex{
+    margin-top: 40px;
+    padding: 10px;
+}
 
 .main-section--flex{
-    margin: 60px 0;
+    /* margin: 60px 0; */
     /* border: 2px solid red; */
-    display: flex;
-    justify-content: space-between;
+    /* display: flex;
+    justify-content: space-between; */
     gap: 10px;
-}
-.ministries,
-.ET,
-.committees,
-.boards{
-    width: 50%;
 }
 
 .ET-title,
@@ -271,6 +269,47 @@ html{
 .commissionTitle{
     margin-top: 70%;
 }
+.boardsCategoryDiv{
+    position: relative;
+}
+.dropdown-icon {
+    width: 20px;
+    height: 20px;
+    fill: #000; 
+    position: absolute;
+    top: 0;
+    right: 0;
+    cursor: pointer;
+
+    transition: .5s ease;
+}
+
+.dropdown-icon,
+.category-list,
+.boards-item {
+    transition: transform 0.3s ease-in-out;
+}
+
+.dropdown-content {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease, opacity 0.5s ease;
+}
+
+.show {
+    max-height: 500px; /* Adjust to match expected height */
+    opacity: 1;
+}
+
+.dropdown-icon {
+    transition: transform 0.3s ease;
+}
+
+.rotate {
+    transform: rotate(180deg);
+}
+  
 
 .cancelBtn{
     background: #fff;
@@ -288,6 +327,7 @@ html{
 
 .category-title{
     margin: 10px 0 10PX 20PX;
+    font-size: 1.2em;
 }
 
 .aboutTitle{
@@ -388,10 +428,21 @@ hr{
     color: #fff;
 }
 
+.newsReportDiv{
+    width: 100%;
+}
+.newsReportLink{
+    color: #fff;
+}
 @media(min-width:600px) {
 
     .containerOthers{
         padding: 20px 0px 30px 0px;
+    }
+
+    .category-title{
+        margin: 10px 0 10PX 20PX;
+        font-size: 1.6em;
     }
 
     .containerOthersRow{
@@ -461,16 +512,12 @@ hr{
     }
 
     .main-flex{
-        display: flex;
-        justify-content: space-around;
-        margin: 0 auto;
-        width: 70%;
+        /* display: flex;
+        justify-content: space-around; */
+        margin: 100px auto 60px auto;
+        width: 30%;
     }
 
-    .main-section--flex{
-        /* margin: 70px auto; */
-        width: 50%;
-    }
 
     .commissionTitle{
         margin-top: 0;
@@ -499,5 +546,3 @@ hr{
     }
 
 }
-
-
