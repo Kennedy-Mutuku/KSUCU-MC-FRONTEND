@@ -8,7 +8,6 @@ import Footer from '../components/footer';
 
 import 'react-image-crop/dist/ReactCrop.css';
 
-
 const PhotoUploadPage: React.FC = () => {
   const [title, setTitle] = useState<string>('');
   const [body, setBody] = useState<string>('');
@@ -23,6 +22,10 @@ const PhotoUploadPage: React.FC = () => {
   const [preview, setPreview] = useState<string | undefined>(undefined);
   const [croppedImage, setCroppedImage] = useState<Blob | null>(null);
   const [imageRef, setImageRef] = useState<HTMLImageElement | null>(null);
+
+  const [loading, setLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [error, setError] = useState('');
 
   const navigate = useNavigate();
 
@@ -39,10 +42,11 @@ const PhotoUploadPage: React.FC = () => {
   };
 
   const handleFormSubmit = async (e: React.FormEvent) => {
+
     e.preventDefault();
 
     if (!title || !body || !imageFile) {
-      alert('Please fill out all fields and select an image.');
+      setError('Please fill out all fields and select an image.')
       return;
     }
 
@@ -53,7 +57,7 @@ const PhotoUploadPage: React.FC = () => {
     if (croppedImage) {
       formData.append('image', new File([croppedImage], 'cropped_image.png'));
     }
-
+    setLoading(true)
     try {
       const response = await fetch('https://ksucu-mc-backend.onrender.com/adminnews/upload', {
         method: 'POST',
@@ -62,14 +66,17 @@ const PhotoUploadPage: React.FC = () => {
       });
 
       if (response.ok) {
-        alert('Form submitted successfully!');
+        setSuccessMessage('Form submitted successfully!')
         navigate('/news')
       } else {
-        alert('Something went wrong. Please try again.');
+        setError('Something went wrong. Please try again.')
       }
     } catch (error) {
       console.error('Error submitting form', error);
+    }finally{
+      setLoading(false)
     }
+
   };
 
   const onCropComplete = async (crop: PixelCrop) => {
@@ -117,6 +124,10 @@ const PhotoUploadPage: React.FC = () => {
 
       <div className={styles.containerNewsStudio}>
           <h1 className={styles.title}>KSUCU-MC NEWS STUDIO</h1>
+
+          {error && <p className={styles.error}>{error}</p>}
+          {successMessage && <p className={styles.success}>{successMessage}</p>}
+
           <form className={styles.submitForm} onSubmit={handleFormSubmit} encType="multipart/form-data">
             <div>
               <label htmlFor="title">Title</label>
@@ -161,7 +172,11 @@ const PhotoUploadPage: React.FC = () => {
             )}
 
             <div className={styles.submitDiv}>
-                <button className={styles.submitBtn} type="submit">Submit</button>
+
+              {loading ? <button className={styles.submitBtn} >Submitting...</button> :
+               <button className={styles.submitBtn} type="submit">Submit</button>
+              }
+               
             </div>
 
           </form>
