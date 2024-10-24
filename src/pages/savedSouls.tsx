@@ -33,11 +33,17 @@ const SavedSouls: React.FC = () => {
   
     // Using axios for POST request
     axios.post(`${backEndURL}/users/save-soul`, {
-        name, 
-        phone, 
-        region, 
-        village
-      })
+      name, 
+      phone, 
+      region, 
+      village
+    }, {
+      withCredentials: true, // This sends cookies along with the request
+      headers: {
+        'Content-Type': 'application/json' // Specify the content type if necessary
+      }
+    })
+  
       .then(() => {
         // Clear input fields upon success
         fetchUserCount()
@@ -64,7 +70,7 @@ const SavedSouls: React.FC = () => {
   
   const fetchUserCount = async () => {
     try {
-      const response = await axios.get<{ count: number }>('https://ksucu-mc-backend.onrender.com/users/countSaved');
+      const response = await axios.get<{ count: number }>('https://ksucu-mc-backend.onrender.com/users/countSaved', { withCredentials: true });
       setUserCount(response.data.count);
     } catch (err) {
       console.error('Error fetching user count:');
