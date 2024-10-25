@@ -111,7 +111,7 @@ const LandingPage = () => {
 
         document.body.style.overflow = 'hidden';            
 
-        const response = await fetch('https://ksucu-mc-backend.onrender.com/users/data', {
+        const response = await fetch('http://localhost:3000/users/data', {
             credentials: 'include'
         });
 
@@ -146,7 +146,7 @@ const LandingPage = () => {
   const fetchNewsData = async () => {
     setgeneralLoading(true)
     try {
-      const response = await fetch('https://ksucu-mc-backend.onrender.com/adminnews/news', {
+      const response = await fetch('http://localhost:3000/adminnews/news', {
         method: 'GET',
         credentials: 'include'  // Ensures cookies (for authentication) are sent with the request
       });
@@ -166,7 +166,7 @@ const LandingPage = () => {
   const handleLogout = async () => {
     setgeneralLoading(true)
       try {
-          const response = await fetch('https://ksucu-mc-backend.onrender.com/users/logout', {
+          const response = await fetch('http://localhost:3000/users/logout', {
               method: 'POST',
               credentials: 'include'
           });
@@ -286,7 +286,7 @@ const LandingPage = () => {
                   }
             
                   {userData ?
-                   <Link to="/signIn" className={styles['Login-btn']}>Log out</Link> :
+                   <Link to="/signIn" className={styles['Login-btn']} onClick={handleLogout} >Log out</Link> :
                     <Link to="/signIn" className={styles['Login-btn']}>Log in</Link>
                   }
                 <div className={styles['About-btn']}>

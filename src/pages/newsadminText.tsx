@@ -59,7 +59,7 @@ const PhotoUploadPage: React.FC = () => {
     }
     setLoading(true)
     try {
-      const response = await fetch('https://ksucu-mc-backend.onrender.com/adminnews/upload', {
+      const response = await fetch('http://localhost:3000/adminnews/upload', {
         method: 'POST',
         body: formData,
         credentials: 'include'
@@ -67,7 +67,7 @@ const PhotoUploadPage: React.FC = () => {
 
       if (response.ok) {
         setSuccessMessage('Form submitted successfully!')
-        navigate('/news')
+        handleLogout()
       } else {
         setError('Something went wrong. Please try again.')
       }
@@ -77,6 +77,23 @@ const PhotoUploadPage: React.FC = () => {
       setLoading(false)
     }
 
+  };
+
+  const handleLogout = async () => {
+      try {
+          const response = await fetch('http://localhost:3000/adminnews/logout', {
+              method: 'POST',
+              credentials: 'include'
+          });
+
+          if (!response.ok) {
+              throw new Error('Logout failed');
+          }
+          navigate('/news')
+      } catch (error) {
+          console.error('Error during logout:');
+          setError('An error occurred during logout');
+      }
   };
 
   const onCropComplete = async (crop: PixelCrop) => {

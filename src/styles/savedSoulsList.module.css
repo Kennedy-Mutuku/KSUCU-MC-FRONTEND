@@ -1,0 +1,12 @@
+.container{
+    margin: 20px auto;
+    width: 96%;
+}
+
+
+@media(min-width:600px){
+    .container{
+        margin: 20px auto;
+        width: 70%;
+    }
+}

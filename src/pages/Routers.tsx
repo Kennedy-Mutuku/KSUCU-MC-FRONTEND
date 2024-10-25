@@ -16,6 +16,8 @@ import ChangeDetails from "../components/changeDetails";
 import NewsPage from "./NewsPage";
 import PhotoUploadPage from "./newsadminText";
 import PasswordReset from "../components/newPaaswwordInput";
+import SavedSoulsList from "./adminMission";
+import BsMembersList from "./adminBs";
 
 export const router = createBrowserRouter([
     {
@@ -39,6 +41,8 @@ export const router = createBrowserRouter([
             {path: "/news", element: <NewsPage />},
             {path: "/adminnews", element: <PhotoUploadPage />},
             {path: "/reset", element: <PasswordReset />},
+            {path: "/adminmission", element: <SavedSoulsList />},
+            {path: "/adminBs", element: <BsMembersList />},
             {path: "*", element: <NoPage />}
         ]
     }
