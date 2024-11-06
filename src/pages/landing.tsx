@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import styles from '../styles/index.module.css';
 import cuLogo from '../assets/cuLogoUAR.png';
 import introVid from '../assets/20230501_091418.jpg';
-import Footer from '../components/footer';
+import { FaYoutube, FaFacebook, FaTiktok } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 import loadingAnime from '../assets/Animation - 1716747954931.gif';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -306,11 +306,11 @@ const LandingPage = () => {
               <ul className={styles['quick-nav--links']}>
                 <li className={styles['quick-item']}><Link to="/save" className={styles['quick-item--link']}>Win a Soul</Link></li>
                 <hr />
-                <li className={styles['quick-item']}><a href="#" className={styles['quick-item--link']}>Media</a></li>
+                <li className={styles['quick-item']}><Link to="/media" className={styles['quick-item--link']}>Media</Link></li>
                 <hr />
                 <li className={styles['quick-item']}><a href="#" className={styles['quick-item--link']}>Constitution</a></li>
                 <hr />
-                <li className={styles['quick-item']}><a href="#" className={styles['quick-item--link']}>Library</a></li>
+                <li className={styles['quick-item']}><Link to="library" className={styles['quick-item--link']}>Library</Link></li>
                 <hr />
                 <li className={styles['quick-item']}><Link to="/financial" className={styles['quick-item--link']}>Financials</Link></li>
                 <hr />
@@ -331,9 +331,9 @@ const LandingPage = () => {
                 <h3 className={styles['quick-links']}>Quick Links</h3>
                 <ul className={styles['quick-nav--links']}>
                 <li className={styles['quick-item']}><Link to="/save" className={styles['quick-item--link']}>Win a Soul</Link></li>
-                  <li className={styles['quick-item']}><a href="#" className={styles['quick-item--link']}>Media</a></li>
+                  <li className={styles['quick-item']}><Link to="media" className={styles['quick-item--link']}>Media</Link></li>
                   <li className={styles['quick-item']}><a href="#" className={styles['quick-item--link']}>Constitution</a></li>
-                  <li className={styles['quick-item']}><a href="#" className={styles['quick-item--link']}>Library</a></li>
+                  <li className={styles['quick-item']}><Link to="library" className={styles['quick-item--link']}>Library</Link></li>
                   <li className={styles['quick-item']}><Link to="/financial" className={styles['quick-item--link']}>Financials</Link></li>
                   <li className={styles['quick-item']}><Link to="/Bs" className={styles['quick-item--link']}>bible study</Link></li>
                 </ul>
@@ -729,7 +729,25 @@ const LandingPage = () => {
               </div>
             </div>
           </div>
-        <Footer />
+          <div className={  `${ styles['footer'] } ${ styles['home-footer'] }` } id='contacts'>
+            <p className={styles['footer--text']}>KISII UNIVERSITY MAIN CAMPUS CHRISTIAN UNION 2024</p>
+                
+            <div className={styles['hr']}></div>
+
+            <div className={styles['social--links']}>
+                <div className={styles['youtube']}>
+                    <a href="https://www.youtube.com/@KSUCU-MC" className={styles['social-link']}><FaYoutube /></a>
+                </div>
+
+                <div className={styles['facebook']}>
+                    <a href="https://www.facebook.com/ksucumc" className={styles['social-link']}><FaFacebook /></a>
+                </div>
+
+                <div className={styles['tiktok']}>
+                    <a href="" className={styles['social-link']}><FaTiktok /></a>
+                </div>
+            </div>
+        </div>
     </div>
 
     </>

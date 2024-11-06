@@ -1,0 +1,86 @@
+/* Media.module.css */
+
+/* Title Text Styling */
+.media-tittle--text {
+    color: #00c6ff;
+    text-align: center;
+}
+
+/* Link List Styling */
+.first-link--list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.first-link--item {
+    margin: 10px auto;
+    text-align: center;
+    width: 60%;
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.first-link {
+    background: #730051;
+    padding: 10px 30px;
+    text-decoration: none;
+    color: #fff;
+}
+
+/* Section Backgrounds */
+.first-links,
+.first-links-2 {
+    background-color: aqua;
+    padding: 10px 0;
+}
+
+.first-links-2 {
+    padding: 10px;
+}
+
+/* CTA Button Styling */
+.cta-btn {
+    text-align: center;
+    background: #00c6ff;
+    display: block;
+    padding: 0.5em 1.75em;
+    font-size: 1.3rem;
+    font-weight: 700;
+    border: none;
+    transition: background-color 0.3s;
+}
+
+.cta-btn:hover,
+.cta-btn:focus {
+    cursor: pointer;
+}
+
+/* CTA Button Container */
+.cta-btn-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.5rem;
+}
+
+/* Responsive Styles */
+@media (min-width: 600px) {
+    .media-tittle--text {
+        font-size: 2.5em;
+        margin-bottom: 60px;
+    }
+
+    .link-flex {
+        display: flex;
+        width: 70%;
+        margin: 0 auto;
+        align-items: center;
+        margin-bottom: 60px;
+    }
+
+    .first-links,
+    .first-links-2 {
+        width: 50%;
+    }
+}

@@ -19,53 +19,6 @@ const SignIn: React.FC = () => {
         setFormData({ ...formData, [id]: value });
     };
 
-    // const handleSubmit = async () => {
-    //     // Check if the user is online
-    //     if (!navigator.onLine) {
-    //         setError('Check your internet and try again...');
-    //         return;
-    //     }
-    
-    //     window.scrollTo({
-    //         top: 0,
-    //         behavior: 'auto', // 'auto' for instant scroll
-    //     });
-    
-    //     setgeneralLoading(true);
-    
-    //     try {
-    //         const response = await axios.post('http://localhost:3000/users/login', formData, {
-    //             withCredentials: true, // This is necessary to include cookies in the request
-    //         });
-    //         console.log('Response:', response.data);
-    //         navigate('/');
-    
-    //     } catch (error: any) {
-    //         console.error('Error:', error);
-    
-    //         // Check if the error response status is 400
-    //         if (error.response && error.response.status === 401) {
-    //             try {
-    //                 // Try logging in to the admin endpoint
-    //                 const adminResponse = await axios.post('http://localhost:3000/adminnews/login', formData, {
-    //                     withCredentials: true,
-    //                 });
-    //                 console.log('Admin Response:', adminResponse.data);
-    //                 navigate('/adminnews'); // Navigate to the admin dashboard or relevant page
-    
-    //             } catch (adminError) {
-    //                 console.error(' Login Error:', adminError);
-    //                 setError('Please check your credentials.');
-    //             }
-    //         } else {
-    //             // Handle other errors
-    //             setError('Login failed. Please try again.');
-    //         }
-    //     } finally {
-    //         setgeneralLoading(false);
-    //     }
-    // };
-    
     const handleSubmit = async () => {
         // Define mappings for email domains to endpoints and routes
         const domainMappings = [
@@ -77,10 +30,10 @@ const SignIn: React.FC = () => {
         ];
     
         // Check if the user is online
-        if (!navigator.onLine) {
-            setError('Check your internet and try again...');
-            return;
-        }
+        // if (!navigator.onLine) {
+        //     setError('Check your internet and try again...');
+        //     return;
+        // }
     
         window.scrollTo({
             top: 0,

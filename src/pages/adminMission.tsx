@@ -21,7 +21,7 @@ const SavedSoulsList: React.FC = () => {
       setSouls(response.data);  
       setLoading(false);
     } catch (err) {
-      console.error('Error fetching saved souls:', err);
+      console.error('Error fetching saved souls:');
       setError('Failed to fetch saved souls');
       setLoading(false);
     }

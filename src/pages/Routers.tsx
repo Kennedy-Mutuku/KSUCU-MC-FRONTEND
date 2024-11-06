@@ -18,6 +18,8 @@ import PhotoUploadPage from "./newsadminText";
 import PasswordReset from "../components/newPaaswwordInput";
 import SavedSoulsList from "./adminMission";
 import BsMembersList from "./adminBs";
+import Library from "./library";
+import Media from "./media"
 
 export const router = createBrowserRouter([
     {
@@ -43,8 +45,11 @@ export const router = createBrowserRouter([
             {path: "/reset", element: <PasswordReset />},
             {path: "/adminmission", element: <SavedSoulsList />},
             {path: "/adminBs", element: <BsMembersList />},
+            {path: "/library", element: <Library />},
+            {path: "/media", element: <Media />},
             {path: "*", element: <NoPage />}
         ]
     }
-])
+]);
+
 

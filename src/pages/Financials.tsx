@@ -5,6 +5,7 @@ import Header from '../components/header';
 import Footer from '../components/footer';
 
 const FinancialsPage: React.FC = () => {
+  
   const [isPaymentHistoryOpen, setPaymentHistoryOpen] = useState(false);
   const [isFinancialStatementsOpen, setFinancialStatementsOpen] = useState(false);
 

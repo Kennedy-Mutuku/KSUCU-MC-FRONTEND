@@ -4,6 +4,7 @@
 @tailwind components;
 @tailwind utilities; */
 
+
 html{
     scroll-behavior:smooth;
 }
@@ -16,8 +17,6 @@ html{
     width: 100%;
     max-width: 1600px;
 }
-
-/* loading */
 
 /* Loading div at the bottom with smooth transition */
 .loading {
@@ -58,7 +57,6 @@ html{
     margin-top: 10px;
 }
 
-
 :root {
     --purple-color: #730051;
     --blue-color: #00c6ff; 
@@ -76,7 +74,9 @@ body{
     padding:0;
     font-family: "Roboto", sans-serif;
     box-sizing: border-box;
+    position: relative;
 }
+
 .loading-screen{
     background: #000000ed;
     position: fixed;
@@ -177,8 +177,6 @@ select{
     align-items: center;
     justify-content: space-between;
 }
-
-
 
 .footer{
     background-color: #730051;
