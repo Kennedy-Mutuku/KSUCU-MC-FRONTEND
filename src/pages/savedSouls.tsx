@@ -56,11 +56,13 @@ const SavedSouls: React.FC = () => {
       .catch((error) => {
         if (error.response && error.response.status === 400) {
           // Handle specific 404 error
-          setError('Phone number already Registered.');
+          setError('Phone number already Registered. 😔');
+        } else if (error.response && error.response.status === 401) {
+          setError('You need to login first before winning a soul 😊');
         } else {
           // Handle other errors
           console.error('Error:', error);
-          setError('Failed to submit the form. Please try again later.');
+          setError('Failed to submit the form. Please try again later. 🙂');
         }
       })
       .finally(() => {
@@ -151,3 +153,5 @@ const SavedSouls: React.FC = () => {
 };
 
 export default SavedSouls;
+
+

@@ -22,7 +22,7 @@ const SignIn: React.FC = () => {
     const handleSubmit = async () => {
         // Define mappings for email domains to endpoints and routes
         const domainMappings = [
-            { domain: '@ksucumcmediaadmin.co.ke', endpoint: 'http://localhost:3000/adminnews/login', route: '/adminnews' },
+            { domain: '@ksucumcnewsadmin.co.ke', endpoint: 'http://localhost:3000/adminnews/login', route: '/adminnews' },
             // Add more mappings as needed
             { domain: '@ksucumcmissionadmin.co.ke', endpoint: 'http://localhost:3000/adminmission/login', route: '/adminmission' },
 
@@ -41,7 +41,7 @@ const SignIn: React.FC = () => {
         });
     
         setgeneralLoading(true);
-    
+        
         try {
             // Find the matching configuration based on the email domain
             const { endpoint, route } = domainMappings.find(mapping =>
@@ -72,7 +72,6 @@ const SignIn: React.FC = () => {
     };
     
     
-
     return (
         <div className={styles.body}>
             {generalLoading && (

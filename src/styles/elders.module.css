@@ -1,0 +1,64 @@
+/* elders.module.css */
+.container {
+    position: relative;
+    width: 100vw;
+    /* height: 100vh; */
+    overflow: hidden;
+}
+
+.photoImg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures the image fills the container without overflow */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 
+                0 6px 20px rgba(0, 0, 0, 0.19); /* Adds a soft, realistic shadow */
+
+    margin: 20px 0;
+}
+
+.whatsappPopup {
+    position: absolute;
+    top: 20%;
+    right: -200px; /* Initially hidden off-screen */
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: #25D366; /* WhatsApp green */
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px 15px;
+    border-radius: 10px;
+    text-decoration: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: right 1s ease; /* Smooth slide-in effect */
+}
+
+.whatsappPopup.show {
+    right: 10px; /* Slides into view */
+}
+
+.whatsappPopup span{
+    text-decoration: underline;
+}
+
+.whatsappPopup img {
+    width: 24px;
+    height: 24px;
+}
+
+
+@media(min-width:600px){
+    .photoImg{
+        width: 100%;
+
+        margin: 20px 0;
+
+        display: flex;
+        justify-content: center;
+    }
+    .photoImg img{
+        width: 800px;
+    }
+}

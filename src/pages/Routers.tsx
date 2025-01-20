@@ -20,6 +20,7 @@ import SavedSoulsList from "./adminMission";
 import BsMembersList from "./adminBs";
 import Library from "./library";
 import Media from "./media"
+import Elders from "./eldersPage"
 
 export const router = createBrowserRouter([
     {
@@ -47,6 +48,7 @@ export const router = createBrowserRouter([
             {path: "/adminBs", element: <BsMembersList />},
             {path: "/library", element: <Library />},
             {path: "/media", element: <Media />},
+            {path: "/elders", element: <Elders />},
             {path: "*", element: <NoPage />}
         ]
     }

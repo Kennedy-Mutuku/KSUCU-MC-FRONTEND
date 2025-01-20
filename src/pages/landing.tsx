@@ -55,6 +55,10 @@ const LandingPage = () => {
     document.body.classList.toggle(styles['nav-open']);
   };
 
+  const handleNavigateToElders = () => {
+    navigate('/elders')
+  }
+
   const [timeLeft, setTimeLeft] = useState<Countdown>({
     days: 0,
     hours: 0,
@@ -68,7 +72,7 @@ const LandingPage = () => {
     fetchNewsData()
 
     // Target date: December 27th, 23:59:59 of the current year
-    const targetDate = new Date(new Date().getFullYear(), 11, 27, 23, 59, 59).getTime();
+    const targetDate = new Date(2025, 2, 21, 23, 59, 59).getTime();
 
     // Update countdown every second
     const intervalId = setInterval(() => {
@@ -95,10 +99,10 @@ const LandingPage = () => {
 
   const fetchUserData = async () => {
     //check if the user in online
-    if (!navigator.onLine) {
-        setError('check your internet and try again...')
-        return;
-    }
+    // if (!navigator.onLine) {
+    //     setError('check your internet and try again...')
+    //     return;
+    // }
 
     window.scrollTo({
         top: 0,
@@ -348,7 +352,7 @@ const LandingPage = () => {
           <div className={styles.commission2024}>
 
             <p className={styles.commissionTitle}>
-              Commission 2024
+              2025 Elders Day
             </p>
 
             <p className={styles.commissionCountDown}>
@@ -357,8 +361,8 @@ const LandingPage = () => {
             </p>
 
             <p className={styles.commissionButtonDiv}>
-              <button className={styles.commissionRegistrationButton}>
-                Register Now
+              <button className={styles.commissionRegistrationButton} onClick={handleNavigateToElders}>
+                Book your space now
               </button>
             </p>
             <div className={styles.newsReportDiv}>
