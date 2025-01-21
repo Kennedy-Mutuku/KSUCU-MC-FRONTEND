@@ -18,7 +18,7 @@ const NewsPage: React.FC = () => {
     // Fetch the news data from the backend
     const fetchNewsData = async () => {
       try {
-        const response = await fetch('http://localhost:3000/adminnews/news', {
+        const response = await fetch('https://ksucu-mc.co.ke/adminnews/news', {
           method: 'GET',
           credentials: 'include'  // Ensures cookies (for authentication) are sent with the request
         });

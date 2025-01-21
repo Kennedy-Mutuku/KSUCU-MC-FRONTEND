@@ -46,7 +46,7 @@ const PasswordReset: React.FC = () => {
     setError('');
 
     try {
-      const response = await axios.post(`http://localhost:3000/users/reset-password?token=${token}`, { password });
+      const response = await axios.post(`https://ksucu-mc.co.ke/users/reset-password?token=${token}`, { password });
       if(response.status = 200){
         setSuccessMessage('Password reset successful! You can now log in ...redirecting to login');
         setTimeout(() => {

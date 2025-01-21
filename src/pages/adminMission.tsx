@@ -9,7 +9,7 @@ const SavedSoulsList: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const backEndURL = 'http://localhost:3000';
+  const backEndURL = 'https://ksucu-mc.co.ke';
 
   useEffect(() => {
     fetchSavedSouls();

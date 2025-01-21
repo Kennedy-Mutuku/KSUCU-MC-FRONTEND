@@ -59,7 +59,7 @@ const PhotoUploadPage: React.FC = () => {
     }
     setLoading(true)
     try {
-      const response = await fetch('http://localhost:3000/adminnews/upload', {
+      const response = await fetch('https://ksucu-mc.co.ke/adminnews/upload', {
         method: 'POST',
         body: formData,
         credentials: 'include'
@@ -81,7 +81,7 @@ const PhotoUploadPage: React.FC = () => {
 
   const handleLogout = async () => {
       try {
-          const response = await fetch('http://localhost:3000/adminnews/logout', {
+          const response = await fetch('https://ksucu-mc.co.ke/adminnews/logout', {
               method: 'POST',
               credentials: 'include'
           });

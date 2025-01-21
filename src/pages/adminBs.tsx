@@ -26,7 +26,7 @@ const BsMembersList: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [groupSize, setGroupSize] = useState<number>(10); // Default group size is 10
 
-  const backEndURL = 'http://localhost:3000';
+  const backEndURL = 'https://ksucu-mc.co.ke';
 
   useEffect(() => {
     fetchSavedSouls();

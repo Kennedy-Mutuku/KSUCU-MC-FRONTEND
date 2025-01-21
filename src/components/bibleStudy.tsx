@@ -36,7 +36,7 @@ const Bs: React.FC = () => {
         }
 
         try {
-            const response = await axios.post('http://localhost:3000/users/bibleStudy', formData);
+            const response = await axios.post('https://ksucu-mc.co.ke/users/bibleStudy', formData);
             console.log('Response:', response.status);
             setError('Form submitted successfully!');
         } catch (error:any) {
