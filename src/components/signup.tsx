@@ -126,6 +126,9 @@ const SignUp: React.FC = () => {
   return (
     <div className={styles.body}>
       <div className={styles['container']}>
+
+        {loading && <div className={styles['hidden_div']}></div>}
+
         <Link to={"/"}>
           <div className={styles['logo_signUp']}><img src={cuLogo} alt="CU logo" /></div>
         </Link>

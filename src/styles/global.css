@@ -243,6 +243,7 @@ select{
 }
 
 @media(min-width:600px){
+
     .header{
         padding: 40px  100px 50px 100px ;
     }

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import styles from '../styles/index.module.css';
 import cuLogo from '../assets/cuLogoUAR.png';
-import introVid from '../assets/20230501_091418.jpg';
 import { FaYoutube, FaFacebook, FaTiktok } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 import loadingAnime from '../assets/Animation - 1716747954931.gif';
@@ -334,12 +333,28 @@ const LandingPage = () => {
             
             {error && <div className={styles.error}>{error}</div>}
             <div className={styles['intro-video--header']}>
-              <div className={styles['video-intro']}>
+              {/* <div className={styles['video-intro']}>
                 <img src={introVid} alt="Intro Video" />
                   <span className={styles["commission-claimer"]} onClick={handleOpenCommission}>
                     <FontAwesomeIcon icon={faQuestion} beatFade />
                   </span>
+              </div> */}
+
+              <div className={styles['video-intro']}>
+                <div className={styles['video-wrapper']}>
+                  <iframe 
+                    src="https://www.youtube.com/embed/gaCW4HUwVk0" 
+                    title="YouTube video player" 
+                    frameBorder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowFullScreen
+                  ></iframe>
+                </div>
+                <span className={styles["commission-claimer"]} onClick={handleOpenCommission}>
+                  <FontAwesomeIcon icon={faQuestion} beatFade />
+                </span>
               </div>
+
               <div className={styles['side-bar--links']}>
                 <h3 className={styles['quick-links']}>Quick Links</h3>
                 <ul className={styles['quick-nav--links']}>

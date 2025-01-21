@@ -21,6 +21,12 @@ const SignIn: React.FC = () => {
 
     const handleSubmit = async () => {
         // Define mappings for email domains to endpoints and routes
+
+        if(formData.email === '' || formData.password === ''){
+            setError('All fields required 🙂')
+            return
+        }
+
         const domainMappings = [
             { domain: '@ksucumcnewsadmin.co.ke', endpoint: 'https://ksucu-mc.co.ke/adminnews/login', route: '/adminnews' },
             // Add more mappings as needed
@@ -30,10 +36,10 @@ const SignIn: React.FC = () => {
         ];
     
         // Check if the user is online
-        // if (!navigator.onLine) {
-        //     setError('Check your internet and try again...');
-        //     return;
-        // }
+        if (!navigator.onLine) {
+            setError('Check your internet and try again...');
+            return;
+        }
     
         window.scrollTo({
             top: 0,
@@ -93,12 +99,12 @@ const SignIn: React.FC = () => {
 
                     <div>
                         <label htmlFor="email">e-mail</label>
-                        <input type="email" id="email" value={formData.email} onChange={handleChange} />
+                        <input type="email" id="email" value={formData.email} onChange={handleChange} required />
                     </div>
 
                     <div>
                         <label htmlFor="password">Password</label>
-                        <input type="password" id="password" value={formData.password} onChange={handleChange} />
+                        <input type="password" id="password" value={formData.password} onChange={handleChange} required />
                     </div>
 
                 </form>
@@ -124,4 +130,3 @@ const SignIn: React.FC = () => {
 };
 
 export default SignIn;
-
