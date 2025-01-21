@@ -99,24 +99,3 @@
 select{
     width: 60%;
 }
-  
-
-@media(min-width:600px){
-    .body{
-        height: calc(100vh + 100px);
-    }
-    .container{
-        width: 25%;
-    }
-    .passwords{
-        margin-top: 60px;
-    }
-    .img_selct{
-        gap: 70px;
-    }
-    .submisions{
-        padding-bottom: 50px;
-    }
-}
-
-

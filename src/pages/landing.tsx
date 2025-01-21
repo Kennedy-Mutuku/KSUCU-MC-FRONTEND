@@ -98,11 +98,11 @@ const LandingPage = () => {
   }, []);
 
   const fetchUserData = async () => {
-    //check if the user in online
-    // if (!navigator.onLine) {
-    //     setError('check your internet and try again...')
-    //     return;
-    // }
+    // check if the user in online
+    if (!navigator.onLine) {
+        setError('check your internet and try again...')
+        return;
+    }
 
     window.scrollTo({
         top: 0,
@@ -249,7 +249,7 @@ const LandingPage = () => {
         
       {generalLoading && (
                 <div className={styles['loading-screen']}>
-                    <p className={styles['loading-text']}>Please wait...</p>
+                    <p className={styles['loading-text']}>Please wait...🤗</p>
                     <img src={loadingAnime} alt="animation gif" />
                 </div>
       )}
@@ -312,7 +312,16 @@ const LandingPage = () => {
                 <hr />
                 <li className={styles['quick-item']}><Link to="/media" className={styles['quick-item--link']}>Media</Link></li>
                 <hr />
-                <li className={styles['quick-item']}><a href="#" className={styles['quick-item--link']}>Constitution</a></li>
+                <li className={styles['quick-item']}>
+                <a 
+                  href="/pdfs/constitution.pdf" 
+                  download="constitution.pdf" 
+                  className={styles['quick-item--link']}
+                >
+                  Constitution
+                </a>
+              </li>
+
                 <hr />
                 <li className={styles['quick-item']}><Link to="library" className={styles['quick-item--link']}>Library</Link></li>
                 <hr />

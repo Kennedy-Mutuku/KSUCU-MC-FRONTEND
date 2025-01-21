@@ -93,7 +93,7 @@ const SignIn: React.FC = () => {
 
                     <div>
                         <label htmlFor="email">e-mail</label>
-                        <input type="text" id="email" value={formData.email} onChange={handleChange} />
+                        <input type="email" id="email" value={formData.email} onChange={handleChange} />
                     </div>
 
                     <div>

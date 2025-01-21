@@ -25,13 +25,15 @@ const Forgotpassword: React.FC = () => {
             console.log('Response:', response.data);
             // Handle success (e.g., show a success message, redirect, etc.)
             if(response.status = 200){
-                setSuccessMessage('Email sent succesfully check your inbox')
+                setError('')
+                setSuccessMessage('Email sent succesfully check your inbox 😊')
             }
         } catch (error: any) {
             console.error('Error:');
             // Handle error (e.g., show an error message)
             if(error.response.status = 404){
-                setError('email not found')
+                setError('email not found 😖')
+                setSuccessMessage('')
             }
         }finally{
             setLoading(false)
@@ -75,7 +77,4 @@ const Forgotpassword: React.FC = () => {
 };
 
 export default Forgotpassword;
-
-
-
 

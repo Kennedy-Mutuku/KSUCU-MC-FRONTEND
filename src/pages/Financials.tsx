@@ -22,6 +22,13 @@ const FinancialsPage: React.FC = () => {
       <Header />
 
       <main className={styles.main}>
+
+
+        <div className={styles['hiding-container']}>
+          <p>Module under development 😊</p>
+        </div>
+
+
         <h2 className={styles['main-financial--title---text']}>KSUCU-MC FINANCIALS</h2>
 
         <p className={styles['financial-description']}>

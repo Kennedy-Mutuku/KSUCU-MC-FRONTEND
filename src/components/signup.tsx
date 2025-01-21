@@ -47,6 +47,16 @@ const SignUp: React.FC = () => {
     return passwordRegex.test(password);
   };
 
+  function validateYOS(input: string) {
+    const regex = /^[1-6]$/; // Matches only one digit between 1 and 6
+    return regex.test(input);
+  }
+
+  function validatePhone(input: string) {
+    const regex = /^0\d{9}$/; // Matches exactly 10 digits starting with 0, no spaces allowed
+    return regex.test(input);
+  }
+
   const clearForm = () => setFormData({
     username: '',
     phone: '',
@@ -66,18 +76,28 @@ const SignUp: React.FC = () => {
       // Check if any field is empty
       for (const [key, value] of Object.entries(formData)) {
         if (!value) {
-            setError(`Please fill in the ${key} field.`);
+            setError(`Please fill in the ${key} field 😊`);
             return;
         }
     }
 
+    if (!validatePhone(formData.phone)) {
+      setError('Phone number must be 10 digits starting with 0 and having no spaces 🤨');
+      return
+    } 
+    
+    if (!validateYOS(formData.yos)) {
+      setError('Year of study must be a number between 1 and 6. 🤨');
+      return;
+    }
+
     if (!validatePassword(formData.password)) {
-      setError('Password must be at least 8 characters long and contain at least one digit and one uppercase letter.');
+      setError('Password must be at least 8 characters long and contain at least one digit and one uppercase letter. 🤨');
       return;
     }
 
     if (formData.password !== formData.retype_p) {
-      setError('Passwords do not match.');
+      setError('Passwords do not match. 😕');
       return;
     }
     setLoading(true)
@@ -85,16 +105,17 @@ const SignUp: React.FC = () => {
     try {
       const response = await axios.post('https://ksucu-mc.co.ke/users/signup', dataToSend);
       if(response.status = 200){
-        setLoadingText('check your email...')
+        setLoadingText('check your email... 🤗')
+        setError('');
         clearForm();
       }
       // Handle the response as needed
     } catch (error: any) {
       if(error.response.status = 400){
-        setError('Email/Reg/Phone already exist')
+        setError('Email/Reg/Phone already exist 😖')
         setLoading(false)
       }else{
-      setError('Unexpected error occured ')
+      setError('Unexpected error occured 💔')
       setLoading(false)
       }
     }finally{

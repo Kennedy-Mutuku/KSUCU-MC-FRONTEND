@@ -7,7 +7,28 @@ body{
 }
 .main{
     text-align: center;
+    position: relative;
 }
+
+.hiding-container{
+    position: absolute;
+    background: #000000ce;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    height: 100%;
+    color: #fff;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2em;
+}
+
+
+
 .main-financial--title---text{
     color:#730051 ;
 }
@@ -104,10 +125,13 @@ body{
     padding: 10px 0;
 }
 .record-flex{
-    margin-bottom: 75px;
+    padding-bottom: 75px;
 }
 
 @media(min-width:600px){
+    .hiding-container{
+        font-size: 3em;
+    }
     .main-financial--title---text{
         font-size: 2rem;
     }
@@ -126,7 +150,7 @@ body{
 
     .record-flex{
         margin-top: 40px;
-        margin-bottom: 120px;
+        padding-bottom: 120px;
         display: flex;
         justify-content: space-around;
     }
