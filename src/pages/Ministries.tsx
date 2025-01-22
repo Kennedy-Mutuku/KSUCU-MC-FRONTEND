@@ -26,7 +26,7 @@ const MinistriesPage: React.FC = () => {
         <div className={styles['ministry-section']} id='wananzambe'>
           <div className={styles['ministry-section--flex']}>
             <h3 className={styles['ministry-name']}>Wananzambe</h3>
-            <p className={styles['ministry-content']}>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam cupiditate, sequi quis ducimus rem, quidem obcaecati illum odit nostrum sed omnis libero, dolore optio porro. Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime deleniti consectetur dolor velit expedita, doloremque quibusdam temporibus consequatur. Ut, sed?</p>
+            <p className={styles['ministry-content']}>Wanazambe is one of the ministries in KSUCU-MC which deals with Instruments. </p>
           </div>
           <div className={styles['ministry-img']}>
             <img src="" alt="Wananzambe Ministry" />
@@ -38,7 +38,7 @@ const MinistriesPage: React.FC = () => {
         <div className={`${styles['ministry-section']} ${styles['ministry-section--reverse']}`} id='compassion'>
           <div className={styles['ministry-section--flex']}>
             <h3 className={styles['ministry-name']}>Compassion</h3>
-            <p className={styles['ministry-content']}>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam cupiditate, sequi quis ducimus rem, quidem obcaecati illum odit nostrum sed omnis libero, dolore optio porro. Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime deleniti consectetur dolor velit expedita, doloremque quibusdam temporibus consequatur. Ut, sed?</p>
+            <p className={styles['ministry-content']}> Compassion Ministry is one of the ministries in KSUCU-MC which deals with helping the needy students with foodstuffs, personal effects and counseling, It also reaches out to outside compasion like the childrens homes and the street kids </p>
           </div>
           <div className={styles['ministry-img']}>
             <img src="" alt="Compassion Ministry" />
@@ -50,7 +50,7 @@ const MinistriesPage: React.FC = () => {
         <div className={styles['ministry-section']} id='pw'>
           <div className={styles['ministry-section--flex']}>
             <h3 className={styles['ministry-name']}>Praise and Worship</h3>
-            <p className={styles['ministry-content']}>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam cupiditate, sequi quis ducimus rem, quidem obcaecati illum odit nostrum sed omnis libero, dolore optio porro. Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime deleniti consectetur dolor velit expedita, doloremque quibusdam temporibus consequatur. Ut, sed?</p>
+            <p className={styles['ministry-content']}> Praise and Worship is the ministry which deals with Leading the church in Praises and Worship Ministrations </p>
           </div>
           <div className={styles['ministry-img']}>
             <img src="" alt="Praise and Worship Ministry" />
