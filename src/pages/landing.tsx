@@ -360,7 +360,13 @@ const LandingPage = () => {
                 <ul className={styles['quick-nav--links']}>
                 <li className={styles['quick-item']}><Link to="/save" className={styles['quick-item--link']}>Win a Soul</Link></li>
                   <li className={styles['quick-item']}><Link to="media" className={styles['quick-item--link']}>Media</Link></li>
-                  <li className={styles['quick-item']}><a href="#" className={styles['quick-item--link']}>Constitution</a></li>
+                  <li className={styles['quick-item']}>                <a 
+                  href="/pdfs/constitution.pdf" 
+                  download="constitution.pdf" 
+                  className={styles['quick-item--link']}
+                >
+                  Constitution
+                </a></li>
                   <li className={styles['quick-item']}><Link to="library" className={styles['quick-item--link']}>Library</Link></li>
                   <li className={styles['quick-item']}><Link to="/financial" className={styles['quick-item--link']}>Financials</Link></li>
                   <li className={styles['quick-item']}><Link to="/Bs" className={styles['quick-item--link']}>bible study</Link></li>
