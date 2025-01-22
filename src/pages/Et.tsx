@@ -30,7 +30,11 @@ const Etpage: React.FC = () => {
         <div className={styles['ET-section']} id='rivet'>
           <div className={styles['ET-section--flex']}>
             <h3 className={styles['ET-name']}>RIVET</h3>
-            <p className={styles['ET-content']}>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam cupiditate, sequi quis ducimus rem, quidem obcaecati illum odit nostrum sed omnis libero, dolore optio porro. Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime deleniti consectetur dolor velit expedita, doloremque quibusdam temporibus consequatur. Ut, sed?</p>
+            <p className={styles['ET-content']}> RIVET Means Rift Valley Evangelistic Team. It covers Rift valley region. These are the main roles of the this Evangelistic Team•	Organize fellowships for their members
+•	Equipping members for evangelism
+•	Carrying all evangelism activities
+•	Organizing missions in their respective regions 
+</p>
           </div>
           <div className={styles['ET-img']}>
             <img src="" alt="" />
@@ -42,7 +46,10 @@ const Etpage: React.FC = () => {
         <div className={`${styles['ET-section']} ${styles['ET-section--reverse']}`} id='net'>
           <div className={styles['ET-section--flex']}>
             <h3 className={styles['ET-name']}>NET</h3>
-            <p className={styles['ET-content']}>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam cupiditate, sequi quis ducimus rem, quidem obcaecati illum odit nostrum sed omnis libero, dolore optio porro. Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime deleniti consectetur dolor velit expedita, doloremque quibusdam temporibus consequatur. Ut, sed?</p>
+            <p className={styles['ET-content']}>NET Means Nyanza Evangelitic Team. It covers Nyanza region. These are the main roles of the this Evangelistic Team•	Organize fellowships for their members
+•	Equipping members for evangelism
+•	Carrying all evangelism activities
+•	Organizing missions in their respective regions </p>
           </div>
           <div className={styles['ET-img']}>
             <img src="" alt="" />
@@ -54,7 +61,10 @@ const Etpage: React.FC = () => {
         <div className={styles['ET-section']} id='eset'>
           <div className={styles['ET-section--flex']}>
             <h3 className={styles['ET-name']}>ESET</h3>
-            <p className={styles['ET-content']}>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam cupiditate, sequi quis ducimus rem, quidem obcaecati illum odit nostrum sed omnis libero, dolore optio porro. Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime deleniti consectetur dolor velit expedita, doloremque quibusdam temporibus consequatur. Ut, sed?</p>
+            <p className={styles['ET-content']}>ESET Means Eastern Evangelistic Team. It covers Eastern, Coastal and north Eastern region. These are the main roles of the this Evangelistic Team•	Organize fellowships for their members
+•	Equipping members for evangelism
+•	Carrying all evangelism activities
+•	Organizing missions in their respective regions </p>
           </div>
           <div className={styles['ET-img']}>
             <img src="" alt="" />
@@ -66,7 +76,10 @@ const Etpage: React.FC = () => {
         <div className={`${styles['ET-section']} ${styles['ET-section--reverse']}`} id='weso'>
           <div className={styles['ET-section--flex']}>
             <h3 className={styles['ET-name']}>WESO</h3>
-            <p className={styles['ET-content']}>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam cupiditate, sequi quis ducimus rem, quidem obcaecati illum odit nostrum sed omnis libero, dolore optio porro. Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime deleniti consectetur dolor velit expedita, doloremque quibusdam temporibus consequatur. Ut, sed?</p>
+            <p className={styles['ET-content']}>WESO Means Western Evangelistic Students Outreach. It covers Western Region. These are the main roles of the this Evangelistic Team•	Organize fellowships for their members
+•	Equipping members for evangelism
+•	Carrying all evangelism activities
+•	Organizing missions in their respective regions </p>
           </div>
           <div className={styles['ET-img']}>
             <img src="" alt="" />
@@ -78,7 +91,10 @@ const Etpage: React.FC = () => {
         <div className={styles['ET-section']} id='cet'>
           <div className={styles['ET-section--flex']}>
             <h3 className={styles['ET-name']}>CET</h3>
-            <p className={styles['ET-content']}>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam cupiditate, sequi quis ducimus rem, quidem obcaecati illum odit nostrum sed omnis libero, dolore optio porro. Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime deleniti consectetur dolor velit expedita, doloremque quibusdam temporibus consequatur. Ut, sed?</p>
+            <p className={styles['ET-content']}>CET Means Central  Evangelistic Team. It covers Central region and Nairobi. These are the main roles of the this Evangelistic Team•	Organize fellowships for their members
+•	Equipping members for evangelism
+•	Carrying all evangelism activities
+•	Organizing missions in their respective regions </p>
           </div>
           <div className={styles['ET-img']}>
             <img src="" alt="" />

@@ -22,8 +22,7 @@ interface ClassInfo {
 const classData: ClassInfo[] = [
   {
     title: 'ICT board',
-    description:
-      '“BEST-P” is an acronym for Bible Expository Self-Training Program. It is a long term group oriented training program on inductive Bible study, principles of bible interpretation, expository preaching, and apologetics.',
+    description:'KSUCU ICT board is responsible for Managing KSUCU-MC website, Projection of all union activities, Managing the union facebook account, Preparation and updating of the database. It is headed by the publicity secretary as the overseer, the chairperson and the secretary who are nominated by the board members.',
     imgSrc: betPImg,
     delay: '0.1s',
     socialLink: 'https://www.facebook.com/ksucumc/',
@@ -32,7 +31,7 @@ const classData: ClassInfo[] = [
   {
     title: 'Communication board',
     description:
-      'Introduces the process of Discipleship to members and explains the whole process of becoming an effective disciple and a discipler. We also get to discuss several topical subjects that benefit spiritually and socially.',
+      '	The communication board is responsible for:Publizing the union activities within the university, Heads in creating awareness pf social networks and their publications, Managing KSUCUMC X account, It is headed by the publicity secretary as the overseer, the chairperson and the secretary who are nominated by the board members.',
     imgSrc: disciplesipImg,
     delay: '0.2s',
     socialLink: 'https://www.tiktok.com/@ksucumc',
@@ -41,7 +40,7 @@ const classData: ClassInfo[] = [
   {
     title: 'Media production board',
     description:
-      'These are fellowships according to year of study. This is where members get to discuss topical issues and matters concerning the classes. The fellowships may be combined or separate as agreed by the responsible leaders.',
+      'KSU-CU Media production board is responsible for the following in the union, Covering all the KSUCU-MC activities where necessary, Managing KSUCU-MC youtube page, Edit and keep all coverage and/or provide them when need arise. It is headed by the publicity secretary as the overseer, the chairperson and the secretary who are nominated by the board members.',
     imgSrc: classImg,
     delay: '0.3s',
     socialLink: 'https://mobile.twitter.com/KSUCUMC',
@@ -50,7 +49,7 @@ const classData: ClassInfo[] = [
   {
     title: 'Editorial board',
     description:
-      "Brothers' fellowships deal with matters concerning gents and Sisters' fellowships for ladies. Both fellowships handle topics that benefit members academically, spiritually, financially, socially, and physically.",
+      "KSU-CU editorial board is responsible for: Publication of the Beyond the Origin magazine and any other publications as directed by the executive committee. It is also responsible for the selling of the publications. It is headed by the Boards coordinator as the overseer, the chairperson and the secretary who are nominated by the board members.",
     imgSrc: fellowshipImg,
     delay: '0.4s',
     socialLink: 'http://ww.youtube.com/c/KISIIUNIVERSITYCUMAINCAMPUS',
@@ -66,7 +65,7 @@ const BoardsPage: React.FC = () => {
 
         <div className={styles.title}>
           <h2>KSUCU-MC BOARDS</h2>
-          <p>Meet some of our educative and interesting classes and fellowships:</p>
+          <p>Meet the boards we have in KSUCU-MC :</p>
         </div>
 
         <div className={styles.row}>
