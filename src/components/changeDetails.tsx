@@ -78,6 +78,7 @@ const ChangeDetails: React.FC = () => {
       const response = await axios.put('https://ksucu-mc.co.ke/users/update', formData, { withCredentials: true });
       console.log(response.data);
       setSuccessMessage('Details updated successfully')
+      setError('')
     } catch (error) {
       console.error("Error updating details", error);
       setError('Error updating details')
