@@ -3,6 +3,9 @@ import axios from 'axios';
 import cuLogo from '../assets/KSUCU logo updated document.png';
 import { Link } from 'react-router-dom';
 import styles from '../styles/signup.module.css'; 
+import googleIcon from '../assets/googleIcon.png';
+
+const googleAuth = 'https://ksucu-mc.co.ke/auth/google';
 
 type FormData = {
   username: string;
@@ -123,6 +126,16 @@ const SignUp: React.FC = () => {
     }
   };
 
+  const handleLogin = (e: React.MouseEvent<HTMLButtonElement>) => {
+    try {
+      setError('....redirecting to google auth')
+      e.preventDefault();
+      window.location.href = googleAuth; 
+    } catch (error) {
+      console.error('unexpected happened');
+    }
+  }
+
   return (
     <div className={styles.body}>
       <div className={styles['container']}>
@@ -205,7 +218,11 @@ const SignUp: React.FC = () => {
               <input type="password" id="retype_p" className={styles['input']} value={formData.retype_p} onChange={handleChange} />
             </div>
           </section>
+
+
+
         </div>
+
 
         <div className={styles['submisions']}>
           <div className={styles['clearForm']} onClick={() =>{
@@ -233,9 +250,20 @@ const SignUp: React.FC = () => {
           
         </div>
 
+
+
         <div className={styles['form-footer']}>
           <p>Already have an account? <Link to={"/signIn"}>Click Here</Link></p>
         </div>
+
+        <button  className={styles['google-redirect-div']} onClick={handleLogin}>
+                    <div className={styles['flex']}>
+                        <span className={styles['google-icon-span']}>
+                        <img src={googleIcon} alt="" />
+                        </span>
+                        <span className={styles['google-icon-text']}>continue with Google</span>
+                    </div>
+          </button>
 
         <div className={styles['form-footer']}>
           <p><Link to={"/Home"}>Home</Link></p>
@@ -253,4 +281,3 @@ const SignUp: React.FC = () => {
 };
 
 export default SignUp;
-

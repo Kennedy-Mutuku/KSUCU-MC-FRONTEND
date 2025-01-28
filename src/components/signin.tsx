@@ -4,6 +4,9 @@ import styles from '../styles/signin.module.css';
 import cuLogo from '../assets/KSUCU logo updated document.png';
 import { Link, useNavigate } from 'react-router-dom';
 import loadingAnime from '../assets/Animation - 1716747954931.gif';
+import googleIcon from '../assets/googleIcon.png'
+
+const googleAuth = 'https://ksucu-mc.co.ke/auth/google';
 
 const SignIn: React.FC = () => {
     const navigate = useNavigate();
@@ -77,6 +80,15 @@ const SignIn: React.FC = () => {
         }
     };
     
+    const handleLogin = (e: React.MouseEvent<HTMLButtonElement>) => {
+        try {
+          setError('....redirecting to google auth')
+          e.preventDefault();
+          window.location.href = googleAuth; 
+        } catch (error) {
+          console.error('unexpected happened');
+        }
+      }
     
     return (
         <div className={styles.body}>
@@ -118,6 +130,16 @@ const SignIn: React.FC = () => {
                     <p><Link to={'/forgotPassword'}>Forgot pasword</Link></p>
                     <p>Have no account <Link to={"/signUp"}>click Here</Link></p>
                 </div>
+
+                <button  className={styles['google-redirect-div']} onClick={handleLogin}>
+                    <div className={styles['flex']}>
+                        <span className={styles['google-icon-span']}>
+                        <img src={googleIcon} alt="" />
+                        </span>
+                        <span className={styles['google-icon-text']}>continue with Google</span>
+                    </div>
+                </button>
+
 
                 <div className={styles['form-footer']}>
                     <p><Link to={"/Home"}>Home</Link></p>

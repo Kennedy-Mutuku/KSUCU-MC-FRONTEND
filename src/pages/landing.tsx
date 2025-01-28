@@ -13,11 +13,13 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { faCode } from '@fortawesome/free-solid-svg-icons';
 import { faGlobe } from '@fortawesome/free-solid-svg-icons';
 import { faRocket } from '@fortawesome/free-solid-svg-icons';
-
-//photos
+import introPhoto from '../assets/logoIntoImg.jpg'
+import visionImg from '../assets/gents.jpg'
+import missionImg from '../assets/ladies.jpg'
+import valuesImg from '../assets/amptheatre.jpg'
 import prayerPNG from '../assets/prayer.png'
 
-// Define the type for the countdown
+// type for the countdown
 interface Countdown {
   days: number;
   hours: number;
@@ -65,6 +67,18 @@ const LandingPage = () => {
     seconds: 0,
   });
 
+  const images = [
+    { url:  introPhoto , text: `<div class="${styles['loadingBar-intro']}"></div>` },
+    { url:  visionImg , text: `
+      <h1 class="${styles['section-text']}">COMES FROM THE MOST FAMED SPRING WATER IN KAPTAGAT FOREST,</h1>
+      <div class="${styles['loadingBar-intro']}"></div>
+      ` },
+    { url: missionImg , text: `<h1 class="${styles['section-text']}">FILTERED THROUGH HARD VOLCANIC ROCKS, FINE SAND AND ULTRA VIOLET LIGHT</h1><div class="${styles['loadingBar-intro']}"></div>` },
+    { url:  valuesImg , text: `<h1 class="${styles['section-text']}">GIVING HEALTHIEST REFRESHING WATER</h1><div class="${styles['loadingBar-intro']}"></div>` }
+  ];
+  
+  const [currentIndex, setCurrentIndex] = useState(0);
+
   useEffect(() => {
 
     fetchUserData()
@@ -92,9 +106,16 @@ const LandingPage = () => {
       }
     }, 1000);
 
-    // Cleanup interval on component unmount
-    return () => clearInterval(intervalId);
-  }, []);
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+    }, 10000);
+
+    return () => {
+      clearInterval(intervalId)
+      clearInterval(interval)
+    };
+
+  }, [images.length]);
 
   const fetchUserData = async () => {
     // check if the user in online
@@ -341,15 +362,8 @@ const LandingPage = () => {
               </div> */}
 
               <div className={styles['video-intro']}>
-                <div className={styles['video-wrapper']}>
-                  <iframe 
-                    src="https://www.youtube.com/embed/gaCW4HUwVk0" 
-                    title="YouTube video player" 
-                    frameBorder="0" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                    allowFullScreen
-                  ></iframe>
-                </div>
+              <div className={styles['intro-video']} style={{ backgroundImage: `url(${images[currentIndex].url})` }} dangerouslySetInnerHTML={{ __html: images[currentIndex].text }}></div> 
+            
                 <span className={styles["commission-claimer"]} onClick={handleOpenCommission}>
                   <FontAwesomeIcon icon={faQuestion} beatFade />
                 </span>
