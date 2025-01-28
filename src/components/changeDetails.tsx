@@ -41,8 +41,8 @@ const ChangeDetails: React.FC = () => {
 
         const loginToken = Cookies.get('loginToken');
          if(loginToken){
-          setError('Please complete registration, google does not provide these.')
-         }
+          setError('Please complete your registration. Google sign-up doesn’t provide this information.')
+        }
 
         const response = await axios.get('https://ksucu-mc.co.ke/users/data', { withCredentials: true } );
         console.log(response.data);
