@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import cuLogo from '../assets/KSUCU logo updated document.png';
 import { Link } from 'react-router-dom';
-import styles from '../styles/signup.module.css'; 
+import styles from '../styles/signup.module.css';
+import Cookies from 'js-cookie'
 
 type FormData = {
   username: string;
@@ -37,12 +38,24 @@ const ChangeDetails: React.FC = () => {
     setLoading(true)
     const fetchUserData = async () => {
       try {
+
+        const loginToken = Cookies.get('loginToken');
+         if(loginToken){
+          setError('Please complete registration, google does not provide these.')
+         }
+
         const response = await axios.get('https://ksucu-mc.co.ke/users/data', { withCredentials: true } );
         console.log(response.data);
         
         setFormData(response.data);
-      } catch (error) {
-        console.error("Error fetching user data", error);
+      } catch (error: any) { 
+        if(error.response.status = 400){
+        setError('Email/Reg/Phone already exist 😖')
+        setLoading(false)
+      }else{
+        setError('Unexpected error occured 💔')
+        setLoading(false)
+      }
       }finally{
         setLoading(false)
       }
@@ -164,5 +177,3 @@ const ChangeDetails: React.FC = () => {
 };
 
 export default ChangeDetails;
-
-

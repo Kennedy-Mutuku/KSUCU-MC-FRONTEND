@@ -143,6 +143,14 @@ const LandingPage = () => {
         
         if (!response.ok) {
             throw new Error(data.message || 'Failed to fetch user data');
+        }  
+
+        if (!data.phone || !data.reg || !data.yos) {
+            setError('...navigating to update details')
+            // Redirect to the update details page
+            navigate('/changeDetails');
+            
+            return;
         }
 
         // Set username to only the first name (first word) if there are multiple names
