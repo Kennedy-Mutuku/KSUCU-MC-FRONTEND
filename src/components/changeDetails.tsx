@@ -40,12 +40,16 @@ const ChangeDetails: React.FC = () => {
       try {
 
         const loginToken = Cookies.get('loginToken');
-         if(loginToken){
-          setError('Please complete your registration. Google sign-up doesn’t provide this information.')
-        }
+
 
         const response = await axios.get('https://ksucu-mc.co.ke/users/data', { withCredentials: true } );
-        console.log(response.data);
+
+        if(loginToken && !response.data.reg){
+          setError('Please complete your registration. Google sign-up doesn’t provide this information.')
+        }else{
+          console.log('clear');
+          
+        }
         
         setFormData(response.data);
       } catch (error: any) { 
