@@ -40,12 +40,16 @@ const ChangeDetails: React.FC = () => {
       try {
 
         const loginToken = Cookies.get('loginToken');
-         if(loginToken){
-          setError('Please complete your registration. Google sign-up doesn’t provide this information.')
-        }
+
 
         const response = await axios.get('https://ksucu-mc.co.ke/users/data', { withCredentials: true } );
-        console.log(response.data);
+
+        if(loginToken && !response.data.reg){
+          setError('Please complete your registration. Google sign-up doesn’t provide this information.')
+        }else{
+          console.log('clear');
+          
+        }
         
         setFormData(response.data);
       } catch (error: any) { 
@@ -72,12 +76,43 @@ const ChangeDetails: React.FC = () => {
     }));
   };
 
+  function validateYOS(input: string) {
+    const regex = /^[1-6]$/; // Matches only one digit between 1 and 6
+    return regex.test(input);
+  }
+
+  function validatePhone(input: string) {
+    const regex = /^0\d{9}$/; // Matches exactly 10 digits starting with 0, no spaces allowed
+    return regex.test(input);
+  }
+
   const handleSubmit = async () => {
-    setLoading(true)
+
+    // Check if any field is empty
+    for (const [key, value] of Object.entries(formData)) {
+        if (!value) {
+            setError(`Please fill in the ${key} field 😊`);
+            return;
+        }
+    }
+
+    if (!validatePhone(formData.phone)) {
+      setError('Phone number must be 10 digits starting with 0 and having no spaces 🤨');
+      return
+    } 
+    
+    if (!validateYOS(formData.yos)) {
+      setError('Year of study must be a number between 1 and 6. 🤨');
+      return;
+    }
+
+    setLoading(true);
+
     try {
       const response = await axios.put('https://ksucu-mc.co.ke/users/update', formData, { withCredentials: true });
       console.log(response.data);
       setSuccessMessage('Details updated successfully')
+      setError('')
     } catch (error) {
       console.error("Error updating details", error);
       setError('Error updating details')
