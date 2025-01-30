@@ -18,6 +18,9 @@ import visionImg from '../assets/gents.jpg'
 import missionImg from '../assets/ladies.jpg'
 import valuesImg from '../assets/amptheatre.jpg'
 import prayerPNG from '../assets/prayer.png'
+import { faUser } from '@fortawesome/free-solid-svg-icons';
+import { faUserLock } from '@fortawesome/free-solid-svg-icons';
+
 
 // type for the countdown
 interface Countdown {
@@ -265,10 +268,17 @@ const LandingPage = () => {
     setOpenCairosCourse(false)
   }
 
-    // Method to handle the toggling behavior
-    const handleToggle = (setShow: React.Dispatch<React.SetStateAction<boolean>>, currentState: boolean) => {
-      setShow(!currentState);
-    };
+  // Method to handle the toggling behavior
+  const handleToggle = (setShow: React.Dispatch<React.SetStateAction<boolean>>, currentState: boolean) => {
+    setShow(!currentState);
+  };
+
+  function handleRedirectToUserInfo() {
+    navigate('/changeDetails')
+  }
+  function handleRedirectToLogin() {
+    navigate('/signIn')
+  }
 
   return (
     <>
@@ -286,12 +296,16 @@ const LandingPage = () => {
 
           <div className={styles.container}>
             <div className={styles['flex-title']}>
+              
               <div className={styles.logo}>
                 <img src={cuLogo} alt="Cu-logo" className={styles['logo-image']} />
               </div>
+
               <div className={styles.title}>
-                <h5 className={styles['title-text']}>KISII UNIVERSITY CHRISTIAN </h5>
-                <h5 className={styles['title-text']}>UNION MAIN CAMPUS</h5>
+
+                <p className={styles['title-text']}>Kisii University Christian Union</p>
+
+                {/* Desktop icond */}
                 <div className={styles['nav-one--hidden']}>
                   {userData ?
                     <Link to="/changeDetails" className={styles['signUp-btn']}>{userData.username}</Link>
@@ -309,7 +323,25 @@ const LandingPage = () => {
                   </div>
                 </div>
               </div>
+
+              <div className={styles.row} id="hambuger">
+                  <button className={styles['nav-toggle__btn']} onClick={handleNavToggle}>
+                    <div className={styles.hambuger}></div>
+                  </button>
+              </div>
+
+              <div className={`${styles['user-icon-container']} `}>
+
+                {userData ?
+                    <FontAwesomeIcon onClick={handleRedirectToUserInfo}  className={`${styles['user-icon']} `} icon={faUser} />
+                   : <FontAwesomeIcon onClick={handleRedirectToLogin}  className={`${styles['user-icon']} `} icon={faUserLock} />
+                  }
+
+
+              </div>
+
             </div>
+
             <div className={styles.nav}>
               <div className={styles['nav-one']}>
               {userData ?
@@ -327,14 +359,9 @@ const LandingPage = () => {
                     </a>
                 </div>
               </div>
-              <div className={styles.row} id="hambuger">
-                <button className={styles['nav-toggle__btn']} onClick={handleNavToggle}>
-                  <div className={styles.hambuger}></div>
-                </button>
-              </div>
             </div>
+
             <div className={styles['main-quick--links']}>
-              <h3 className={styles['main-quick--links---text']}>Quick Links</h3>
               <ul className={styles['quick-nav--links']}>
                 <li className={styles['quick-item']}><Link to="/save" className={styles['quick-item--link']}>Win a Soul</Link></li>
                 <hr />
@@ -356,6 +383,9 @@ const LandingPage = () => {
                 <li className={styles['quick-item']}><Link to="/financial" className={styles['quick-item--link']}>Financials</Link></li>
                 <hr />
                 <li className={styles['quick-item']}><Link to="/Bs" className={styles['quick-item--link']}>Bible Study</Link></li>
+                <hr />
+                <hr />
+                <li className={styles['quick-item']}><Link to="/Bs" className={styles['quick-item--link']}>About Us</Link></li>
                 <hr />
               </ul>
             </div>
@@ -382,13 +412,14 @@ const LandingPage = () => {
                 <ul className={styles['quick-nav--links']}>
                 <li className={styles['quick-item']}><Link to="/save" className={styles['quick-item--link']}>Win a Soul</Link></li>
                   <li className={styles['quick-item']}><Link to="media" className={styles['quick-item--link']}>Media</Link></li>
-                  <li className={styles['quick-item']}>                <a 
-                  href="/pdfs/constitution.pdf" 
-                  download="constitution.pdf" 
-                  className={styles['quick-item--link']}
-                >
-                  Constitution
-                </a></li>
+                  <li className={styles['quick-item']}>
+                    <a 
+                      href="/pdfs/constitution.pdf" 
+                      download="constitution.pdf" 
+                      className={styles['quick-item--link']}
+                      >Constitution
+                    </a>
+                  </li>
                   <li className={styles['quick-item']}><Link to="library" className={styles['quick-item--link']}>Library</Link></li>
                   <li className={styles['quick-item']}><Link to="/financial" className={styles['quick-item--link']}>Financials</Link></li>
                   <li className={styles['quick-item']}><Link to="/Bs" className={styles['quick-item--link']}>bible study</Link></li>

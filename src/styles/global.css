@@ -104,8 +104,7 @@ img{
 }
 .header{
     /* background: purple; */
-    background: linear-gradient(to top left, #230019, #730051);
-    color: #fff;
+    color: #000000;
 
     padding:20px 10px 50px 10px;
 }
@@ -125,15 +124,14 @@ select{
     display: flex;
     justify-content: space-between;
     align-items: center;
-    text-align: center;
     gap: 10px;
 }
 .title{
     width: 100%;
 }
 .title-text{
-    margin-top: 0;
-    font-size: 16px;
+    margin: 0;
+    font-size: 15px;
 }
 .logo{
     align-self: flex-start;
@@ -156,6 +154,7 @@ select{
     display: flex;
     justify-content: space-between;
     width: 90%;
+    display: none;
 
     border-radius: 20px;
 }
@@ -238,7 +237,7 @@ select{
 
 @media(min-width:347px){
     .title-text{
-        font-size: 18px;
+        font-size: 13px;
     }
 }
 

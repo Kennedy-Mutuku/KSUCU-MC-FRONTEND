@@ -35,9 +35,9 @@ html{
 .hambuger,
 .hambuger::before,
 .hambuger::after{
-    background-color: rgb(252, 252, 252);
-    width: 2em;
-    height: 3px;
+    background-color: rgb(0, 0, 0);
+    width: 1.7em;
+    height: 2px;
     border-radius: 1em;
     transition: transform 250ms ease-in-out;
 }
@@ -76,6 +76,28 @@ html{
    transform: rotate(90deg) translateX(-8px);
 }
 
+.user-icon-container{
+    margin: 0;
+    padding: 0;
+    align-self: flex-end;
+}
+
+.user-icon{
+    border: 1px solid #494949;
+    border-radius: 100%;
+    padding: 5px;
+    width: 20px;
+    height: 20px;
+    color: #555555;
+}
+.login-icon{
+    border-radius: 100%;
+    padding: 5px;
+    width: 20px;
+    height: 20px;
+    color: #555555;
+}
+
 
 .video-intro{
     aspect-ratio: 16/9;
@@ -110,15 +132,12 @@ html{
     }
 }
 
-  
-
-
 .main{
     padding: 20px;
 }
 
 .main-quick--links{
-    background: #dddddd;
+    background: #ffffff;
     margin: 10px -10px;
 
     max-height: 0;
@@ -490,7 +509,6 @@ hr{
         gap: 50px;
     }
     .appreciatingTitleText{
-        align-self: flex-start;
         padding: 0;
         margin-bottom: 50px;
     }
