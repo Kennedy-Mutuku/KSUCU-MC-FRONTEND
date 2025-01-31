@@ -676,7 +676,7 @@ const LandingPage = () => {
               ].map((activity, index) => (
                 <div key={index} className={styles.cardClasses}>
                   <h4 className={styles.cardTitle} >{activity.day}: {activity.event}</h4>
-                  <p>Time: 6:50 PM to 9:50 PM</p>
+                  <p>Time: 6:50 PM to 8:50 PM</p>
                   <p>Venue: Communicated daily</p>
                 </div>
               ))}
