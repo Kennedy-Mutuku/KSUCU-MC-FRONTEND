@@ -284,7 +284,6 @@ const LandingPage = () => {
     navigate('/signIn')
   }
 
-
   return (
     <>
 
@@ -331,22 +330,22 @@ const LandingPage = () => {
                         {/* Dropdown Content */}
                           {isDropdownOpen && (
                             <div className={styles['side-bar--links']}>
-                              <Link to="/save" className={styles['quick-item--link']}>Win a Soul</Link>
-                              <Link to="media" className={styles['quick-item--link']}>Media</Link>
+                              <Link to="/save" className={styles['quick-item--link--desktop']}>Win a Soul</Link>
+                              <Link to="media" className={styles['quick-item--link--desktop']}>Media</Link>
                               
                                   <a
                                     href="/pdfs/constitution.pdf"
                                     download="constitution.pdf"
-                                    className={styles['quick-item--link']}
+                                    className={styles['quick-item--link--desktop']}
                                   >
                                     Constitution
                                   </a>
                                 
-                                <Link to="library" className={styles['quick-item--link']}>Library</Link>
-                                <Link to="/financial" className={styles['quick-item--link']}>Financials</Link>
-                                <Link to="/Bs" className={styles['quick-item--link']}>Bible Study</Link>
+                                <Link to="library" className={styles['quick-item--link--desktop']}>Library</Link>
+                                <Link to="/financial" className={styles['quick-item--link--desktop']}>Financials</Link>
+                                <Link to="/Bs" className={styles['quick-item--link--desktop']}>Bible Study</Link>
 
-                                { userData && <Link to="/signIn" className={styles['quick-item--link']} onClick={handleLogout}>Log out</Link> }
+                                { userData && <Link to="/signIn" className={styles['quick-item--link--desktop']} onClick={handleLogout}>Log out</Link> }
 
                             </div>
                           )}
@@ -661,10 +660,35 @@ const LandingPage = () => {
               
         </div>
 
+        <div className={styles.weeklyActivities}>
+
+          <div className={styles.container}>
+            <h3 className={styles.sectionTitle}>Our Weekly Activities</h3>
+            <div className={styles.activityCardContainer}>
+              {[
+                { day: "Monday", event: "Discipleship" },
+                { day: "Tuesday", event: "Ministry Meetings" },
+                { day: "Wednesday", event: "Best P" },
+                { day: "Thursday", event: "ET Fellowship" },
+                { day: "Friday", event: "Friday Fellowship" },
+                { day: "Saturday", event: "Class Fellowship" },
+                { day: "Sunday", event: "Services" }
+              ].map((activity, index) => (
+                <div key={index} className={styles.cardClasses}>
+                  <h4 className={styles.cardTitle} >{activity.day}: {activity.event}</h4>
+                  <p>Time: 6:50 PM to 9:50 PM</p>
+                  <p>Venue: Communicated daily</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+        </div>
+
         <div className={styles.containerOthers}>
           
           <div className={styles.appreciatingTitleText}>
-            <h2 className={styles.appreciatingTitleh2Text}>Appreciating the opportunity to fellowship with KSUCU-MC, other interesting forums are:</h2>
+            <h2 className={styles.appreciatingTitleh2Text}>Appreciating the opportunity to fellowship with KSUCU, other interesting forums are:</h2>
           </div>
 
           <div className={styles.containerOthersRow}>
@@ -795,42 +819,52 @@ const LandingPage = () => {
         </div>
 
         <div className={styles.containerAbout}>
-          <div className={styles.about}>
-          <p id="about" className={styles.aboutTitle}>About us</p>
-              <div className={styles.aboutFlex}>
-                      <div className={`${styles.aboutCol} ${styles.aboutCol1}`}>
 
-                        <div className={styles.aboutCol1Mission}>
-                          <h4><b>MISSION</b></h4>
-                          <p>
-                            To impact Christian core values and skills to students through equipping, empowering and offering conducive environment for effective living in and out of campus.
-                          </p>
+          <div className={styles.container}>
+            <div className={styles.about}>
+              <p id="about" className={styles.aboutTitle}>About us</p>
+                <div className={styles.aboutFlex}>
+                        <div className={`${styles.aboutCol} ${styles.aboutCol1}`}>
+                          <div className={styles.aboutCol1Mission}>
+                            <h4><b>MISSION</b></h4>
+                            <p>
+                              To impact Christian core values and skills to students through equipping, empowering and offering conducive environment for effective living in and out of campus.
+                            </p>
+                          </div>
+                          <div className={styles.aboutCol1Vision}>
+                            <h4><b>VISION</b></h4>
+                            <p>
+                              A relevant and effective Christian to the church and society.
+                            </p>
+                          </div>
+            
                         </div>
-
-
-                        <div className={styles.aboutCol1Vision}>
-                          <h4><b>VISION</b></h4>
-                          <p>
-                            A relevant and effective Christian to the church and society.
-                          </p>
+                        <div className={`${styles.aboutCol} ${styles.aboutCol2}`}>
+                          <h4><b>OBJECTIVES</b></h4>
+            
+                              <p className={styles.objectivesTitle}>Discipleship</p>
+                              <ul className={styles.subList}>
+                                <li>To deepen and strengthen spiritual lives of its members through the study of The Bible, prayers, Christian fellowships, and obedience to God.</li>
+                                <li>To encourage responsible membership through the exercise of various spiritual gifts.</li>
+                              </ul>
+            
+                              <p className={styles.objectivesTitle}>Evangelism</p>
+                              <p className={styles.subList} >To encourage members to witness to the Lord Jesus, in and outside campus as the incarnate Son of God and seek to lead others to a personal faith in Him.</p>
+            
+                              <p className={styles.objectivesTitle}>Mission and Compassion</p>
+                              <p className={styles.subList} >To prepare Christian students to take good news to all nations of the world and to play an active role in communities where they live.</p>
+            
+            
+                              <p className={styles.objectivesTitle}>Leadership Development</p>
+                              <p className={styles.subList} >To identify and develop Christian leaders through training and experience.</p>
+            
                         </div>
-                        
-                      </div>
-
-                      <div className={`${styles.aboutCol} ${styles.aboutCol2}`}>
-                        <h4><b>OBJECTIVES</b></h4>
-                        <b>1.Discipleship</b><br /> i. To deepen and strengthen spiritual lives of its members through the study of The Bible, prayers, Christian fellowships and obedience to God.<br /> ii. To encourage responsible membership through the exercise
-                        of various spiritual gifts.
-                        <br />
-                        <b>2.Evangelism</b><br /> To encourage members to witness to the Lord Jesus, in and outside campus as the incarnate Son of God and seek to lead others to a personal faith in Him.
-                        <br />
-                        <b>3.Mission and Compassion</b><br /> To prepare Christian students to take good news to all nations of the world and to play active role in. communities where they live.
-                        <br />
-                        <b>4.Leadership Development</b><br /> To identify and develop Christian leaders through training and experience.
-                      </div>
-              </div>
+                </div>
             </div>
           </div>
+
+        </div>
+
           <div className={  `${ styles['footer'] } ${ styles['home-footer'] }` } id='contacts'>
             <p className={styles['footer--text']}>KISII UNIVERSITY MAIN CAMPUS CHRISTIAN UNION 2024</p>
                 
@@ -849,7 +883,10 @@ const LandingPage = () => {
                     <a href="" className={styles['social-link']}><FaTiktok /></a>
                 </div>
             </div>
+
         </div>
+
+
     </div>
 
     </>
@@ -857,5 +894,3 @@ const LandingPage = () => {
 };
 
 export default LandingPage;
-
-

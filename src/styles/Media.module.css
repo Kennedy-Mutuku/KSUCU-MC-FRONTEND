@@ -64,6 +64,65 @@
     padding: 0.5rem;
 }
 
+
+.canvasOverlay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: flex-end;
+    z-index: 1000;
+  }
+  
+  .canvas {
+    background: #fff;
+    width: 400px;
+    height: 100%;
+    padding: 20px;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
+    overflow-y: auto;
+  }
+  
+  .closeBtn {
+    border: none;
+    background: none;
+    font-size: 18px;
+    cursor: pointer;
+    float: right;
+  }
+  
+  h3 {
+    margin-bottom: 10px;
+  }
+  
+  .eventTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+  
+  .eventTable th, .eventTable td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .eventTable th {
+    background: #00c6ff;
+    color: white;
+}
+
+.first-link:hover{
+    cursor: pointer;
+}
+
+.googlePhotosRedirectLinks{
+    color: #00c6ff;
+}
+  
 /* Responsive Styles */
 @media (min-width: 600px) {
     .media-tittle--text {

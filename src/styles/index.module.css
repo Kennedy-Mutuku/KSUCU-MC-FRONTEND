@@ -152,6 +152,7 @@ html{
     max-height: 1000px;
     padding: 5px;
 }
+
 .main-quick--links---text{
     color: #000;
     text-align: center;
@@ -388,10 +389,10 @@ html{
 }
 
 .aboutTitle{
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     font-weight: 600;
     text-decoration: underline;
-
+    margin-bottom: 10px;
 }
 .containerAbout{
     background: #b3b3b328;
@@ -402,7 +403,48 @@ html{
     flex-direction: column;
     width: 90%;
     margin: auto;
+    text-align: center;
 }
+.aboutFlex h4{
+    color: #730051;
+    font-size: 1.2rem;
+    text-transform: lowercase;
+}
+.aboutFlex p{
+    margin: 10px;
+    color: #555;
+}
+/* objectivs */
+.aboutCol {
+    padding: 5px;
+  }
+  .objectivesTitle{
+    text-decoration: underline;
+  }
+  
+  .objectivesList {
+    list-style: decimal;
+    padding-left: 20px;
+    margin-top: 10px;
+  }
+  
+  .subList {
+    list-style: lower-alpha;
+    padding-left: 20px;
+  }
+  
+  .objectivesList li {
+    margin-bottom: 10px;
+    font-size: 1rem;
+    font-weight: 500;
+  }
+  
+  .subList, .subList li {
+    font-size: 0.95rem;
+    font-weight: normal;
+    color: #555;
+  }
+  
 .containerOthers{
     background: #1b1b1b;
     color: #fff;
@@ -422,7 +464,7 @@ html{
     padding-bottom: 30px;
 }
 .appreciatingTitleh2Text{
-    font-size: 1.2em;
+    font-size: 1em;
 }
 .othersColumns {
     color: #00c6ff;
@@ -493,19 +535,84 @@ hr{
     color: #fff;
 }
 
-.aboutFlex h4{
-    margin-top: 20px;
+
+.weeklyActivities {
+    text-align: center;
+    padding: 20px;
+    margin-bottom: 20px;
 }
 
+.sectionTitle{
+    font-size: 1.3rem;
+    margin: 10px 0;
+}
 
+.cardTitle{
+    font-size: 1.1rem;
+    color: #730051;
+}
 
+.weeklyActivities .container{
+    width: 80%;
+}
+
+.activityCardContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    justify-content: center;
+    align-items: stretch;
+}
+
+.activityCard {
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.cardClasses {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: center;
+}
+
+/* Subtle hover effect */
+.cardClasses:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+  
 @media(min-width:490px){
     .user-icon-container{
         align-self: center;
     }
 }
 
+.aboutFlex{
+    font-size: 1rem;
+    text-align: center;
+}
+
 @media(min-width:600px) {
+
+    .containerAbout .container{
+        width: 50%;
+    }
+
+    .weeklyActivities .container{
+        width: 60%;
+    }
+
     .hambuger-div{
         display: none;
         
@@ -594,7 +701,7 @@ hr{
         display: block;
     }
 
-    .quick-item--link{
+    .quick-item--link--desktop{
         display: block;
         color: #1f1f1f;
         margin: 7px 10px;
@@ -625,7 +732,6 @@ hr{
     }
     .about{
         width: 70%;
-        padding: 50px 0 50px 0;
     }
     .containerOthers{
         padding: 50px 0;
@@ -652,24 +758,26 @@ hr{
     }
 
     .appreciatingTitleh2Text{
-        font-size: 2em;
+        font-size: 1.5em;
     }
 
     .aboutTitle{
         text-align: center;
+        margin: 0;
+        font-size: 1.2rem;
+    }
+
+    .aboutFlex h4{
+        font-size: 1rem;
     }
 
     .aboutCol1{
         gap: 100px;
     }
 
-
-
 }
 
-
 @media(min-width:605px){
-
 
     .flex-title .container{
         width: 95%;
