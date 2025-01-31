@@ -31,7 +31,7 @@ const classData: ClassInfo[] = [
   {
     title: 'Communication board',
     description:
-      '	The communication board is responsible for:Publizing the union activities within the university, Heads in creating awareness pf social networks and their publications, Managing KSUCUMC X account, It is headed by the publicity secretary as the overseer, the chairperson and the secretary who are nominated by the board members.',
+      'The communication board is responsible for:Publizing the union activities within the university, Heads in creating awareness pf social networks and their publications, Managing KSUCUMC X account, It is headed by the publicity secretary as the overseer, the chairperson and the secretary who are nominated by the board members.',
     imgSrc: disciplesipImg,
     delay: '0.2s',
     socialLink: 'https://www.tiktok.com/@ksucumc',

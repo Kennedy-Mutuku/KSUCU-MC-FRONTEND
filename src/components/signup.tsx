@@ -209,23 +209,12 @@ const SignUp: React.FC = () => {
               <option>choose...</option>
               <option value="rivet">Rivet</option>
               <option value="cet">Cet</option>
-              <option value="ecet">Ecet</option>
+              <option value="ecet">Eset</option>
               <option value="net">Net</option>
               <option value="weso">Weso</option>
             </select>
           </div>
 
-          {/* <section className={styles['passwords']}>
-            <div>
-              <label htmlFor="password">PASSWORD</label>
-              <input type="password" id="password" className={styles['input']} value={formData.password} onChange={handleChange} />
-            </div>
-
-            <div>
-              <label htmlFor="retype_p">RETYPE</label>
-              <input type="password" id="retype_p" className={styles['input']} value={formData.retype_p} onChange={handleChange} />
-            </div>
-          </section> */}
           <section className={styles['passwords']}>
             <div className={styles['password-container']}>
               <label htmlFor="password">PASSWORD</label>

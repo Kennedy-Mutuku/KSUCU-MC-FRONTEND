@@ -420,9 +420,9 @@ const LandingPage = () => {
 
                 <Link to="/financial" className={styles['quick-item--link']}>Financials</Link>
 
-                
-
                   <Link to="/Bs" className={styles['quick-item--link']}>About Us</Link>
+                  
+                  { userData && <Link to="/signIn" className={styles['quick-item--link']} onClick={handleLogout}>Log out</Link> }
                 
             </div>
 
