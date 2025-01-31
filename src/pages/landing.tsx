@@ -331,7 +331,7 @@ const LandingPage = () => {
                           {isDropdownOpen && (
                             <div className={styles['side-bar--links']}>
                               <Link to="/save" className={styles['quick-item--link--desktop']}>Win a Soul</Link>
-                              <Link to="media" className={styles['quick-item--link--desktop']}>Media</Link>
+                              <Link to="/media" className={styles['quick-item--link--desktop']}>Media</Link>
                               
                                   <a
                                     href="/pdfs/constitution.pdf"
@@ -341,7 +341,7 @@ const LandingPage = () => {
                                     Constitution
                                   </a>
                                 
-                                <Link to="library" className={styles['quick-item--link--desktop']}>Library</Link>
+                                <Link to="/library" className={styles['quick-item--link--desktop']}>Library</Link>
                                 <Link to="/financial" className={styles['quick-item--link--desktop']}>Financials</Link>
                                 <Link to="/Bs" className={styles['quick-item--link--desktop']}>Bible Study</Link>
 
@@ -404,7 +404,7 @@ const LandingPage = () => {
                 
                 <Link to="/Bs" className={styles['quick-item--link']}>Bible Study</Link>
                 
-                  <Link to="library" className={styles['quick-item--link']}>Library</Link>
+                  <Link to="/library" className={styles['quick-item--link']}>Library</Link>
                 
                   <Link to="/media" className={styles['quick-item--link']}>Media</Link>
                 
