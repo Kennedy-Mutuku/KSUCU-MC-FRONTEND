@@ -134,7 +134,8 @@ html{
 .main{
     margin-top: 50px;
     padding: 20px;
-    background: #f1f1f1;
+    background: #730051;
+    color: #d8d8d8;
 }
 
 .main-quick--links{
@@ -156,14 +157,18 @@ html{
     text-align: center;
 }
 
-.quick-nav--links{
-    list-style: disc;
-    margin: 0;
-}
-
 .quick-item--link{
-    text-decoration: none;
+    display: block;
+    text-align: center;
     color: #000000;
+    margin: 0 auto;
+    width: 50%;
+    margin-bottom: 10px;
+    padding: 5px 0;
+    border-radius: 5px;
+    color: #d8d8d8;
+
+    background: #730051;
 }
 
 .call-to-action-text{
@@ -213,8 +218,11 @@ html{
 {
     /* display: inline-block; */
     text-decoration: none;
-    color: #730051;
-    font-weight: 700;
+    color: #d8d8d8;
+    font-weight: 400;
+    text-transform: lowercase;
+    font-size: .9rem;
+    letter-spacing: 1px;
 }
 .ministries-item,
 .ET-item,
@@ -261,7 +269,7 @@ html{
     align-items: center;
     font-size: 2rem;
     bottom: 0;
-    right: 0;
+    right: 20px;
     transform: translate(50%, 50%);
 
     background-color: var(--blue-color);
@@ -323,7 +331,7 @@ html{
 .dropdown-icon {
     width: 20px;
     height: 20px;
-    fill: #000; 
+    fill: #ffffff; 
     position: absolute;
     top: 0;
     right: 0;
@@ -343,6 +351,7 @@ html{
     opacity: 0;
     overflow: hidden;
     transition: max-height 0.5s ease, opacity 0.5s ease;
+    margin-left: 30px;
 }
 
 .show {
@@ -488,6 +497,8 @@ hr{
     margin-top: 20px;
 }
 
+
+
 @media(min-width:490px){
     .user-icon-container{
         align-self: center;
@@ -497,6 +508,7 @@ hr{
 @media(min-width:600px) {
     .hambuger-div{
         display: none;
+        
     }
 
     .user-icon-container{

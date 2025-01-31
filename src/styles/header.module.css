@@ -1,5 +1,61 @@
 @import url(index.module.css);
 
+.logo-image{
+    width: 100px;
+}
+
+.flex-title{
+    display: flex;
+    align-items: center;
+}
+
+.container{
+    display: flex;
+    width: 95%;
+}
+
 .header{
-    padding: 30px 20px;
+    background: #730051;
+    color: #fff;
+}
+
+.title-text{
+    font-size: .7rem;
+    margin-top: 5px;
+    margin-left: 10px;
+}
+
+.nav--phone{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.title{
+    display: flex;
+    justify-content: left;
+    align-items: center;
+}
+
+.flex-title-phone{
+    display: flex;
+    align-items: center;
+    padding: 20px 5px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); 
+}
+
+.nav-link{
+    font-size: .7rem;
+}
+
+@media(min-width:600px){
+    .container{
+        max-width: 1000px;
+    }
+
+    .title-text{
+        margin-top: 15px;
+        font-size: .9em;
+        letter-spacing: 1px;
+    }
 }

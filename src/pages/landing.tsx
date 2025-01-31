@@ -13,14 +13,13 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { faCode } from '@fortawesome/free-solid-svg-icons';
 import { faGlobe } from '@fortawesome/free-solid-svg-icons';
 import { faRocket } from '@fortawesome/free-solid-svg-icons';
-import introPhoto from '../assets/logoIntoImg.jpg'
 import visionImg from '../assets/gents.jpg'
 import missionImg from '../assets/ladies.jpg'
 import valuesImg from '../assets/amptheatre.jpg'
 import prayerPNG from '../assets/prayer.png'
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 import { faUserLock } from '@fortawesome/free-solid-svg-icons';
-import { ChevronDown, ChevronUp } from "lucide-react"; // Import arrow icons
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 // type for the countdown
 interface Countdown {
@@ -71,7 +70,6 @@ const LandingPage = () => {
   });
 
   const images = [
-    { url:  introPhoto , text: `<div class="${styles['loadingBar-intro']}"></div>` },
     { url:  visionImg , text: `
       <h1 class="${styles['section-text']}"></h1>
       <div class="${styles['loadingBar-intro']}"></div>
@@ -403,33 +401,32 @@ const LandingPage = () => {
             </div>
 
             <div className={styles['main-quick--links']}>
-              <ul className={styles['quick-nav--links']}>
-                <li className={styles['quick-item']}><Link to="/save" className={styles['quick-item--link']}>Win a Soul</Link></li>
-                <hr />
-                <li className={styles['quick-item']}><Link to="/media" className={styles['quick-item--link']}>Media</Link></li>
-                <hr />
-                <li className={styles['quick-item']}>
-                <a 
-                  href="/pdfs/constitution.pdf" 
-                  download="constitution.pdf" 
-                  className={styles['quick-item--link']}
-                >
-                  Constitution
-                </a>
-              </li>
+                <Link to="/save" className={styles['quick-item--link']}>Win a Soul</Link>
+                
+                <Link to="/Bs" className={styles['quick-item--link']}>Bible Study</Link>
+                
+                  <Link to="library" className={styles['quick-item--link']}>Library</Link>
+                
+                  <Link to="/media" className={styles['quick-item--link']}>Media</Link>
+                
+                  <a 
+                    href="/pdfs/constitution.pdf" 
+                    download="constitution.pdf" 
+                    className={styles['quick-item--link']}
+                  >
+                    Constitution
+                  </a>
 
-                <hr />
-                <li className={styles['quick-item']}><Link to="library" className={styles['quick-item--link']}>Library</Link></li>
-                <hr />
-                <li className={styles['quick-item']}><Link to="/financial" className={styles['quick-item--link']}>Financials</Link></li>
-                <hr />
-                <li className={styles['quick-item']}><Link to="/Bs" className={styles['quick-item--link']}>Bible Study</Link></li>
-                <hr />
-                <hr />
-                <li className={styles['quick-item']}><Link to="/Bs" className={styles['quick-item--link']}>About Us</Link></li>
-                <hr />
-              </ul>
+                
+
+                <Link to="/financial" className={styles['quick-item--link']}>Financials</Link>
+
+                
+
+                  <Link to="/Bs" className={styles['quick-item--link']}>About Us</Link>
+                
             </div>
+
           </div>
 
             {error && <div className={styles.error}>{error}</div>}
@@ -520,20 +517,20 @@ const LandingPage = () => {
                     </div>
 
                     <div className={`${styles['dropdown-content']} ${showBoards ? styles.show : ''}`}>
-                    <ol className={`${styles['boards-list']} ${styles['category-list']}`}>
-                      <li className={styles['boards-item']}>
-                        <Link to="/boards" className={styles['boards-item--link']}>ICT board</Link>
-                      </li>
-                      <li className={styles['boards-item']}>
-                        <Link to="/boards" className={styles['boards-item--link']}>Editorial board</Link>
-                      </li>
-                      <li className={styles['boards-item']}>
-                        <Link to="/boards" className={styles['boards-item--link']}>Media Production</Link>
-                      </li>
-                      <li className={styles['boards-item']}>
-                        <Link to="/boards" className={styles['boards-item--link']}>Communication board</Link>
-                      </li>
-                    </ol>
+                      <ol className={`${styles['boards-list']} ${styles['category-list']}`}>
+                        <li className={styles['boards-item']}>
+                          <Link to="/boards" className={styles['boards-item--link']}>ICT board</Link>
+                        </li>
+                        <li className={styles['boards-item']}>
+                          <Link to="/boards" className={styles['boards-item--link']}>Editorial board</Link>
+                        </li>
+                        <li className={styles['boards-item']}>
+                          <Link to="/boards" className={styles['boards-item--link']}>Media Production</Link>
+                        </li>
+                        <li className={styles['boards-item']}>
+                          <Link to="/boards" className={styles['boards-item--link']}>Communication board</Link>
+                        </li>
+                      </ol>
                     </div>
                   </div>
 
