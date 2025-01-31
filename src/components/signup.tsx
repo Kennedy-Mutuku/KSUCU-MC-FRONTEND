@@ -4,8 +4,10 @@ import cuLogo from '../assets/KSUCU logo updated document.png';
 import { Link } from 'react-router-dom';
 import styles from '../styles/signup.module.css'; 
 import googleIcon from '../assets/googleIcon.png';
+import {Eye, EyeOff} from 'lucide-react'
 
 const googleAuth = 'https://ksucu-mc.co.ke/auth/google';
+
 
 type FormData = {
   username: string;
@@ -36,6 +38,12 @@ const SignUp: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [loadingText, setLoadingText] = useState('Loading...');
   const [error, setError] = useState('');
+  
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { id, value } = e.target;
@@ -207,7 +215,7 @@ const SignUp: React.FC = () => {
             </select>
           </div>
 
-          <section className={styles['passwords']}>
+          {/* <section className={styles['passwords']}>
             <div>
               <label htmlFor="password">PASSWORD</label>
               <input type="password" id="password" className={styles['input']} value={formData.password} onChange={handleChange} />
@@ -217,8 +225,40 @@ const SignUp: React.FC = () => {
               <label htmlFor="retype_p">RETYPE</label>
               <input type="password" id="retype_p" className={styles['input']} value={formData.retype_p} onChange={handleChange} />
             </div>
-          </section>
+          </section> */}
+          <section className={styles['passwords']}>
+            <div className={styles['password-container']}>
+              <label htmlFor="password">PASSWORD</label>
+              <section className={styles['password-wrapper']}>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  id="password"
+                  className={styles['input-pswd']}
+                  value={formData.password}
+                  onChange={handleChange}
+                />
+                <button type="button" className={styles['eye-button']} onClick={togglePasswordVisibility}>
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </section>
+            </div>
 
+            <div className={styles['password-container']}>
+              <label htmlFor="retype_p">RETYPE</label>
+              <section className={styles['password-wrapper']}>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  id="retype_p"
+                  className={styles['input-pswd']}
+                  value={formData.retype_p}
+                  onChange={handleChange}
+                />
+                <button type="button" className={styles['eye-button']} onClick={togglePasswordVisibility}>
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </section>
+            </div>
+          </section>
 
 
         </div>

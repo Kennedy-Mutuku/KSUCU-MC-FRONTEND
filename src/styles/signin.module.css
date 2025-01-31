@@ -15,9 +15,6 @@
     padding-bottom: 20px;
 }
 
-.forgotPasswordInput input{
-    width: 100%;
-}
 
 .body{
     height: calc(100vh + 50px);

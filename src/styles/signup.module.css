@@ -68,7 +68,7 @@
 .form label{
     width: 40%;
 }
-.form input,
+.form .input,
 .form select{
     width: 60%;
     margin: 0;
@@ -169,3 +169,28 @@ select{
     font-size: 1rem;
     font-weight: 700;
 }
+
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 60%;
+  }
+
+  .eye-button {
+    position: absolute;
+    right: 1px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    z-index: 10;
+    color: #666;
+  }
+
+  .input-pswd{
+    width: 100%;
+    margin: 0;
+  }
+  

@@ -106,7 +106,7 @@ img{
     /* background: purple; */
     color: #000000;
 
-    padding:20px 10px 50px 10px;
+    /* padding:20px 10px 50px 10px; */
 }
 input,
 select{
@@ -118,20 +118,32 @@ select{
     outline: none;
     border: none;
     padding: .2em;
+
+    border: none;
+    border-radius: 5px;
+    background: #f5f5f5;
+    outline: none;
 }
 
 .flex-title{
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); 
+}
+
+.flex-title .container{
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 10px;
+    width: 95%;
+
+    padding: 20px 0;
 }
 .title{
     width: 100%;
 }
 .title-text{
     margin: 0;
-    font-size: 15px;
+    font-size: 13px;
 }
 .logo{
     align-self: flex-start;
@@ -235,19 +247,23 @@ select{
     cursor: pointer;
 }
 
-@media(min-width:347px){
-    .title-text{
-        font-size: 13px;
-    }
-}
+
 
 @media(min-width:600px){
 
-    .header{
-        padding: 40px  100px 50px 100px ;
+
+    .flex-title .container{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        width: 70%;
+    
+        padding: 10px 0;
     }
+
     .logo{
-        width: 100px;
+        width: 60px;
         align-self: center;
     }
     .nav{
@@ -257,12 +273,10 @@ select{
         display: none;
     }
    .title-text{
-        font-size: 2.5rem;
-        display: inline-block;
-        margin-bottom: 10px;
-        margin-right: 20px;
-
-        letter-spacing: 3px;
+        font-size: 1rem;
+        display: flex;
+        align-items: flex-end;
+        margin: 0 0 5px 10px;
    }
 
    .nav-one--hidden{
@@ -274,8 +288,32 @@ select{
    }
 
    .About-btn{
-    align-self:center ;
+    align-self:center;
    }
+   .Quick-links-btn{
+    align-self: center;
+
+    display: flex;
+    
+   }
+
+   .side-bar--links{
+    background: #fff;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: max-height 1s ease-in-out, opacity 0.3s ease-in-out;
+    max-height: 300px; /* Adjust height as needed */
+    opacity: 1;
+   }
+
+   .dropdown-toggle {
+        background: none;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+    }
 
     .hr{
         width: 20%;
@@ -286,13 +324,27 @@ select{
     .signUp-btn,
     .Login-btn,
     .nav-link{
-        background: #ffffff;
         color: #000000;
         padding: 5px 25px;
         font-size: 1rem;
     
-        border-radius: 20px;
     }
-      
+    .Quick-links-btn{
+        align-self: center;
+        position: relative;
+    }
+
+    .Quick-links-btn button{
+        display: inline-block;
+        padding: 0 25px 0 10px;
+    }
+
+    .nav-link-quick-link{
+        color: #000000;
+    }
+
+    .user-icon:hover{
+        cursor: pointer;
+    }
 }
 

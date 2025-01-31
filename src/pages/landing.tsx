@@ -20,7 +20,7 @@ import valuesImg from '../assets/amptheatre.jpg'
 import prayerPNG from '../assets/prayer.png'
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 import { faUserLock } from '@fortawesome/free-solid-svg-icons';
-
+import { ChevronDown, ChevronUp } from "lucide-react"; // Import arrow icons
 
 // type for the countdown
 interface Countdown {
@@ -73,11 +73,11 @@ const LandingPage = () => {
   const images = [
     { url:  introPhoto , text: `<div class="${styles['loadingBar-intro']}"></div>` },
     { url:  visionImg , text: `
-      <h1 class="${styles['section-text']}">COMES FROM THE MOST FAMED SPRING WATER IN KAPTAGAT FOREST,</h1>
+      <h1 class="${styles['section-text']}"></h1>
       <div class="${styles['loadingBar-intro']}"></div>
       ` },
-    { url: missionImg , text: `<h1 class="${styles['section-text']}">FILTERED THROUGH HARD VOLCANIC ROCKS, FINE SAND AND ULTRA VIOLET LIGHT</h1><div class="${styles['loadingBar-intro']}"></div>` },
-    { url:  valuesImg , text: `<h1 class="${styles['section-text']}">GIVING HEALTHIEST REFRESHING WATER</h1><div class="${styles['loadingBar-intro']}"></div>` }
+    { url: missionImg , text: `<h1 class="${styles['section-text']}"></h1><div class="${styles['loadingBar-intro']}"></div>` },
+    { url:  valuesImg , text: `<h1 class="${styles['section-text']}"></h1><div class="${styles['loadingBar-intro']}"></div>` }
   ];
   
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -87,7 +87,7 @@ const LandingPage = () => {
     fetchUserData()
     fetchNewsData()
 
-    // Target date: December 27th, 23:59:59 of the current year
+    
     const targetDate = new Date(2025, 2, 21, 23, 59, 59).getTime();
 
     // Update countdown every second
@@ -219,6 +219,12 @@ const LandingPage = () => {
       }
   };
 
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
   function handleOpenCommission(): void {
     setOpenCommision(true)
   }
@@ -280,6 +286,7 @@ const LandingPage = () => {
     navigate('/signIn')
   }
 
+
   return (
     <>
 
@@ -294,53 +301,87 @@ const LandingPage = () => {
 
         <header className={styles.header}>
 
-          <div className={styles.container}>
             <div className={styles['flex-title']}>
-              
-              <div className={styles.logo}>
-                <img src={cuLogo} alt="Cu-logo" className={styles['logo-image']} />
-              </div>
 
-              <div className={styles.title}>
+            <div className={styles.container}>
+                
+                <div className={styles.logo}>
+                  <img src={cuLogo} alt="Cu-logo" className={styles['logo-image']} />
+                </div>
 
-                <p className={styles['title-text']}>Kisii University Christian Union</p>
+                <div className={styles.title}>
 
-                {/* Desktop icond */}
-                <div className={styles['nav-one--hidden']}>
-                  {userData ?
-                    <Link to="/changeDetails" className={styles['signUp-btn']}>{userData.username}</Link>
-                   : <Link to="/signUp" className={styles['signUp-btn']}>Sign up</Link>
-                  }
+                  <p className={styles['title-text']}>Kisii University Christian Union</p>
+
+                  {/* Desktop icond */}
+                  <div className={styles['nav-one--hidden']}>
+
             
-                  {userData ?
-                   <Link to="/signIn" className={styles['Login-btn']} onClick={handleLogout}>Log out</Link> :
-                    <Link to="/signIn" className={styles['Login-btn']}>Log in</Link>
-                  }
-                  <div className={styles['About-btn']}>
-                    <a href="#about" className={styles['nav-link']}>
-                      About us
-                    </a>
+                    <div className={styles['About-btn']}>
+                      <a href="#about" className={styles['nav-link']}>
+                        About us
+                      </a>
+                    </div>
+
+                    <div className={styles['Quick-links-btn']} onClick={toggleDropdown} >
+                      <a  className={styles['nav-link-quick-link']}>
+                        Quick Links
+                      </a>
+                      <button className={styles['dropdown-toggle']} type="button" >
+                        {isDropdownOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                      </button>
+                        {/* Dropdown Content */}
+                          {isDropdownOpen && (
+                            <div className={styles['side-bar--links']}>
+                              <Link to="/save" className={styles['quick-item--link']}>Win a Soul</Link>
+                              <Link to="media" className={styles['quick-item--link']}>Media</Link>
+                              
+                                  <a
+                                    href="/pdfs/constitution.pdf"
+                                    download="constitution.pdf"
+                                    className={styles['quick-item--link']}
+                                  >
+                                    Constitution
+                                  </a>
+                                
+                                <Link to="library" className={styles['quick-item--link']}>Library</Link>
+                                <Link to="/financial" className={styles['quick-item--link']}>Financials</Link>
+                                <Link to="/Bs" className={styles['quick-item--link']}>Bible Study</Link>
+
+                                { userData && <Link to="/signIn" className={styles['quick-item--link']} onClick={handleLogout}>Log out</Link> }
+
+                            </div>
+                          )}
+                    </div>
+
+                    {userData ?
+                      <FontAwesomeIcon onClick={handleRedirectToUserInfo}  className={`${styles['user-icon']} `} icon={faUser} />
+                    : <FontAwesomeIcon onClick={handleRedirectToLogin}  className={`${styles['user-icon']} `} icon={faUserLock} />
+                    }
+
                   </div>
                 </div>
-              </div>
 
-              <div className={styles.row} id="hambuger">
-                  <button className={styles['nav-toggle__btn']} onClick={handleNavToggle}>
-                    <div className={styles.hambuger}></div>
-                  </button>
-              </div>
+                <div className={styles['hambuger-div']} id="hambuger">
+                    <button className={styles['nav-toggle__btn']} onClick={handleNavToggle}>
+                      <div className={styles.hambuger}></div>
+                    </button>
+                </div>
 
-              <div className={`${styles['user-icon-container']} `}>
+                <div className={`${styles['user-icon-container']} `}>
 
-                {userData ?
-                    <FontAwesomeIcon onClick={handleRedirectToUserInfo}  className={`${styles['user-icon']} `} icon={faUser} />
-                   : <FontAwesomeIcon onClick={handleRedirectToLogin}  className={`${styles['user-icon']} `} icon={faUserLock} />
-                  }
+                  {userData ?
+                      <FontAwesomeIcon onClick={handleRedirectToUserInfo}  className={`${styles['user-icon']} `} icon={faUser} />
+                    : <FontAwesomeIcon onClick={handleRedirectToLogin}  className={`${styles['user-icon']} `} icon={faUserLock} />
+                    }
 
-
-              </div>
+                </div>
 
             </div>
+
+          </div>
+
+          <div className={styles.container}>
 
             <div className={styles.nav}>
               <div className={styles['nav-one']}>
@@ -389,49 +430,27 @@ const LandingPage = () => {
                 <hr />
               </ul>
             </div>
-            
+          </div>
+
             {error && <div className={styles.error}>{error}</div>}
-            <div className={styles['intro-video--header']}>
-              {/* <div className={styles['video-intro']}>
-                <img src={introVid} alt="Intro Video" />
+                
+            <div className={`${styles['']} ${styles['container-vidTitle']}`}>
+                
+              <div className={styles['intro-video--header']}>
+                <div className={styles['video-intro']}>
+                <div className={styles['intro-video']} style={{ backgroundImage: `url(${images[currentIndex].url})` }} dangerouslySetInnerHTML={{ __html: images[currentIndex].text }}></div>
                   <span className={styles["commission-claimer"]} onClick={handleOpenCommission}>
                     <FontAwesomeIcon icon={faQuestion} beatFade />
                   </span>
-              </div> */}
-
-              <div className={styles['video-intro']}>
-              <div className={styles['intro-video']} style={{ backgroundImage: `url(${images[currentIndex].url})` }} dangerouslySetInnerHTML={{ __html: images[currentIndex].text }}></div> 
-            
-                <span className={styles["commission-claimer"]} onClick={handleOpenCommission}>
-                  <FontAwesomeIcon icon={faQuestion} beatFade />
-                </span>
+                </div>
+                
               </div>
 
-              <div className={styles['side-bar--links']}>
-                <h3 className={styles['quick-links']}>Quick Links</h3>
-                <ul className={styles['quick-nav--links']}>
-                <li className={styles['quick-item']}><Link to="/save" className={styles['quick-item--link']}>Win a Soul</Link></li>
-                  <li className={styles['quick-item']}><Link to="media" className={styles['quick-item--link']}>Media</Link></li>
-                  <li className={styles['quick-item']}>
-                    <a 
-                      href="/pdfs/constitution.pdf" 
-                      download="constitution.pdf" 
-                      className={styles['quick-item--link']}
-                      >Constitution
-                    </a>
-                  </li>
-                  <li className={styles['quick-item']}><Link to="library" className={styles['quick-item--link']}>Library</Link></li>
-                  <li className={styles['quick-item']}><Link to="/financial" className={styles['quick-item--link']}>Financials</Link></li>
-                  <li className={styles['quick-item']}><Link to="/Bs" className={styles['quick-item--link']}>bible study</Link></li>
-                </ul>
-              </div>
             </div>
-          </div>
 
         </header>
 
         {  openCommission &&
-
           <div className={styles.commission2024}>
 
             <p className={styles.commissionTitle}>
@@ -473,7 +492,6 @@ const LandingPage = () => {
             </p>
 
           </div>
-
         }
 
         <div className={styles.main}>

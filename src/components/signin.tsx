@@ -5,6 +5,7 @@ import cuLogo from '../assets/KSUCU logo updated document.png';
 import { Link, useNavigate } from 'react-router-dom';
 import loadingAnime from '../assets/Animation - 1716747954931.gif';
 import googleIcon from '../assets/googleIcon.png'
+import {Eye, EyeOff} from 'lucide-react'
 
 const googleAuth = 'https://ksucu-mc.co.ke/auth/google';
 
@@ -20,6 +21,12 @@ const SignIn: React.FC = () => {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
         setFormData({ ...formData, [id]: value });
+    };
+
+    const [showPassword, setShowPassword] = useState(false);
+
+    const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
     };
 
     const handleSubmit = async () => {
@@ -111,12 +118,23 @@ const SignIn: React.FC = () => {
 
                     <div>
                         <label htmlFor="email">e-mail</label>
-                        <input type="email" id="email" value={formData.email} onChange={handleChange} required />
+                        <input type="email" id="email" className={styles['input']} value={formData.email} onChange={handleChange} required />
                     </div>
 
                     <div>
                         <label htmlFor="password">Password</label>
-                        <input type="password" id="password" value={formData.password} onChange={handleChange} required />
+                            <section className={styles['password-wrapper']}>
+                                <input
+                                type={showPassword ? "text" : "password"}
+                                id="password"
+                                className={styles['input-pswd']}
+                                value={formData.password}
+                                onChange={handleChange}
+                                />
+                                <button type="button" className={styles['eye-button']} onClick={togglePasswordVisibility}>
+                                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                </button>
+                            </section>
                     </div>
 
                 </form>

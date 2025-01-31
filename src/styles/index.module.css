@@ -83,7 +83,7 @@ html{
 }
 
 .user-icon{
-    border: 1px solid #494949;
+    border: 1px solid #555555;
     border-radius: 100%;
     padding: 5px;
     width: 20px;
@@ -100,8 +100,7 @@ html{
 
 
 .video-intro{
-    aspect-ratio: 16/9;
-    margin: 20px  auto 0 auto;
+    margin: 0  auto 0 auto;
     width: 90%;
 }
 .intro-video{
@@ -133,7 +132,9 @@ html{
 }
 
 .main{
+    margin-top: 50px;
     padding: 20px;
+    background: #f1f1f1;
 }
 
 .main-quick--links{
@@ -168,7 +169,7 @@ html{
 .call-to-action-text{
     padding:5px 10px;
     border-radius: 20px;
-    width: 80%;
+    width: 90%;
     text-align: center;
     margin: -40px auto;
 
@@ -199,7 +200,6 @@ html{
 .boards-title{
     margin:10px 30px;
 }
-
 
 
 .ministries-item,
@@ -477,10 +477,6 @@ hr{
     margin: .5rem 0 !important ;
 }
 
-.error{
-    color: #fff;
-}
-
 .newsReportDiv{
     width: 100%;
 }
@@ -492,7 +488,25 @@ hr{
     margin-top: 20px;
 }
 
+@media(min-width:490px){
+    .user-icon-container{
+        align-self: center;
+    }
+}
+
 @media(min-width:600px) {
+    .hambuger-div{
+        display: none;
+    }
+
+    .user-icon-container{
+        display: none;
+    }
+
+    .title{
+        display: flex;
+        justify-content: space-between;
+    }
 
     .containerOthers{
         padding: 20px 0px 30px 0px;
@@ -527,18 +541,27 @@ hr{
         transform: translateY(-70%);
     }
 
-    .intro-video--header{
+    .container .intro-video--header{
         display: flex;
 
-        /* margin-top: 30px; */
         margin-bottom: 40px;
+
+    }
+    .intro-video--header{
+        padding: 30px 0;
+
+    }
+    .intro-video{
+        aspect-ratio: 2/1;
+        border-radius: 8px;
     }
     .main-quick--links{
         display: none;
     }
 
     .video-intro{
-        width: 50%;
+        width: 70%;
+        border-radius: 10px;
     }
 
     .quick-links{
@@ -546,9 +569,13 @@ hr{
     }
 
     .side-bar--links{
-        display: inline;
-        width: 20%;
-        margin-top: 20px;
+        position: absolute;
+        background-color: #ffffff;
+        display: inline-block;
+        margin-top: 25px;
+        z-index: 10;
+
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); 
     }
 
     .products-splitter--hidden{
@@ -556,15 +583,20 @@ hr{
     }
 
     .quick-item--link{
-        display: inline-block ;
-        margin: 10px;
-        color: #fff;
+        display: block;
+        color: #1f1f1f;
+        margin: 7px 10px;
+        font-size: .9rem;
+        text-decoration: underline;
+        color: #730051;
     }
+
     .cta-text{
         font-size: 1.2rem;
     }
 
     .call-to-action-text{
+        width: 60%;
         padding: 10px;
     }
 
@@ -621,4 +653,28 @@ hr{
 
 
 
+}
+
+
+@media(min-width:605px){
+
+
+    .flex-title .container{
+        width: 95%;
+    }
+
+    .main-flex{
+        width: 80%;
+    }
+}
+
+@media(min-width:800px){
+
+    .flex-title .container{
+        width: 70%;
+    }
+
+    .main-flex{
+        width: 33%;
+    }
 }
