@@ -78,8 +78,8 @@ const SuperAdmin: React.FC = () => {
         <>
             <Header />
             <div className={styles.container}>
-                <h4>Total Users: {userCount}</h4>
-                <h5>Users by Year of Study:</h5>
+                <h4>Total Students: {userCount}</h4>
+                <h5>Category by Year of Study:</h5>
                 <ul>
                     {Object.entries(usersByYos).map(([yos, count]) => (
                         <li key={yos}>YOS {yos} - {count} students</li>
