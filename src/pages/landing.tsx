@@ -464,9 +464,11 @@ const LandingPage = () => {
               </button>
             </p>
 
-            <p className={styles.commissionButtonDiv}>
-              <Link className={styles.anonymousSendMessage} to={"/recomendations"}>Send us anonymous message</Link>
-            </p>
+            {userData && 
+              <p className={styles.commissionButtonDiv}>
+                <Link className={styles.anonymousSendMessage} to={"/recomendations"}>Send us anonymous message</Link>
+              </p>
+            }
 
             <div className={styles.newsReportDiv}>
 
@@ -484,11 +486,10 @@ const LandingPage = () => {
 
             </div>
 
-              {userData && 
                 <p className={styles.cancelBtn} onClick={handleCloseCommission}>
                   <FontAwesomeIcon icon={faXmark} />
                 </p>
-              }
+              
 
           </div>
         }
