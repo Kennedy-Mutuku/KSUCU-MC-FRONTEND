@@ -184,7 +184,7 @@ const ChangeDetails: React.FC = () => {
               <option>choose...</option>
               <option value="rivet">Rivet</option>
               <option value="cet">Cet</option>
-              <option value="ecet">Ecet</option>
+              <option value="eset">Eset</option>
               <option value="net">Net</option>
               <option value="weso">Weso</option>
             </select>

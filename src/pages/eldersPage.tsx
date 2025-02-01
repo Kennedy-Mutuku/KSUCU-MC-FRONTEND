@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styles from '../styles/elders.module.css';
 import Header from '../components/header';
 import Footer from '../components/footer';
-import img from '../assets/elders-Attire.png';
+import img from '../assets/elders-Attire.jpg';
 import whatsappIcon from '../assets/Download Whatsapp logo_ 3d render_.png'; // Add your WhatsApp icon image here
 
 const Elders: React.FC = () => {

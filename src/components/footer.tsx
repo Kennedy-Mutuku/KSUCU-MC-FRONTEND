@@ -19,7 +19,7 @@ const Footer = () => {
                 </div>
 
                 <div className={styles['tiktok']}>
-                    <a href="" className={styles['social-link']}><FaTiktok /></a>
+                    <a href="https://www.tiktok.com/@ksucumc" className={styles['social-link']}><FaTiktok /></a>
                 </div>
             </div>
         </div>

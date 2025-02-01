@@ -16,7 +16,7 @@ import { faRocket } from '@fortawesome/free-solid-svg-icons';
 import visionImg from '../assets/gents.jpg'
 import missionImg from '../assets/ladies.jpg'
 import valuesImg from '../assets/amptheatre.jpg'
-import prayerPNG from '../assets/prayer.png'
+import prayerPNG from '../assets/prayer.jpg'
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 import { faUserLock } from '@fortawesome/free-solid-svg-icons';
 import { ChevronDown, ChevronUp } from "lucide-react";
@@ -844,7 +844,7 @@ const LandingPage = () => {
             
                               <p className={styles.objectivesTitle}>Discipleship</p>
                               <ul className={styles.subList}>
-                                <li>To deepen and strengthen spiritual lives of its members through the study of The Bible, prayers, Christian fellowships, and obedience to God.</li>
+                                <li>To deepen and strengthen spiritual lives of its members through the study of The Bible, prayers, Christian fellowships, and obedience to God. <span ><Link className={styles.registerSpan} to={"/Bs"}>Register for bible study today</Link> </span></li>
                                 <li>To encourage responsible membership through the exercise of various spiritual gifts.</li>
                               </ul>
             
@@ -872,15 +872,15 @@ const LandingPage = () => {
 
             <div className={styles['social--links']}>
                 <div className={styles['youtube']}>
-                    <a href="https://www.youtube.com/@KSUCU-MC" className={styles['social-link']}><FaYoutube /></a>
+                    <a href="https://www.youtube.com/@KSUCU-MC" target="blank" className={styles['social-link']}><FaYoutube /></a>
                 </div>
 
                 <div className={styles['facebook']}>
-                    <a href="https://www.facebook.com/ksucumc" className={styles['social-link']}><FaFacebook /></a>
+                    <a href="https://www.facebook.com/ksucumc" target="blank" className={styles['social-link']}><FaFacebook /></a>
                 </div>
 
                 <div className={styles['tiktok']}>
-                    <a href="" className={styles['social-link']}><FaTiktok /></a>
+                    <a href="https://www.tiktok.com/@ksucumc" target="blank" className={styles['social-link']}><FaTiktok /></a>
                 </div>
             </div>
 

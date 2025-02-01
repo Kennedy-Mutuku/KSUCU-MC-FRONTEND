@@ -39,10 +39,12 @@ const SignIn: React.FC = () => {
 
         const domainMappings = [
             { domain: '@ksucumcnewsadmin.co.ke', endpoint: 'https://ksucu-mc.co.ke/adminnews/login', route: '/adminnews' },
-            // Add more mappings as needed
+
             { domain: '@ksucumcmissionadmin.co.ke', endpoint: 'https://ksucu-mc.co.ke/adminmission/login', route: '/adminmission' },
 
             { domain: 'admin@ksucumcbsadmin.co.ke', endpoint: 'https://ksucu-mc.co.ke/adminBs/login', route: '/adminBs' },
+
+            { domain: 'admin@ksucumcsuperadmin.co.ke', endpoint: 'http://ksucu-mc.co.ke/sadmin/login', route: '/admin' },
         ];
     
         // Check if the user is online

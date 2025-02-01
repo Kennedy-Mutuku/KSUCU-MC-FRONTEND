@@ -21,6 +21,8 @@ import BsMembersList from "./adminBs";
 import Library from "./library";
 import Media from "./media"
 import Elders from "./eldersPage"
+import FeedbackForm from "../components/feedBackForm";
+import SuperAdmin from "./superAdmin";
 
 export const router = createBrowserRouter([
     {
@@ -49,9 +51,9 @@ export const router = createBrowserRouter([
             {path: "/library", element: <Library />},
             {path: "/media", element: <Media />},
             {path: "/elders", element: <Elders />},
+            {path: "/recomendations", element: <FeedbackForm />},
+            {path: "/admin", element: <SuperAdmin />},
             {path: "*", element: <NoPage />}
         ]
     }
 ]);
-
-

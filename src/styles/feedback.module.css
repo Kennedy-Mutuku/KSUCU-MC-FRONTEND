@@ -1,0 +1,19 @@
+@import url(bs.module.css);
+
+.submission{
+    text-align: center;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.submitButton{
+    display: block;
+    border: none;
+    box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.2);
+    background: var(--blue-color);
+    padding: 5px 20px;
+    border-radius: 5px;
+}
+
+

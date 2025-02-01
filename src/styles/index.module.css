@@ -603,6 +603,10 @@ hr{
     text-align: center;
 }
 
+.registerSpan{
+    color: #730051;
+}
+
 @media(min-width:600px) {
 
     .containerAbout .container{
