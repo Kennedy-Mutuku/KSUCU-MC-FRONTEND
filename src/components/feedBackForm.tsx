@@ -34,7 +34,7 @@ const FeedbackForm: React.FC = () => {
 
         setLoading(true);
         try {
-            const response = await axios.post('http://ksucu-mc.co.ke/users/recomendations', formData);
+            const response = await axios.post('https://ksucu-mc.co.ke/users/recomendations', formData);
             console.log('Response:', response.status);
             setError('Feedback submitted successfully!');
         } catch (error: any) {
@@ -56,7 +56,7 @@ const FeedbackForm: React.FC = () => {
             {error && <div className={styles.error}>{error}</div>}
 
             <div className={styles.container}>
-                <h2 className={styles.text}>Submit Your Feedback</h2>
+                <h2 className={styles.text}>Submit Your Suggestions, Feedbacks or concerns</h2>
 
                 <form className={styles.form} onSubmit={handleSubmit}>
                     <div>

@@ -463,11 +463,12 @@ const LandingPage = () => {
                 Book your space now
               </button>
             </p>
+
+            <p className={styles.commissionButtonDiv}>
+              <Link className={styles.anonymousSendMessage} to={"/recomendations"}>Send us anonymous message</Link>
+            </p>
+
             <div className={styles.newsReportDiv}>
-              {/* <p className={styles.newsReport}>
-                  <img className={styles.newsReportimg} src={newsData.imageUrl} alt="news image" />
-                  <span className={styles.newsReportImage}>{newsData.title}<Link to="/news">...readmore</Link></span>
-              </p> */}
 
               {newsData ? (
                 <p className={styles.newsReport}>
@@ -482,6 +483,8 @@ const LandingPage = () => {
               )}
 
             </div>
+
+
 
             <p className={styles.cancelBtn} onClick={handleCloseCommission}>
               <FontAwesomeIcon icon={faXmark} />

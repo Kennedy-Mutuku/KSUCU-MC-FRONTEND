@@ -12,7 +12,7 @@ const SuperAdmin: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
-    const backEndURL = 'http://ksucu-mc.co.ke/sadmin';
+    const backEndURL = 'https://ksucu-mc.co.ke/sadmin';
 
     useEffect(() => {
         fetchUserData();

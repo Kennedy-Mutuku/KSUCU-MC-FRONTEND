@@ -31,6 +31,9 @@ html{
 .newsReport span{
     width: 70%;
 }
+.anonymousSendMessage{
+    color: #730051;
+}
 
 .hambuger,
 .hambuger::before,
