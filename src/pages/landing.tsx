@@ -484,11 +484,11 @@ const LandingPage = () => {
 
             </div>
 
-
-
-            <p className={styles.cancelBtn} onClick={handleCloseCommission}>
-              <FontAwesomeIcon icon={faXmark} />
-            </p>
+              {userData && 
+                <p className={styles.cancelBtn} onClick={handleCloseCommission}>
+                  <FontAwesomeIcon icon={faXmark} />
+                </p>
+              }
 
           </div>
         }
