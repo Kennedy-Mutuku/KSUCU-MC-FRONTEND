@@ -113,6 +113,19 @@ const ChangeDetails: React.FC = () => {
       console.log(response.data);
       setSuccessMessage('Details updated successfully')
       setError('')
+
+      setFormData({
+        username: '',
+        phone: '',
+        email: '',
+        course: '',
+        reg: '',
+        yos: '',
+        ministry: '',
+        et: '',
+        password: ''
+      })
+      
     } catch (error) {
       console.error("Error updating details", error);
       setError('Error updating details')

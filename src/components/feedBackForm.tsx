@@ -37,6 +37,12 @@ const FeedbackForm: React.FC = () => {
             const response = await axios.post('https://ksucu-mc.co.ke/users/recomendations', formData);
             console.log('Response:', response.status);
             setError('Feedback submitted successfully!');
+                    // Clear form inputs after successful submission
+            setFormData({
+                title: '',
+                message: '',
+                anonymous: false
+            });
         } catch (error: any) {
             console.error('Error:', error.status);
             if(error.status === 401){

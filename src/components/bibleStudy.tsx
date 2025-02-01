@@ -39,6 +39,14 @@ const Bs: React.FC = () => {
             const response = await axios.post('https://ksucu-mc.co.ke/users/bibleStudy', formData);
             console.log('Response:', response.status);
             setError('Form submitted successfully!');
+                    // Clear form inputs after successful submission
+        setFormData({
+            name: '',
+            residence: '',
+            yos: '',
+            phone: '',
+            gender: '' 
+        });
         } catch (error:any) {
             if (error.response && error.response.status === 400) {
                 setError('Phone number already Registered.');
