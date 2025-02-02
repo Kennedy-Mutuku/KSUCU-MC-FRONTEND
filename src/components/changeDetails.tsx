@@ -188,6 +188,7 @@ const ChangeDetails: React.FC = () => {
               <option value="hs">High School</option>
               <option value="compassion">Compassion</option>
               <option value="creativity">Creativity</option>
+              <option value="Choir">Choir</option>
             </select>
           </div>
 

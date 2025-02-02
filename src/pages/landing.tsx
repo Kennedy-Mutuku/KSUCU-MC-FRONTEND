@@ -618,6 +618,9 @@ const LandingPage = () => {
                       <li className={styles['ministries-item']}>
                         <Link to="/ministries#pw" className={styles['ministries-item--link']}>Praise and Worship</Link>
                       </li>
+                      <li className={styles['ministries-item']}>
+                        <Link to="/ministries#choir" className={styles['ministries-item--link']}>Choir</Link>
+                      </li>
                     </ol>
                     </div>
                   </div>

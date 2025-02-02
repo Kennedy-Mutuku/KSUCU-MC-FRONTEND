@@ -117,7 +117,7 @@ const MinistriesPage: React.FC = () => {
           </div>
         </div>
 
-        <div className={`${styles['ministry-section']} ${styles['ministry-section--reverse']}`} id='creativity'>
+        <div className={`${styles['ministry-section']} ${styles['ministry-section--reverse']}`} id='choir'>
           <div className={styles['ministry-section--flex']}>
             <h3 className={styles['ministry-name']}>Choir</h3>
             <p className={styles['ministry-content']}>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam cupiditate, sequi quis ducimus rem, quidem obcaecati illum odit nostrum sed omnis libero, dolore optio porro. Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime deleniti consectetur dolor velit expedita, doloremque quibusdam temporibus consequatur. Ut, sed?</p>
