@@ -692,6 +692,8 @@ const LandingPage = () => {
 
         </div>
 
+        {/* others */}
+
         <div className={styles.containerOthers}>
           
           <div className={styles.appreciatingTitleText}>
