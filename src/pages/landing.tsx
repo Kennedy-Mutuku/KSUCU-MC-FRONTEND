@@ -677,9 +677,7 @@ const LandingPage = () => {
                 { day: "Tuesday", event: "Ministry Meetings" },
                 { day: "Wednesday", event: "Best P" },
                 { day: "Thursday", event: "ET Fellowship" },
-                { day: "Friday", event: "Friday Fellowship" },
-                { day: "Saturday", event: "Class Fellowship" },
-                { day: "Sunday", event: "Services" }
+                { day: "Friday", event: "Friday Fellowship" }
               ].map((activity, index) => (
                 <div key={index} className={styles.cardClasses}>
                   <h4 className={styles.cardTitle} >{activity.day}: {activity.event}</h4>
@@ -687,6 +685,19 @@ const LandingPage = () => {
                   <p>Venue: Communicated daily</p>
                 </div>
               ))}
+
+                <div  className={styles.cardClasses}>
+                  <h4 className={styles.cardTitle} >Saturday: Class Fellowship</h4>
+                  <p>Time: 9:00 AM to 12:00 PM</p>
+                  <p>Venue: Communicated earlier</p>
+                </div>
+
+                <div  className={styles.cardClasses}>
+                  <h4 className={styles.cardTitle} >Sunday : Services</h4>
+                  <p>First Servics: 7:30 AM to 10:00 AM</p>
+                  <p>Second Service: 10:15 AM to 12:45 PM</p>
+                  <p>Venue: Communicated before service</p>
+                </div>
             </div>
           </div>
 
