@@ -55,6 +55,7 @@ const NewsPage: React.FC = () => {
       <Header />
       <div className={styles.newsPageContainer}>
         <h2 className={styles.title}>Communication Board</h2>
+
         <div className={styles.newsPage}>
           <div className={styles.imageSection}>
             <img src={newsData.imageUrl} alt="News Image" />
@@ -64,6 +65,7 @@ const NewsPage: React.FC = () => {
             <p className={styles.contextTextP}>{newsData.body}</p>
           </div>
         </div>
+        
       </div>
       <Footer />
     </>
