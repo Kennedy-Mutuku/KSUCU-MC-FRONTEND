@@ -716,6 +716,9 @@ hr{
         text-decoration: underline;
         color: #730051;
     }
+    .quick-item--link--desktop:hover{
+        cursor: pointer;
+    }
 
     .cta-text{
         font-size: 1.2rem;

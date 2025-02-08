@@ -284,6 +284,18 @@ const LandingPage = () => {
     navigate('/signIn')
   }
 
+  function navigateMedia() {
+    if(userData){
+      navigate('/media')
+    }else{
+      setError('Login required');
+
+      setTimeout(() => {
+        setError('')
+      }, 5000);
+    }
+  }
+
   return (
     <>
 
@@ -331,7 +343,8 @@ const LandingPage = () => {
                           {isDropdownOpen && (
                             <div className={styles['side-bar--links']}>
                               <Link to="/save" className={styles['quick-item--link--desktop']}>Win a Soul</Link>
-                              <Link to="/media" className={styles['quick-item--link--desktop']}>Media</Link>
+
+                              <span onClick={navigateMedia} className={styles['quick-item--link--desktop']}>Media</span>
                               
                                   <a
                                     href="/pdfs/constitution.pdf"
@@ -405,8 +418,8 @@ const LandingPage = () => {
                 <Link to="/Bs" className={styles['quick-item--link']}>Bible Study</Link>
                 
                   <Link to="/library" className={styles['quick-item--link']}>Library</Link>
-                
-                  <Link to="/media" className={styles['quick-item--link']}>Media</Link>
+                  
+                  <a onClick={navigateMedia} className={styles['quick-item--link']}>Media</a>
                 
                   <a 
                     href="/pdfs/constitution.pdf" 
@@ -490,7 +503,6 @@ const LandingPage = () => {
                   <FontAwesomeIcon icon={faXmark} />
                 </p>
               
-
           </div>
         }
 
