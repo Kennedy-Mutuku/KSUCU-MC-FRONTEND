@@ -288,6 +288,10 @@ const LandingPage = () => {
     if(userData){
       navigate('/media')
     }else{
+
+
+      // navigate('/media')
+
       setError('Login required');
 
       setTimeout(() => {

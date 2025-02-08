@@ -8,7 +8,7 @@ const Media: React.FC = () => {
   const [showMediaEvents, setShowMediaEvents] = useState(false);
 
   const events = [
-    { event: "Subcomm photos", date: "2025-01-19", link: "https://photos.app.goo.gl/PrxWoMuyRNEet22b7" },
+    { event: "Subcomm photos", date: "2025-01-20", link: "https://photos.app.goo.gl/PrxWoMuyRNEet22b7" },
     { event: "Sunday service", date: "2024-22-13", link: "https://photos.app.goo.gl/Vt6HDo1xEtgA3Nmn9" },
     { event: "Worship Weekend", date: "2024-02-10", link: "https://photos.app.goo.gl/wbNV3coJREGEUSZX7" },
     { event: "Bible Study weekend", date: "2024-01-26", link: "https://photos.app.goo.gl/otVcso25sG6fkxjR8" },
