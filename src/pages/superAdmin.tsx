@@ -11,6 +11,10 @@ const SuperAdmin: React.FC = () => {
     const [nonAnonymousFeedback, setNonAnonymousFeedback] = useState<{ name: string, message: string }[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const [usersByMinistry, setUsersByMinistry] = useState<{ [key: string]: number }>({});
+    const [usersByEt, setUsersByEt] = useState<{ [key: string]: number }>({});
+    const [users, setUsers] = useState<{ username: string; reg: string; course: string; yos: string }[]>([]);
+
 
     const backEndURL = 'https://ksucu-mc.co.ke/sadmin';
 
@@ -19,6 +23,26 @@ const SuperAdmin: React.FC = () => {
         fetchFeedback();
     }, []);
 
+    // const fetchUserData = async () => {
+    //     try {
+    //         const response = await axios.get(`${backEndURL}/users`, { withCredentials: true });
+    //         const users = response.data;
+    //         console.log(response.data);
+            
+    //         setUserCount(users.length);
+            
+    //         const groupedUsers: { [key: string]: number } = {};
+
+    //         users.forEach((user: { yos: string }) => {
+    //             groupedUsers[user.yos] = (groupedUsers[user.yos] || 0) + 1;
+    //         });
+    //         setUsersByYos(groupedUsers);
+    //     } catch (err) {
+    //         console.error('Error fetching user data:', err);
+    //         setError('Failed to fetch user data');
+    //     }
+    // };
+
     const fetchUserData = async () => {
         try {
             const response = await axios.get(`${backEndURL}/users`, { withCredentials: true });
@@ -26,18 +50,28 @@ const SuperAdmin: React.FC = () => {
             console.log(response.data);
             
             setUserCount(users.length);
-            
-            const groupedUsers: { [key: string]: number } = {};
-            users.forEach((user: { yos: string }) => {
-                groupedUsers[user.yos] = (groupedUsers[user.yos] || 0) + 1;
+            setUsers(users); // Store users for the table
+    
+            // Categorizing users by yos, ministry, and et
+            const groupedByYos: { [key: string]: number } = {};
+            const groupedByMinistry: { [key: string]: number } = {};
+            const groupedByEt: { [key: string]: number } = {};
+    
+            users.forEach((user: { yos: string, ministry: string, et: string }) => {
+                groupedByYos[user.yos] = (groupedByYos[user.yos] || 0) + 1;
+                groupedByMinistry[user.ministry] = (groupedByMinistry[user.ministry] || 0) + 1;
+                groupedByEt[user.et] = (groupedByEt[user.et] || 0) + 1;
             });
-            setUsersByYos(groupedUsers);
+    
+            setUsersByYos(groupedByYos);
+            setUsersByMinistry(groupedByMinistry);
+            setUsersByEt(groupedByEt);
         } catch (err) {
             console.error('Error fetching user data:', err);
             setError('Failed to fetch user data');
         }
     };
-
+    
     const fetchFeedback = async () => {
         try {
             const response = await axios.get(`${backEndURL}/feedback`, { withCredentials: true });
@@ -67,7 +101,7 @@ const SuperAdmin: React.FC = () => {
     };
 
     if (loading) {
-        return <p>Loading data...</p>;
+        return <p>Loading ......</p>;
     }
 
     if (error) {
@@ -79,12 +113,28 @@ const SuperAdmin: React.FC = () => {
             <Header />
             <div className={styles.container}>
                 <h4>Total Students: {userCount}</h4>
+
                 <h5>Category by Year of Study:</h5>
                 <ul>
                     {Object.entries(usersByYos).map(([yos, count]) => (
                         <li key={yos}>YOS {yos} - {count} students</li>
                     ))}
                 </ul>
+
+                <h5>Category by Ministry:</h5>
+                <ul>
+                    {Object.entries(usersByMinistry).map(([ministry, count]) => (
+                        <li key={ministry}>{ministry} - {count} students</li>
+                    ))}
+                </ul>
+
+                <h5>Category by ET:</h5>
+                <ul>
+                    {Object.entries(usersByEt).map(([et, count]) => (
+                        <li key={et}>{et} - {count} students</li>
+                    ))}
+                </ul>
+
                 
                 <h5>Feedback</h5>
                 <div className={styles.feedbackSection}>
@@ -105,6 +155,29 @@ const SuperAdmin: React.FC = () => {
                         </ul>
                     </div>
                 </div>
+
+                <h5>List of all Students</h5>
+                <table className={styles.studentTable}>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Reg</th>
+                            <th>Course</th>
+                            <th>Year of Study (YOS)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {users.map((user, index) => (
+                            <tr key={index}>
+                                <td>{user.username}</td>
+                                <td>{user.reg}</td>
+                                <td>{user.course}</td>
+                                <td>{user.yos}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+
             </div>
             <Footer />
         </>
@@ -112,3 +185,4 @@ const SuperAdmin: React.FC = () => {
 };
 
 export default SuperAdmin;
+

@@ -41,7 +41,6 @@ export const router = createBrowserRouter([
             {path: "/forgotPassword", element: <Forgotpassword />},
             {path: "/fellowshipsandclasses", element: <ClassesSection />},
             {path: "/boards", element: <BoardsPage />},
-            {path: "/boards", element: <BoardsPage />},
             {path: "/changeDetails", element: <ChangeDetails />},
             {path: "/news", element: <NewsPage />},
             {path: "/adminnews", element: <PhotoUploadPage />},

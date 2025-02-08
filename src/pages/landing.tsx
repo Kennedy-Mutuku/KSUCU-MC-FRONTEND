@@ -289,7 +289,6 @@ const LandingPage = () => {
       navigate('/media')
     }else{
 
-
       // navigate('/media')
 
       setError('Login required 😔');
