@@ -292,7 +292,7 @@ const LandingPage = () => {
 
       // navigate('/media')
 
-      setError('Login required');
+      setError('Login required 😔');
 
       setTimeout(() => {
         setError('')
@@ -417,6 +417,7 @@ const LandingPage = () => {
             </div>
 
             <div className={styles['main-quick--links']}>
+                {error && <div className={styles.error}>{error}</div>}
                 <Link to="/save" className={styles['quick-item--link']}>Win a Soul</Link>
                 
                 <Link to="/Bs" className={styles['quick-item--link']}>Bible Study</Link>
