@@ -1,0 +1,203 @@
+/* ChoirCommitment.module.css */
+
+:root {
+    --primary-color: #1e3a8a;
+    --primary-hover-color: #1d4ed8;
+    --secondary-color: #6b7280;
+    --background-color: #f9fafb;
+    --surface-color: #ffffff;
+    --error-color: #ef4444;
+    --error-hover-color: #dc2626;
+    --border-color: #d1d5db;
+    --text-color: #1a1a1a;
+    --text-muted-color: #4b5563;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --radius: 8px;
+  }
+  
+  /* General Styles */
+  .container {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .commitmentForm {
+    background: var(--surface-color);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.5rem;
+    max-width: 800px;
+    margin: 2rem auto;
+    width: 100%;
+  }
+  
+  .formTitle {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+  
+  .textMuted {
+    font-size: 1rem;
+    color: var(--text-muted-color);
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  /* Section Styles */
+  .section {
+    margin-bottom: 2rem;
+  }
+  
+  .sectionTitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .customList {
+    list-style-type: none;
+    padding-left: 0;
+  }
+  
+  .customList li {
+    font-size: 1rem;
+    color: var(--text-muted-color);
+    margin-bottom: 0.75rem;
+    padding-left: 1.5rem;
+    position: relative;
+    line-height: 1.5;
+  }
+  
+  .customList li::before {
+    content: '•';
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    position: absolute;
+    left: 0;
+    top: -0.25rem;
+  }
+  
+  /* Form Control Styles */
+  .formControl {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    font-size: 1rem;
+    color: var(--text-color);
+    background-color: var(--background-color);
+    transition: border-color 0.3s ease;
+  }
+  
+  .formControl:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+  }
+  
+  textarea.formControl {
+    resize: vertical;
+  }
+  
+  /* Signature Section */
+  .signatureContainer {
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 1rem;
+    background-color: var(--background-color);
+    margin-top: 0.5rem;
+  }
+  
+  .signatureCanvas {
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    background-color: var(--surface-color);
+  }
+  
+  .clearButton {
+    margin-top: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: var(--error-color);
+    color: var(--surface-color);
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .clearButton:hover {
+    background-color: var(--error-hover-color);
+  }
+  
+  /* Row and Column Layout */
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .col {
+    flex: 1;
+    min-width: 200px; /* Ensures columns don't get too narrow */
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  /* Button Styles */
+  .btnPrimary {
+    padding: 1rem 2rem;
+    background-color: var(--primary-color);
+    color: var(--surface-color);
+    border: none;
+    border-radius: var(--radius);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .btnPrimary:hover {
+    background-color: var(--primary-hover-color);
+  }
+  
+  /* Text Center */
+  .textCenter {
+    text-align: center;
+  }
+  
+  /* Responsive Adjustments */
+  @media (max-width: 768px) {
+    .formTitle {
+      font-size: 1.5rem;
+    }
+  
+    .sectionTitle {
+      font-size: 1.1rem;
+    }
+  
+    .row {
+      flex-direction: column;
+    }
+  
+    .col {
+      min-width: 100%;
+    }
+  
+    .btnPrimary {
+      width: 100%;
+      padding: 1rem;
+    }
+}

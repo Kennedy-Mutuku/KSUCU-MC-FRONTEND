@@ -23,6 +23,9 @@ import Media from "./media"
 import Elders from "./eldersPage"
 import FeedbackForm from "../components/feedBackForm";
 import SuperAdmin from "./superAdmin";
+import PraiseandWorshipCommitment from "../commitmentForms/praiseandWorship";
+import ChoirCommitment from "../commitmentForms/Choir";
+import InstrumentalistsCommitment from "../commitmentForms/instrumentalists";
 
 export const router = createBrowserRouter([
     {
@@ -52,6 +55,9 @@ export const router = createBrowserRouter([
             {path: "/elders", element: <Elders />},
             {path: "/recomendations", element: <FeedbackForm />},
             {path: "/admin", element: <SuperAdmin />},
+            {path: "/p&w", element: <PraiseandWorshipCommitment />},
+            {path: "/choir", element: <ChoirCommitment />},
+            {path: "/wananzambe", element: <InstrumentalistsCommitment />},
             {path: "*", element: <NoPage />}
         ]
     }
