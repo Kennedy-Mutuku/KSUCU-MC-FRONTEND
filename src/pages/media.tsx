@@ -13,6 +13,7 @@ const Media: React.FC = () => {
     { event: "Worship Weekend", date: "2024-02-10", link: "https://photos.app.goo.gl/wbNV3coJREGEUSZX7" },
     { event: "Bible Study weekend", date: "2024-01-26", link: "https://photos.app.goo.gl/otVcso25sG6fkxjR8" },
     { event: "Evangelism photos", date: "2024-02-02", link: "https://photos.app.goo.gl/JvqV19BaGGZwrVFS7" },
+    { event: "Weekend Photoss", date: "2024-02-09", link: "https://photos.app.goo.gl/HkBvW67gyDSvLqgS7" },
   ];
 
   return (
@@ -26,10 +27,10 @@ const Media: React.FC = () => {
           <div className={styles['link-flex']}>
             <div className={styles['first-links']}>
               <ul className={styles['first-link--list']}>
-                <li className={styles['first-link--item']}><a href="https://www.youtube.com/results?search_query=kisii+university+christian+union" className={styles['first-link']}>YOUTUBE</a></li>
-                <li className={styles['first-link--item']}><a href="https://web.facebook.com/@Kisiiuniversityofficial/?_rdc=1&_rdr#" className={styles['first-link']}>FACEBOOK</a></li>
-                <li className={styles['first-link--item']}><a href="/" className={styles['first-link']}>TIKTOK</a></li>
-                <li className={styles['first-link--item']}><a href="/" className={styles['first-link']}>TWITTER</a></li>
+                <li className={styles['first-link--item']}><a href="https://www.youtube.com/results?search_query=kisii+university+christian+union" target='_blank' className={styles['first-link']}>YOUTUBE</a></li>
+                <li className={styles['first-link--item']}><a href="https://web.facebook.com/ksucumc/?_rdc=1&_rdr#" target='_blank' className={styles['first-link']}>FACEBOOK</a></li>
+                <li className={styles['first-link--item']}><a href="https://www.tiktok.com/@ksucumc" target='_blank' className={styles['first-link']}>TIKTOK</a></li>
+                <li className={styles['first-link--item']}><a href="https://x.com/@Ksucu_mc" target='_blank' className={styles['first-link']}>TWITTER</a></li>
               </ul>
             </div>
 
@@ -37,7 +38,7 @@ const Media: React.FC = () => {
               <ul className={styles['first-link--list']}>
                 <li className={styles['first-link--item']}><Link to="/news" className={styles['first-link']}>NEWS</Link></li>
                 <li className={styles['first-link--item']} onClick={() => setShowMediaEvents(true)} ><a className={styles['first-link']}>GALLERY</a></li>
-                <li className={styles['first-link--item']}><a href="https://www.youtube.com/results?search_query=kisii+university+christian+union" className={styles['first-link']}>YOUTUBE</a></li>
+                <li className={styles['first-link--item']}><a href="https://www.youtube.com/results?search_query=kisii+university+christian+union" target='_blank' className={styles['first-link']}>YOUTUBE</a></li>
                 <li className={styles['first-link--item']}><Link to="/library" className={styles['first-link']}>E-LIBRARY</Link></li>
               </ul>
             </div>
