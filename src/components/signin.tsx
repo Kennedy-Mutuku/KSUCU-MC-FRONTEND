@@ -118,12 +118,12 @@ const SignIn: React.FC = () => {
 
                 <form action="" className={styles['form']}>
 
-                    <div>
+                    <div className={styles['form-div']}>
                         <label htmlFor="email">e-mail</label>
                         <input type="email" id="email" className={styles['input']} value={formData.email} onChange={handleChange} required />
                     </div>
 
-                    <div>
+                    <div className={styles['form-div']}>
                         <label htmlFor="password">Password</label>
                             <section className={styles['password-wrapper']}>
                                 <input

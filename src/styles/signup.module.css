@@ -46,18 +46,59 @@
     height: 15vh;
 }
 
+.ministry-container {
+    position: relative;
+    width: 100%;
+}
 
+.ministry-header {
+    padding: 10px;
+    cursor: pointer;
+    background: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 5px;
+}
+
+.ministry-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    border: 1px solid #ccc;
+    background: white;
+    max-height: 200px;
+    overflow-y: auto;
+    border-radius: 5px;
+    margin-top: 5px;
+    z-index: 100;
+
+    box-shadow: var(--bs);
+}
+
+.ministry-item {
+    display: flex;
+    align-items: baseline;
+    padding: 8px 10px;
+}
+
+.ministry-item input {
+    margin-right: 10px;
+}
 
 .text{
     text-align: center;
 }
+
 .form{
     /* border: 2px solid red; */
     margin: 0 auto;
     width: 90%;
     position: relative;
 }
-.form div{
+.form-div,
+.password-container{
     /* border: 2px solid purple; */
     margin:0 auto 20px auto;
     display: flex;
@@ -69,7 +110,8 @@
     width: 40%;
 }
 .form .input,
-.form select{
+.form select,
+.ministry-container{
     width: 60%;
     margin: 0;
 }
