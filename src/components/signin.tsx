@@ -64,7 +64,7 @@ const SignIn: React.FC = () => {
             // Find the matching configuration based on the email domain
             const { endpoint, route } = domainMappings.find(mapping =>
                 formData.email?.endsWith(mapping.domain)
-            ) || { endpoint: 'https://ksucu-mc.co.ke/users/login', route: '/' }; // Default to user login if no match
+            ) || { endpoint: 'http://localhost:3000/users/login', route: '/' }; // Default to user login if no match
     
             const response = await axios.post(endpoint, formData, {
                 withCredentials: true, // Include cookies in the request

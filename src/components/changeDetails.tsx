@@ -116,55 +116,8 @@ const ChangeDetails: React.FC = () => {
     return regex.test(input);
   }
 
-  // const handleSubmit = async () => {
-
-  //   // Check if any field is empty
-  //   for (const [key, value] of Object.entries(formData)) {
-  //       if (!value) {
-  //           setError(`Please fill in the ${key} field 😊`);
-  //           return;
-  //       }
-  //   }
-
-  //   if (!validatePhone(formData.phone)) {
-  //     setError('Phone number must be 10 digits starting with 0 and having no spaces 🤨');
-  //     return
-  //   } 
-    
-  //   if (!validateYOS(formData.yos)) {
-  //     setError('Year of study must be a number between 1 and 6. 🤨');
-  //     return;
-  //   }
-
-  //   setLoading(true);
-
-  //   try {
-  //     const response = await axios.put('https://ksucu-mc.co.ke/users/update', formData, { withCredentials: true });
-  //     console.log(response.data);
-  //     setSuccessMessage('Details updated successfully')
-  //     setError('')
-
-  //     setFormData({
-  //       username: '',
-  //       phone: '',
-  //       email: '',
-  //       course: '',
-  //       reg: '',
-  //       yos: '',
-  //       ministry: '',
-  //       et: '',
-  //       password: ''
-  //     })
-      
-  //   } catch (error) {
-  //     console.error("Error updating details", error);
-  //     setError('Error updating details')
-  //   }finally{
-  //     setLoading(false)
-  //   }
-  // };
-
   const handleSubmit = async () => {
+    
     // Convert selected ministries array to a comma-separated string
     const ministriesString = selectedMinistries.join(', ');
   
@@ -180,6 +133,12 @@ const ChangeDetails: React.FC = () => {
         setError(`Please fill in the ${key} field 😊`);
         return;
       }
+    }
+
+    // Validate ET selection
+    if (finalFormData.et === "choose..." || finalFormData.et.trim() === "") {
+      setError("Please select a valid ET option 😊");
+      return;
     }
   
     if (!validatePhone(finalFormData.phone)) {
@@ -300,7 +259,7 @@ const ChangeDetails: React.FC = () => {
           </div>
 
           <div className={styles['form-div']}>
-            <label htmlFor="et">ET</label>
+            <label htmlFor="et">E.T</label>
             <select id="et" className={styles['select']} value={formData.et} onChange={handleChange}>
               <option>choose...</option>
               <option value="rivet">Rivet</option>
