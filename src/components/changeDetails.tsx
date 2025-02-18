@@ -156,7 +156,6 @@ const ChangeDetails: React.FC = () => {
     }
   };
   
-
   function validateYOS(input: string) {
     const regex = /^[1-6]$/; // Matches only one digit between 1 and 6
     return regex.test(input);
@@ -167,25 +166,94 @@ const ChangeDetails: React.FC = () => {
     return regex.test(input);
   }
 
-  const handleSubmit = async () => {
+  // const handleSubmit = async () => {
     
+  //   // Convert selected ministries array to a comma-separated string
+  //   const ministriesString = selectedMinistries.join(', ');
+  
+  //   // Prepare the final form data
+  //   const finalFormData = {
+  //     ...formData,
+  //     ministry: ministriesString, // Ensure it's a string, not an array
+  //   };
+  
+  //   // Check if any field is empty
+  //   for (const [key, value] of Object.entries(finalFormData)) {
+  //     if (!value) {
+  //       setError(`Please fill in the ${key} field 😊`);
+  //       return;
+  //     }
+  //   }
+
+  //   // Validate ET selection
+  //   if (finalFormData.et === "choose..." || finalFormData.et.trim() === "") {
+  //     setError("Please select a valid ET option 😊");
+  //     return;
+  //   }
+  
+  //   if (!validatePhone(finalFormData.phone)) {
+  //     setError('Phone number must be 10 digits starting with 0 and having no spaces 🤨');
+  //     return;
+  //   }
+  
+  //   if (!validateYOS(finalFormData.yos)) {
+  //     setError('Year of study must be a number between 1 and 6. 🤨');
+  //     return;
+  //   }
+  
+  //   setLoading(true);
+  
+  //   try {
+
+  //     const response = await axios.put('https://ksucu-mc.co.ke/users/update', finalFormData, {
+  //       withCredentials: true,
+  //     });
+      
+  //     setSuccessMessage('Details updated successfully');
+  //     setError('');
+  
+  //     setFormData({
+  //       username: '',
+  //       phone: '',
+  //       email: '',
+  //       course: '',
+  //       reg: '',
+  //       yos: '',
+  //       ministry: '',
+  //       et: '',
+  //       password: '',
+  //     });
+  
+  //     setSelectedMinistries([]); // Clear selected ministries after submission
+  
+  //   } catch (error) {
+  //     console.error('Error updating details', error);
+  //     setError('Error updating details');
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+  
+
+  const handleSubmit = async () => {
     // Convert selected ministries array to a comma-separated string
     const ministriesString = selectedMinistries.join(', ');
   
-    // Prepare the final form data
+    // Prepare the final form data, excluding password if it's empty
+    const { password, ...dataWithoutPassword } = formData;
     const finalFormData = {
-      ...formData,
-      ministry: ministriesString, // Ensure it's a string, not an array
+      ...dataWithoutPassword,
+      ministry: ministriesString, // Ensure ministries are stored as a string
     };
   
-    // Check if any field is empty
+    // Check if any field (except password) is empty
     for (const [key, value] of Object.entries(finalFormData)) {
       if (!value) {
         setError(`Please fill in the ${key} field 😊`);
         return;
       }
     }
-
+  
     // Validate ET selection
     if (finalFormData.et === "choose..." || finalFormData.et.trim() === "") {
       setError("Please select a valid ET option 😊");
@@ -205,11 +273,13 @@ const ChangeDetails: React.FC = () => {
     setLoading(true);
   
     try {
-
-      const response = await axios.put('https://ksucu-mc.co.ke/users/update', finalFormData, {
+      // Include password in request only if user enters it
+      const payload = password ? { ...finalFormData, password } : finalFormData;
+  
+      const response = await axios.put('https://ksucu-mc.co.ke/users/update', payload, {
         withCredentials: true,
       });
-      
+  
       console.log(response.data);
       setSuccessMessage('Details updated successfully');
       setError('');
