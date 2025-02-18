@@ -31,6 +31,7 @@ const ministriesList = [
 ];
 
 const ChangeDetails: React.FC = () => {
+
   const [formData, setFormData] = useState<FormData>({
     username: '',
     phone: '',
@@ -42,7 +43,7 @@ const ChangeDetails: React.FC = () => {
     et: '',
     password: ''
   });
-  
+
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [error, setError] = useState('');
@@ -56,42 +57,83 @@ const ChangeDetails: React.FC = () => {
     );
   };
   
+  // useEffect(() => {
+  //   setLoading(true)
+  //   const fetchUserData = async () => {
+  //     try {
+
+  //       const loginToken = Cookies.get('loginToken');
+
+
+  //       const response = await axios.get('https://ksucu-mc.co.ke/users/data', { withCredentials: true } );
+
+  //       if(loginToken && !response.data.reg){
+  //         setError('Please complete your registration. Google sign-up doesn’t provide this information.')
+  //       }else{
+  //         console.log('clear');
+          
+  //       }
+        
+  //       setFormData(response.data);
+  //       console.log(response.data);
+        
+  //     } catch (error: any) { 
+  //       if(error.response.status = 400){
+  //       setError('Email/Reg/Phone already exist 😖')
+  //       setLoading(false)
+  //     }else{
+  //       setError('Unexpected error occured 💔')
+  //       setLoading(false)
+  //     }
+  //     }finally{
+  //       setLoading(false)
+  //     }
+  //   };
+
+  //   fetchUserData();
+  // }, []);
 
   useEffect(() => {
-    setLoading(true)
     const fetchUserData = async () => {
       try {
-
+        
+      setLoading(true);
         const loginToken = Cookies.get('loginToken');
-
-
-        const response = await axios.get('https://ksucu-mc.co.ke/users/data', { withCredentials: true } );
-
-        if(loginToken && !response.data.reg){
-          setError('Please complete your registration. Google sign-up doesn’t provide this information.')
-        }else{
+        const response = await axios.get('https://ksucu-mc.co.ke/users/data', { withCredentials: true });
+  
+        if (loginToken && !response.data.reg) {
+          setError('Please complete your registration. Google sign-up doesn’t provide this information.');
+        } else {
           console.log('clear');
-          
         }
-        
-        setFormData(response.data);
-        console.log(response.data);
-        
-      } catch (error: any) { 
-        if(error.response.status = 400){
-        setError('Email/Reg/Phone already exist 😖')
-        setLoading(false)
-      }else{
-        setError('Unexpected error occured 💔')
-        setLoading(false)
-      }
-      }finally{
-        setLoading(false)
+        // Convert fetched string into an array
+        const ministriesArray = response.data.ministry
+          ? response.data.ministry.split(", ").map((m: string) => m.trim())
+          : [];
+
+        setFormData((prev) => ({
+          ...prev,
+          ...response,
+          ministry: response.data.ministry, 
+        }));
+        setSelectedMinistries(ministriesArray); // Set selected ministries
+  
+      } catch (error: any) {
+        if (error.response.status === 400) {
+          setError('Email/Reg/Phone already exists 😖');
+        } else {
+          setError('Unexpected error occurred 💔');
+        }
+      } finally {
+        setLoading(false);
       }
     };
-
+  
     fetchUserData();
+
+    
   }, []);
+  
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { id, value } = e.target;
@@ -156,8 +198,7 @@ const ChangeDetails: React.FC = () => {
     setLoading(true);
   
     try {
-      console.log(finalFormData);
-      
+
       const response = await axios.put('https://ksucu-mc.co.ke/users/update', finalFormData, {
         withCredentials: true,
       });
@@ -188,7 +229,6 @@ const ChangeDetails: React.FC = () => {
     }
   };
   
-
   return (
     <div className={styles.body}>
       <div className={styles['container']}>
@@ -248,8 +288,8 @@ const ChangeDetails: React.FC = () => {
                     <label key={ministry.id} className={styles['ministry-item']}>
                       <input
                         type="checkbox"
-                        checked={selectedMinistries.includes(ministry.id)}
-                        onChange={() => toggleMinistrySelection(ministry.id)}
+                        checked={selectedMinistries.includes(ministry.label)}
+                        onChange={() => toggleMinistrySelection(ministry.label)}
                       />
                       {ministry.label}
                     </label>
