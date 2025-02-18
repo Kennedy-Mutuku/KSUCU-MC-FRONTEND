@@ -108,7 +108,7 @@ const ChangeDetails: React.FC = () => {
         }
         // Convert fetched string into an array
         const ministriesArray = response.data.ministry
-          ? response.data.ministry.split(", ").map((m: string) => m.trim())
+          ? response.data.ministry.split(", ").map((m: string) => m.trim().toLocaleLowerCase())
           : [];
 
           //Ensure all form fields are set properly
@@ -295,8 +295,8 @@ const ChangeDetails: React.FC = () => {
                     <label key={ministry.id} className={styles['ministry-item']}>
                       <input
                         type="checkbox"
-                        checked={selectedMinistries.includes(ministry.label)}
-                        onChange={() => toggleMinistrySelection(ministry.label)}
+                        checked={selectedMinistries.includes(ministry.id)}
+                        onChange={() => toggleMinistrySelection(ministry.id)}
                       />
                       {ministry.label}
                     </label>
