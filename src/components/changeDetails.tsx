@@ -111,11 +111,19 @@ const ChangeDetails: React.FC = () => {
           ? response.data.ministry.split(", ").map((m: string) => m.trim())
           : [];
 
-        setFormData((prev) => ({
-          ...prev,
-          ...response,
-          ministry: response.data.ministry, 
-        }));
+          //Ensure all form fields are set properly
+          setFormData({
+            username: response.data.username || '',
+            phone: response.data.phone || '',
+            email: response.data.email || '',
+            course: response.data.course || '',
+            reg: response.data.reg || '',
+            yos: response.data.yos || '',
+            ministry: response.data.ministry || '', // Store ministry string
+            et: response.data.et || '',
+            password: '', // Keep password empty for security
+          });
+        
         setSelectedMinistries(ministriesArray); // Set selected ministries
   
       } catch (error: any) {
@@ -131,7 +139,6 @@ const ChangeDetails: React.FC = () => {
   
     fetchUserData();
 
-    
   }, []);
   
 
