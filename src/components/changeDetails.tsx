@@ -75,6 +75,8 @@ const ChangeDetails: React.FC = () => {
         }
         
         setFormData(response.data);
+        console.log(response.data);
+        
       } catch (error: any) { 
         if(error.response.status = 400){
         setError('Email/Reg/Phone already exist 😖')
