@@ -17,7 +17,6 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageCropped }) => {
     y: 25,
   });
   const [croppedImage, setCroppedImage] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const imageRef = useRef<HTMLImageElement | null>(null);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,8 +30,6 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageCropped }) => {
 
   const handleCropComplete = (crop: PixelCrop) => {
     if (!imageRef.current || crop.width === 0 || crop.height === 0) return;
-
-    setIsLoading(true);
 
     const image = imageRef.current;
     const canvas = document.createElement("canvas");
@@ -62,7 +59,6 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageCropped }) => {
     // Store and update cropped image
     setCroppedImage(croppedDataURL);
     onImageCropped(croppedDataURL);
-    setIsLoading(false);
   };
 
   return (
