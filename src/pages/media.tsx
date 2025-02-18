@@ -13,7 +13,10 @@ const Media: React.FC = () => {
     { event: "Worship Weekend", date: "2024-02-10", link: "https://photos.app.goo.gl/wbNV3coJREGEUSZX7" },
     { event: "Bible Study weekend", date: "2024-01-26", link: "https://photos.app.goo.gl/otVcso25sG6fkxjR8" },
     { event: "Evangelism photos", date: "2024-02-02", link: "https://photos.app.goo.gl/JvqV19BaGGZwrVFS7" },
-    { event: "Weekend Photoss", date: "2024-02-09", link: "https://photos.app.goo.gl/HkBvW67gyDSvLqgS7" },
+    { event: "Weekend Photos", date: "2024-02-09", link: "https://photos.app.goo.gl/HkBvW67gyDSvLqgS7" },
+    { event: "KSUCU-MC MEGA HIKE", date: "2024-02-15", link: "https://photos.app.goo.gl/RaNP4ikjEjXLHBmbA" },
+    { event: "Creative Night photos", date: "2024-02-11", link: "https://photos.app.goo.gl/qYjukQAuWAdzBpaA7" },
+    { event: "Valentine's concert ", date: "2024-02-17", link: "https://photos.app.goo.gl/BvYon9KCNPL1uMu87" },
   ];
 
   return (
