@@ -15,6 +15,13 @@
     --radius: 8px;
   }
   
+  .error {
+    color: red;
+    font-size: 0.875rem;
+    margin-bottom: 15px;
+  }
+  
+
   /* General Styles */
   .container {
     font-family: 'Inter', sans-serif;

@@ -3,7 +3,7 @@ import styles from '../styles/ministries.module.css';
 
 import Header from '../components/header';
 import Footer from '../components/footer';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import PW from '../assets/praise-and-worship.jpg'
 import wananzambe from '../assets/wananzambe.jpg'
 import choir from '../assets/choir.jpg'
@@ -35,7 +35,11 @@ const MinistriesPage: React.FC = () => {
         <div className={styles['ministry-section']} id='wananzambe'>
           <div className={styles['ministry-section--flex']}>
             <h3 className={styles['ministry-name']}>Wananzambe</h3>
+            
+            <Link className={styles['commitment-link']} to="/wananzambe">Sign the commitment form here</Link>
+
             <p className={styles['ministry-content']}>Wanazambe is the instrumentalists' ministry in KSUCU-MC, dedicated to enhancing worship through music. This ministry consists of skilled musicians who play various instruments to create a powerful and uplifting worship experience. With a passion for excellence and a heart for service, Wanazambe plays a vital role in leading the congregation into deep and meaningful worship. </p>
+            
           </div>
           <div className={styles['ministry-img']}>
             <img src={wananzambe} alt="Wananzambe Ministry" />
@@ -65,6 +69,8 @@ If you feel called to make a difference, join us in this transformative ministry
         <div className={styles['ministry-section']} id='pw'>
           <div className={styles['ministry-section--flex']}>
             <h3 className={styles['ministry-name']}>Praise and Worship</h3>
+            
+            <Link className={styles['commitment-link']} to="/p&w">Sign the commitment form here</Link>
             <p className={styles['ministry-content']}> The Praise and Worship Ministry exists to lead our congregation into the presence of God through heartfelt worship, uplifting music, and a lifestyle of praise. We are passionate about glorifying God and creating an atmosphere where people can encounter Him, experience His love, and respond in worship.
 
 Our ministry is committed to excellence in musicianship, unity in spirit, and authenticity in worship. Whether through singing, playing instruments, or leading in prayer, our team’s mission is to magnify God and inspire others to do the same.
@@ -174,6 +180,8 @@ If you have a creative spark and a desire to serve, we invite you to join us in 
           </div>
           <div className={styles['ministry-section--flex']}>
             <h3 className={styles['ministry-name']}>Choir</h3>
+            
+            <Link className={styles['commitment-link']} to="/choir">Sign the commitment form here</Link>
             <p className={styles['ministry-content']}>The Choir Ministry in KSUCU-MC is a vibrant team of dedicated vocalists committed to leading the congregation in worship through song. With a passion for glorifying God through music, the choir blends voices in harmony to create a powerful and uplifting worship atmosphere. Through practice, prayer, and dedication, they minister to the hearts of many, drawing people closer to God with every song they sing.</p>
           </div>
         </div>

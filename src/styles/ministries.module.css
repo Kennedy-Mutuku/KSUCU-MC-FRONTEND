@@ -6,9 +6,11 @@ html{
 .header{
     padding-bottom: 30px;
 }
+
 .main{
     text-align: center;
 }
+
 .ministry-section{
     margin: 20px 0;
 }
@@ -38,6 +40,13 @@ html{
     margin:  0 auto;
     opacity: .7;
     background: rgb(53, 53, 53);
+}
+
+.commitment-link{
+    display: inline-block;
+    margin: 20px;
+    font-size: 1.2rem;
+    color: #730051;
 }
 
 @media(min-width:600px){
@@ -76,5 +85,3 @@ html{
     }
 
 }
-
-
