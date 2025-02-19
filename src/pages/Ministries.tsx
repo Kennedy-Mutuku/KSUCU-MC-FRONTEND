@@ -3,7 +3,7 @@ import styles from '../styles/ministries.module.css';
 
 import Header from '../components/header';
 import Footer from '../components/footer';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import PW from '../assets/praise-and-worship.jpg'
 import wananzambe from '../assets/wananzambe.jpg'
 import choir from '../assets/choir.jpg'
@@ -13,11 +13,18 @@ import hs from '../assets/high-school.jpg'
 import ushering from '../assets/ushering.jpg'
 import compassion from '../assets/compassion.jpg'
 import creativity from '../assets/creativity.jpg'
+// import loadingAnime from '../assets/Animation - 1716747954931.gif';
 
 const MinistriesPage: React.FC = () => {
   const location = useLocation();
+  // const [generalLoading, setgeneralLoading] = useState(false);
+  // const [error, setError] = useState('');
+  // const [ministries, setMinistries] = useState<string[]>([]);
 
   useEffect(() => {
+    
+    // fetchUserData()
+
     if (location.hash) {
       const targetSection = document.getElementById(location.hash.substring(1));
       if (targetSection) {
@@ -26,18 +33,84 @@ const MinistriesPage: React.FC = () => {
     }
   }, [location.hash]);
 
+  // const fetchUserData = async () => {
+
+  //   // check if the user in online
+  //   if (!navigator.onLine) {
+  //       setError('check your internet and try again...')
+  //       return;
+  //   }
+
+  //   window.scrollTo({
+  //       top: 0,
+  //       behavior: 'auto' // 'auto' for instant scroll
+  //   });
+    
+  //   try {
+        
+  //       setgeneralLoading(true)
+
+  //       document.body.style.overflow = 'hidden';            
+
+  //       const response = await fetch('http://localhost:3000/users/data', {
+  //           credentials: 'include'
+  //       });
+
+  //       const data = await response.json();
+
+  //       console.log(data);
+        
+        
+  //       if (!response.ok) {
+  //           throw new Error(data.message || 'Failed to fetch user data');
+  //       }  
+
+  //       const ministry  = data.ministry;
+
+  //       if (ministry) {
+  //         // Split ministries into an array and trim spaces
+  //         const ministryList = ministry.split(",").map((m: string) => m.trim().toLowerCase());
+  //         setMinistries(ministryList);
+  //       }
+
+        
+  //   } catch (error) {
+  //       if (error instanceof Error && error.message === 'Authentication failed: jwt expired') {
+  //           setError('session timed out, log in again')
+  //           setTimeout(() => setError(''), 3000); 
+  //       }else{
+  //           console.error('Error fetching user data:');
+  //       }
+        
+  //   }finally{    
+  //       document.body.style.overflow = '';  
+  //       setgeneralLoading(false);      
+  //   }
+  // };
+
   return (
     <>
+
+      {/* {generalLoading && (
+            <div className={styles['loading-screen']}>
+                <p className={styles['loading-text']}>Please wait...🤗</p>
+                <img src={loadingAnime} alt="animation gif" />
+            </div>
+      )} */}
+
       <Header />
+
       <div className={styles.main}>
         <h2 className={styles['ministries--title']}>MINISTRIES</h2>
+        
+        {/* {error && <div className={styles.error}>{error}</div>} */}
 
         <div className={styles['ministry-section']} id='wananzambe'>
           <div className={styles['ministry-section--flex']}>
             <h3 className={styles['ministry-name']}>Wananzambe</h3>
-            
-            <Link className={styles['commitment-link']} to="/wananzambe">Sign the commitment form here</Link>
 
+           {/* {ministries.includes("wananzambe") && <Link className={styles['commitment-link']} to="/wananzambe">Sign the commitment form here</Link> } */}
+            
             <p className={styles['ministry-content']}>Wanazambe is the instrumentalists' ministry in KSUCU-MC, dedicated to enhancing worship through music. This ministry consists of skilled musicians who play various instruments to create a powerful and uplifting worship experience. With a passion for excellence and a heart for service, Wanazambe plays a vital role in leading the congregation into deep and meaningful worship. </p>
             
           </div>
@@ -70,7 +143,8 @@ If you feel called to make a difference, join us in this transformative ministry
           <div className={styles['ministry-section--flex']}>
             <h3 className={styles['ministry-name']}>Praise and Worship</h3>
             
-            <Link className={styles['commitment-link']} to="/p&w">Sign the commitment form here</Link>
+            {/* {ministries.includes("pw") && <Link className={styles['commitment-link']} to="/p&w">Sign the commitment form here</Link>} */}
+
             <p className={styles['ministry-content']}> The Praise and Worship Ministry exists to lead our congregation into the presence of God through heartfelt worship, uplifting music, and a lifestyle of praise. We are passionate about glorifying God and creating an atmosphere where people can encounter Him, experience His love, and respond in worship.
 
 Our ministry is committed to excellence in musicianship, unity in spirit, and authenticity in worship. Whether through singing, playing instruments, or leading in prayer, our team’s mission is to magnify God and inspire others to do the same.
@@ -174,16 +248,19 @@ If you have a creative spark and a desire to serve, we invite you to join us in 
           </div>
         </div>
 
-        <div className={`${styles['ministry-section']} ${styles['ministry-section--reverse']}`} id='choir'>
-          <div className={styles['ministry-img']}>
-            <img src={choir} alt="Choir Ministry" />
-          </div>
+        <div className={`${styles['ministry-section']} ${styles['ministry-section--reverse-choir']}`} id='choir'>
           <div className={styles['ministry-section--flex']}>
             <h3 className={styles['ministry-name']}>Choir</h3>
             
-            <Link className={styles['commitment-link']} to="/choir">Sign the commitment form here</Link>
+            {/* {ministries.includes("choir") && <Link className={styles['commitment-link']} to="/choir">Sign the commitment form here</Link> } */}
+            
             <p className={styles['ministry-content']}>The Choir Ministry in KSUCU-MC is a vibrant team of dedicated vocalists committed to leading the congregation in worship through song. With a passion for glorifying God through music, the choir blends voices in harmony to create a powerful and uplifting worship atmosphere. Through practice, prayer, and dedication, they minister to the hearts of many, drawing people closer to God with every song they sing.</p>
           </div>
+          
+          <div className={styles['ministry-img']}>
+            <img src={choir} alt="Choir Ministry" />
+          </div>
+
         </div>
       </div>
       <Footer />

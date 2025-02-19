@@ -1,14 +1,15 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import ReactCrop, { Crop, PixelCrop } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 import styles from "../styles/ImageUploader.module.css";
 
 interface ImageUploaderProps {
   onImageCropped: (croppedImage: string) => void;
+  initialImage?: string | null; 
 }
 
-const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageCropped }) => {
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageCropped, initialImage }) => {
+  const [selectedImage, setSelectedImage] = useState<string | null>(initialImage || null);
   const [crop, setCrop] = useState<Crop>({
     unit: "%",
     width: 50,
@@ -18,6 +19,12 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageCropped }) => {
   });
   const [croppedImage, setCroppedImage] = useState<string | null>(null);
   const imageRef = useRef<HTMLImageElement | null>(null);
+
+  useEffect(() => {
+    if (initialImage) {
+      setSelectedImage(initialImage);
+    }
+  }, [initialImage]);
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -77,7 +84,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageCropped }) => {
             className={styles.fileInput}
         />
 
-      {selectedImage && (
+      {selectedImage &&(
         <div className={styles.cropContainer}>
           <h5>Crop Image</h5>
           <ReactCrop crop={crop} onChange={(c) => setCrop(c)} onComplete={handleCropComplete} aspect={1}>
@@ -111,3 +118,4 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageCropped }) => {
 };
 
 export default ImageUploader;
+
