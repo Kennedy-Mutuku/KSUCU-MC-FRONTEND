@@ -6,6 +6,7 @@ import styles from '../styles/signup.module.css';
 import googleIcon from '../assets/googleIcon.png';
 import {Eye, EyeOff} from 'lucide-react'
 import { ChevronDown } from 'lucide-react';
+
 const googleAuth = 'https://ksucu-mc.co.ke/auth/google';
 
 type FormData = {

@@ -902,7 +902,7 @@ const LandingPage = () => {
         </div>
 
           <div className={  `${ styles['footer'] } ${ styles['home-footer'] }` } id='contacts'>
-            <p className={styles['footer--text']}>KISII UNIVERSITY MAIN CAMPUS CHRISTIAN UNION 2024</p>
+            <p className={styles['footer--text']}>KISII UNIVERSITY MAIN CAMPUS CHRISTIAN UNION 2025</p>
                 
             <div className={styles['hr']}></div>
 

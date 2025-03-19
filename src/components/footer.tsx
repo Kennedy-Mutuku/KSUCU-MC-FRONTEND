@@ -5,7 +5,7 @@ import { FaYoutube, FaFacebook, FaTiktok } from 'react-icons/fa';
 const Footer = () => {
     return (
         <div className={styles['footer']} id='contacts'>
-            <p className={styles['footer--text']}>KISII UNIVERSITY MAIN CAMPUS CHRISTIAN UNION 2024</p>
+            <p className={styles['footer--text']}>KISII UNIVERSITY MAIN CAMPUS CHRISTIAN UNION 2025</p>
                 
             <div className={styles['hr']}></div>
 
