@@ -18,6 +18,7 @@ const InstrumentalistsCommitment: React.FC = () => {
   const [dateApproved, setDateApproved] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  // const [errors, setErrors] = useState('');
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -31,6 +32,7 @@ const InstrumentalistsCommitment: React.FC = () => {
     }, 5000); // Error disappears after 5 seconds
   };
 
+  
   useEffect(() => {
     // Set the current date as default
     const today = new Date().toISOString().split('T')[0]; // Format to YYYY-MM-DD
@@ -78,10 +80,72 @@ const InstrumentalistsCommitment: React.FC = () => {
     setShowConfirmation(true);
   };
 
+  // const confirmSubmit = async () => {
+  //   setShowConfirmation(false);
+  //   setIsSubmitting(true);
+
+  //   const signatureData = sigCanvas.current ? sigCanvas.current.toDataURL() : "";
+  //   const formData = {
+  //     fullName,
+  //     phoneNumber,
+  //     reasonForJoining,
+  //     date,
+  //     signature: signatureData,
+  //     croppedImage,
+  //     ministryLeader,
+  //     dateApproved,
+  //   };
+
+  //   try {
+  //     const response = await axios.post("http://localhost:3000/commitmentForm/submit-commitment", formData, {
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //     });
+
+  //     if (response.status === 200) {
+  //       alert("Thank you for your commitment!");
+  //       setIsSubmitted(true);
+  //     } else {
+  //       alert("Submission failed. Please try again.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error submitting form:", error);
+  //     alert("An error occurred. Please try again.");
+  //   } finally {
+  //     setIsSubmitting(false);
+  //   }
+  // };
+
   const confirmSubmit = async () => {
+    // Reset previous errors
+    setErrors({});
+  
+    // Validation
+    let hasError = false;
+    if (!fullName.trim()) {
+      showError('fullName', 'Full name is required');
+      hasError = true;
+    }
+    if (!phoneNumber.trim()) {
+      showError('phoneNumber', 'Phone number is required');
+      hasError = true;
+    }
+    if (!reasonForJoining.trim()) {
+      showError('reasonForJoining', 'Reason for joining is required');
+      hasError = true;
+    }
+    if (sigCanvas.current && sigCanvas.current.isEmpty()) {
+      showError('signature', 'Signature is required');
+      hasError = true;
+    }
+  
+    if (hasError) return; // Prevent submission if validation fails
+  
+    // Proceed to submit
     setShowConfirmation(false);
     setIsSubmitting(true);
-
+  
     const signatureData = sigCanvas.current ? sigCanvas.current.toDataURL() : "";
     const formData = {
       fullName,
@@ -93,14 +157,14 @@ const InstrumentalistsCommitment: React.FC = () => {
       ministryLeader,
       dateApproved,
     };
-
+  
     try {
       const response = await axios.post("http://localhost:3000/commitmentForm/submit-commitment", formData, {
         headers: {
           "Content-Type": "application/json",
         },
       });
-
+  
       if (response.status === 200) {
         alert("Thank you for your commitment!");
         setIsSubmitted(true);
@@ -114,7 +178,7 @@ const InstrumentalistsCommitment: React.FC = () => {
       setIsSubmitting(false);
     }
   };
-
+  
   return (
     <div className={styles.container}>
       <Header />
