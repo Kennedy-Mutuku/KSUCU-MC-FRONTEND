@@ -81,10 +81,8 @@ const LandingPage = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
-
     fetchUserData()
     fetchNewsData()
-
     
     const targetDate = new Date(2025, 2, 21, 23, 59, 59).getTime();
 
