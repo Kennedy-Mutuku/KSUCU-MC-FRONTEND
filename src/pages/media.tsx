@@ -37,8 +37,6 @@ const Media: React.FC = () => {
     { event: "Elders Day", date: "22nd March", link: "https://photos.app.goo.gl/L9Hkr8BxnVP1MSsD6" },
   ];
 
-  
-  const [userData, setUserData] = useState<{ username: string; email: string; yos: number; phone: string; et: string; ministry: string } | null>(null);
   const [generalLoading, setgeneralLoading] = useState(false);
   const navigate = useNavigate();
     useEffect(() => {
@@ -66,8 +64,6 @@ const Media: React.FC = () => {
             credentials: 'include'
         });
 
-        const data = await response.json();
-        
         if (!response.ok) {
           setError('You need to login or sign up to access this page')
           setTimeout(() => {
@@ -75,13 +71,7 @@ const Media: React.FC = () => {
           }, 5000);
         }  
 
-        // Set username to only the first name (first word) if there are multiple names
-        const firstName = data.username.split(' ')[0];
 
-        setUserData({
-            ...data,
-            username: firstName
-        });
         
     } catch (error) {
         if (error instanceof Error && error.message === 'Authentication failed: jwt expired') {
