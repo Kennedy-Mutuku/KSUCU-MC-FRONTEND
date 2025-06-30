@@ -15,8 +15,8 @@
     border-radius: 30px;
     background: #fff;
 
-
 }
+
 @media(min-width:600px){
     .container{
         max-width: 500px;

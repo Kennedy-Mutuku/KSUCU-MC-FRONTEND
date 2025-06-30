@@ -24,10 +24,12 @@ html{
     align-items: center;
     padding: 10px;
 }
+
 .newsReport img{
     width: 50px;
     height: 50px;
 }
+
 .newsReport span{
     width: 70%;
 }
@@ -329,6 +331,175 @@ html{
 .commissionTitle{
     margin-top: 70%;
 }
+
+
+/* new code for updated modal */
+.modalOverlay {
+  position: fixed;
+  z-index: 120;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.modalCard {
+  background: #fff;
+  border-radius: 22px;
+  box-shadow: 0 10px 36px #0005, 0 2px 8px #0002;
+  width: 94%;
+  max-width: 400px;
+  margin: 32px auto;
+  position: relative;
+  padding-bottom: 2.5em;
+  animation: fadeInCard 0.32s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@keyframes fadeInCard {
+  from { transform: translateY(-30px); opacity: 0;}
+  to { transform: none; opacity: 1;}
+}
+
+.modalHeader {
+  background: #00c6ff;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.15rem;
+  width: 100%;
+  padding: 1em 0 0.85em 0;
+  border-radius: 22px 22px 0 0;
+  text-align: center;
+  letter-spacing: .6px;
+  box-shadow: 0 2px 6px #2221;
+}
+
+.modalBody {
+  color: #161616;
+  font-size: 1.08rem;
+  padding: 1.3em 1.3em 1em 1.3em;
+  text-align: center;
+}
+
+.modalBody ul {
+  margin: 1em 0 .5em 1em;
+  padding-left: 1.4em;
+  text-align: left;
+  color: #333;
+}
+
+.modalBody li {
+  margin-bottom: 0.3em;
+}
+
+.boldBlue {
+  color: #00c6ff;
+  font-weight: bold;
+}
+
+.venueNote {
+  color: #730051;
+  font-size: 0.96em;
+  margin-left: 3px;
+}
+
+.stayBlessed {
+  margin-top: 1.1em;
+  color: #730051;
+  font-weight: 500;
+}
+
+.closeBtn {
+  background: #fff;
+  color: #730051;
+  border: 2px solid #00c6ff;
+  box-shadow: 0 1px 4px #0001;
+  border-radius: 50%;
+  width: 40px; height: 40px;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  left: 50%;
+  bottom: -20px;
+  transform: translateX(-50%);
+  cursor: pointer;
+  transition: background .2s, color .2s, border-color .2s;
+}
+.closeBtn:hover {
+  background: #00c6ff;
+  color: #fff;
+  border-color: #730051;
+}
+
+.newsInModal {
+  width: 90%;
+  margin: 1em auto 0.5em auto;
+  background: #00c6ff;
+  color: #fff;
+  border-radius: 13px;
+  padding: 0.9em 1em;
+  box-shadow: 0 2px 7px #0001;
+  font-size: 1.05rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  animation: fadeInCard 0.24s 0.1s backwards;
+}
+.newsLabel {
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  font-size: 1.08rem;
+  margin-bottom: .4em;
+  gap: 0.4em;
+}
+.newsModalFlex {
+  display: flex;
+  align-items: center;
+  gap: 0.85em;
+}
+.newsModalImg {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 9px;
+  background: #0e0e0e;
+  border: 2px solid #fff2;
+  box-shadow: 0 1.5px 6px #1a182f33;
+}
+.newsModalTitle {
+  font-weight: 500;
+  font-size: 1.02rem;
+  display: block;
+}
+.newsModalLink {
+  color: #fff;
+  text-decoration: underline;
+  font-weight: 500;
+  margin-left: 4px;
+  font-size: 0.98rem;
+  transition: color 0.15s;
+}
+.newsModalLink:hover {
+  color: #730051;
+}
+.newsLoading {
+  color: #fff;
+  font-size: 0.98rem;
+}
+
+
+
+
+
+
+
 .boardsCategoryDiv{
     position: relative;
 }
@@ -594,6 +765,8 @@ hr{
     transform: translateY(-3px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
+
+
   
 @media(min-width:490px){
     .user-icon-container{
@@ -820,3 +993,7 @@ hr{
         width: 33%;
     }
 }
+
+
+
+

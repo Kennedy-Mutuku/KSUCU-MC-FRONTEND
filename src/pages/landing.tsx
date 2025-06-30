@@ -461,52 +461,51 @@ const LandingPage = () => {
 
         </header>
 
-        {  openCommission &&
-          <div className={styles.commission2024}>
 
-            <p className={styles.commissionTitle}>
-              2025 Elders Day
-            </p>
+{ openCommission &&
+  <div className={styles.modalOverlay}>
+    <div className={styles.modalCard}>
+      <div className={styles.modalHeader}>
+        Weekly Friday Prayers & Sunday Services
+      </div>
+      <div className={styles.modalBody}>
+        <p>
+          For those in session, <b>welcome to our <span className={styles.boldBlue}>Friday prayers</span> every week</b>
+          <span className={styles.venueNote}>(venue communicated weekly)</span> and <b className={styles.boldBlue}>Sunday services</b>.
+        </p>
+        <ul>
+          <li><b>Friday Prayers:</b> 6:30 PM – 7:00 PM</li>
+          <li><b>Sunday Services:</b> 8:00AM – 10:00 AM </li>
+          <li><b>Venues:</b> Communicated in advance</li>
+        </ul>
+        <p className={styles.stayBlessed}>
+          <i>Stay blessed, and see you there! <span role="img" aria-label="pray">🙏🏾</span></i>
+        </p>
+      </div>
 
-            <p className={styles.commissionCountDown}>
-              {timeLeft.days} Days, {timeLeft.hours} Hours, {timeLeft.minutes} Minutes,{" "}
-              {timeLeft.seconds} Seconds
-            </p>
-
-            <p className={styles.commissionButtonDiv}>
-              <button className={styles.commissionRegistrationButton} onClick={handleNavigateToElders}>
-                Book your space now
-              </button>
-            </p>
-
-            {userData && 
-              <p className={styles.commissionButtonDiv}>
-                <Link className={styles.anonymousSendMessage} to={"/recomendations"}>Send us anonymous message</Link>
-              </p>
-            }
-
-            <div className={styles.newsReportDiv}>
-
-              {newsData ? (
-                <p className={styles.newsReport}>
-                  <img className={styles.newsReportimg} src={newsData.imageUrl} alt="news image" />
-                  <span className={styles.newsReportImage}>
-                    {newsData.title}
-                    <Link className={styles.newsReportLink} to="/news">...read more</Link>
-                  </span>
-                </p>
-              ) : (
-                <p>Loading news data...</p>  // Or any placeholder content while loading
-              )}
-
+      {/* NEWS SECTION */}
+      <div className={styles.newsInModal}>
+        <span className={styles.newsLabel}><FontAwesomeIcon icon={faGlobe} /> Latest News</span>
+        {newsData ? (
+          <div className={styles.newsModalFlex}>
+            <img className={styles.newsModalImg} src={newsData.imageUrl} alt="news" />
+            <div>
+              <span className={styles.newsModalTitle}>{newsData.title}</span>
+              <Link className={styles.newsModalLink} to="/news">...read more</Link>
             </div>
-
-                <p className={styles.cancelBtn} onClick={handleCloseCommission}>
-                  <FontAwesomeIcon icon={faXmark} />
-                </p>
-              
           </div>
-        }
+        ) : (
+          <span className={styles.newsLoading}>Loading news...</span>
+        )}
+      </div>
+      <button className={styles.closeBtn} onClick={handleCloseCommission}>
+        <FontAwesomeIcon icon={faXmark} />
+      </button>
+    </div>
+  </div>
+}
+
+
 
         <div className={styles.main}>
 
