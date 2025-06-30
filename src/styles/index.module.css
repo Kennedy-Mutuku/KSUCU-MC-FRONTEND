@@ -386,15 +386,18 @@ html{
 }
 
 .modalBody ul {
-  margin: 1em 0 .5em 1em;
-  padding-left: 1.4em;
-  text-align: left;
+  margin: 1em auto .5em auto;
+  padding-left: 0;
+  text-align: center;
   color: #333;
+  display: block;
+  list-style-position: inside;
 }
-
 .modalBody li {
   margin-bottom: 0.3em;
+  text-align: center;
 }
+
 
 .boldBlue {
   color: #00c6ff;
