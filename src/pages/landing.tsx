@@ -21,13 +21,6 @@ import { faUser } from '@fortawesome/free-solid-svg-icons';
 import { faUserLock } from '@fortawesome/free-solid-svg-icons';
 import { ChevronDown, ChevronUp } from "lucide-react";
 
-// type for the countdown
-interface Countdown {
-  days: number;
-  hours: number;
-  minutes: number;
-  seconds: number;
-}
 
 interface NewsData {
   title: string;
@@ -58,17 +51,6 @@ const LandingPage = () => {
     document.body.classList.toggle(styles['nav-open']);
   };
 
-  const handleNavigateToElders = () => {
-    navigate('/elders')
-  }
-
-  const [timeLeft, setTimeLeft] = useState<Countdown>({
-    days: 0,
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
-  });
-
   const images = [
     { url:  visionImg , text: `
       <h1 class="${styles['section-text']}"></h1>
@@ -84,33 +66,11 @@ const LandingPage = () => {
     fetchUserData()
     fetchNewsData()
     
-    const targetDate = new Date(2025, 2, 21, 23, 59, 59).getTime();
-
-    // Update countdown every second
-    const intervalId = setInterval(() => {
-      const now = new Date().getTime();
-      const difference = targetDate - now;
-
-      // Calculate time left
-      const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-
-      // If countdown is finished, clear the interval
-      if (difference < 0) {
-        clearInterval(intervalId);
-      } else {
-        setTimeLeft({ days, hours, minutes, seconds });
-      }
-    }, 1000);
-
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
     }, 10000);
 
     return () => {
-      clearInterval(intervalId)
       clearInterval(interval)
     };
 
