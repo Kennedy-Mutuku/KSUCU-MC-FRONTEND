@@ -83,7 +83,7 @@ const UserManagement: React.FC = () => {
     setSuccess('');
 
     try {
-      const response = await axios.post(getApiUrl('admissionAdminResetPassword'), {
+      await axios.post(getApiUrl('admissionAdminResetPassword'), {
         userId: userId,
         newPassword: phone
       }, {
