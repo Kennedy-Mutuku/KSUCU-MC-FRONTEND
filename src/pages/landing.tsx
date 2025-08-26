@@ -17,7 +17,7 @@ import { faRocket } from '@fortawesome/free-solid-svg-icons';
 import visionImg from '../assets/gents.jpg'
 import missionImg from '../assets/ladies.jpg'
 import valuesImg from '../assets/amptheatre.jpg'
-import prayerPNG from '../assets/prayer.jpg'
+import prayerPNG from '../assets/RIVET.jpg'
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 import { faUserLock } from '@fortawesome/free-solid-svg-icons';
 import { ChevronDown, ChevronUp } from "lucide-react";
