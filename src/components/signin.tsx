@@ -1,18 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styles from '../styles/signin.module.css';
 import cuLogo from '../assets/KSUCU logo updated document.png';
 import { Link, useNavigate } from 'react-router-dom';
 import loadingAnime from '../assets/Animation - 1716747954931.gif';
-import googleIcon from '../assets/googleIcon.png'
 import {Eye, EyeOff} from 'lucide-react'
+import { getApiUrl, isDevMode } from '../config/environment';
+import UserProfile from './userProfile';
 
-const googleAuth = 'https://ksucu-mc.co.ke/auth/google';
 
 const SignIn: React.FC = () => {
     const navigate = useNavigate();
     const [generalLoading, setgeneralLoading] = useState(false);
     const [error, setError] = useState('');
+    const [userData, setUserData] = useState<{ username: string; email: string; yos: number; phone: string; et: string; ministry: string; course?: string; reg?: string } | null>(null);
+    const [checkingAuth, setCheckingAuth] = useState(true);
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -24,6 +26,43 @@ const SignIn: React.FC = () => {
     };
 
     const [showPassword, setShowPassword] = useState(false);
+
+    // Check if user is already authenticated
+    useEffect(() => {
+        checkUserAuthentication();
+    }, []);
+
+    const checkUserAuthentication = async () => {
+        console.log('🔍 SignIn: Checking user authentication...');
+        try {
+            const apiUrl = getApiUrl('users');
+            console.log('🔍 SignIn: Fetching user data from:', apiUrl);
+            
+            const response = await fetch(apiUrl, {
+                credentials: 'include'
+            });
+
+            console.log('🔍 SignIn: Response status:', response.status);
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('✅ SignIn: User authenticated, data:', data);
+                setUserData(data);
+            } else {
+                console.log('❌ SignIn: User not authenticated, response not ok');
+            }
+        } catch (error) {
+            console.log('❌ SignIn: Authentication check failed:', error);
+        } finally {
+            console.log('🔍 SignIn: Authentication check completed, setting checkingAuth to false');
+            setCheckingAuth(false);
+        }
+    };
+
+    const handleLogoutFromProfile = () => {
+        setUserData(null);
+        navigate('/');
+    };
 
     const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -38,13 +77,15 @@ const SignIn: React.FC = () => {
         }
 
         const domainMappings = [
-            { domain: '@ksucumcnewsadmin.co.ke', endpoint: 'https://ksucu-mc.co.ke/adminnews/login', route: '/adminnews' },
+            { domain: '@ksucumcnewsadmin.co.ke', endpoint: getApiUrl('newsAdmin'), route: '/adminnews' },
 
-            { domain: '@ksucumcmissionadmin.co.ke', endpoint: 'https://ksucu-mc.co.ke/adminmission/login', route: '/adminmission' },
+            { domain: '@ksucumcmissionadmin.co.ke', endpoint: getApiUrl('missionAdmin'), route: '/adminmission' },
 
-            { domain: 'admin@ksucumcbsadmin.co.ke', endpoint: 'https://ksucu-mc.co.ke/adminBs/login', route: '/adminBs' },
+            { domain: 'admin@ksucumcbsadmin.co.ke', endpoint: getApiUrl('bsAdmin'), route: '/adminBs' },
 
-            { domain: 'admin@ksucumcsuperadmin.co.ke', endpoint: 'https://ksucu-mc.co.ke/sadmin/login', route: '/admin' },
+            { domain: 'admin@ksucumcsuperadmin.co.ke', endpoint: getApiUrl('superAdmin'), route: '/admin' },
+
+            { domain: 'admin@ksucumcadmissionadmin.co.ke', endpoint: getApiUrl('admissionAdmin'), route: '/admission' },
         ];
     
         // Check if the user is online
@@ -64,13 +105,17 @@ const SignIn: React.FC = () => {
             // Find the matching configuration based on the email domain
             const { endpoint, route } = domainMappings.find(mapping =>
                 formData.email?.endsWith(mapping.domain)
-            ) || { endpoint: 'https://ksucu-mc.co.ke/users/login', route: '/' }; // Default to user login if no match
+            ) || { endpoint: getApiUrl('usersLogin'), route: '/profile' }; // Default to user login, redirect to profile
     
+            console.log('🔐 SignIn: Attempting login to:', endpoint);
+            console.log('🔐 SignIn: Will redirect to:', route);
+
             const response = await axios.post(endpoint, formData, {
                 withCredentials: true, // Include cookies in the request
             });
     
-            console.log('Response:', response.data);
+            console.log('✅ SignIn: Login successful, response:', response.data);
+            console.log('🔐 SignIn: Navigating to:', route);
     
             // Navigate to the specified route
             navigate(route);
@@ -89,16 +134,24 @@ const SignIn: React.FC = () => {
         }
     };
     
-    const handleLogin = (e: React.MouseEvent<HTMLButtonElement>) => {
-        try {
-          setError('....redirecting to google auth')
-          e.preventDefault();
-          window.location.href = googleAuth; 
-        } catch (error) {
-          console.error('unexpected happened');
-        }
-      }
     
+    // Show user profile if authenticated
+    if (userData) {
+        return <UserProfile userData={userData} onLogout={handleLogoutFromProfile} isLoading={generalLoading} />;
+    }
+
+    // Show loading while checking authentication
+    if (checkingAuth) {
+        return (
+            <div className={styles.container}>
+                <div style={{ textAlign: 'center', padding: '50px' }}>
+                    <img src={loadingAnime} alt="Loading..." className={styles['loading-gif']} />
+                    <p>Checking authentication...</p>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className={styles.body}>
             {generalLoading && (
@@ -148,22 +201,29 @@ const SignIn: React.FC = () => {
 
                 <div className={styles['form-footer']}>
                     <p><Link to={'/forgotPassword'}>Forgot pasword</Link></p>
-                    <p>Have no account <Link to={"/signUp"}>click Here</Link></p>
                 </div>
 
-                <button  className={styles['google-redirect-div']} onClick={handleLogin}>
-                    <div className={styles['flex']}>
-                        <span className={styles['google-icon-span']}>
-                        <img src={googleIcon} alt="" />
-                        </span>
-                        <span className={styles['google-icon-text']}>continue with Google</span>
-                    </div>
-                </button>
 
 
                 <div className={styles['form-footer']}>
                     <p><Link to={"/Home"}>Home</Link></p>
                 </div>
+
+                {isDevMode() && (
+                    <div style={{ 
+                        position: 'fixed', 
+                        top: '10px', 
+                        right: '10px', 
+                        background: '#ff9800', 
+                        color: 'white', 
+                        padding: '5px 10px', 
+                        borderRadius: '4px', 
+                        fontSize: '12px', 
+                        zIndex: 1000 
+                    }}>
+                        DEV MODE
+                    </div>
+                )}
 
             </div>
 

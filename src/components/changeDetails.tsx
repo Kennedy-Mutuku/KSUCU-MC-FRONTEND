@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import cuLogo from '../assets/KSUCU logo updated document.png';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styles from '../styles/changeDetails.module.css';
 import Cookies from 'js-cookie';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Eye, EyeOff } from 'lucide-react';
+import { getApiUrl } from '../config/environment';
 
 type FormData = {
   username: string;
@@ -16,6 +17,7 @@ type FormData = {
   ministry: string;
   et: string;
   password: string;
+  confirmPassword: string;
 };
 
 const ministriesList = [
@@ -31,7 +33,7 @@ const ministriesList = [
 ];
 
 const ChangeDetails: React.FC = () => {
-
+  const navigate = useNavigate();
   const [formData, setFormData] = useState<FormData>({
     username: '',
     phone: '',
@@ -41,7 +43,8 @@ const ChangeDetails: React.FC = () => {
     yos: '',
     ministry: '',
     et: '',
-    password: ''
+    password: '',
+    confirmPassword: ''
   });
 
   const [loading, setLoading] = useState(false);
@@ -49,6 +52,12 @@ const ChangeDetails: React.FC = () => {
   const [error, setError] = useState('');
   const [selectedMinistries, setSelectedMinistries] = useState<string[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   const toggleMinistrySelection = (id: string) => {
     setSelectedMinistries(prevSelected =>
       prevSelected.includes(id)
@@ -99,7 +108,7 @@ const ChangeDetails: React.FC = () => {
         
       setLoading(true);
         const loginToken = Cookies.get('loginToken');
-        const response = await axios.get('https://ksucu-mc.co.ke/users/data', { withCredentials: true });
+        const response = await axios.get(getApiUrl('users'), { withCredentials: true });
   
         if (loginToken && !response.data.reg) {
           setError('Please complete your registration. Google sign-up doesn’t provide this information.');
@@ -122,15 +131,20 @@ const ChangeDetails: React.FC = () => {
             ministry: response.data.ministry || '', // Store ministry string
             et: response.data.et || '',
             password: '', // Keep password empty for security
+            confirmPassword: '' // Keep confirm password empty
           });
         
         setSelectedMinistries(ministriesArray); // Set selected ministries
   
       } catch (error: any) {
-        if (error.response.status === 400) {
+        console.error('Error fetching user data:', error);
+        if (error.response && error.response.status === 400) {
           setError('Email/Reg/Phone already exists 😖');
+        } else if (error.response && error.response.status === 401) {
+          setError('Not authenticated. Redirecting to login...');
+          setTimeout(() => navigate('/signIn'), 1500);
         } else {
-          setError('Unexpected error occurred 💔');
+          setError('Failed to load user data. Please try again.');
         }
       } finally {
         setLoading(false);
@@ -166,12 +180,18 @@ const ChangeDetails: React.FC = () => {
     return regex.test(input);
   }
 
+  function validatePassword(input: string) {
+    // At least 8 characters, 1 uppercase, 1 number
+    const regex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+    return regex.test(input);
+  }
+
   const handleSubmit = async () => {
     // Convert selected ministries array to a comma-separated string
     const ministriesString = selectedMinistries.join(', ');
   
     // Prepare the final form data, excluding password if it's empty
-    const { password, ...dataWithoutPassword } = formData;
+    const { password, confirmPassword, ...dataWithoutPassword } = formData;
     const finalFormData = {
       ...dataWithoutPassword,
       ministry: ministriesString, // Ensure ministries are stored as a string
@@ -200,14 +220,27 @@ const ChangeDetails: React.FC = () => {
       setError('Year of study must be a number between 1 and 6. 🤨');
       return;
     }
+
+    // Password validation (only if password is provided)
+    if (password && password.trim() !== '') {
+      if (!validatePassword(password)) {
+        setError('Password must be at least 8 characters long and contain at least one uppercase letter and one digit 🤨');
+        return;
+      }
+      
+      if (password !== confirmPassword) {
+        setError('Passwords do not match 😕');
+        return;
+      }
+    }
   
     setLoading(true);
   
     try {
       // Include password in request only if user enters it
-      const payload = password ? { ...finalFormData, password } : finalFormData;
+      const payload = (password && password.trim() !== '') ? { ...finalFormData, password } : finalFormData;
   
-      const response = await axios.put('https://ksucu-mc.co.ke/users/update', payload, {
+      const response = await axios.put(getApiUrl('usersUpdate'), payload, {
         withCredentials: true,
       });
   
@@ -225,6 +258,7 @@ const ChangeDetails: React.FC = () => {
         ministry: '',
         et: '',
         password: '',
+        confirmPassword: ''
       });
   
       setSelectedMinistries([]); // Clear selected ministries after submission
@@ -244,6 +278,12 @@ const ChangeDetails: React.FC = () => {
           <div className={styles['logo_signUp']}><img src={cuLogo} alt="CU logo" /></div>
         </Link>
         <h2 className={styles['text']}>Update Details</h2>
+        
+        {loading && (
+          <div style={{ textAlign: 'center', padding: '20px' }}>
+            <p>Loading your details...</p>
+          </div>
+        )}
         
         {error && <p className={styles.error}>{error}</p>}
         {successMessage && <p className={styles.success}>{successMessage}</p>}
@@ -318,6 +358,84 @@ const ChangeDetails: React.FC = () => {
               <option value="net">Net</option>
               <option value="weso">Weso</option>
             </select>
+          </div>
+        </div>
+
+        {/* Password Change Section */}
+        <div className={styles['form-section']} style={{ marginTop: '30px', paddingTop: '20px', borderTop: '1px solid #e0e0e0' }}>
+          <h3 style={{ marginBottom: '20px', color: '#2c3e50', textAlign: 'center' }}>Change Password (Optional)</h3>
+          
+          <div className={styles['info-note']} style={{ 
+            padding: '10px', 
+            backgroundColor: '#fff3cd', 
+            border: '1px solid #ffeaa7', 
+            borderRadius: '5px', 
+            marginBottom: '15px',
+            textAlign: 'center'
+          }}>
+            <p style={{ margin: 0, color: '#856404', fontSize: '12px' }}>
+              💡 Leave blank to keep your current password. Your current password is your phone number.
+            </p>
+          </div>
+
+          <div className={styles['form-div']}>
+            <label htmlFor="password">NEW PASSWORD</label>
+            <div className={styles['password-wrapper']} style={{ position: 'relative' }}>
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                className={styles['input']}
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Enter new password (optional)"
+              />
+              <button 
+                type="button" 
+                onClick={togglePasswordVisibility}
+                style={{ 
+                  position: 'absolute', 
+                  right: '10px', 
+                  top: '50%', 
+                  transform: 'translateY(-50%)', 
+                  border: 'none', 
+                  background: 'none', 
+                  cursor: 'pointer',
+                  color: '#666'
+                }}
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
+          </div>
+
+          <div className={styles['form-div']}>
+            <label htmlFor="confirmPassword">CONFIRM PASSWORD</label>
+            <div className={styles['password-wrapper']} style={{ position: 'relative' }}>
+              <input
+                type={showPassword ? "text" : "password"}
+                id="confirmPassword"
+                className={styles['input']}
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                placeholder="Confirm new password"
+              />
+              <button 
+                type="button" 
+                onClick={togglePasswordVisibility}
+                style={{ 
+                  position: 'absolute', 
+                  right: '10px', 
+                  top: '50%', 
+                  transform: 'translateY(-50%)', 
+                  border: 'none', 
+                  background: 'none', 
+                  cursor: 'pointer',
+                  color: '#666'
+                }}
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
           </div>
         </div>
 

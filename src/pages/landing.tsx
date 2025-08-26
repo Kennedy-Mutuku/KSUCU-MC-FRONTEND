@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { getApiUrl } from '../config/environment';
 import styles from '../styles/index.module.css';
 import cuLogo from '../assets/cuLogoUAR.png';
 import { FaYoutube, FaFacebook, FaTiktok } from 'react-icons/fa';
@@ -70,15 +71,26 @@ const LandingPage = () => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
     }, 10000);
 
+    // Refetch user data when window gains focus (user returns from login)
+    const handleFocus = () => {
+      fetchUserData();
+    };
+
+    window.addEventListener('focus', handleFocus);
+
     return () => {
-      clearInterval(interval)
+      clearInterval(interval);
+      window.removeEventListener('focus', handleFocus);
     };
 
   }, [images.length]);
 
   const fetchUserData = async () => {
+    console.log('🏠 Landing: Fetching user data...');
+    
     // check if the user in online
     if (!navigator.onLine) {
+        console.log('❌ Landing: User offline');
         setError('check your internet and try again...')
         return;
     }
@@ -94,11 +106,16 @@ const LandingPage = () => {
 
         document.body.style.overflow = 'hidden';            
 
-        const response = await fetch('https://ksucu-mc.co.ke/users/data', {
+        const apiUrl = getApiUrl('users');
+        console.log('🏠 Landing: Fetching from:', apiUrl);
+
+        const response = await fetch(apiUrl, {
             credentials: 'include'
         });
 
+        console.log('🏠 Landing: Response status:', response.status);
         const data = await response.json();
+        console.log('🏠 Landing: Response data:', data);
         
         if (!response.ok) {
             throw new Error(data.message || 'Failed to fetch user data');
@@ -115,17 +132,19 @@ const LandingPage = () => {
         // Set username to only the first name (first word) if there are multiple names
         const firstName = data.username.split(' ')[0];
 
-        setUserData({
+        const finalUserData = {
             ...data,
             username: firstName
-        });
+        };
+        console.log('✅ Landing: Setting user data:', finalUserData);
+        setUserData(finalUserData);
         
     } catch (error) {
         if (error instanceof Error && error.message === 'Authentication failed: jwt expired') {
             setError('session timed out, log in again')
             setTimeout(() => setError(''), 3000); 
-        }else{
-            console.error('Error fetching user data:');
+        } else {
+            console.error('❌ Landing: Error fetching user data:', error);
         }
         
     }finally{    
@@ -137,7 +156,7 @@ const LandingPage = () => {
   const fetchNewsData = async () => {
     setgeneralLoading(true)
     try {
-      const response = await fetch('https://ksucu-mc.co.ke/adminnews/news', {
+      const response = await fetch(getApiUrl('news'), {
         method: 'GET',
         credentials: 'include'  // Ensures cookies (for authentication) are sent with the request
       });
@@ -157,7 +176,7 @@ const LandingPage = () => {
   const handleLogout = async () => {
     setgeneralLoading(true)
       try {
-          const response = await fetch('https://ksucu-mc.co.ke/users/logout', {
+          const response = await fetch(getApiUrl('usersLogout'), {
               method: 'POST',
               credentials: 'include'
           });
@@ -236,7 +255,9 @@ const LandingPage = () => {
   };
 
   function handleRedirectToUserInfo() {
-    navigate('/changeDetails')
+    console.log('👤 Landing: User icon clicked, userData:', userData);
+    console.log('👤 Landing: Navigating to /profile');
+    navigate('/profile')
   }
   function handleRedirectToLogin() {
     navigate('/signIn')
@@ -357,7 +378,7 @@ const LandingPage = () => {
             <div className={styles.nav}>
               <div className={styles['nav-one']}>
               {userData ?
-                    <Link to="/changeDetails" className={styles['signUp-btn']}>{userData.username}</Link>
+                    <Link to="/profile" className={styles['signUp-btn']}>{userData.username}</Link>
                    : <Link to="/signUp" className={styles['signUp-btn']}>Sign up</Link>
                   }
             

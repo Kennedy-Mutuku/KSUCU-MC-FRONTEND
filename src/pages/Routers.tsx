@@ -5,7 +5,6 @@ import FinancialsPage from "./Financials";
 import MinistriesPage from "./Ministries";
 import Etpage from "./Et";
 import NoPage from "./NoPage";
-import SignUp from "../components/signup";
 import SignIn from "../components/signin";
 import Bs from "../components/bibleStudy";
 import SavedSouls from "./savedSouls";
@@ -26,6 +25,9 @@ import SuperAdmin from "./superAdmin";
 import PraiseandWorshipCommitment from "../commitmentForms/praiseandWorship";
 import ChoirCommitment from "../commitmentForms/Choir";
 import InstrumentalistsCommitment from "../commitmentForms/instrumentalists";
+import AdmissionAdmin from "./admissionAdmin";
+import UserProfilePage from "./userProfile";
+import UserManagement from "./userManagement";
 
 export const router = createBrowserRouter([
     {
@@ -37,7 +39,6 @@ export const router = createBrowserRouter([
             {path: "/financial", element: <FinancialsPage />},
             {path: "/ministries", element: <MinistriesPage />},
             {path: "/ets", element: <Etpage />},
-            {path: "/signUp", element: <SignUp />},
             {path: "/signIn", element: <SignIn />},
             {path: "/Bs", element: <Bs />},
             {path: "/save", element: <SavedSouls />},
@@ -58,6 +59,9 @@ export const router = createBrowserRouter([
             {path: "/p&w", element: <PraiseandWorshipCommitment />},
             {path: "/choir", element: <ChoirCommitment />},
             {path: "/wananzambe", element: <InstrumentalistsCommitment />},
+            {path: "/admission", element: <AdmissionAdmin />},
+            {path: "/user-management", element: <UserManagement />},
+            {path: "/profile", element: <UserProfilePage />},
             {path: "*", element: <NoPage />}
         ]
     }
