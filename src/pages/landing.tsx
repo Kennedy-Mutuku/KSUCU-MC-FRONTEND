@@ -722,7 +722,7 @@ const LandingPage = () => {
                             <img src={prayerPNG} alt='prayer image' />
                         </div>
                         <div className={styles.othersTextDiv}>
-                          <p className={styles.othersText}>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Iste illum enim esse dolorem libero! Deleniti exercitationem quaerat harum, enim earum excepturi esse possimus ex ipsum? Quasi suscipit explicabo impedit veritatis?</p>
+                          <p className={styles.othersText}>KSUCU-MC joint prayers are conducted everyday from 8-50 pm to 9-30 pm and in the morning from 5-00am to 6-00 am venues are communicated before time, on wednesdays students meet at gethsamane from 1 to 2 pm and 5 to 6 pm for prayers and fasting</p>
                         </div>
                       </div>}
 
