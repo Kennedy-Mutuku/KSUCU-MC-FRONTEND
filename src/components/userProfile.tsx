@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styles from '../styles/signin.module.css';
 import cuLogo from '../assets/KSUCU logo updated document.png';
 import { getApiUrl } from '../config/environment';
@@ -22,6 +22,12 @@ interface UserProfileProps {
 }
 
 const UserProfile: React.FC<UserProfileProps> = ({ userData, onLogout, isLoading }) => {
+    const navigate = useNavigate();
+
+    const handleContinueToKSUCUMC = () => {
+        navigate('/');
+    };
+
     const handleLogout = async () => {
         try {
             const response = await fetch(getApiUrl('usersLogout'), {
@@ -59,9 +65,41 @@ const UserProfile: React.FC<UserProfileProps> = ({ userData, onLogout, isLoading
 
             <h2 className={styles.text}>Welcome back, {userData.username}!</h2>
             
+            {/* Continue to KSUCUMC Button */}
+            <div style={{ textAlign: 'center', margin: '30px 0' }}>
+                <button 
+                    onClick={handleContinueToKSUCUMC}
+                    style={{
+                        backgroundColor: '#007bff',
+                        color: 'white',
+                        border: 'none',
+                        padding: '15px 40px',
+                        borderRadius: '50px',
+                        fontSize: '18px',
+                        fontWeight: '600',
+                        cursor: 'pointer',
+                        boxShadow: '0 4px 8px rgba(0,123,255,0.3)',
+                        transition: 'all 0.3s ease',
+                        minWidth: '250px'
+                    }}
+                    onMouseOver={(e) => {
+                        e.currentTarget.style.backgroundColor = '#0056b3';
+                        e.currentTarget.style.transform = 'translateY(-2px)';
+                        e.currentTarget.style.boxShadow = '0 6px 12px rgba(0,123,255,0.4)';
+                    }}
+                    onMouseOut={(e) => {
+                        e.currentTarget.style.backgroundColor = '#007bff';
+                        e.currentTarget.style.transform = 'translateY(0)';
+                        e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,123,255,0.3)';
+                    }}
+                >
+                    Continue to KSUCUMC
+                </button>
+            </div>
+            
             <div className={styles.form}>
                 <div className={styles['user-details']}>
-                    <h3 style={{ marginBottom: '20px', color: '#2c3e50' }}>Your Details</h3>
+                    <h3 style={{ marginBottom: '20px', color: '#2c3e50' }}>Your Profile</h3>
                     
                     <div className={styles['detail-item']} style={{ marginBottom: '15px', padding: '10px', backgroundColor: '#f8f9fa', borderRadius: '5px' }}>
                         <strong>Name:</strong> {userData.username}
@@ -101,21 +139,72 @@ const UserProfile: React.FC<UserProfileProps> = ({ userData, onLogout, isLoading
                 </div>
             </div>
 
-            <div className={styles.submisions}>
-                <Link to="/changeDetails" className={styles.clearForm}>
+            {/* Edit Details and Log Out buttons on the same row */}
+            <div style={{ 
+                display: 'flex', 
+                gap: '15px', 
+                justifyContent: 'center', 
+                marginTop: '30px',
+                flexWrap: 'wrap'
+            }}>
+                <Link 
+                    to="/changeDetails" 
+                    style={{
+                        backgroundColor: '#28a745',
+                        color: 'white',
+                        textDecoration: 'none',
+                        padding: '12px 25px',
+                        borderRadius: '25px',
+                        fontSize: '16px',
+                        fontWeight: '500',
+                        cursor: 'pointer',
+                        boxShadow: '0 3px 6px rgba(40,167,69,0.3)',
+                        transition: 'all 0.3s ease',
+                        minWidth: '140px',
+                        textAlign: 'center',
+                        display: 'inline-block'
+                    }}
+                    onMouseOver={(e) => {
+                        e.currentTarget.style.backgroundColor = '#218838';
+                        e.currentTarget.style.transform = 'translateY(-1px)';
+                        e.currentTarget.style.boxShadow = '0 4px 8px rgba(40,167,69,0.4)';
+                    }}
+                    onMouseOut={(e) => {
+                        e.currentTarget.style.backgroundColor = '#28a745';
+                        e.currentTarget.style.transform = 'translateY(0)';
+                        e.currentTarget.style.boxShadow = '0 3px 6px rgba(40,167,69,0.3)';
+                    }}
+                >
                     Edit Details
                 </Link>
                 <button 
-                    className={styles.submitData} 
                     onClick={handleLogout}
-                    style={{ border: 'none', cursor: 'pointer' }}
+                    style={{
+                        backgroundColor: '#dc3545',
+                        color: 'white',
+                        border: 'none',
+                        padding: '12px 25px',
+                        borderRadius: '25px',
+                        fontSize: '16px',
+                        fontWeight: '500',
+                        cursor: 'pointer',
+                        boxShadow: '0 3px 6px rgba(220,53,69,0.3)',
+                        transition: 'all 0.3s ease',
+                        minWidth: '140px'
+                    }}
+                    onMouseOver={(e) => {
+                        e.currentTarget.style.backgroundColor = '#c82333';
+                        e.currentTarget.style.transform = 'translateY(-1px)';
+                        e.currentTarget.style.boxShadow = '0 4px 8px rgba(220,53,69,0.4)';
+                    }}
+                    onMouseOut={(e) => {
+                        e.currentTarget.style.backgroundColor = '#dc3545';
+                        e.currentTarget.style.transform = 'translateY(0)';
+                        e.currentTarget.style.boxShadow = '0 3px 6px rgba(220,53,69,0.3)';
+                    }}
                 >
-                    Logout
+                    Log Out
                 </button>
-            </div>
-
-            <div className={styles['form-footer']}>
-                <p><Link to="/">Home</Link></p>
             </div>
         </div>
     );
