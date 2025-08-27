@@ -5,10 +5,13 @@ import Header from '../components/header';
 import Footer from '../components/footer';
 import loadingAnime from '../assets/Animation - 1716747954931.gif';
 import { FaYoutube, FaFacebook, FaTiktok, FaTwitter, FaImage, FaNewspaper, FaBook, FaTimes } from 'react-icons/fa';
+import { getApiUrl } from '../config/environment';
 
 const Media: React.FC = () => {
   const [showMediaEvents, setShowMediaEvents] = useState(false);
   const [error, setError] = useState('');
+  const [generalLoading, setGeneralLoading] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const events = [
     { event: "Subcomm photos", date: "2025-01-20", link: "https://photos.app.goo.gl/PrxWoMuyRNEet22b7" },
@@ -28,55 +31,56 @@ const Media: React.FC = () => {
     { event: "Sunday service", date: "24nd March", link: "https://photos.app.goo.gl/UnA7f6Aqp3kHtsxaA" },
   ];
 
-  const [generalLoading, setgeneralLoading] = useState(false);
   const navigate = useNavigate();
-    useEffect(() => {
-      fetchUserData()
-    },[])
+  
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
   const fetchUserData = async () => {
-    // check if the user in online
     if (!navigator.onLine) {
-        setError('check your internet and try again...')
-        return;
+      setError('Check your internet and try again...');
+      return;
     }
 
     window.scrollTo({
-        top: 0,
-        behavior: 'auto' // 'auto' for instant scroll
+      top: 0,
+      behavior: 'auto'
     });
     
     try {
-        
-        setgeneralLoading(true)
+      setGeneralLoading(true);
+      document.body.style.overflow = 'hidden';            
 
-        document.body.style.overflow = 'hidden';            
+      const apiUrl = getApiUrl('users');
+      console.log('📱 Media: Fetching from:', apiUrl);
+      
+      const response = await fetch(apiUrl, {
+        credentials: 'include'
+      });
 
-        const response = await fetch('https://ksucu-mc.co.ke/users/data', {
-            credentials: 'include'
-        });
+      if (!response.ok) {
+        setError('You need to login or sign up to access this page');
+        setTimeout(() => {
+          navigate('/');
+        }, 5000);
+        return;
+      }  
 
-        if (!response.ok) {
-          setError('You need to login or sign up to access this page')
-          setTimeout(() => {
-           return navigate('/')
-          }, 5000);
-        }  
-
-
+      setIsAuthenticated(true);
         
     } catch (error) {
-        if (error instanceof Error && error.message === 'Authentication failed: jwt expired') {
-            setError('session timed out, log in again')
-            setTimeout(() => setError(''), 3000); 
-            return navigate('/')
-        }else{
-            console.error('Error fetching user data:');
-            return navigate('/')
-        }
-        
-    }finally{    
-        document.body.style.overflow = '';  
-        setgeneralLoading(false);      
+      if (error instanceof Error && error.message === 'Authentication failed: jwt expired') {
+        setError('Session timed out, log in again');
+        setTimeout(() => setError(''), 3000); 
+        navigate('/');
+      } else {
+        console.error('Error fetching user data:', error);
+        navigate('/');
+      }
+    } finally {    
+      document.body.style.overflow = '';  
+      setGeneralLoading(false);      
     }
   };
   const reversedEvents = [...events].reverse(); // Spread operator to avoid mutating the original array
@@ -84,16 +88,18 @@ const Media: React.FC = () => {
   return (
     <>
       <Header />
-        
+      
       {generalLoading && (
-                <div className={styles['loading-screen']}>
-                    <p className={styles['loading-text']}>Please wait...🤗</p>
-                    <img src={loadingAnime} alt="animation gif" />
-                </div>
+        <div className={styles['loading-screen']}>
+          <p className={styles['loading-text']}>Please wait...🤗</p>
+          <img src={loadingAnime} alt="animation gif" />
+        </div>
       )}
 
-      <main className={styles.main}>
-        {error && <div className={styles.error}>{error}</div>}
+      {error && <div className={styles.error}>{error}</div>}
+
+      {isAuthenticated && (
+        <main className={styles.main}>
 
         {/* Hero Section */}
         <section className={styles.heroSection}>
@@ -234,7 +240,8 @@ const Media: React.FC = () => {
             </div>
           </div>
         )}
-      </main>
+        </main>
+      )}
       <Footer />
     </>
   );
