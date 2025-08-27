@@ -4,6 +4,7 @@ import styles from '../styles/Media.module.css';
 import Header from '../components/header';
 import Footer from '../components/footer';
 import loadingAnime from '../assets/Animation - 1716747954931.gif';
+import { FaYoutube, FaFacebook, FaTiktok, FaTwitter, FaImage, FaNewspaper, FaBook, FaTimes } from 'react-icons/fa';
 
 const Media: React.FC = () => {
   const [showMediaEvents, setShowMediaEvents] = useState(false);
@@ -91,62 +92,145 @@ const Media: React.FC = () => {
                 </div>
       )}
 
-      <main>
-      {error && <div className={styles.error}>{error}</div>}
+      <main className={styles.main}>
+        {error && <div className={styles.error}>{error}</div>}
 
-        <div className={styles.mediatitle}>
+        {/* Hero Section */}
+        <section className={styles.heroSection}>
+          <div className={styles.heroContent}>
+            <h1 className={styles.heroTitle}>KSUCU-MC MEDIA HUB</h1>
+            <p className={styles.heroSubtitle}>Stay connected through our digital platforms and explore our content</p>
+          </div>
+        </section>
 
-          <h2 className={styles['media-tittle--text']}>KSUCU-MC MEDIA</h2>
-
-          <div className={styles['link-flex']}>
-            <div className={styles['first-links']}>
-              <ul className={styles['first-link--list']}>
-                <li className={styles['first-link--item']}><a href="https://www.youtube.com/results?search_query=kisii+university+christian+union" target='_blank' className={styles['first-link']}>YOUTUBE</a></li>
-                <li className={styles['first-link--item']}><a href="https://web.facebook.com/ksucumc/?_rdc=1&_rdr#" target='_blank' className={styles['first-link']}>FACEBOOK</a></li>
-                <li className={styles['first-link--item']}><a href="https://www.tiktok.com/@ksucumc" target='_blank' className={styles['first-link']}>TIKTOK</a></li>
-                <li className={styles['first-link--item']}><a href="https://x.com/@Ksucu_mc" target='_blank' className={styles['first-link']}>TWITTER</a></li>
-              </ul>
-            </div>
-
-            <div className={styles['first-links-2']}>
-              <ul className={styles['first-link--list']}>
-                <li className={styles['first-link--item']}><Link to="/news" className={styles['first-link']}>NEWS</Link></li>
-                <li className={styles['first-link--item']} onClick={() => setShowMediaEvents(true)} ><a className={styles['first-link']}>GALLERY</a></li>
-                <li className={styles['first-link--item']}><a href="https://www.youtube.com/results?search_query=kisii+university+christian+union" target='_blank' className={styles['first-link']}>YOUTUBE</a></li>
-                <li className={styles['first-link--item']}><Link to="/library" className={styles['first-link']}>E-LIBRARY</Link></li>
-              </ul>
+        {/* Social Media Platforms */}
+        <section className={styles.socialSection}>
+          <div className={styles.container}>
+            <h2 className={styles.sectionTitle}>Follow Us On Social Media</h2>
+            <div className={styles.socialGrid}>
+              <a href="https://www.youtube.com/@KSUCU-MC" target='_blank' rel="noopener noreferrer" className={styles.socialCard}>
+                <div className={styles.socialIcon} style={{backgroundColor: '#FF0000'}}>
+                  <FaYoutube />
+                </div>
+                <h3>YouTube</h3>
+                <p>Watch our sermons, testimonies and events</p>
+              </a>
+              
+              <a href="https://web.facebook.com/ksucumc" target='_blank' rel="noopener noreferrer" className={styles.socialCard}>
+                <div className={styles.socialIcon} style={{backgroundColor: '#1877F2'}}>
+                  <FaFacebook />
+                </div>
+                <h3>Facebook</h3>
+                <p>Connect with our community</p>
+              </a>
+              
+              <a href="https://www.tiktok.com/@ksucumc" target='_blank' rel="noopener noreferrer" className={styles.socialCard}>
+                <div className={styles.socialIcon} style={{backgroundColor: '#000000'}}>
+                  <FaTiktok />
+                </div>
+                <h3>TikTok</h3>
+                <p>Short inspirational videos</p>
+              </a>
+              
+              <a href="https://x.com/@Ksucu_mc" target='_blank' rel="noopener noreferrer" className={styles.socialCard}>
+                <div className={styles.socialIcon} style={{backgroundColor: '#1DA1F2'}}>
+                  <FaTwitter />
+                </div>
+                <h3>Twitter/X</h3>
+                <p>Latest updates and announcements</p>
+              </a>
             </div>
           </div>
+        </section>
 
-          <div className={styles['cta-btn-div']}>
-            <button className={styles['cta-btn']}>Media Events</button>
+        {/* Content Categories */}
+        <section className={styles.contentSection}>
+          <div className={styles.container}>
+            <h2 className={styles.sectionTitle}>Explore Our Content</h2>
+            <div className={styles.contentGrid}>
+              <Link to="/news" className={styles.contentCard}>
+                <div className={styles.contentIcon} style={{backgroundColor: '#28a745'}}>
+                  <FaNewspaper />
+                </div>
+                <h3>Latest News</h3>
+                <p>Stay updated with KSUCU-MC news and announcements</p>
+              </Link>
+              
+              <div onClick={() => setShowMediaEvents(true)} className={styles.contentCard}>
+                <div className={styles.contentIcon} style={{backgroundColor: '#6f42c1'}}>
+                  <FaImage />
+                </div>
+                <h3>Photo Gallery</h3>
+                <p>Browse photos from our events and activities</p>
+              </div>
+              
+              <Link to="/library" className={styles.contentCard}>
+                <div className={styles.contentIcon} style={{backgroundColor: '#fd7e14'}}>
+                  <FaBook />
+                </div>
+                <h3>E-Library</h3>
+                <p>Access our digital library resources</p>
+              </Link>
+            </div>
           </div>
-        </div>
+        </section>
 
-        {/* Media Events Canvas */}
+        {/* Featured Events */}
+        <section className={styles.eventsSection}>
+          <div className={styles.container}>
+            <h2 className={styles.sectionTitle}>Recent Events</h2>
+            <div className={styles.eventsPreview}>
+              {events.slice(0, 6).map((event, index) => (
+                <div key={index} className={styles.eventCard}>
+                  <div className={styles.eventImage}>
+                    <FaImage />
+                  </div>
+                  <div className={styles.eventContent}>
+                    <h4>{event.event}</h4>
+                    <p className={styles.eventDate}>{event.date}</p>
+                    <a href={event.link} target="_blank" rel="noopener noreferrer" className={styles.viewPhotosBtn}>
+                      View Photos
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className={styles.viewAllContainer}>
+              <button onClick={() => setShowMediaEvents(true)} className={styles.viewAllBtn}>
+                View All Events
+              </button>
+            </div>
+          </div>
+        </section>
+
+        {/* Enhanced Gallery Modal */}
         {showMediaEvents && (
-          <div className={styles.canvasOverlay}>
-            <div className={styles.canvas}>
-              <button className={styles.closeBtn} onClick={() => setShowMediaEvents(false)}>✖</button>
-              <h3>Media Events</h3>
-              <table className={styles.eventTable}>
-                <thead>
-                  <tr>
-                    <th>Event</th>
-                    <th>Date</th>
-                    <th>Google Photos</th>
-                  </tr>
-                </thead>
-                <tbody>
+          <div className={styles.modalOverlay} onClick={() => setShowMediaEvents(false)}>
+            <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+              <div className={styles.modalHeader}>
+                <h3>Photo Gallery - All Events</h3>
+                <button className={styles.closeBtn} onClick={() => setShowMediaEvents(false)}>
+                  <FaTimes />
+                </button>
+              </div>
+              <div className={styles.modalBody}>
+                <div className={styles.galleryGrid}>
                   {reversedEvents.map((event, index) => (
-                    <tr key={index}>
-                      <td>{event.event}</td>
-                      <td>{event.date}</td>
-                      <td><a className={styles.googlePhotosRedirectLinks} href={event.link} target="_blank" rel="noopener noreferrer">View Photos</a></td>
-                    </tr>
+                    <div key={index} className={styles.galleryItem}>
+                      <div className={styles.galleryImagePlaceholder}>
+                        <FaImage />
+                      </div>
+                      <div className={styles.galleryItemContent}>
+                        <h4>{event.event}</h4>
+                        <p className={styles.galleryDate}>{event.date}</p>
+                        <a href={event.link} target="_blank" rel="noopener noreferrer" className={styles.galleryViewBtn}>
+                          View Photos
+                        </a>
+                      </div>
+                    </div>
                   ))}
-                </tbody>
-              </table>
+                </div>
+              </div>
             </div>
           </div>
         )}
