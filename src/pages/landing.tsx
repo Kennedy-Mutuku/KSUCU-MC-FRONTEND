@@ -20,7 +20,7 @@ import valuesImg from '../assets/amptheatre.jpg'
 import prayerPNG from '../assets/RIVET.jpg'
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 import { faUserLock } from '@fortawesome/free-solid-svg-icons';
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, Heart, Camera, BookOpen, Library, DollarSign, GraduationCap } from "lucide-react";
 
 
 interface NewsData {
@@ -141,8 +141,8 @@ const LandingPage = () => {
         
     } catch (error) {
         if (error instanceof Error && error.message === 'Authentication failed: jwt expired') {
-            setError('session timed out, log in again')
-            setTimeout(() => setError(''), 3000); 
+            // Silently handle expired session
+            navigate('/');
         } else {
             console.error('❌ Landing: Error fetching user data:', error);
         }
@@ -262,6 +262,14 @@ const LandingPage = () => {
   function handleRedirectToLogin() {
     navigate('/signIn')
   }
+
+  const handleQuickLinkClick = (action?: () => void, event?: React.MouseEvent) => {
+    event?.stopPropagation();
+    if (action) {
+      action();
+    }
+  };
+
 
   function navigateMedia() {
     if(userData){
@@ -881,6 +889,77 @@ const LandingPage = () => {
             </div>
           </div>
 
+        </div>
+
+        {/* Professional Quick Links Sidebar */}
+        <div className={styles['quick-links-sidebar']}>
+          <div 
+            className={styles['quick-link-item']}
+            data-text="Media"
+            onClick={(e) => handleQuickLinkClick(navigateMedia, e)}
+          >
+            <Camera className={styles.icon} />
+          </div>
+          
+          <div 
+            className={styles['quick-link-item']}
+            data-text="Win a Soul"
+            onClick={(e) => handleQuickLinkClick(() => navigate('/save'), e)}
+          >
+            <Heart className={styles.icon} />
+          </div>
+          
+          <div 
+            className={styles['quick-link-item']}
+            data-text="Constitution"
+            onClick={(e) => handleQuickLinkClick(() => {
+              const link = document.createElement('a');
+              link.href = '/pdfs/constitution.pdf';
+              link.download = 'constitution.pdf';
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+            }, e)}
+          >
+            <BookOpen className={styles.icon} />
+          </div>
+          
+          <div 
+            className={styles['quick-link-item']}
+            data-text="Library"
+            onClick={(e) => handleQuickLinkClick(() => navigate('/library'), e)}
+          >
+            <Library className={styles.icon} />
+          </div>
+          
+          <div 
+            className={styles['quick-link-item']}
+            data-text="Financials"
+            onClick={(e) => handleQuickLinkClick(() => navigate('/financial'), e)}
+          >
+            <DollarSign className={styles.icon} />
+          </div>
+          
+          <div 
+            className={styles['quick-link-item']}
+            data-text="Bible Study"
+            onClick={(e) => handleQuickLinkClick(() => navigate('/Bs'), e)}
+          >
+            <GraduationCap className={styles.icon} />
+          </div>
+
+          {userData && (
+            <div 
+              className={styles['quick-link-item']}
+              data-text="Log out"
+              onClick={(e) => handleQuickLinkClick(() => {
+                handleLogout();
+                navigate('/signIn');
+              }, e)}
+            >
+              <FontAwesomeIcon icon={faUserLock} className={styles.icon} />
+            </div>
+          )}
         </div>
 
           <div className={  `${ styles['footer'] } ${ styles['home-footer'] }` } id='contacts'>

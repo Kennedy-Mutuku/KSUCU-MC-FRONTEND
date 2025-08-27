@@ -71,8 +71,7 @@ const Media: React.FC = () => {
         
     } catch (error) {
       if (error instanceof Error && error.message === 'Authentication failed: jwt expired') {
-        setError('Session timed out, log in again');
-        setTimeout(() => setError(''), 3000); 
+        // Silently handle expired session
         navigate('/');
       } else {
         console.error('Error fetching user data:', error);
@@ -106,6 +105,66 @@ const Media: React.FC = () => {
           <div className={styles.heroContent}>
             <h1 className={styles.heroTitle}>KSUCU-MC MEDIA HUB</h1>
             <p className={styles.heroSubtitle}>Stay connected through our digital platforms and explore our content</p>
+          </div>
+        </section>
+
+        {/* Content Categories */}
+        <section className={styles.contentSection}>
+          <div className={styles.container}>
+            <h2 className={styles.sectionTitle}>Explore Our Content</h2>
+            <div className={styles.contentGrid}>
+              <div onClick={() => setShowMediaEvents(true)} className={styles.contentCard}>
+                <div className={styles.contentIcon} style={{backgroundColor: '#6f42c1'}}>
+                  <FaImage />
+                </div>
+                <h3>Photo Gallery</h3>
+                <p>Browse photos from our events and activities</p>
+              </div>
+              
+              <Link to="/library" className={styles.contentCard}>
+                <div className={styles.contentIcon} style={{backgroundColor: '#fd7e14'}}>
+                  <FaBook />
+                </div>
+                <h3>E-Library</h3>
+                <p>Access our digital library resources</p>
+              </Link>
+              
+              <Link to="/news" className={styles.contentCard}>
+                <div className={styles.contentIcon} style={{backgroundColor: '#28a745'}}>
+                  <FaNewspaper />
+                </div>
+                <h3>Latest News</h3>
+                <p>Stay updated with KSUCU-MC news and announcements</p>
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* Featured Events */}
+        <section className={styles.eventsSection}>
+          <div className={styles.container}>
+            <h2 className={styles.sectionTitle}>Recent Events</h2>
+            <div className={styles.eventsPreview}>
+              {events.slice(0, 6).map((event, index) => (
+                <div key={index} className={styles.eventCard}>
+                  <div className={styles.eventImage}>
+                    <FaImage />
+                  </div>
+                  <div className={styles.eventContent}>
+                    <h4>{event.event}</h4>
+                    <p className={styles.eventDate}>{event.date}</p>
+                    <a href={event.link} target="_blank" rel="noopener noreferrer" className={styles.viewPhotosBtn}>
+                      View Photos
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className={styles.viewAllContainer}>
+              <button onClick={() => setShowMediaEvents(true)} className={styles.viewAllBtn}>
+                View All Events
+              </button>
+            </div>
           </div>
         </section>
 
@@ -145,66 +204,6 @@ const Media: React.FC = () => {
                 <h3>Twitter/X</h3>
                 <p>Latest updates and announcements</p>
               </a>
-            </div>
-          </div>
-        </section>
-
-        {/* Content Categories */}
-        <section className={styles.contentSection}>
-          <div className={styles.container}>
-            <h2 className={styles.sectionTitle}>Explore Our Content</h2>
-            <div className={styles.contentGrid}>
-              <Link to="/news" className={styles.contentCard}>
-                <div className={styles.contentIcon} style={{backgroundColor: '#28a745'}}>
-                  <FaNewspaper />
-                </div>
-                <h3>Latest News</h3>
-                <p>Stay updated with KSUCU-MC news and announcements</p>
-              </Link>
-              
-              <div onClick={() => setShowMediaEvents(true)} className={styles.contentCard}>
-                <div className={styles.contentIcon} style={{backgroundColor: '#6f42c1'}}>
-                  <FaImage />
-                </div>
-                <h3>Photo Gallery</h3>
-                <p>Browse photos from our events and activities</p>
-              </div>
-              
-              <Link to="/library" className={styles.contentCard}>
-                <div className={styles.contentIcon} style={{backgroundColor: '#fd7e14'}}>
-                  <FaBook />
-                </div>
-                <h3>E-Library</h3>
-                <p>Access our digital library resources</p>
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* Featured Events */}
-        <section className={styles.eventsSection}>
-          <div className={styles.container}>
-            <h2 className={styles.sectionTitle}>Recent Events</h2>
-            <div className={styles.eventsPreview}>
-              {events.slice(0, 6).map((event, index) => (
-                <div key={index} className={styles.eventCard}>
-                  <div className={styles.eventImage}>
-                    <FaImage />
-                  </div>
-                  <div className={styles.eventContent}>
-                    <h4>{event.event}</h4>
-                    <p className={styles.eventDate}>{event.date}</p>
-                    <a href={event.link} target="_blank" rel="noopener noreferrer" className={styles.viewPhotosBtn}>
-                      View Photos
-                    </a>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className={styles.viewAllContainer}>
-              <button onClick={() => setShowMediaEvents(true)} className={styles.viewAllBtn}>
-                View All Events
-              </button>
             </div>
           </div>
         </section>
