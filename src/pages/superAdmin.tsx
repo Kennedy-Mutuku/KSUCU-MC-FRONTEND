@@ -3,6 +3,7 @@ import axios from 'axios';
 import styles from '../styles/superAdmin.module.css';
 import Header from '../components/header';
 import Footer from '../components/footer';
+import { getApiUrl } from '../config/environment';
 
 const SuperAdmin: React.FC = () => {
     const [userCount, setUserCount] = useState<number>(0);
@@ -16,7 +17,8 @@ const SuperAdmin: React.FC = () => {
     const [users, setUsers] = useState<{ username: string; reg: string; course: string; yos: string }[]>([]);
 
 
-    const backEndURL = 'https://ksucu-mc.co.ke/sadmin';
+    // Use dynamic API URL based on environment
+    const backEndURL = getApiUrl('superAdmin').replace('/login', '');
 
     useEffect(() => {
         fetchUserData();

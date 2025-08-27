@@ -76,16 +76,38 @@ const SignIn: React.FC = () => {
             return
         }
 
+        // Auto-complete common admin emails if missing domain
+        let processedEmail = formData.email.toLowerCase().trim();
+        
+        // More flexible auto-completion for admin emails
+        const adminPatterns = [
+            { pattern: /^admin@ksucumcsuperadmi/i, complete: 'admin@ksucumcsuperadmin.co.ke' },  // Handle typos
+            { pattern: /^admin@ksucumcsuperadmin$/i, complete: 'admin@ksucumcsuperadmin.co.ke' },  // Exact match without .co.ke
+            { pattern: /^admin@ksucumcbsadmin/i, complete: 'admin@ksucumcbsadmin.co.ke' },
+            { pattern: /^admin@ksucumcadmissionadmin/i, complete: 'admin@ksucumcadmissionadmin.co.ke' }
+        ];
+        
+        // Check if the email matches any pattern and doesn't already end with .co.ke
+        if (!processedEmail.endsWith('.co.ke')) {
+            for (const { pattern, complete } of adminPatterns) {
+                if (pattern.test(processedEmail)) {
+                    console.log('📧 SignIn: Auto-completing email from:', processedEmail, 'to:', complete);
+                    processedEmail = complete;
+                    break;
+                }
+            }
+        }
+
         const domainMappings = [
             { domain: '@ksucumcnewsadmin.co.ke', endpoint: getApiUrl('newsAdmin'), route: '/adminnews' },
 
             { domain: '@ksucumcmissionadmin.co.ke', endpoint: getApiUrl('missionAdmin'), route: '/adminmission' },
 
-            { domain: 'admin@ksucumcbsadmin.co.ke', endpoint: getApiUrl('bsAdmin'), route: '/adminBs' },
+            { domain: '@ksucumcbsadmin.co.ke', endpoint: getApiUrl('bsAdmin'), route: '/adminBs' },
 
-            { domain: 'admin@ksucumcsuperadmin.co.ke', endpoint: getApiUrl('superAdmin'), route: '/admin' },
+            { domain: '@ksucumcsuperadmin.co.ke', endpoint: getApiUrl('superAdmin'), route: '/admin' },
 
-            { domain: 'admin@ksucumcadmissionadmin.co.ke', endpoint: getApiUrl('admissionAdmin'), route: '/admission' },
+            { domain: '@ksucumcadmissionadmin.co.ke', endpoint: getApiUrl('admissionAdmin'), route: '/admission' },
         ];
     
         // Check if the user is online
@@ -103,15 +125,33 @@ const SignIn: React.FC = () => {
         
         try {
             // Find the matching configuration based on the email domain
-            const { endpoint, route } = domainMappings.find(mapping =>
-                formData.email?.endsWith(mapping.domain)
-            ) || { endpoint: getApiUrl('usersLogin'), route: '/profile' }; // Default to user login, redirect to profile
+            const mapping = domainMappings.find(mapping =>
+                processedEmail?.endsWith(mapping.domain)
+            );
+            
+            // If no mapping found, default to user login
+            const { endpoint, route } = mapping || { endpoint: getApiUrl('usersLogin'), route: '/profile' };
     
+            console.log('🔐 SignIn: Email entered:', formData.email);
+            console.log('🔐 SignIn: Processed email:', processedEmail);
+            console.log('🔐 SignIn: Password length:', formData.password?.length);
+            console.log('🔐 SignIn: Mapping found:', mapping ? 'Yes' : 'No');
             console.log('🔐 SignIn: Attempting login to:', endpoint);
             console.log('🔐 SignIn: Will redirect to:', route);
 
-            const response = await axios.post(endpoint, formData, {
+            // Use the processed email for the request
+            const loginData = {
+                email: processedEmail,
+                password: formData.password
+            };
+            
+            console.log('📤 SignIn: Sending login data:', { email: loginData.email, password: '***hidden***' });
+
+            const response = await axios.post(endpoint, loginData, {
                 withCredentials: true, // Include cookies in the request
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             });
     
             console.log('✅ SignIn: Login successful, response:', response.data);
@@ -121,13 +161,18 @@ const SignIn: React.FC = () => {
             navigate(route);
     
         } catch (error: any) {
-            console.error('Error:', error);
+            console.error('❌ SignIn: Login error:', error);
+            console.error('❌ SignIn: Error response:', error.response);
     
             if (error.response && error.response.status === 401) {
-                setError('Please check your credentials.');
+                setError('Invalid credentials. Please check your email and password.');
+            } else if (error.response && error.response.status === 404) {
+                setError('Login endpoint not found. Please check your email format.');
+            } else if (error.response) {
+                setError(error.response.data?.message || 'Login failed. Please try again.');
             } else {
-                // Handle other errors
-                setError('Login failed. Please try again.');
+                // Handle network or other errors
+                setError('Network error. Please check your connection and try again.');
             }
         } finally {
             setgeneralLoading(false);
@@ -173,7 +218,15 @@ const SignIn: React.FC = () => {
 
                     <div className={styles['form-div']}>
                         <label htmlFor="email">e-mail</label>
-                        <input type="email" id="email" className={styles['input']} value={formData.email} onChange={handleChange} required />
+                        <input 
+                            type="email" 
+                            id="email" 
+                            className={styles['input']} 
+                            value={formData.email} 
+                            onChange={handleChange} 
+                            placeholder="Enter your email"
+                            required 
+                        />
                     </div>
 
                     <div className={styles['form-div']}>

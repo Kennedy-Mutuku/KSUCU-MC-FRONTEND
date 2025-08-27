@@ -346,10 +346,14 @@ const LandingPage = () => {
                           )}
                     </div>
 
-                    {userData ?
-                      <FontAwesomeIcon onClick={handleRedirectToUserInfo}  className={`${styles['user-icon']} `} icon={faUser} />
-                    : <FontAwesomeIcon onClick={handleRedirectToLogin}  className={`${styles['user-icon']} `} icon={faUserLock} />
-                    }
+                    {userData ? (
+                      <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', minWidth: '60px'}} onClick={handleRedirectToUserInfo}>
+                        <FontAwesomeIcon className={`${styles['user-icon']} `} icon={faUser} />
+                        <span style={{color: '#ffffff', fontSize: '13px', marginTop: '4px', fontWeight: '600', textShadow: '0 1px 3px rgba(0,0,0,0.5)', whiteSpace: 'nowrap', backgroundColor: 'rgba(0,0,0,0.3)', padding: '2px 6px', borderRadius: '3px'}}>{userData.username || 'User'}</span>
+                      </div>
+                    ) : (
+                      <FontAwesomeIcon onClick={handleRedirectToLogin}  className={`${styles['user-icon']} `} icon={faUserLock} />
+                    )}
 
                   </div>
                 </div>
@@ -362,10 +366,14 @@ const LandingPage = () => {
 
                 <div className={`${styles['user-icon-container']} `}>
 
-                  {userData ?
-                      <FontAwesomeIcon onClick={handleRedirectToUserInfo}  className={`${styles['user-icon']} `} icon={faUser} />
-                    : <FontAwesomeIcon onClick={handleRedirectToLogin}  className={`${styles['user-icon']} `} icon={faUserLock} />
-                    }
+                  {userData ? (
+                    <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', minWidth: '50px'}} onClick={handleRedirectToUserInfo}>
+                      <FontAwesomeIcon className={`${styles['user-icon']} `} icon={faUser} />
+                      <span style={{color: '#ffffff', fontSize: '12px', marginTop: '3px', fontWeight: '600', textShadow: '0 1px 3px rgba(0,0,0,0.5)', whiteSpace: 'nowrap', backgroundColor: 'rgba(0,0,0,0.3)', padding: '2px 5px', borderRadius: '3px'}}>{userData.username || 'User'}</span>
+                    </div>
+                  ) : (
+                    <FontAwesomeIcon onClick={handleRedirectToLogin}  className={`${styles['user-icon']} `} icon={faUserLock} />
+                  )}
 
                 </div>
 
