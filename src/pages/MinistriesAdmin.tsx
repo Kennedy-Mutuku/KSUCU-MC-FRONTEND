@@ -47,7 +47,7 @@ const MinistriesAdmin: React.FC = () => {
     const [message, setMessage] = useState('');
     
     // Ministry selection and view mode
-    const [selectedMinistry, setSelectedMinistry] = useState<MinistryKey | ''>('');
+    const [selectedMinistry, setSelectedMinistry] = useState<'' | MinistryKey>('');
     const [viewMode, setViewMode] = useState<'attendance' | 'commitments'>('commitments');
     const [commitmentForms, setCommitmentForms] = useState<CommitmentForm[]>([]);
     const [loading, setLoading] = useState(false);
@@ -151,7 +151,7 @@ const MinistriesAdmin: React.FC = () => {
             <!DOCTYPE html>
             <html>
             <head>
-                <title>KSUCU - ${ministryNames[selectedMinistry]} - Commitment Form</title>
+                <title>KSUCU - ${selectedMinistry ? ministryNames[selectedMinistry] : ''} - Commitment Form</title>
                 <style>
                     @page { size: A4; margin: 20mm; }
                     body { font-family: 'Times New Roman', serif; margin: 0; padding: 0; }
@@ -174,7 +174,7 @@ const MinistriesAdmin: React.FC = () => {
             <body>
                 <div class="letterhead">
                     <h1>KSUCU - MAIN CAMPUS</h1>
-                    <h2>${ministryNames[selectedMinistry]} - Commitment Form</h2>
+                    <h2>${selectedMinistry ? ministryNames[selectedMinistry] : ''} - Commitment Form</h2>
                 </div>
                 
                 <div class="status ${commitment.status}">
@@ -207,7 +207,7 @@ const MinistriesAdmin: React.FC = () => {
                     <div class="form-row">
                         <div class="form-field">
                             <label>Ministry:</label>
-                            <div class="value">${ministryNames[commitment.ministry]}</div>
+                            <div class="value">${ministryNames[commitment.ministry as MinistryKey] || commitment.ministry}</div>
                         </div>
                         <div class="form-field">
                             <label>Date Submitted:</label>
@@ -313,7 +313,7 @@ const MinistriesAdmin: React.FC = () => {
                             id="ministry-select"
                             className={styles.select}
                             value={selectedMinistry}
-                            onChange={(e) => setSelectedMinistry(e.target.value)}
+                            onChange={(e) => setSelectedMinistry(e.target.value as '' | MinistryKey)}
                         >
                             <option value="">Choose a ministry...</option>
                             {ministries.map(ministry => (
@@ -349,7 +349,7 @@ const MinistriesAdmin: React.FC = () => {
                     <div className={styles.contentArea}>
                         <div className={styles.sectionHeader}>
                             <h2 className={styles.sectionTitle}>
-                                {ministryNames[selectedMinistry]} - Commitment Forms
+                                {selectedMinistry && ministryNames[selectedMinistry]} - Commitment Forms
                             </h2>
                         </div>
 
@@ -443,7 +443,7 @@ const MinistriesAdmin: React.FC = () => {
                     <div className={styles.contentArea}>
                         <div className={styles.sectionHeader}>
                             <h2 className={styles.sectionTitle}>
-                                {ministryNames[selectedMinistry]} - Attendance Records
+                                {selectedMinistry && ministryNames[selectedMinistry]} - Attendance Records
                             </h2>
                         </div>
                         <div className={styles.noData}>

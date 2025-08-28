@@ -16,7 +16,7 @@ const PraiseandWorshipCommitment: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  // const [isSubmitted, setIsSubmitted] = useState(false);
   const [commitmentStatus, setCommitmentStatus] = useState<string>('');
   const [hasSubmitted, setHasSubmitted] = useState(false);
 
@@ -53,7 +53,7 @@ const PraiseandWorshipCommitment: React.FC = () => {
         if (data.status) setCommitmentStatus(data.status);
         if (data.hasSubmitted) {
           setHasSubmitted(data.hasSubmitted);
-          setIsSubmitted(data.hasSubmitted);
+          // setIsSubmitted(data.hasSubmitted);
         }
       } catch (error) {
         console.error("Error fetching form data:", error);
@@ -129,7 +129,7 @@ const PraiseandWorshipCommitment: React.FC = () => {
   
       if (response.status === 200) {
         alert("Thank you for your commitment! Waiting for admin approval.");
-        setIsSubmitted(true);
+        // setIsSubmitted(true);
         setHasSubmitted(true);
       } else {
         alert("Submission failed. Please try again.");

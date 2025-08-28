@@ -28,7 +28,7 @@ const LandingPageHeader = () => {
   const [error, setError] = useState('');
   const [generalLoading, setgeneralLoading] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
+  // const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
   const navigate = useNavigate();
 
   const handleNavToggle = () => {
@@ -196,14 +196,14 @@ const LandingPageHeader = () => {
       }
   };
 
-  const toggleDropdown = (event?: React.MouseEvent) => {
-    if (!isDropdownOpen && event) {
-      const rect = (event.target as HTMLElement).getBoundingClientRect();
-      setDropdownPosition({
-        top: rect.bottom + 5,
-        left: rect.right - 220 // 220px is the min-width of dropdown
-      });
-    }
+  const toggleDropdown = () => {
+    // if (!isDropdownOpen && event) {
+    //   const rect = (event.target as HTMLElement).getBoundingClientRect();
+    //   setDropdownPosition({
+    //     top: rect.bottom + 5,
+    //     left: rect.right - 220 // 220px is the min-width of dropdown
+    //   });
+    // }
     setIsDropdownOpen(!isDropdownOpen);
     
     // Toggle body class for desktop quick access
