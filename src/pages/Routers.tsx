@@ -28,6 +28,18 @@ import InstrumentalistsCommitment from "../commitmentForms/instrumentalists";
 import AdmissionAdmin from "./admissionAdmin";
 import UserProfilePage from "./userProfile";
 import UserManagement from "./userManagement";
+import WorshipDocketAdmin from "./WorshipDocketAdmin";
+import UsheringPage from "./ministries/ushering";
+import CreativityPage from "./ministries/creativity";
+import CompassionPage from "./ministries/compassion";
+import IntercessoryPage from "./ministries/intercessory";
+import HighSchoolPage from "./ministries/highSchool";
+import WananzambePage from "./ministries/wananzambe";
+import ChurchSchoolPage from "./ministries/churchSchool";
+import PraiseAndWorshipPage from "./ministries/praiseAndWorship";
+import ChoirPage from "./ministries/choir";
+import ContactUs from "./ContactUs";
+import MessagesAdmin from "./MessagesAdmin";
 
 export const router = createBrowserRouter([
     {
@@ -62,6 +74,18 @@ export const router = createBrowserRouter([
             {path: "/admission", element: <AdmissionAdmin />},
             {path: "/user-management", element: <UserManagement />},
             {path: "/profile", element: <UserProfilePage />},
+            {path: "/worship-docket-admin", element: <WorshipDocketAdmin />},
+            {path: "/ministries/ushering", element: <UsheringPage />},
+            {path: "/ministries/creativity", element: <CreativityPage />},
+            {path: "/ministries/compassion", element: <CompassionPage />},
+            {path: "/ministries/intercessory", element: <IntercessoryPage />},
+            {path: "/ministries/highSchool", element: <HighSchoolPage />},
+            {path: "/ministries/wananzambe", element: <WananzambePage />},
+            {path: "/ministries/churchSchool", element: <ChurchSchoolPage />},
+            {path: "/ministries/praiseAndWorship", element: <PraiseAndWorshipPage />},
+            {path: "/ministries/choir", element: <ChoirPage />},
+            {path: "/contact-us", element: <ContactUs />},
+            {path: "/messages-admin", element: <MessagesAdmin />},
             {path: "*", element: <NoPage />}
         ]
     }

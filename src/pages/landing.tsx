@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getApiUrl } from '../config/environment';
 import styles from '../styles/index.module.css';
 import cuLogo from '../assets/cuLogoUAR.png';
@@ -20,7 +20,9 @@ import valuesImg from '../assets/amptheatre.jpg'
 import prayerPNG from '../assets/RIVET.jpg'
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 import { faUserLock } from '@fortawesome/free-solid-svg-icons';
-import { ChevronDown, ChevronUp, Heart, Camera, BookOpen, Library, DollarSign, GraduationCap } from "lucide-react";
+import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { ChevronDown, ChevronUp, Heart, Camera, BookOpen, Library, DollarSign, GraduationCap, MessageCircle } from "lucide-react";
+import LandingPageHeader from '../components/LandingPageHeader';
 
 
 interface NewsData {
@@ -46,6 +48,9 @@ const LandingPage = () => {
   const [showClasses, setShowClasses] = useState(false);
   const [showBoards, setShowBoards] = useState(false);
   const [showEvangelisticTeams, setShowEvangelisticTeams] = useState(false);
+  const [showMembers, setShowMembers] = useState(false);
+  const [showCommissionDialog, setShowCommissionDialog] = useState(false);
+  const [showQuickLinks, setShowQuickLinks] = useState(false);
   const navigate = useNavigate();
 
   const handleNavToggle = () => {
@@ -286,220 +291,64 @@ const LandingPage = () => {
     }
   }
 
+  function navigateToTalkToUs() {
+    // For now, we'll navigate to a contact/message page
+    // This can be updated later when the messaging functionality is implemented
+    navigate('/contact-us');
+  }
+
+  // The commission dialog content will be handled in the main return below
+  const renderCommissionDialog = () => {
+    return (
+      <div className={styles.modalOverlay}>
+        <div className={styles.modalCard}>
+          <div className={styles.modalHeader}>
+            Weekly Friday Prayers & Sunday Services
+          </div>
+          <div className={styles.modalBody}>
+            <p>
+              For those in session, <b>welcome to our <span className={styles.boldBlue}>Friday prayers</span> every week</b>
+              <span className={styles.venueNote}>(venue communicated weekly)</span> and <b className={styles.boldBlue}>Sunday services</b>.
+            </p>
+            <ul>
+              <li><b>Friday Prayers:</b> 6:30 PM – 7:00 PM</li>
+              <li><b>Sunday Services:</b> 8:00AM – 10:00 AM </li>
+              <li><b>Venues:</b> Communicated in advance</li>
+            </ul>
+            <p className={styles.stayBlessed}>
+              <i>Stay blessed, and see you there! <span role="img" aria-label="pray">🙏🏾</span></i>
+            </p>
+          </div>
+
+          {/* NEWS SECTION */}
+          <div className={styles.newsInModal}>
+            <span className={styles.newsLabel}><FontAwesomeIcon icon={faGlobe} /> Latest News</span>
+            {newsData ? (
+              <div className={styles.newsModalFlex}>
+                <img className={styles.newsModalImg} src={newsData.imageUrl} alt="news" />
+                <div>
+                  <span className={styles.newsModalTitle}>{newsData.title}</span>
+                  <Link className={styles.newsModalLink} to="/news">...read more</Link>
+                </div>
+              </div>
+            ) : (
+              <span className={styles.newsLoading}>Loading news...</span>
+            )}
+          </div>
+          <button className={styles.closeBtn} onClick={handleCloseCommission}>
+            <FontAwesomeIcon icon={faXmark} />
+          </button>
+        </div>
+      </div>
+    );
+  };
+  
   return (
-    <>
-
-    <div className={styles.body}>
-        
-      {generalLoading && (
-                <div className={styles['loading-screen']}>
-                    <p className={styles['loading-text']}>Please wait...🤗</p>
-                    <img src={loadingAnime} alt="animation gif" />
-                </div>
-      )}
-
-        <header className={styles.header}>
-
-            <div className={styles['flex-title']}>
-
-            <div className={styles.container}>
-                
-                <div className={styles.logo}>
-                  <img src={cuLogo} alt="Cu-logo" className={styles['logo-image']} />
-                </div>
-
-                <div className={styles.title}>
-
-                  <p className={styles['title-text']}>Kisii University Christian Union</p>
-
-                  {/* Desktop icond */}
-                  <div className={styles['nav-one--hidden']}>
-
-            
-                    <div className={styles['About-btn']}>
-                      <a href="#about" className={styles['nav-link']}>
-                        About us
-                      </a>
-                    </div>
-
-                    <div className={styles['Quick-links-btn']} onClick={toggleDropdown} >
-                      <a  className={styles['nav-link-quick-link']}>
-                        Quick Links
-                      </a>
-                      <button className={styles['dropdown-toggle']} type="button" >
-                        {isDropdownOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
-                      </button>
-                        {/* Dropdown Content */}
-                          {isDropdownOpen && (
-                            <div className={styles['side-bar--links']}>
-                              <Link to="/save" className={styles['quick-item--link--desktop']}>Win a Soul</Link>
-
-                              <span onClick={navigateMedia} className={styles['quick-item--link--desktop']}>Media</span>
-                              
-                                  <a
-                                    href="/pdfs/constitution.pdf"
-                                    download="constitution.pdf"
-                                    className={styles['quick-item--link--desktop']}
-                                  >
-                                    Constitution
-                                  </a>
-                                
-                                <Link to="/library" className={styles['quick-item--link--desktop']}>Library</Link>
-                                <Link to="/financial" className={styles['quick-item--link--desktop']}>Financials</Link>
-                                <Link to="/Bs" className={styles['quick-item--link--desktop']}>Bible Study</Link>
-
-                                { userData && <Link to="/signIn" className={styles['quick-item--link--desktop']} onClick={handleLogout}>Log out</Link> }
-
-                            </div>
-                          )}
-                    </div>
-
-                    <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', minWidth: '80px', minHeight: '50px', justifyContent: 'center'}} onClick={userData ? handleRedirectToUserInfo : handleRedirectToLogin}>
-                      <FontAwesomeIcon className={`${styles['user-icon']} `} icon={userData ? faUser : faUserLock} />
-                      {userData && (
-                        <span style={{color: '#ffffff', fontSize: '12px', marginTop: '3px', fontWeight: '600', textShadow: '0 1px 3px rgba(0,0,0,0.5)', whiteSpace: 'nowrap', backgroundColor: 'rgba(0,0,0,0.4)', padding: '1px 4px', borderRadius: '3px', maxWidth: '70px', overflow: 'hidden', textOverflow: 'ellipsis'}}>{userData.username || 'User'}</span>
-                      )}
-                    </div>
-
-                  </div>
-                </div>
-
-                <div className={styles['hambuger-div']} id="hambuger">
-                    <button className={styles['nav-toggle__btn']} onClick={handleNavToggle}>
-                      <div className={styles.hambuger}></div>
-                    </button>
-                </div>
-
-                <div className={`${styles['user-icon-container']} `}>
-
-                  <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', minWidth: '60px', minHeight: '45px', justifyContent: 'center'}} onClick={userData ? handleRedirectToUserInfo : handleRedirectToLogin}>
-                    <FontAwesomeIcon className={`${styles['user-icon']} `} icon={userData ? faUser : faUserLock} />
-                    {userData && (
-                      <span style={{color: '#ffffff', fontSize: '10px', marginTop: '2px', fontWeight: '600', textShadow: '0 1px 3px rgba(0,0,0,0.5)', whiteSpace: 'nowrap', backgroundColor: 'rgba(0,0,0,0.4)', padding: '1px 3px', borderRadius: '3px', maxWidth: '55px', overflow: 'hidden', textOverflow: 'ellipsis'}}>{userData.username || 'User'}</span>
-                    )}
-                  </div>
-
-                </div>
-
-            </div>
-
-          </div>
-
-          <div className={styles.container}>
-
-            <div className={styles.nav}>
-              <div className={styles['nav-one']}>
-              {userData ?
-                    <Link to="/profile" className={styles['signUp-btn']}>{userData.username}</Link>
-                   : <Link to="/signUp" className={styles['signUp-btn']}>Sign up</Link>
-                  }
-            
-                  {userData ?
-                   <Link to="/signIn" className={styles['Login-btn']} onClick={handleLogout} >Log out</Link> :
-                    <Link to="/signIn" className={styles['Login-btn']}>Log in</Link>
-                  }
-                <div className={styles['About-btn']}>
-                <a href="#about" className={styles['nav-link']}>
-                      About us
-                    </a>
-                </div>
-              </div>
-            </div>
-
-            <div className={styles['main-quick--links']}>
-                {error && <div className={styles.error}>{error}</div>}
-                <Link to="/save" className={styles['quick-item--link']}>Win a Soul</Link>
-                
-                <Link to="/Bs" className={styles['quick-item--link']}>Bible Study</Link>
-                
-                  <Link to="/library" className={styles['quick-item--link']}>Library</Link>
-                  
-                  <a onClick={navigateMedia} className={styles['quick-item--link']}>Media</a>
-                
-                  <a 
-                    href="/pdfs/constitution.pdf" 
-                    download="constitution.pdf" 
-                    className={styles['quick-item--link']}
-                  >
-                    Constitution
-                  </a>
-
-                
-
-                <Link to="/financial" className={styles['quick-item--link']}>Financials</Link>
-
-                  <Link to="/Bs" className={styles['quick-item--link']}>About Us</Link>
-                  
-                  { userData && <Link to="/signIn" className={styles['quick-item--link']} onClick={handleLogout}>Log out</Link> }
-                
-            </div>
-
-          </div>
-
-            {error && <div className={styles.error}>{error}</div>}
-                
-            <div className={`${styles['']} ${styles['container-vidTitle']}`}>
-                
-              <div className={styles['intro-video--header']}>
-                <div className={styles['video-intro']}>
-                <div className={styles['intro-video']} style={{ backgroundImage: `url(${images[currentIndex].url})` }} dangerouslySetInnerHTML={{ __html: images[currentIndex].text }}></div>
-                  <span className={styles["commission-claimer"]} onClick={handleOpenCommission}>
-                    <FontAwesomeIcon icon={faQuestion} beatFade />
-                  </span>
-                </div>
-                
-              </div>
-
-            </div>
-
-        </header>
-
-
-{ openCommission &&
-  <div className={styles.modalOverlay}>
-    <div className={styles.modalCard}>
-      <div className={styles.modalHeader}>
-        Weekly Friday Prayers & Sunday Services
-      </div>
-      <div className={styles.modalBody}>
-        <p>
-          For those in session, <b>welcome to our <span className={styles.boldBlue}>Friday prayers</span> every week</b>
-          <span className={styles.venueNote}>(venue communicated weekly)</span> and <b className={styles.boldBlue}>Sunday services</b>.
-        </p>
-        <ul>
-          <li><b>Friday Prayers:</b> 6:30 PM – 7:00 PM</li>
-          <li><b>Sunday Services:</b> 8:00AM – 10:00 AM </li>
-          <li><b>Venues:</b> Communicated in advance</li>
-        </ul>
-        <p className={styles.stayBlessed}>
-          <i>Stay blessed, and see you there! <span role="img" aria-label="pray">🙏🏾</span></i>
-        </p>
-      </div>
-
-      {/* NEWS SECTION */}
-      <div className={styles.newsInModal}>
-        <span className={styles.newsLabel}><FontAwesomeIcon icon={faGlobe} /> Latest News</span>
-        {newsData ? (
-          <div className={styles.newsModalFlex}>
-            <img className={styles.newsModalImg} src={newsData.imageUrl} alt="news" />
-            <div>
-              <span className={styles.newsModalTitle}>{newsData.title}</span>
-              <Link className={styles.newsModalLink} to="/news">...read more</Link>
-            </div>
-          </div>
-        ) : (
-          <span className={styles.newsLoading}>Loading news...</span>
-        )}
-      </div>
-      <button className={styles.closeBtn} onClick={handleCloseCommission}>
-        <FontAwesomeIcon icon={faXmark} />
-      </button>
-    </div>
-  </div>
-}
-
-
-
+    <React.Fragment>
+      <LandingPageHeader />
+      {showCommissionDialog && renderCommissionDialog()}
+      
+      <div className={styles.landingPage}>
         <div className={styles.main}>
 
               <div className={styles['call-to-action-text']}>
@@ -511,13 +360,12 @@ const LandingPage = () => {
                 <div className={styles['main-section--flex']}>
                   {/* Boards Section */}
                   <div className={styles.boards}>
-                    <div className={styles.boardsCategoryDiv}>
+                    <div className={styles.boardsCategoryDiv} onClick={() => handleToggle(setShowBoards, showBoards)}>
                       <h3 className={`${styles['boards-title']} ${styles['category-title']}`}>
                         KSUCU-MC BOARDS
                       </h3>
                       <svg
                         className={`${styles['dropdown-icon']} ${showBoards ? styles.rotate : ''}`}
-                        onClick={() => handleToggle(setShowBoards, showBoards)}
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
                       >
@@ -545,13 +393,12 @@ const LandingPage = () => {
 
                   {/* Evangelistic Teams Section */}
                   <div className={styles.ET}>
-                    <div className={styles.boardsCategoryDiv}>
+                    <div className={styles.boardsCategoryDiv} onClick={() => handleToggle(setShowEvangelisticTeams, showEvangelisticTeams)}>
                       <h3 className={`${styles['ET-title']} ${styles['category-title']}`}>
                         EVANGELISTIC TEAMS
                       </h3>
                       <svg
                         className={`${styles['dropdown-icon']} ${showEvangelisticTeams ? styles.rotate : ''}`}
-                        onClick={() => handleToggle(setShowEvangelisticTeams, showEvangelisticTeams)}
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
                       >
@@ -584,13 +431,12 @@ const LandingPage = () => {
                 <div className={styles['main-section--flex']}>
                   {/* Ministries Section */}
                   <div className={styles.ministries}>
-                    <div className={styles.boardsCategoryDiv}>
+                    <div className={styles.boardsCategoryDiv} onClick={() => handleToggle(setShowMinistries, showMinistries)}>
                       <h3 className={`${styles['ministries-title']} ${styles['category-title']}`}>
                         KSUCU-MC MINISTRIES
                       </h3>
                       <svg
                         className={`${styles['dropdown-icon']} ${showMinistries ? styles.rotate : ''}`}
-                        onClick={() => handleToggle(setShowMinistries, showMinistries)}
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
                       >
@@ -601,31 +447,31 @@ const LandingPage = () => {
                     <div className={`${styles['dropdown-content']} ${showMinistries ? styles.show : ''}`}>
                     <ol className={`${styles['ministries-list']} ${styles['category-list']}`}>
                       <li className={styles['ministries-item']}>
-                        <Link to="/ministries#ushering" className={styles['ministries-item--link']}>Ushering</Link>
+                        <Link to="/ministries/ushering" className={styles['ministries-item--link']}>Ushering</Link>
                       </li>
                       <li className={styles['ministries-item']}>
-                        <Link to="/ministries#creativity" className={styles['ministries-item--link']}>Creativity</Link>
+                        <Link to="/ministries/creativity" className={styles['ministries-item--link']}>Creativity</Link>
                       </li>
                       <li className={styles['ministries-item']}>
-                        <Link to="/ministries#compassion" className={styles['ministries-item--link']}>Compassion</Link>
+                        <Link to="/ministries/compassion" className={styles['ministries-item--link']}>Compassion</Link>
                       </li>
                       <li className={styles['ministries-item']}>
-                        <Link to="/ministries#intercessory" className={styles['ministries-item--link']}>Intercessory</Link>
+                        <Link to="/ministries/intercessory" className={styles['ministries-item--link']}>Intercessory</Link>
                       </li>
                       <li className={styles['ministries-item']}>
-                        <Link to="/ministries#hs" className={styles['ministries-item--link']}>High School</Link>
+                        <Link to="/ministries/highSchool" className={styles['ministries-item--link']}>High School</Link>
                       </li>
                       <li className={styles['ministries-item']}>
-                        <Link to="/ministries#wananzambe" className={styles['ministries-item--link']}>Wananzambe</Link>
+                        <Link to="/ministries/wananzambe" className={styles['ministries-item--link']}>Wananzambe</Link>
                       </li>
                       <li className={styles['ministries-item']}>
-                        <Link to="/ministries#cs" className={styles['ministries-item--link']}>Church School</Link>
+                        <Link to="/ministries/churchSchool" className={styles['ministries-item--link']}>Church School</Link>
                       </li>
                       <li className={styles['ministries-item']}>
-                        <Link to="/ministries#pw" className={styles['ministries-item--link']}>Praise and Worship</Link>
+                        <Link to="/ministries/praiseAndWorship" className={styles['ministries-item--link']}>Praise and Worship</Link>
                       </li>
                       <li className={styles['ministries-item']}>
-                        <Link to="/ministries#choir" className={styles['ministries-item--link']}>Choir</Link>
+                        <Link to="/ministries/choir" className={styles['ministries-item--link']}>Choir</Link>
                       </li>
                     </ol>
                     </div>
@@ -633,13 +479,12 @@ const LandingPage = () => {
 
                   {/* Classes and Fellowships Section */}
                   <div className={styles.committees}>
-                    <div className={styles.boardsCategoryDiv}>
+                    <div className={styles.boardsCategoryDiv} onClick={() => handleToggle(setShowClasses, showClasses)}>
                       <h3 className={`${styles['comm-title']} ${styles['category-title']}`}>
                         CLASSES AND FELLOWSHIPS
                       </h3>
                       <svg
                         className={`${styles['dropdown-icon']} ${showClasses ? styles.rotate : ''}`}
-                        onClick={() => handleToggle(setShowClasses, showClasses)}
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
                       >
@@ -719,13 +564,12 @@ const LandingPage = () => {
 
           <div className={styles.containerOthersRow}>
 
-                  <div className={styles.othersColumns}  >
+                  <div className={styles.othersColumns} onClick={handleOpenPrayerJoint}>
                       {/* <span class="fa fa-clock-o size"></span> */}
-                      <FontAwesomeIcon icon={faClock} className={styles.othersIcon} onClick={handleOpenPrayerJoint} />
-                      <br />
+                      <FontAwesomeIcon icon={faClock} className={styles.othersIcon} />
                       <span>Joint Prayer Time</span>
 
-                      { openPrayerJoint && <div className={styles.othersDisplayDiv}>
+                      { openPrayerJoint && <div className={styles.othersDisplayDiv} onClick={(e) => e.target === e.currentTarget && handleClosePrayerJoint()}>
                         <div className={styles.closeOtherDisplayDiv}>
                           <FontAwesomeIcon icon={faXmark} className={styles.closeOtherDisplayIcon} onClick={handleClosePrayerJoint} />
                         </div>
@@ -739,13 +583,12 @@ const LandingPage = () => {
                       </div>}
 
                   </div>
-                  <div className={styles.othersColumns}  >
+                  <div className={styles.othersColumns} onClick={handleOpenBibleStudy}>
                       {/* <span class="fa fa-coffee size"></span> */}
-                      <FontAwesomeIcon icon={faCoffee} className={styles.othersIcon} onClick={handleOpenBibleStudy} />
-                      <br />
+                      <FontAwesomeIcon icon={faCoffee} className={styles.othersIcon} />
                       <span>Bible Study Nights</span>
 
-                      { openBibleStudy && <div className={styles.othersDisplayDiv}>
+                      { openBibleStudy && <div className={styles.othersDisplayDiv} onClick={(e) => e.target === e.currentTarget && handleCloseBibleStudy()}>
                         <div className={styles.closeOtherDisplayDiv}>
                           <FontAwesomeIcon icon={faXmark} className={styles.closeOtherDisplayIcon} onClick={handleCloseBibleStudy} />
                         </div>
@@ -759,14 +602,13 @@ const LandingPage = () => {
                       </div>}
 
                   </div>
-                  <div className={styles.othersColumns} >
+                  <div className={styles.othersColumns} onClick={handleOpenDevelopment}>
                       {/* <span class="fa fa-trophy size"></span> */}
-                      <FontAwesomeIcon icon={faTrophy} className={styles.othersIcon} onClick={handleOpenDevelopment} />
-                      < br />
+                      <FontAwesomeIcon icon={faTrophy} className={styles.othersIcon} />
                       <span>Development Projects</span>
 
                     
-                      { openDevelopment && <div className={styles.othersDisplayDiv}>
+                      { openDevelopment && <div className={styles.othersDisplayDiv} onClick={(e) => e.target === e.currentTarget && handleCloseDevelopment()}>
                         <div className={styles.closeOtherDisplayDiv}>
                           <FontAwesomeIcon icon={faXmark} className={styles.closeOtherDisplayIcon} onClick={handleCloseDevelopment} />
                         </div>
@@ -780,13 +622,12 @@ const LandingPage = () => {
                       </div>}
 
                   </div>
-                  <div className={styles.othersColumns} >
+                  <div className={styles.othersColumns} onClick={handleOpenGraphics}>
                       {/* <span class="fa fa-code size"></span> */}
-                      <FontAwesomeIcon icon={faCode} className={styles.othersIcon} onClick={handleOpenGraphics} />
-                      <br />
+                      <FontAwesomeIcon icon={faCode} className={styles.othersIcon} />
                       <span>Graphic Design Classes</span>
 
-                      { openGraphicDesign && <div className={styles.othersDisplayDiv}>
+                      { openGraphicDesign && <div className={styles.othersDisplayDiv} onClick={(e) => e.target === e.currentTarget && handleCloseGraphics()}>
                         <div className={styles.closeOtherDisplayDiv}>
                           <FontAwesomeIcon icon={faXmark} className={styles.closeOtherDisplayIcon} onClick={handleCloseGraphics} />
                         </div>
@@ -800,13 +641,12 @@ const LandingPage = () => {
                       </div>}
 
                   </div>
-                  <div className={styles.othersColumns} >
+                  <div className={styles.othersColumns} onClick={handleOpenCairos}>
                       {/* <span class="fa fa-globe size"></span> */}
-                      <FontAwesomeIcon icon={faGlobe} className={styles.othersIcon} onClick={handleOpenCairos} />
-                      <br />
+                      <FontAwesomeIcon icon={faGlobe} className={styles.othersIcon} />
                       <span>Kairos Course Training</span>
 
-                      { openKairosCourse && <div className={styles.othersDisplayDiv}>
+                      { openKairosCourse && <div className={styles.othersDisplayDiv} onClick={(e) => e.target === e.currentTarget && handleCloseCairos()}>
                         <div className={styles.closeOtherDisplayDiv}>
                           <FontAwesomeIcon icon={faXmark} className={styles.closeOtherDisplayIcon} onClick={handleCloseCairos} />
                         </div>
@@ -819,13 +659,12 @@ const LandingPage = () => {
                         </div>
                       </div>}
                   </div>
-                  <div className={styles.othersColumns} >
+                  <div className={styles.othersColumns} onClick={handleOpenFocus}>
                       {/* <span class="fa fa-rocket size"></span> */}
-                      <FontAwesomeIcon icon={faRocket} className={styles.othersIcon} onClick={handleOpenFocus} />
-                      <br />
+                      <FontAwesomeIcon icon={faRocket} className={styles.othersIcon} />
                       <span>FOCUS conferences</span>
 
-                      { openFocus && <div className={styles.othersDisplayDiv}>
+                      { openFocus && <div className={styles.othersDisplayDiv} onClick={(e) => e.target === e.currentTarget && handleCloseFocus()}>
                         <div className={styles.closeOtherDisplayDiv}>
                           <FontAwesomeIcon icon={faXmark} className={styles.closeOtherDisplayIcon} onClick={handleCloseFocus} />
                         </div>
@@ -842,6 +681,17 @@ const LandingPage = () => {
                   </div>
           </div>
 
+          {/* Ministries Admin Section */}
+        <div className={styles.worshipAdminSection}>
+          <div className={styles.container}>
+            <div className={styles.worshipAdminCard}>
+              <h3>Ministries Administration</h3>
+              <p>Manage ministries</p>
+              <Link to="/worship-docket-admin" className={styles.worshipAdminButton}>
+                Ministries Admin
+              </Link>
+            </div>
+          </div>
         </div>
 
         <div className={styles.containerAbout}>
@@ -893,6 +743,14 @@ const LandingPage = () => {
 
         {/* Professional Quick Links Sidebar */}
         <div className={styles['quick-links-sidebar']}>
+          <div 
+            className={styles['quick-link-item']}
+            data-text="Talk to Us"
+            onClick={(e) => handleQuickLinkClick(navigateToTalkToUs, e)}
+          >
+            <MessageCircle className={styles.icon} />
+          </div>
+
           <div 
             className={styles['quick-link-item']}
             data-text="Media"
@@ -962,7 +820,7 @@ const LandingPage = () => {
           )}
         </div>
 
-          <div className={  `${ styles['footer'] } ${ styles['home-footer'] }` } id='contacts'>
+        <div className={`${styles['footer']} ${styles['home-footer']}`} id='contacts'>
             <p className={styles['footer--text']}>KISII UNIVERSITY MAIN CAMPUS CHRISTIAN UNION 2025</p>
                 
             <div className={styles['hr']}></div>
@@ -980,13 +838,10 @@ const LandingPage = () => {
                     <a href="https://www.tiktok.com/@ksucumc" target="blank" className={styles['social-link']}><FaTiktok /></a>
                 </div>
             </div>
-
         </div>
-
-
     </div>
-
-    </>
+    </div>
+  </React.Fragment>
   );
 };
 

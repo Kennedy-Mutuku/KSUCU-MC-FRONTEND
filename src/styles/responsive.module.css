@@ -1,0 +1,103 @@
+/* Global responsive utility classes */
+
+/* Container constraints */
+.responsive-container {
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+/* Prevent content overflow */
+.no-overflow {
+    overflow-x: hidden;
+    word-wrap: break-word;
+    hyphens: auto;
+}
+
+/* Text responsive behavior */
+.responsive-text {
+    font-size: clamp(0.875rem, 2.5vw, 1.125rem);
+    line-height: 1.5;
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+/* Image responsive behavior */
+.responsive-image {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    display: block;
+    object-fit: cover;
+    -webkit-user-drag: none;
+    user-drag: none;
+}
+
+/* Flexible grid system */
+.flex-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    width: 100%;
+}
+
+.flex-grid > * {
+    flex: 1;
+    min-width: 280px;
+}
+
+/* Mobile-first responsive breakpoints */
+@media (max-width: 480px) {
+    .responsive-container {
+        padding: 0 15px;
+    }
+    
+    .flex-grid {
+        gap: 15px;
+    }
+    
+    .flex-grid > * {
+        min-width: 100%;
+    }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+    .responsive-container {
+        padding: 0 20px;
+    }
+    
+    .flex-grid > * {
+        min-width: calc(50% - 10px);
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .responsive-container {
+        padding: 0 30px;
+    }
+}
+
+@media (min-width: 1025px) {
+    .responsive-container {
+        padding: 0 40px;
+    }
+}
+
+/* Static positioning to prevent dragging */
+.static-position {
+    position: static !important;
+    transform: none !important;
+}
+
+/* Disable selection and dragging for all content */
+.no-select {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-user-drag: none;
+    user-drag: none;
+    -webkit-tap-highlight-color: transparent;
+}

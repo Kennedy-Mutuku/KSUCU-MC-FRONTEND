@@ -1,61 +1,388 @@
 @import url(index.module.css);
 
-.logo-image{
-    width: 100px;
-}
-
-.flex-title{
-    display: flex;
-    align-items: center;
-}
-
-.container{
-    display: flex;
-    width: 95%;
-}
-
-.header{
+/* Header Container */
+.header {
     background: #730051;
     color: #fff;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    overflow: visible;
 }
 
-.title-text{
-    font-size: .7rem;
-    margin-top: 5px;
-    margin-left: 10px;
-}
-
-.nav--phone{
+.flex-title-phone {
     display: flex;
     align-items: center;
-    gap: 10px;
+    justify-content: center;
+    padding: 15px 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
-.title{
+.container {
     display: flex;
-    justify-content: left;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1200px;
+    min-width: 0;
+}
+
+/* Logo Section */
+.logo-section {
+    flex: 0 0 auto;
+    display: flex;
     align-items: center;
 }
 
-.flex-title-phone{
+.logo-image {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    transition: all 0.3s ease;
+}
+
+/* Title Section */
+.title-section {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.title-text {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0;
+    text-align: center;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+}
+
+.short-title {
+    display: none;
+}
+
+.full-title {
+    display: inline;
+}
+
+/* Navigation Section */
+.nav-section {
+    flex: 0 0 auto;
     display: flex;
     align-items: center;
-    padding: 20px 5px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); 
+    gap: 20px;
+    min-width: 0;
 }
 
-.nav-link{
-    font-size: .7rem;
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    position: relative;
 }
 
-@media(min-width:600px){
-    .container{
-        max-width: 1000px;
+.nav-item:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.nav-text {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #fff;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.nav-text:hover {
+    color: #f0f0f0;
+    text-decoration: none;
+}
+
+/* User Section */
+.user-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    min-width: 70px;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.user-section:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.user-icon {
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.user-text {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 80px;
+}
+
+/* Desktop View Enhancements */
+@media (min-width: 1024px) {
+    .flex-title-phone {
+        padding: 20px 30px;
     }
-
-    .title-text{
-        margin-top: 15px;
-        font-size: .9em;
+    
+    .container {
+        max-width: 1400px;
+        padding: 0 20px;
+    }
+    
+    .logo-image {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .title-text {
+        font-size: 1.4rem;
+        font-weight: 700;
         letter-spacing: 1px;
+    }
+    
+    .nav-section {
+        gap: 30px;
+    }
+    
+    .nav-item {
+        padding: 12px 16px;
+        border-radius: 8px;
+    }
+    
+    .nav-text {
+        font-size: 1rem;
+        font-weight: 600;
+    }
+    
+    .user-section {
+        padding: 12px 16px;
+        border-radius: 8px;
+        min-width: 90px;
+    }
+    
+    .user-icon {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .user-text {
+        font-size: 0.85rem;
+        font-weight: 600;
+        max-width: 100px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .container {
+        max-width: 1600px;
+    }
+    
+    .title-text {
+        font-size: 1.6rem;
+    }
+    
+    .nav-section {
+        gap: 40px;
+    }
+    
+    .nav-item,
+    .user-section {
+        padding: 14px 20px;
+    }
+    
+    .nav-text {
+        font-size: 1.1rem;
+    }
+    
+    .user-text {
+        font-size: 0.9rem;
+    }
+}
+
+/* Tablet and Mobile Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 10px;
+    }
+    
+    .title-text {
+        font-size: 1rem;
+    }
+    
+    .nav-section {
+        gap: 15px;
+    }
+    
+    .nav-text {
+        font-size: 0.8rem;
+    }
+    
+    .user-text {
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 900px) {
+    .flex-title-phone {
+        padding: 12px 15px;
+    }
+    
+    .logo-image {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .full-title {
+        display: none;
+    }
+    
+    .short-title {
+        display: inline;
+    }
+    
+    .container {
+        gap: 8px;
+    }
+    
+    .nav-section {
+        gap: 8px;
+        min-width: 0;
+        flex-shrink: 0;
+    }
+    
+    .title-text {
+        font-size: 0.9rem;
+    }
+    
+    .nav-section {
+        gap: 10px;
+    }
+    
+    .nav-text {
+        font-size: 0.75rem;
+    }
+    
+    .user-text {
+        font-size: 0.65rem;
+    }
+    
+    .user-section {
+        min-width: 60px;
+    }
+}
+
+@media (max-width: 500px) {
+    .flex-title-phone {
+        padding: 8px 10px;
+    }
+    
+    .logo-image {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .title-text {
+        font-size: 0.8rem;
+    }
+    
+    .nav-item {
+        padding: 4px 6px;
+    }
+    
+    .nav-text {
+        font-size: 0.7rem;
+    }
+    
+    .user-section {
+        padding: 4px 6px;
+        min-width: 45px;
+        gap: 2px;
+    }
+    
+    .user-icon {
+        width: 18px;
+        height: 18px;
+    }
+    
+    .user-text {
+        font-size: 0.6rem;
+        max-width: 50px;
+    }
+    
+    .nav-section {
+        gap: 4px;
+    }
+}
+
+@media (max-width: 380px) {
+    .flex-title-phone {
+        padding: 6px 8px;
+    }
+    
+    .container {
+        gap: 4px;
+    }
+    
+    .logo-image {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .title-text {
+        font-size: 0.75rem;
+    }
+    
+    .nav-item {
+        padding: 3px 5px;
+    }
+    
+    .nav-text {
+        font-size: 0.65rem;
+    }
+    
+    .user-section {
+        padding: 3px 5px;
+        min-width: 40px;
+        gap: 1px;
+    }
+    
+    .user-icon {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .user-text {
+        font-size: 0.55rem;
+        max-width: 45px;
+    }
+    
+    .nav-section {
+        gap: 3px;
     }
 }

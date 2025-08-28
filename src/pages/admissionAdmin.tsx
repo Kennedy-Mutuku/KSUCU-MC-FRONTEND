@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom';
 import styles from '../styles/signup.module.css'; 
 import { ChevronDown } from 'lucide-react';
 import { getApiUrl } from '../config/environment';
+import Header from '../components/header';
+import Footer from '../components/footer';
 
 type FormData = {
   username: string;
@@ -148,7 +150,9 @@ const AdmissionAdmin: React.FC = () => {
   };
 
   return (
-    <div className={styles.body}>
+    <>
+      <Header />
+      <div className={styles.body}>
       <div className={styles['container']}>
 
         {loading && <div className={styles['hidden_div']}></div>}
@@ -264,12 +268,14 @@ const AdmissionAdmin: React.FC = () => {
 
       </div>
 
-      {/* Loading animation */}
-      <div className={`${styles.loading} ${loading ? styles['loading-active'] : ''}`}>
-        <p>{loadingText}</p>
-      </div>
+        {/* Loading animation */}
+        <div className={`${styles.loading} ${loading ? styles['loading-active'] : ''}`}>
+          <p>{loadingText}</p>
+        </div>
 
-    </div>
+      </div>
+      <Footer />
+    </>
   );
 };
 

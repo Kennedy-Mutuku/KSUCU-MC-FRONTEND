@@ -4,6 +4,8 @@ import styles from '../styles/signin.module.css';
 import cuLogo from '../assets/KSUCU logo updated document.png';
 import loadingAnime from '../assets/Animation - 1716747954931.gif';
 import { getApiUrl } from '../config/environment';
+import Header from '../components/header';
+import Footer from '../components/footer';
 
 interface UserData {
     username: string;
@@ -81,28 +83,38 @@ const UserProfilePage: React.FC = () => {
 
     if (loading) {
         return (
-            <div className={styles.container}>
-                <div style={{ textAlign: 'center', padding: '50px' }}>
-                    <img src={loadingAnime} alt="Loading..." className={styles['loading-gif']} />
-                    <p>Loading your profile...</p>
+            <>
+                <Header />
+                <div className={styles.container}>
+                    <div style={{ textAlign: 'center', padding: '50px' }}>
+                        <img src={loadingAnime} alt="Loading..." className={styles['loading-gif']} />
+                        <p>Loading your profile...</p>
+                    </div>
                 </div>
-            </div>
+                <Footer />
+            </>
         );
     }
 
     if (error || !userData) {
         return (
-            <div className={styles.container}>
-                <div style={{ textAlign: 'center', padding: '50px' }}>
-                    <p>Failed to load profile. <Link to="/signIn">Please login again</Link></p>
+            <>
+                <Header />
+                <div className={styles.container}>
+                    <div style={{ textAlign: 'center', padding: '50px' }}>
+                        <p>Failed to load profile. <Link to="/signIn">Please login again</Link></p>
+                    </div>
                 </div>
-            </div>
+                <Footer />
+            </>
         );
     }
 
     return (
-        <div className={styles.body} style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px 0' }}>
-            <div className={styles.container} style={{ margin: '20px auto', maxHeight: '90vh', overflowY: 'auto' }}>
+        <>
+            <Header />
+            <div className={styles.body} style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px 0' }}>
+                <div className={styles.container} style={{ margin: '20px auto', maxHeight: '90vh', overflowY: 'auto' }}>
                 <Link to={"/"} className={styles.logo_div} style={{ marginTop: '20px' }}>
                     <div className={styles['logo_signUp']}>
                         <img src={cuLogo} alt="CU logo" />
@@ -263,6 +275,8 @@ const UserProfilePage: React.FC = () => {
                 </div>
             </div>
         </div>
+        <Footer />
+        </>
     );
 };
 

@@ -1,0 +1,252 @@
+.attendanceContainer {
+    margin: 20px 0;
+    padding: 0 20px;
+    animation: slideIn 0.5s ease-out;
+}
+
+.closedSession {
+    opacity: 0.7;
+    animation: fadeOut 0.5s ease-out;
+}
+
+.attendanceCard {
+    background: linear-gradient(135deg, #730051, #5a003d);
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 8px 25px rgba(115, 0, 81, 0.3);
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.attendanceCard::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #ffaa00, #ff6600, #ff3300);
+    animation: shimmer 2s infinite;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.icon {
+    font-size: 1.5rem;
+}
+
+.checkIcon {
+    color: #4CAF50;
+}
+
+.clockIcon {
+    color: #FFA726;
+}
+
+.title {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.closedMessage {
+    text-align: center;
+    padding: 20px 0;
+}
+
+.closedMessage p {
+    margin: 5px 0;
+    font-size: 1.1rem;
+}
+
+.closedNote {
+    font-size: 0.95rem !important;
+    opacity: 0.8;
+    font-style: italic;
+}
+
+.error {
+    background: rgba(244, 67, 54, 0.2);
+    border: 1px solid rgba(244, 67, 54, 0.4);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #ffcdd2;
+}
+
+.success {
+    background: rgba(76, 175, 80, 0.2);
+    border: 1px solid rgba(76, 175, 80, 0.4);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #c8e6c9;
+}
+
+.signedStatus {
+    text-align: center;
+    padding: 20px 0;
+}
+
+.signedIcon {
+    color: #4CAF50;
+    font-size: 2rem;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.signedStatus p {
+    font-size: 1.1rem;
+    margin: 0;
+    color: #c8e6c9;
+}
+
+.signSection {
+    text-align: center;
+}
+
+.instruction {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    opacity: 0.9;
+    line-height: 1.4;
+}
+
+.signButton {
+    background: linear-gradient(45deg, #4CAF50, #45a049);
+    color: white;
+    border: none;
+    padding: 15px 40px;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.signButton:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.5);
+    background: linear-gradient(45deg, #45a049, #388e3c);
+}
+
+.signButton:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.signButton:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.loading {
+    position: relative;
+    overflow: hidden;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    animation: loading 1.5s infinite;
+}
+
+.loginPrompt {
+    text-align: center;
+    padding: 20px 0;
+    font-size: 1.1rem;
+    color: #ffcdd2;
+}
+
+/* Animations */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0.7;
+    }
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+@keyframes loading {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .attendanceContainer {
+        padding: 0 10px;
+    }
+    
+    .attendanceCard {
+        padding: 20px 15px;
+    }
+    
+    .title {
+        font-size: 1.2rem;
+    }
+    
+    .signButton {
+        padding: 12px 30px;
+        font-size: 1rem;
+    }
+    
+    .instruction {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .header {
+        flex-direction: column;
+        text-align: center;
+        gap: 8px;
+    }
+    
+    .title {
+        font-size: 1.1rem;
+    }
+    
+    .signButton {
+        padding: 10px 25px;
+        font-size: 0.95rem;
+    }
+}

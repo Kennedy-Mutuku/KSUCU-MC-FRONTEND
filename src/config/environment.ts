@@ -23,6 +23,12 @@ interface ApiConfig {
     admissionAdminGetUsers: string;
     admissionAdminResetPassword: string;
     authGoogle: string;
+    attendanceSession: string;
+    attendanceSign: string;
+    attendanceSessions: string;
+    attendanceStartSession: string;
+    attendanceEndSession: string;
+    attendanceRecords: string;
   };
 }
 
@@ -52,7 +58,13 @@ const developmentConfig: ApiConfig = {
     admissionAdminAdmitUser: '/admissionadmin/admit-user',
     admissionAdminGetUsers: '/admissionadmin/users',
     admissionAdminResetPassword: '/admissionadmin/reset-password',
-    authGoogle: '/auth/google'
+    authGoogle: '/auth/google',
+    attendanceSession: '/attendance/session',
+    attendanceSign: '/attendance/sign',
+    attendanceSessions: '/attendance/sessions',
+    attendanceStartSession: '/attendance/start-session',
+    attendanceEndSession: '/attendance/end-session',
+    attendanceRecords: '/attendance/records'
   }
 };
 
@@ -80,7 +92,13 @@ const productionConfig: ApiConfig = {
     admissionAdminAdmitUser: '/admissionadmin/admit-user',
     admissionAdminGetUsers: '/admissionadmin/users',
     admissionAdminResetPassword: '/admissionadmin/reset-password',
-    authGoogle: '/auth/google'
+    authGoogle: '/auth/google',
+    attendanceSession: '/attendance/session',
+    attendanceSign: '/attendance/sign',
+    attendanceSessions: '/attendance/sessions',
+    attendanceStartSession: '/attendance/start-session',
+    attendanceEndSession: '/attendance/end-session',
+    attendanceRecords: '/attendance/records'
   }
 };
 

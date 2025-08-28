@@ -9,10 +9,19 @@ html{
 
 .main{
     text-align: center;
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 20px;
+    overflow-x: hidden;
 }
 
 .ministry-section{
     margin: 20px 0;
+    width: 100%;
+    max-width: 100%;
+    display: block;
+    position: relative;
 }
 
 .ministry-img{
@@ -20,6 +29,17 @@ html{
     background: #1d1d1d82;
     width: 80%;
     margin: 0 auto;
+    max-width: 600px;
+    overflow: hidden;
+}
+
+.ministry-img img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    -webkit-user-drag: none;
+    user-drag: none;
+    pointer-events: none;
 }
 
 .ministries--title{
@@ -52,12 +72,18 @@ html{
 @media(min-width:600px){
     .ministry-section{
         display: flex;
-
-        margin: 50px 100px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 30px;
+        margin: 50px auto;
+        max-width: 1200px;
+        width: 90%;
+        padding: 0 20px;
     }
     .ministry-img,
     .ministry-section--flex{
         width: 50%;
+        flex: 1;
     }
     .ministry-section--reverse{
         flex-direction: row-reverse;
@@ -65,23 +91,42 @@ html{
 
     .ministry-img{
         background: #fff;
+        width: 100%;
+        max-width: 500px;
     }
 
     .ministry-img img{
-        aspect-ratio: 16/9;
-        background: #1d1d1d82;
-        width: 80%;
-        margin: 0 auto;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .ministry-section--flex{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .ministry-name{
+        text-align: left;
+        margin-bottom: 20px;
+    }
+
+    .ministry-content{
+        text-align: left;
+        line-height: 1.6;
     }
 
     .hr-ministries{
         width: 90%;
+        max-width: 1200px;
+        margin: 40px auto;
     }
 
     .ministries--title{
         font-size: 2.5rem;
         font-weight: 900;
-        margin-bottom: 100px;
+        margin-bottom: 60px;
     }
-
 }

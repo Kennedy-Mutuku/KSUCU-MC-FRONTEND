@@ -1,0 +1,444 @@
+@import url(global.css);
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+}
+
+.title {
+  font-size: 2.5rem;
+  color: #730051;
+  text-align: center;
+  margin-bottom: 40px;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(115, 0, 81, 0.1);
+}
+
+.tabNav {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 30px;
+  background: white;
+  padding: 4px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.tabButton {
+  flex: 1;
+  padding: 12px 20px;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tabButton.active {
+  background: linear-gradient(135deg, #730051, #00c6ff);
+  color: white;
+  box-shadow: 0 4px 15px rgba(115, 0, 81, 0.3);
+}
+
+.tabButton:hover:not(.active) {
+  background: rgba(115, 0, 81, 0.1);
+  color: #730051;
+}
+
+/* Attendance Section */
+.attendanceSection {
+  background: white;
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.controlsPanel {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  align-items: end;
+}
+
+.dateControl,
+.eventControl,
+.ministryControl {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dateControl label,
+.eventControl label,
+.ministryControl label {
+  font-weight: 600;
+  color: #374151;
+  font-size: 0.9rem;
+}
+
+.dateControl input,
+.eventControl select,
+.ministryControl select {
+  padding: 10px 15px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  min-width: 150px;
+}
+
+.dateControl input:focus,
+.eventControl select:focus,
+.ministryControl select:focus {
+  outline: none;
+  border-color: #730051;
+  box-shadow: 0 0 0 3px rgba(115, 0, 81, 0.1);
+}
+
+.statsPanel {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.statCard {
+  background: linear-gradient(135deg, #730051, #00c6ff);
+  color: white;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(115, 0, 81, 0.2);
+}
+
+.statCard h3 {
+  margin: 0 0 10px 0;
+  font-size: 0.9rem;
+  opacity: 0.9;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.statNumber {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.attendanceList h3 {
+  color: #374151;
+  margin-bottom: 20px;
+  font-size: 1.3rem;
+}
+
+.attendanceItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background: #f8fafc;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #e2e8f0;
+  transition: all 0.3s ease;
+}
+
+.attendanceItem:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.memberInfo h4 {
+  margin: 0 0 5px 0;
+  color: #1e293b;
+  font-size: 1.1rem;
+}
+
+.memberInfo p {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.attendanceToggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.attendanceToggle input[type="checkbox"] {
+  display: none;
+}
+
+.toggleSlider {
+  position: relative;
+  width: 50px;
+  height: 24px;
+  background: #cbd5e1;
+  border-radius: 24px;
+  transition: all 0.3s ease;
+}
+
+.toggleSlider::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.attendanceToggle input:checked + .toggleSlider {
+  background: #10b981;
+}
+
+.attendanceToggle input:checked + .toggleSlider::before {
+  transform: translateX(26px);
+}
+
+.saveButton {
+  background: linear-gradient(135deg, #730051, #00c6ff);
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 20px;
+  width: 100%;
+  box-shadow: 0 4px 15px rgba(115, 0, 81, 0.3);
+}
+
+.saveButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(115, 0, 81, 0.4);
+}
+
+.noData {
+  text-align: center;
+  color: #64748b;
+  font-style: italic;
+  padding: 40px;
+}
+
+/* Members Section */
+.membersSection {
+  background: white;
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.membersHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.membersHeader h3 {
+  color: #374151;
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.addButton {
+  background: #10b981;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.addButton:hover {
+  background: #059669;
+  transform: translateY(-2px);
+}
+
+.membersList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.memberCard {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.memberCard:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.memberCard h4 {
+  color: #1e293b;
+  margin: 0 0 15px 0;
+  font-size: 1.2rem;
+}
+
+.memberCard p {
+  margin: 8px 0;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.memberActions {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.editButton {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.editButton:hover {
+  background: #2563eb;
+}
+
+.removeButton {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.removeButton:hover {
+  background: #dc2626;
+}
+
+/* Reports Section */
+.reportsSection {
+  background: white;
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.reportsSection h3 {
+  color: #374151;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+}
+
+.comingSoon {
+  color: #64748b;
+  font-style: italic;
+  margin-bottom: 30px;
+}
+
+.reportOptions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.reportButton {
+  background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+  border: 2px solid #e2e8f0;
+  color: #64748b;
+  padding: 15px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+
+.reportButton:hover {
+  background: linear-gradient(135deg, #730051, #00c6ff);
+  color: white;
+  border-color: transparent;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(115, 0, 81, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: 20px 15px;
+  }
+  
+  .title {
+    font-size: 1.8rem;
+  }
+  
+  .controlsPanel {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .statsPanel {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+  
+  .attendanceItem {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+    text-align: left;
+  }
+  
+  .attendanceToggle {
+    align-self: flex-end;
+  }
+  
+  .membersHeader {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+  }
+  
+  .membersList {
+    grid-template-columns: 1fr;
+  }
+  
+  .reportOptions {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .statsPanel {
+    grid-template-columns: 1fr;
+  }
+  
+  .tabNav {
+    flex-direction: column;
+  }
+}
