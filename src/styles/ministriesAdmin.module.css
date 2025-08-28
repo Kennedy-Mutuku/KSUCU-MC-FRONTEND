@@ -1,0 +1,476 @@
+/* MinistriesAdmin.module.css */
+
+:root {
+    --primary-color: #730051;
+    --primary-hover-color: #4e0037;
+    --secondary-color: #00c6ff;
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --error-color: #ef4444;
+    --background-color: #f9fafb;
+    --surface-color: #ffffff;
+    --border-color: #d1d5db;
+    --text-color: #1f2937;
+    --text-muted-color: #6b7280;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --radius: 8px;
+}
+
+.container {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Authentication Screen */
+.authContainer {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+.authCard {
+    background: var(--surface-color);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 2.5rem;
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+}
+
+.lockIcon {
+    font-size: 3rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.authTitle {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+}
+
+.authSubtitle {
+    color: var(--text-muted-color);
+    margin-bottom: 2rem;
+}
+
+.inputGroup {
+    margin-bottom: 1.5rem;
+}
+
+.passwordInput {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+.passwordInput:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(115, 0, 81, 0.1);
+}
+
+.authButton {
+    width: 100%;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius);
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.authButton:hover {
+    background-color: var(--primary-hover-color);
+}
+
+.errorMessage {
+    color: var(--error-color);
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    background-color: rgba(239, 68, 68, 0.1);
+    border-radius: var(--radius);
+}
+
+/* Admin Interface */
+.adminContainer {
+    flex: 1;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.adminHeader {
+    margin-bottom: 2rem;
+}
+
+.adminTitle {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.message {
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius);
+    font-weight: 500;
+    margin-bottom: 1rem;
+}
+
+.message.success {
+    background-color: rgba(16, 185, 129, 0.1);
+    color: var(--success-color);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.message.error {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: var(--error-color);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.controlPanel {
+    background: var(--surface-color);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    align-items: end;
+}
+
+.ministrySelector {
+    flex: 1;
+    min-width: 250px;
+}
+
+.selectorLabel {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+}
+
+.select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    font-size: 1rem;
+    background-color: white;
+    cursor: pointer;
+}
+
+.select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(115, 0, 81, 0.1);
+}
+
+.viewModeSelector {
+    flex: 1;
+    min-width: 300px;
+}
+
+.tabButtons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.tabButton {
+    padding: 0.75rem 1.5rem;
+    border: 1px solid var(--border-color);
+    background-color: white;
+    color: var(--text-muted-color);
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    flex: 1;
+}
+
+.tabButton:hover {
+    background-color: var(--background-color);
+    border-color: var(--primary-color);
+}
+
+.tabButton.active {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.contentArea {
+    background: var(--surface-color);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+.sectionHeader {
+    background: var(--primary-color);
+    color: white;
+    padding: 1.5rem;
+}
+
+.sectionTitle {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.loading {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-muted-color);
+    font-size: 1.1rem;
+}
+
+.noData {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-muted-color);
+    font-size: 1.1rem;
+}
+
+.commitmentsList {
+    padding: 1.5rem;
+}
+
+.commitmentCard {
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    margin-bottom: 1.5rem;
+    padding: 1.5rem;
+    background: white;
+    transition: box-shadow 0.2s;
+}
+
+.commitmentCard:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.commitmentHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 1rem;
+}
+
+.commitmentInfo {
+    flex: 1;
+}
+
+.commitmentName {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem 0;
+    color: var(--text-color);
+}
+
+.commitmentDetails {
+    color: var(--text-muted-color);
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.statusBadge {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.statusBadge.pending {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.statusBadge.approved {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.statusBadge.revoked {
+    background-color: #fef2f2;
+    color: #dc2626;
+}
+
+.commitmentMeta {
+    margin-bottom: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.commitmentMeta p {
+    margin: 0.25rem 0;
+    color: var(--text-muted-color);
+    font-size: 0.9rem;
+}
+
+.commitmentActions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.actionButton {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.actionButton.approve {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.actionButton.approve:hover {
+    background-color: #059669;
+}
+
+.actionButton.revoke {
+    background-color: var(--error-color);
+    color: white;
+}
+
+.actionButton.revoke:hover {
+    background-color: #dc2626;
+}
+
+.actionButton.download {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+.actionButton.download:hover {
+    background-color: #0891b2;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .adminContainer {
+        padding: 1rem;
+    }
+
+    .adminTitle {
+        font-size: 1.8rem;
+    }
+
+    .controlPanel {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    .ministrySelector {
+        grid-column: 1 / -1; /* Full width for ministry selector */
+        min-width: auto;
+    }
+
+    .viewModeSelector {
+        grid-column: 1 / -1; /* Full width for view mode selector */
+        min-width: auto;
+    }
+
+    .tabButtons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+    }
+
+    .tabButton {
+        flex: none;
+        text-align: center;
+        font-size: 0.8rem;
+        padding: 0.5rem 0.75rem;
+    }
+
+    .commitmentHeader {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .commitmentActions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+    }
+
+    .actionButton {
+        justify-content: center;
+        font-size: 0.8rem;
+        padding: 0.4rem 0.8rem;
+    }
+
+    .actionButton.download {
+        grid-column: 1 / -1; /* Download button takes full width */
+    }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+    .adminContainer {
+        padding: 0.5rem;
+    }
+
+    .controlPanel {
+        padding: 0.75rem;
+        gap: 0.75rem;
+    }
+
+    .tabButton {
+        font-size: 0.75rem;
+        padding: 0.4rem 0.5rem;
+    }
+
+    .commitmentActions {
+        grid-template-columns: 1fr;
+        gap: 0.4rem;
+    }
+
+    .actionButton.download {
+        grid-column: auto; /* Reset to single column on very small screens */
+    }
+
+    .commitmentCard {
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .commitmentName {
+        font-size: 1.1rem;
+    }
+
+    .commitmentDetails {
+        font-size: 0.85rem;
+    }
+}

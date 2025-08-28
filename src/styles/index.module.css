@@ -137,6 +137,7 @@ body{
     overflow: hidden;
     box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    z-index: 1; /* Lower z-index for carousel */
 }
 
 .intro-video:hover{
@@ -195,26 +196,35 @@ body{
 
 .main-quick--links{
     background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-    margin: 15px -5px 10px -5px;
+    margin: 8px -3px 6px -3px;
     max-height: 0;
     padding: 0;
     overflow: hidden; 
     transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    border-radius: 15px;
-    box-shadow: 0 8px 30px rgba(115, 0, 81, 0.15);
-    border: 1px solid rgba(115, 0, 81, 0.1);
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(115, 0, 81, 0.1);
+    border: 1px solid rgba(115, 0, 81, 0.06);
 }
 
 .nav-open .main-quick--links{
-    max-height: 1000px;
-    padding: 20px 10px;
+    max-height: 400px;
+    padding: 8px 6px;
     overflow-y: auto;
-    margin-top: 20px;
+    margin-top: 8px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    grid-template-rows: auto;
 }
 
 .main-quick--links---text{
     color: #000;
     text-align: center;
+}
+
+.quick-access-header{
+    grid-column: 1 / -1;
+    margin-bottom: 8px;
 }
 
 .quick-item--link{
@@ -223,22 +233,95 @@ body{
     justify-content: center;
     text-align: center;
     color: #2c3e50;
-    margin: 0 auto 10px auto;
-    width: 90%;
-    padding: 16px 20px;
-    border-radius: 15px;
+    margin: 0;
+    width: 100%;
+    padding: 6px 8px;
+    border-radius: 6px;
     background: linear-gradient(135deg, #ffffff, #f8f9fa);
     text-decoration: none;
     font-weight: 600;
-    font-size: 0.95rem;
+    font-size: 0.7rem;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 4px 20px rgba(115, 0, 81, 0.1);
-    border: 2px solid rgba(115, 0, 81, 0.1);
+    box-shadow: 0 2px 10px rgba(115, 0, 81, 0.06);
+    border: 1px solid rgba(115, 0, 81, 0.05);
     position: relative;
     overflow: hidden;
     cursor: pointer;
-    gap: 12px;
-    min-height: 50px;
+    min-height: 28px;
+}
+
+/* Mobile specific styles for very small screens */
+@media(max-width: 480px) {
+    .main-quick--links {
+        margin: 6px -2px 4px -2px;
+        border-radius: 8px;
+    }
+    
+    .nav-open .main-quick--links {
+        padding: 8px 4px;
+        max-height: 350px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4px;
+    }
+    
+    .quick-item--link {
+        width: 100%;
+        margin: 0;
+        padding: 5px 8px;
+        font-size: 0.65rem;
+        min-height: 26px;
+        border-radius: 5px;
+    }
+    
+    .quick-access-header {
+        margin-bottom: 6px !important;
+        padding-bottom: 4px !important;
+        grid-column: 1 / -1;
+    }
+    
+    .quick-access-title {
+        font-size: 0.9rem !important;
+        letter-spacing: 0.3px !important;
+    }
+    
+    .quick-access-subtitle {
+        font-size: 0.65rem !important;
+        margin-top: 1px !important;
+    }
+}
+
+/* Desktop specific styles for quick links */
+@media(min-width:600px) {
+    .nav-open .main-quick--links {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        padding: 10px 8px;
+    }
+    
+    .quick-item--link {
+        width: 100%;
+        margin: 0;
+        padding: 8px 10px;
+        font-size: 0.72rem;
+        min-height: 30px;
+        border-radius: 6px;
+        display: flex;
+    }
+    
+    .quick-access-header {
+        margin-bottom: 10px;
+        grid-column: 1 / -1;
+    }
+    
+    .quick-access-title {
+        font-size: 1.1rem !important;
+    }
+    
+    .quick-access-subtitle {
+        font-size: 0.8rem !important;
+    }
 }
 
 .quick-item--link:hover{
@@ -400,7 +483,7 @@ body{
     color: white;
     transition: all 0.3s ease;
     border: 2px solid rgba(255, 255, 255, 0.4);
-    z-index: 20;
+    z-index: 50; /* Higher z-index to appear above carousel */
     animation: pulse 2s infinite;
 }
 
@@ -1226,19 +1309,20 @@ hr{
         width: 100%;
         padding: 0;
         margin: 0;
+        display: block;
     }
 
     .sectionTitle {
         font-size: 1.4rem;
-        margin: 0 0 3px 0;
+        margin: 0 0 25px 0;
         letter-spacing: 0.5px;
         position: relative;
-        background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
         z-index: 10;
-        padding: 0;
+        padding: 10px 0;
         text-align: center;
         width: 100%;
         display: block;
+        clear: both;
     }
 
     .sectionTitle::after {
@@ -1249,9 +1333,11 @@ hr{
     }
 
     .activityCardContainer {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: 1fr;
         gap: 12px;
         margin-top: 0;
+        width: 100%;
+        display: grid;
     }
 
     .cardClasses {
@@ -1281,11 +1367,16 @@ hr{
 
     .weeklyActivities .container {
         width: 100%;
+        display: block;
     }
 
     .sectionTitle {
         font-size: 1.6rem;
         margin: 0 0 30px 0;
+        width: 100%;
+        display: block;
+        text-align: center;
+        clear: both;
     }
 
     .activityCardContainer {
@@ -1305,6 +1396,17 @@ hr{
 @media (min-width: 769px) and (max-width: 1024px) {
     .weeklyActivities {
         padding: 50px 25px;
+    }
+
+    .weeklyActivities .container {
+        display: block;
+    }
+
+    .sectionTitle {
+        width: 100%;
+        display: block;
+        text-align: center;
+        clear: both;
     }
 
     .activityCardContainer {
@@ -1425,12 +1527,17 @@ hr{
     .weeklyActivities .container{
         width: 90%;
         max-width: 1400px;
+        display: block;
     }
 
     .sectionTitle{
         font-size: 2rem;
         margin-bottom: 50px;
         letter-spacing: 2px;
+        width: 100%;
+        display: block;
+        text-align: center;
+        clear: both;
     }
 
     .activityCardContainer {
@@ -1466,7 +1573,7 @@ hr{
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         position: relative;
         overflow: visible;
-        z-index: 100;
+        z-index: 1000; /* Higher z-index for header */
     }
 
     .header::before{
@@ -1609,7 +1716,35 @@ hr{
     }
     
     .main-quick--links{
-        display: none;
+        display: none; /* Hide by default on desktop */
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: flex-start;
+        background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+        position: fixed;
+        top: 80px; /* Position below header */
+        left: 50%;
+        transform: translateX(-50%);
+        max-height: 0;
+        padding: 0;
+        overflow: hidden;
+        border-radius: 15px;
+        box-shadow: 0 15px 35px rgba(115, 0, 81, 0.15);
+        border: 1px solid rgba(115, 0, 81, 0.08);
+        width: 90%;
+        max-width: 1000px;
+        gap: 8px;
+        z-index: 99998;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        backdrop-filter: blur(15px);
+    }
+    
+    /* Show quick access when dropdown is open */
+    .quick-links-open .main-quick--links{
+        display: flex;
+        max-height: 400px;
+        padding: 20px 15px;
+        overflow: visible;
     }
 
     .video-intro{
@@ -1627,41 +1762,43 @@ hr{
     .nav-one--hidden{
         display: flex;
         align-items: center;
-        gap: 15px;
+        gap: 12px;
         z-index: 10000 !important;
         position: relative;
-        background: rgba(115, 0, 81, 0.05);
-        padding: 8px 16px;
-        border-radius: 50px;
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(115, 0, 81, 0.1);
+        background: rgba(115, 0, 81, 0.04);
+        padding: 6px 12px;
+        border-radius: 40px;
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(115, 0, 81, 0.08);
         overflow: visible !important;
     }
 
     .About-btn{
         position: relative;
-        padding: 10px 20px;
-        border-radius: 25px;
+        padding: 8px 16px;
+        border-radius: 20px;
         transition: all 0.3s ease;
-        background: rgba(115, 0, 81, 0.08);
-        border: 1px solid rgba(115, 0, 81, 0.15);
+        background: rgba(115, 0, 81, 0.06);
+        border: 1px solid rgba(115, 0, 81, 0.12);
         font-weight: 500;
+        font-size: 0.9rem;
     }
 
     .Quick-links-btn{
         position: relative;
-        padding: 10px 20px;
-        border-radius: 25px;
+        padding: 8px 16px;
+        border-radius: 20px;
         transition: all 0.3s ease;
-        background: rgba(115, 0, 81, 0.08);
-        border: 1px solid rgba(115, 0, 81, 0.15);
+        background: rgba(115, 0, 81, 0.06);
+        border: 1px solid rgba(115, 0, 81, 0.12);
         font-weight: 500;
         cursor: pointer;
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 6px;
         z-index: 10001 !important;
         overflow: visible !important;
+        font-size: 0.9rem;
     }
     
     .Quick-links-btn:hover{
@@ -1707,26 +1844,9 @@ hr{
         color: #730051;
     }
 
-    /* Desktop dropdown - always visible when rendered */
+    /* Desktop: Hide the old dropdown completely */
     .side-bar--links{
-        position: absolute !important;
-        background: white !important;
-        display: block !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        margin-top: 15px;
-        z-index: 2147483647 !important; /* Maximum z-index value */
-        min-width: 220px;
-        border-radius: 12px;
-        padding: 12px 0;
-        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
-        border: 1px solid rgba(0, 0, 0, 0.1);
-        backdrop-filter: blur(20px);
-        animation: dropdownFadeIn 0.3s ease-out;
-        right: 0;
-        top: calc(100% + 5px);
-        pointer-events: auto !important;
-        transform: translateZ(0); /* Force GPU layer */
+        display: none !important;
     }
 
     @keyframes dropdownFadeIn {
@@ -1748,12 +1868,12 @@ hr{
         display: block;
         color: #730051;
         margin: 0;
-        padding: 12px 20px;
-        font-size: 0.9rem;
+        padding: 10px 16px;
+        font-size: 0.85rem;
         text-decoration: none;
         font-weight: 500;
         transition: all 0.3s ease;
-        border-left: 3px solid transparent;
+        border-left: 2px solid transparent;
         border-radius: 0 6px 6px 0;
         position: relative;
         overflow: hidden;
@@ -1763,9 +1883,9 @@ hr{
         cursor: pointer;
         background: linear-gradient(135deg, #730051, #8e1a6b);
         color: white;
-        border-left: 3px solid #00c6ff;
-        transform: translateX(5px);
-        box-shadow: 0 4px 15px rgba(115, 0, 81, 0.3);
+        border-left: 2px solid #00c6ff;
+        transform: translateX(3px);
+        box-shadow: 0 3px 12px rgba(115, 0, 81, 0.25);
     }
     
     .quick-item--link--desktop:hover::before {
@@ -2050,6 +2170,13 @@ hr{
     }
 }
 
+/* Hide About Us button on small desktop screens to ensure user icon visibility */
+@media(min-width:600px) and (max-width: 1100px){
+    .About-btn{
+        display: none !important;
+    }
+}
+
 @media(min-width:800px){
 
     .flex-title .container{
@@ -2111,6 +2238,7 @@ hr{
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        color: #000000;
     }
     
     .hambuger-div {
@@ -2161,7 +2289,23 @@ hr{
     }
     
     .title-text {
-        font-size: 0.8rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+        letter-spacing: 0.3px;
+        padding: 0 8px;
+        text-align: center;
+        max-width: 120px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        color: #000000;
+    }
+    
+    .short-title {
+        font-size: 0.7rem !important;
+        font-weight: 600 !important;
+        color: #000000;
+        text-shadow: 0 0 1px rgba(255, 255, 255, 0.8);
     }
     
     .nav-toggle__btn {
@@ -2315,5 +2459,27 @@ hr{
     .worshipAdminButton {
         padding: 10px 25px;
         font-size: 0.9rem;
+    }
+}
+
+/* Extra small screens - Even more compact UIK title */
+@media (max-width: 360px) {
+    .title-text {
+        font-size: 0.65rem;
+        max-width: 100px;
+        padding: 0 4px;
+        color: #000000;
+    }
+    
+    .short-title {
+        font-size: 0.6rem !important;
+        color: #000000 !important;
+        font-weight: 600 !important;
+        text-shadow: 0 0 1px rgba(255, 255, 255, 0.8) !important;
+    }
+    
+    .logo-image {
+        width: 35px;
+        height: 35px;
     }
 }

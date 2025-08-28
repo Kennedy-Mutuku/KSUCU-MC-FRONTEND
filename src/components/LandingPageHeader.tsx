@@ -27,6 +27,8 @@ const LandingPageHeader = () => {
   const [userData, setUserData] = useState<{ username: string; email: string; yos: number; phone: string; et: string; ministry: string } | null>(null);
   const [error, setError] = useState('');
   const [generalLoading, setgeneralLoading] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
   const navigate = useNavigate();
 
   const handleNavToggle = () => {
@@ -58,9 +60,39 @@ const LandingPageHeader = () => {
     return () => {
       clearInterval(interval);
       window.removeEventListener('focus', handleFocus);
+      // Cleanup: Remove body class when component unmounts
+      document.body.classList.remove('quick-links-open');
     };
 
   }, [images.length]);
+  
+  // Cleanup effect for dropdown state
+  useEffect(() => {
+    if (!isDropdownOpen) {
+      document.body.classList.remove('quick-links-open');
+    }
+  }, [isDropdownOpen]);
+  
+  // Click outside handler for quick access
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isDropdownOpen) {
+        const target = event.target as Element;
+        const quickLinksBtn = document.querySelector('.Quick-links-btn');
+        const quickAccess = document.querySelector('.main-quick--links');
+        
+        if (quickLinksBtn && !quickLinksBtn.contains(target) && 
+            quickAccess && !quickAccess.contains(target)) {
+          setIsDropdownOpen(false);
+        }
+      }
+    };
+    
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isDropdownOpen]);
 
   const fetchUserData = async () => {
     console.log('🏠 Header: Fetching user data...');
@@ -164,10 +196,22 @@ const LandingPageHeader = () => {
       }
   };
 
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
-  const toggleDropdown = () => {
+  const toggleDropdown = (event?: React.MouseEvent) => {
+    if (!isDropdownOpen && event) {
+      const rect = (event.target as HTMLElement).getBoundingClientRect();
+      setDropdownPosition({
+        top: rect.bottom + 5,
+        left: rect.right - 220 // 220px is the min-width of dropdown
+      });
+    }
     setIsDropdownOpen(!isDropdownOpen);
+    
+    // Toggle body class for desktop quick access
+    if (!isDropdownOpen) {
+      document.body.classList.add('quick-links-open');
+    } else {
+      document.body.classList.remove('quick-links-open');
+    }
   };
 
   function handleOpenCommission(): void {
@@ -255,49 +299,7 @@ const LandingPageHeader = () => {
                   <button className={styles['dropdown-toggle']} type="button" >
                     {isDropdownOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
                   </button>
-                  {/* Dropdown Content */}
-                  {isDropdownOpen && (
-                    <div className={styles['side-bar--links']}>
-                      <div onClick={handleTalkToUs} className={styles['quick-item--link--desktop']} style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
-                        <MessageSquare size={16} />
-                        Talk to Us
-                      </div>
-                      <span onClick={navigateMedia} className={styles['quick-item--link--desktop']} style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
-                        <Users size={16} />
-                        Media
-                      </span>
-                      <div onClick={() => handleProtectedLink('/save', 'Win a Soul')} className={styles['quick-item--link--desktop']} style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
-                        <Trophy size={16} />
-                        Win a Soul
-                      </div>
-                      <div onClick={() => handlePublicLink('/Bs')} className={styles['quick-item--link--desktop']} style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
-                        <BookOpen size={16} />
-                        Bible Study
-                      </div>
-                      <div onClick={() => handlePublicLink('/library')} className={styles['quick-item--link--desktop']} style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
-                        <Library size={16} />
-                        Library
-                      </div>
-                      <div onClick={() => handleProtectedLink('/financial', 'Financials')} className={styles['quick-item--link--desktop']} style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
-                        <DollarSign size={16} />
-                        Financials
-                      </div>
-                      <a
-                        href="/pdfs/constitution.pdf"
-                        download="constitution.pdf"
-                        className={styles['quick-item--link--desktop']}
-                        style={{display: 'flex', alignItems: 'center', gap: '8px'}}
-                      >
-                        <FileText size={16} />
-                        Constitution
-                      </a>
-                      <div onClick={() => handlePublicLink('/ministries')} className={styles['quick-item--link--desktop']} style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
-                        <GraduationCap size={16} />
-                        Ministries
-                      </div>
-                      { userData && <div onClick={handleLogout} className={styles['quick-item--link--desktop']} style={{display: 'flex', alignItems: 'center', gap: '8px', borderTop: '1px solid rgba(255,255,255,0.1)', marginTop: '8px', paddingTop: '12px', cursor: 'pointer'}}>Log out</div> }
-                    </div>
-                  )}
+                  {/* No dropdown on desktop - using main quick access section instead */}
                 </div>
 
                 <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', minWidth: '80px', minHeight: '50px', justifyContent: 'center'}} onClick={userData ? handleRedirectToUserInfo : handleRedirectToLogin}>
@@ -347,69 +349,61 @@ const LandingPageHeader = () => {
 
           <div className={styles['main-quick--links']}>
             {error && <div className={styles.error}>{error}</div>}
-            <div style={{
+            <div className={styles['quick-access-header']} style={{
               textAlign: 'center', 
               marginBottom: '15px', 
               padding: '0 10px',
-              borderBottom: '2px solid rgba(115, 0, 81, 0.1)',
-              paddingBottom: '10px'
+              borderBottom: '1px solid rgba(115, 0, 81, 0.08)',
+              paddingBottom: '10px',
+              width: '100%'
             }}>
-              <h3 style={{
+              <h3 className={styles['quick-access-title']} style={{
                 margin: '0',
                 color: '#730051',
-                fontSize: '1.1rem',
+                fontSize: '1rem',
                 fontWeight: '700',
-                letterSpacing: '0.5px',
+                letterSpacing: '0.4px',
                 textTransform: 'uppercase'
               }}>Quick Access</h3>
-              <p style={{
+              <p className={styles['quick-access-subtitle']} style={{
                 margin: '2px 0 0 0',
                 color: '#666',
-                fontSize: '0.8rem',
+                fontSize: '0.75rem',
                 fontWeight: '400'
-              }}>Explore our services & resources</p>
+              }}>Services & resources</p>
             </div>
-            <div onClick={handleTalkToUs} className={styles['quick-item--link']} style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'}}>
-              <MessageSquare size={18} />
+            <div onClick={handleTalkToUs} className={styles['quick-item--link']}>
               Talk to Us
             </div>
-            <a onClick={navigateMedia} className={styles['quick-item--link']} style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'}}>
-              <Users size={18} />
+            <a onClick={navigateMedia} className={styles['quick-item--link']}>
               Media
             </a>
-            <div onClick={() => handleProtectedLink('/save', 'Win a Soul')} className={styles['quick-item--link']} style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'}}>
-              <Trophy size={18} />
+            <div onClick={() => handleProtectedLink('/save', 'Win a Soul')} className={styles['quick-item--link']}>
               Win a Soul
             </div>
-            <div onClick={() => handlePublicLink('/Bs')} className={styles['quick-item--link']} style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'}}>
-              <BookOpen size={18} />
+            <div onClick={() => handlePublicLink('/Bs')} className={styles['quick-item--link']}>
               Bible Study
             </div>
-            <div onClick={() => handlePublicLink('/library')} className={styles['quick-item--link']} style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'}}>
-              <Library size={18} />
+            <div onClick={() => handlePublicLink('/library')} className={styles['quick-item--link']}>
               Library
             </div>
-            <div onClick={() => handleProtectedLink('/financial', 'Financials')} className={styles['quick-item--link']} style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'}}>
-              <DollarSign size={18} />
+            <div onClick={() => handleProtectedLink('/financial', 'Financials')} className={styles['quick-item--link']}>
               Financials
             </div>
             <a 
               href="/pdfs/constitution.pdf" 
               download="constitution.pdf" 
               className={styles['quick-item--link']}
-              style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'}}
             >
-              <FileText size={18} />
               Constitution
             </a>
-            <div onClick={() => handlePublicLink('/ministries')} className={styles['quick-item--link']} style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'}}>
-              <GraduationCap size={18} />
+            <div onClick={() => handlePublicLink('/ministries')} className={styles['quick-item--link']}>
               Ministries
             </div>
-            <div onClick={() => handlePublicLink('/#about')} className={styles['quick-item--link']} style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'}}>
+            <div onClick={() => handlePublicLink('/#about')} className={styles['quick-item--link']}>
               About Us
             </div>
-            { userData && <div onClick={handleLogout} className={styles['quick-item--link']} style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', borderTop: '1px solid rgba(255,255,255,0.2)', marginTop: '10px', paddingTop: '15px', cursor: 'pointer'}}>Log out</div> }
+            { userData && <div onClick={handleLogout} className={styles['quick-item--link']} style={{borderTop: '1px solid rgba(255,255,255,0.12)', marginTop: '6px', paddingTop: '8px', cursor: 'pointer', gridColumn: '1 / -1'}}>Log out</div> }
           </div>
         </div>
 

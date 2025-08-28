@@ -4,23 +4,21 @@ import SignatureCanvas from "react-signature-canvas";
 import styles from "../styles/InstrumentalistsCommitment.module.css"; // Import your CSS module
 import Header from "../components/header";
 import Footer from "../components/footer";
-import ImageUploader from "../components/ImageUploader";
-import "react-image-crop/dist/ReactCrop.css";
 
 const InstrumentalistsCommitment: React.FC = () => {
   const sigCanvas = useRef<SignatureCanvas | null>(null);
-  const [croppedImage, setCroppedImage] = useState<string | null>(null);
   const [fullName, setFullName] = useState<string>("");
   const [phoneNumber, setPhoneNumber] = useState<string>("");
+  const [regNo, setRegNo] = useState<string>("");
+  const [yearOfStudy, setYearOfStudy] = useState<string>("");
   const [reasonForJoining, setReasonForJoining] = useState<string>("");
   const [date, setDate] = useState<string>(""); // Will set this automatically in useEffect
-  const [ministryLeader, setMinistryLeader] = useState<string>("");
-  const [dateApproved, setDateApproved] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  // const [errors, setErrors] = useState('');
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [commitmentStatus, setCommitmentStatus] = useState<string>('');
+  const [hasSubmitted, setHasSubmitted] = useState(false);
 
   const showError = (field: string, message: string) => {
     setErrors((prevErrors) => ({ ...prevErrors, [field]: message }));
@@ -37,7 +35,6 @@ const InstrumentalistsCommitment: React.FC = () => {
     // Set the current date as default
     const today = new Date().toISOString().split('T')[0]; // Format to YYYY-MM-DD
     setDate(today);
-    setDateApproved(today);
   }, []);
 
   useEffect(() => {
@@ -50,14 +47,18 @@ const InstrumentalistsCommitment: React.FC = () => {
         // Populate only available fields
         if (data.username) setFullName(data.username);
         if (data.phone) setPhoneNumber(data.phone);
+        if (data.regNo) setRegNo(data.regNo);
+        if (data.yearOfStudy) setYearOfStudy(data.yearOfStudy);
         if (data.reasonForJoining) setReasonForJoining(data.reasonForJoining);
         if (data.date) setDate(data.date);
-        if (data.ministryLeader) setMinistryLeader(data.ministryLeader);
-        if (data.dateApproved) setDateApproved(data.dateApproved);
         if (data.signature && sigCanvas.current) {
           sigCanvas.current.fromDataURL(data.signature);
         }
-        if (data.croppedImage) setCroppedImage(data.croppedImage);
+        if (data.status) setCommitmentStatus(data.status);
+        if (data.hasSubmitted) {
+          setHasSubmitted(data.hasSubmitted);
+          setIsSubmitted(data.hasSubmitted);
+        }
       } catch (error) {
         console.error("Error fetching form data:", error);
       }
@@ -72,9 +73,6 @@ const InstrumentalistsCommitment: React.FC = () => {
     }
   };
 
-  const handleImageCropped = (image: string) => {
-    setCroppedImage(image);
-  };
 
   const handleSubmit = async () => {
     setShowConfirmation(true);
@@ -131,6 +129,14 @@ const InstrumentalistsCommitment: React.FC = () => {
       showError('phoneNumber', 'Phone number is required');
       hasError = true;
     }
+    if (!regNo.trim()) {
+      showError('regNo', 'Registration number is required');
+      hasError = true;
+    }
+    if (!yearOfStudy.trim()) {
+      showError('yearOfStudy', 'Year of study is required');
+      hasError = true;
+    }
     if (!reasonForJoining.trim()) {
       showError('reasonForJoining', 'Reason for joining is required');
       hasError = true;
@@ -150,12 +156,11 @@ const InstrumentalistsCommitment: React.FC = () => {
     const formData = {
       fullName,
       phoneNumber,
+      regNo,
+      yearOfStudy,
       reasonForJoining,
       date,
       signature: signatureData,
-      croppedImage,
-      ministryLeader,
-      dateApproved,
     };
   
     try {
@@ -186,6 +191,18 @@ const InstrumentalistsCommitment: React.FC = () => {
         <div className={styles.commitmentForm}>
           <h2 className={styles.formTitle}>🎸 Instrumentalists Ministry Commitment Form</h2>
           <p className={styles.textMuted}>"Honoring God Through Music"</p>
+
+          {/* Status Display */}
+          {hasSubmitted && (
+            <div className={`${styles.statusAlert} ${
+              commitmentStatus === 'approved' ? styles.approved :
+              commitmentStatus === 'revoked' ? styles.revoked : styles.pending
+            }`}>
+              {commitmentStatus === 'pending' && '⏳ Waiting for admin approval'}
+              {commitmentStatus === 'approved' && '✅ Commitment form approved!'}
+              {commitmentStatus === 'revoked' && '❌ Commitment form revoked'}
+            </div>
+          )}
 
           {/* Ministry Commitment */}
           <div className={styles.section}>
@@ -237,7 +254,7 @@ const InstrumentalistsCommitment: React.FC = () => {
               placeholder="Write your reasons here..."
               value={reasonForJoining}
               onChange={(e) => setReasonForJoining(e.target.value)}
-              disabled={isSubmitted}
+              disabled={hasSubmitted}
             ></textarea>
           </div>
 
@@ -256,7 +273,7 @@ const InstrumentalistsCommitment: React.FC = () => {
                   placeholder="Enter your full name"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  disabled={isSubmitted}
+                  disabled={hasSubmitted}
                 />
               </div>
               <div className={styles.col}>
@@ -268,8 +285,40 @@ const InstrumentalistsCommitment: React.FC = () => {
                   placeholder="Enter your phone number"
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
-                  disabled={isSubmitted}
+                  disabled={hasSubmitted}
                 />
+              </div>
+            </div>
+            <div className={styles.row}>
+              <div className={styles.col}>
+                <label className={styles.formLabel}>Registration Number:</label>
+                {errors.regNo && <div className={styles.error}>{errors.regNo}</div>}
+                <input
+                  type="text"
+                  className={styles.formControl}
+                  placeholder="Enter your registration number"
+                  value={regNo}
+                  onChange={(e) => setRegNo(e.target.value)}
+                  disabled={hasSubmitted}
+                />
+              </div>
+              <div className={styles.col}>
+                <label className={styles.formLabel}>Year of Study:</label>
+                {errors.yearOfStudy && <div className={styles.error}>{errors.yearOfStudy}</div>}
+                <select
+                  className={styles.formControl}
+                  value={yearOfStudy}
+                  onChange={(e) => setYearOfStudy(e.target.value)}
+                  disabled={hasSubmitted}
+                >
+                  <option value="">Select your year of study</option>
+                  <option value="1st Year">1st Year</option>
+                  <option value="2nd Year">2nd Year</option>
+                  <option value="3rd Year">3rd Year</option>
+                  <option value="4th Year">4th Year</option>
+                  <option value="5th Year">5th Year</option>
+                  <option value="6th Year">6th Year</option>
+                </select>
               </div>
             </div>
             <div className={styles.row}>
@@ -297,36 +346,6 @@ const InstrumentalistsCommitment: React.FC = () => {
             </div>
           </div>
 
-          {/* Image Uploader */}
-          <ImageUploader onImageCropped={handleImageCropped} initialImage={croppedImage} />
-
-
-          {/* Church Use Only */}
-          <div className={styles.section}>
-            <h4 className={styles.sectionTitle}>📜 For Church Use Only</h4>
-            <div className={styles.row}>
-              <div className={styles.col}>
-                <label className={styles.formLabel}>Ministry Leader:</label>
-                <input
-                  type="text"
-                  className={styles.formControl}
-                  placeholder="Leader's Name"
-                  value={ministryLeader}
-                  onChange={(e) => setMinistryLeader(e.target.value)}
-                />
-              </div>
-              <div className={styles.col}>
-                <label className={styles.formLabel}>Date Approved:</label>
-                <input
-                  type="date"
-                  className={styles.formControl}
-                  value={date}
-                  onChange={(e) => setDateApproved(e.target.value)}
-                  disabled={isSubmitted}
-                />
-              </div>
-            </div>
-          </div>
 
           {/* Submit Button */}
           <div className={styles.textCenter}>
@@ -340,9 +359,9 @@ const InstrumentalistsCommitment: React.FC = () => {
             <button
               className={styles.btnPrimary}
               onClick={handleSubmit}
-              disabled={isSubmitting || isSubmitted}
+              disabled={isSubmitting || hasSubmitted}
             >
-              {isSubmitting ? "Submitting..." : "Submit Commitment"}
+              {isSubmitting ? "Submitting..." : hasSubmitted ? "Already Submitted" : "Submit Commitment"}
             </button>
           </div>
 

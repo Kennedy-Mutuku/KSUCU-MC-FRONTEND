@@ -280,7 +280,7 @@ const WorshipDocketAdmin: React.FC = () => {
     };
 
     const handleLogin = () => {
-        if (password === 'worshipdocket') {
+        if (password === 'Overseer') {
             setAuthenticated(true);
             setAuthError('');
             setMessage('Successfully logged in to Ministries Admin');

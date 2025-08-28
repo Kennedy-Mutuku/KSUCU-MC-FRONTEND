@@ -576,6 +576,8 @@
 @media (max-width: 768px) {
   .headerContent {
     padding: 12px 15px;
+    flex-wrap: wrap;
+    gap: 10px;
   }
   
   .title {
@@ -620,10 +622,22 @@
   
   .messageForm {
     padding: 20px;
+    margin: 0 5px;
   }
   
   .userPreview {
     padding: 15px;
+  }
+  
+  .input,
+  .textarea {
+    padding: 12px 15px;
+    font-size: 16px; /* Prevent iOS zoom */
+  }
+  
+  .submitButton {
+    padding: 16px 20px;
+    font-size: 1rem;
   }
 }
 
@@ -632,12 +646,24 @@
     padding: 10px 12px;
   }
   
+  .logoSection {
+    flex: none;
+  }
+  
   .title {
     font-size: 1.2rem;
   }
   
+  .heroContent {
+    padding: 25px 15px;
+  }
+  
   .heroTitle {
     font-size: 1.6rem;
+  }
+  
+  .heroSubtitle {
+    font-size: 0.95rem;
   }
   
   .categoryGrid {
@@ -651,5 +677,47 @@
   
   .username {
     font-size: 0.7rem;
+  }
+  
+  .messageForm {
+    padding: 15px;
+    margin: 0 5px;
+  }
+  
+  .formGroup {
+    margin-bottom: 20px;
+  }
+  
+  .label {
+    font-size: 0.95rem;
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 320px) {
+  .headerContent {
+    padding: 8px 10px;
+  }
+  
+  .main {
+    padding: 20px 10px;
+  }
+  
+  .heroContent {
+    padding: 20px 12px;
+  }
+  
+  .messageForm {
+    padding: 12px;
+    margin: 0;
+  }
+  
+  .categoryGrid {
+    gap: 6px;
+  }
+  
+  .categoryButton {
+    padding: 10px 6px;
+    font-size: 0.75rem;
   }
 }

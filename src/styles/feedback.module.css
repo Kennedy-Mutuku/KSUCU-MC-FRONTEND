@@ -1,19 +1,219 @@
 @import url(bs.module.css);
 
-.submission{
-    text-align: center;
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
 
+.form {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(115, 0, 81, 0.1);
+}
+
+.form div {
+    margin-bottom: 20px;
+}
+
+.form label {
+    display: block;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 8px;
+    font-size: 1rem;
+}
+
+.inputs {
+    width: 100%;
+    padding: 15px 18px;
+    border: 2px solid rgba(115, 0, 81, 0.1);
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: white;
+    color: #2c3e50;
+    resize: none;
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+.inputs:focus {
+    outline: none;
+    border-color: #730051;
+    box-shadow: 0 0 0 3px rgba(115, 0, 81, 0.1);
+    background: rgba(115, 0, 81, 0.01);
+}
+
+.checkboxContainer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(115, 0, 81, 0.05);
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid rgba(115, 0, 81, 0.1);
+}
+
+.checkboxContainer label {
+    margin-bottom: 0;
+    font-size: 0.95rem;
+    color: #730051;
+    font-weight: 500;
+}
+
+.checkboxContainer input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: #730051;
+}
+
+.userInfo {
+    background: linear-gradient(135deg, rgba(0, 198, 255, 0.05), rgba(115, 0, 81, 0.05));
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 198, 255, 0.2);
+    margin-bottom: 15px;
+}
+
+.userInfo p {
+    margin: 5px 0;
+    color: #555;
+    font-size: 0.9rem;
+}
+
+.userInfo strong {
+    color: #730051;
+}
+
+.loginNote {
+    background: rgba(255, 193, 7, 0.1);
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 193, 7, 0.3);
+    margin-bottom: 15px;
+}
+
+.loginNote p {
+    margin: 0;
+    color: #856404;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.submission {
+    text-align: center;
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-top: 25px;
 }
-.submitButton{
-    display: block;
+
+.submitButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 18px 32px;
+    background: linear-gradient(135deg, #730051, #8e1a6b);
+    color: white;
     border: none;
-    box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.2);
-    background: var(--blue-color);
-    padding: 5px 20px;
-    border-radius: 5px;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 6px 20px rgba(115, 0, 81, 0.3);
+    min-width: 150px;
 }
 
+.submitButton:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(115, 0, 81, 0.4);
+    background: linear-gradient(135deg, #8e1a6b, #a01f75);
+}
 
+.submitButton:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: 0 4px 15px rgba(115, 0, 81, 0.2);
+}
+
+.error {
+    padding: 15px;
+    margin: 20px 0;
+    border-radius: 12px;
+    text-align: center;
+    font-weight: 500;
+}
+
+.text {
+    text-align: center;
+    color: #2c3e50;
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 30px;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+    
+    .form {
+        padding: 20px;
+    }
+    
+    .inputs {
+        padding: 12px 15px;
+        font-size: 16px; /* Prevent iOS zoom */
+    }
+    
+    .submitButton {
+        padding: 16px 24px;
+        font-size: 1rem;
+        width: 100%;
+    }
+    
+    .text {
+        font-size: 1.1rem;
+    }
+    
+    .checkboxContainer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .form {
+        padding: 15px;
+    }
+    
+    .form div {
+        margin-bottom: 15px;
+    }
+    
+    .inputs {
+        padding: 10px 12px;
+    }
+    
+    .submitButton {
+        padding: 14px 20px;
+        font-size: 0.95rem;
+    }
+    
+    .userInfo,
+    .loginNote {
+        padding: 12px;
+    }
+}
