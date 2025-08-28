@@ -11,8 +11,7 @@ import {
     faTimes,
     faDownload,
     faList,
-    faFileSignature,
-    faEye
+    faFileSignature
 } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 
@@ -48,12 +47,14 @@ const MinistriesAdmin: React.FC = () => {
     const [message, setMessage] = useState('');
     
     // Ministry selection and view mode
-    const [selectedMinistry, setSelectedMinistry] = useState<string>('');
+    const [selectedMinistry, setSelectedMinistry] = useState<MinistryKey | ''>('');
     const [viewMode, setViewMode] = useState<'attendance' | 'commitments'>('commitments');
     const [commitmentForms, setCommitmentForms] = useState<CommitmentForm[]>([]);
     const [loading, setLoading] = useState(false);
 
-    const ministries = [
+    type MinistryKey = 'wananzambe' | 'compassion' | 'pw' | 'intercessory' | 'cs' | 'hs' | 'ushering' | 'creativity' | 'choir';
+
+    const ministries: MinistryKey[] = [
         'wananzambe',
         'compassion', 
         'pw',
@@ -65,7 +66,7 @@ const MinistriesAdmin: React.FC = () => {
         'choir'
     ];
 
-    const ministryNames = {
+    const ministryNames: Record<MinistryKey, string> = {
         'wananzambe': 'Wananzambe (Instrumentalists)',
         'compassion': 'Compassion Ministry',
         'pw': 'Praise & Worship',

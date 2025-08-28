@@ -13,7 +13,7 @@ import missionImg from '../assets/ladies.jpg'
 import valuesImg from '../assets/amptheatre.jpg'
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 import { faUserLock } from '@fortawesome/free-solid-svg-icons';
-import { ChevronDown, ChevronUp, MessageSquare, Users, BookOpen, Library, DollarSign, FileText, Trophy, GraduationCap } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 interface NewsData {
   title: string;
