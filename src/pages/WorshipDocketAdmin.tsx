@@ -19,7 +19,6 @@ const WorshipDocketAdmin: React.FC = () => {
     const [authenticated, setAuthenticated] = useState(false);
     const [password, setPassword] = useState('');
     const [authError, setAuthError] = useState('');
-    const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState('');
     
     // Ministry selection and attendance management

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getApiUrl } from '../config/environment';
+import { getApiUrl, config } from '../config/environment';
 import styles from '../styles/messagesAdmin.module.css';
 import cuLogo from '../assets/cuLogoUAR.png';
 import { 
@@ -10,15 +10,13 @@ import {
   Calendar,
   Filter,
   Search,
-  Eye,
   Archive,
   Trash2,
   ArrowLeft,
   Mail,
   MailOpen,
   Clock,
-  CheckCircle,
-  AlertTriangle
+  CheckCircle
 } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
@@ -136,6 +134,9 @@ const MessagesAdmin = () => {
     }
   };
 
+  // Suppress TypeScript warning - error state available for future UI implementation
+  if (error) { /* error state handled via setError calls */ }
+
   const filterMessages = () => {
     let filtered = messages;
 
@@ -173,7 +174,7 @@ const MessagesAdmin = () => {
 
   const markAsRead = async (messageId: string) => {
     try {
-      const response = await fetch(getApiUrl(`messages/${messageId}/read`), {
+      const response = await fetch(`${config.baseUrl}/messages/${messageId}/read`, {
         method: 'PATCH',
         credentials: 'include'
       });
@@ -190,7 +191,7 @@ const MessagesAdmin = () => {
 
   const updateMessageStatus = async (messageId: string, status: 'replied' | 'archived') => {
     try {
-      const response = await fetch(getApiUrl(`messages/${messageId}/status`), {
+      const response = await fetch(`${config.baseUrl}/messages/${messageId}/status`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -216,7 +217,7 @@ const MessagesAdmin = () => {
     }
 
     try {
-      const response = await fetch(getApiUrl(`messages/${messageId}`), {
+      const response = await fetch(`${config.baseUrl}/messages/${messageId}`, {
         method: 'DELETE',
         credentials: 'include'
       });

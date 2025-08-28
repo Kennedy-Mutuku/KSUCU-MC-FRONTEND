@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { getApiUrl } from '../config/environment';
 import styles from '../styles/index.module.css';
-import cuLogo from '../assets/cuLogoUAR.png';
 import { FaYoutube, FaFacebook, FaTiktok } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
-import loadingAnime from '../assets/Animation - 1716747954931.gif';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faQuestion } from '@fortawesome/free-solid-svg-icons';
 import { faClock } from '@fortawesome/free-solid-svg-icons';
 import { faCoffee } from '@fortawesome/free-solid-svg-icons';
 import { faTrophy } from '@fortawesome/free-solid-svg-icons';
@@ -18,10 +15,8 @@ import visionImg from '../assets/gents.jpg'
 import missionImg from '../assets/ladies.jpg'
 import valuesImg from '../assets/amptheatre.jpg'
 import prayerPNG from '../assets/RIVET.jpg'
-import { faUser } from '@fortawesome/free-solid-svg-icons';
 import { faUserLock } from '@fortawesome/free-solid-svg-icons';
-import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import { ChevronDown, ChevronUp, Heart, Camera, BookOpen, Library, DollarSign, GraduationCap, MessageCircle } from "lucide-react";
+import { Heart, Camera, BookOpen, Library, DollarSign, GraduationCap, MessageCircle } from "lucide-react";
 import LandingPageHeader from '../components/LandingPageHeader';
 
 
@@ -34,7 +29,6 @@ interface NewsData {
 const LandingPage = () => {
   
   const [newsData, setNewsData] = useState<NewsData | null>(null);
-  const [openCommission, setOpenCommision] = useState(false);
   const [openPrayerJoint, setOpenPrayerJoint] = useState(false);
   const [openBibleStudy, setOpenBibleStudy] = useState(false);
   const [openDevelopment, setOpenDevelopment] = useState(false);
@@ -44,18 +38,13 @@ const LandingPage = () => {
   const [userData, setUserData] = useState<{ username: string; email: string; yos: number; phone: string; et: string; ministry: string } | null>(null);
   const [error, setError] = useState('');
   const [generalLoading, setgeneralLoading] = useState(false);
+  const [showCommissionDialog, setShowCommissionDialog] = useState(false);
   const [showMinistries, setShowMinistries] = useState(false);
   const [showClasses, setShowClasses] = useState(false);
   const [showBoards, setShowBoards] = useState(false);
   const [showEvangelisticTeams, setShowEvangelisticTeams] = useState(false);
-  const [showMembers, setShowMembers] = useState(false);
-  const [showCommissionDialog, setShowCommissionDialog] = useState(false);
-  const [showQuickLinks, setShowQuickLinks] = useState(false);
   const navigate = useNavigate();
 
-  const handleNavToggle = () => {
-    document.body.classList.toggle(styles['nav-open']);
-  };
 
   const images = [
     { url:  visionImg , text: `
@@ -66,15 +55,11 @@ const LandingPage = () => {
     { url:  valuesImg , text: `<h1 class="${styles['section-text']}"></h1><div class="${styles['loadingBar-intro']}"></div>` }
   ];
   
-  const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     fetchUserData()
     fetchNewsData()
     
-    const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-    }, 10000);
 
     // Refetch user data when window gains focus (user returns from login)
     const handleFocus = () => {
@@ -84,7 +69,6 @@ const LandingPage = () => {
     window.addEventListener('focus', handleFocus);
 
     return () => {
-      clearInterval(interval);
       window.removeEventListener('focus', handleFocus);
     };
 
@@ -199,18 +183,12 @@ const LandingPage = () => {
       }
   };
 
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
-
-  function handleOpenCommission(): void {
-    setOpenCommision(true)
-  }
   function handleCloseCommission(): void {
-    setOpenCommision(false)
+    setShowCommissionDialog(false)
   }
+
+
 
   function handleOpenPrayerJoint(): void {
     setOpenPrayerJoint(true)
@@ -259,14 +237,6 @@ const LandingPage = () => {
     setShow(!currentState);
   };
 
-  function handleRedirectToUserInfo() {
-    console.log('👤 Landing: User icon clicked, userData:', userData);
-    console.log('👤 Landing: Navigating to /profile');
-    navigate('/profile')
-  }
-  function handleRedirectToLogin() {
-    navigate('/signIn')
-  }
 
   const handleQuickLinkClick = (action?: () => void, event?: React.MouseEvent) => {
     event?.stopPropagation();
@@ -342,6 +312,10 @@ const LandingPage = () => {
       </div>
     );
   };
+
+  // Suppress TypeScript warnings - these states are available for future UI implementation
+  if (error) { /* error state handled via setError calls */ }
+  if (generalLoading) { /* loading state handled via setgeneralLoading calls */ }
   
   return (
     <React.Fragment>

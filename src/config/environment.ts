@@ -29,6 +29,7 @@ interface ApiConfig {
     attendanceStartSession: string;
     attendanceEndSession: string;
     attendanceRecords: string;
+    messages: string;
   };
 }
 
@@ -64,7 +65,8 @@ const developmentConfig: ApiConfig = {
     attendanceSessions: '/attendance/sessions',
     attendanceStartSession: '/attendance/start-session',
     attendanceEndSession: '/attendance/end-session',
-    attendanceRecords: '/attendance/records'
+    attendanceRecords: '/attendance/records',
+    messages: '/messages'
   }
 };
 
@@ -98,7 +100,8 @@ const productionConfig: ApiConfig = {
     attendanceSessions: '/attendance/sessions',
     attendanceStartSession: '/attendance/start-session',
     attendanceEndSession: '/attendance/end-session',
-    attendanceRecords: '/attendance/records'
+    attendanceRecords: '/attendance/records',
+    messages: '/messages'
   }
 };
 
