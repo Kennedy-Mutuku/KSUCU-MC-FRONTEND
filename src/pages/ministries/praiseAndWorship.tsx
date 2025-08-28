@@ -2,14 +2,11 @@ import React from 'react';
 import styles from '../../styles/ministryPage.module.css';
 import Header from '../../components/header';
 import Footer from '../../components/footer';
-import AttendanceForm, { AttendanceSubmission } from '../../components/AttendanceForm';
+import AttendanceSignin from '../../components/AttendanceSignin';
 import { Link } from 'react-router-dom';
 import pwImg from '../../assets/praise-and-worship.jpg';
 
 const PraiseAndWorshipPage: React.FC = () => {
-  const handleAttendanceSubmit = (submission: AttendanceSubmission) => {
-    console.log('Attendance submitted:', submission);
-  };
 
   return (
     <>
@@ -25,10 +22,7 @@ const PraiseAndWorshipPage: React.FC = () => {
           </div>
         </div>
 
-        <AttendanceForm 
-          ministry="Praise and Worship" 
-          onSubmit={handleAttendanceSubmit}
-        />
+        <AttendanceSignin ministry="Praise and Worship" />
 
         <div className={styles.contentSection}>
           <div className={styles.description}>

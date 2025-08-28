@@ -243,14 +243,14 @@
     text-align: center;
     padding: 3rem;
     color: var(--text-muted-color);
-    font-size: 1.1rem;
+    font-size: 0.95rem;
 }
 
 .noData {
     text-align: center;
     padding: 3rem;
     color: var(--text-muted-color);
-    font-size: 1.1rem;
+    font-size: 0.95rem;
 }
 
 .commitmentsList {
@@ -282,7 +282,7 @@
 }
 
 .commitmentName {
-    font-size: 1.25rem;
+    font-size: 1rem;
     font-weight: 600;
     margin: 0 0 0.25rem 0;
     color: var(--text-color);
@@ -291,13 +291,13 @@
 .commitmentDetails {
     color: var(--text-muted-color);
     margin: 0;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
 }
 
 .statusBadge {
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 16px;
+    font-size: 0.75rem;
     font-weight: 600;
 }
 
@@ -325,7 +325,7 @@
 .commitmentMeta p {
     margin: 0.25rem 0;
     color: var(--text-muted-color);
-    font-size: 0.9rem;
+    font-size: 0.8rem;
 }
 
 .commitmentActions {
@@ -335,16 +335,16 @@
 }
 
 .actionButton {
-    padding: 0.5rem 1rem;
+    padding: 0.4rem 0.8rem;
     border: none;
     border-radius: var(--radius);
-    font-size: 0.875rem;
+    font-size: 0.8rem;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s;
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.4rem;
 }
 
 .actionButton.approve {
@@ -372,6 +372,200 @@
 
 .actionButton.download:hover {
     background-color: #0891b2;
+}
+
+/* Attendance Styles */
+.sessionControls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.sessionActions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.sessionInfo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: var(--background-color);
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius);
+}
+
+.sessionStatus {
+    padding: 0.25rem 0.65rem;
+    border-radius: 16px;
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+.sessionStatus.active {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.sessionStatus.ended {
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+.sessionTime {
+    color: var(--text-muted-color);
+    font-size: 0.8rem;
+}
+
+.startSession {
+    background-color: var(--success-color);
+}
+
+.startSession:hover {
+    background-color: #059669;
+}
+
+.endSession {
+    background-color: var(--error-color);
+}
+
+.endSession:hover {
+    background-color: #dc2626;
+}
+
+.resetSession {
+    background-color: var(--warning-color);
+}
+
+.resetSession:hover {
+    background-color: #d97706;
+}
+
+.attendanceContent {
+    padding: 1.5rem;
+}
+
+.attendanceStats {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.statCard {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    text-align: center;
+    min-width: 150px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.statIcon {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.statNumber {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin: 0.5rem 0;
+}
+
+.statLabel {
+    font-size: 0.8rem;
+    color: var(--text-muted-color);
+}
+
+.attendanceList {
+    background: var(--surface-color);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.listTitle {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.attendeeGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+}
+
+.attendeeCard {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--background-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    transition: all 0.2s;
+}
+
+.attendeeCard:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.attendeeNumber {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.attendeeInfo {
+    flex: 1;
+}
+
+.attendeeName {
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 0.25rem;
+    font-size: 0.9rem;
+}
+
+.attendeeEmail {
+    font-size: 0.8rem;
+    color: var(--text-muted-color);
+    margin-bottom: 0.25rem;
+}
+
+.attendeeTime {
+    font-size: 0.7rem;
+    color: var(--text-muted-color);
+}
+
+.noDataIcon {
+    font-size: 3rem;
+    color: var(--text-muted-color);
+    margin-bottom: 1rem;
+}
+
+.noDataSubtext {
+    font-size: 0.8rem;
+    color: var(--text-muted-color);
+    margin-top: 0.5rem;
 }
 
 /* Responsive Design */
@@ -410,8 +604,8 @@
     .tabButton {
         flex: none;
         text-align: center;
-        font-size: 0.8rem;
-        padding: 0.5rem 0.75rem;
+        font-size: 0.75rem;
+        padding: 0.4rem 0.6rem;
     }
 
     .commitmentHeader {
@@ -427,8 +621,8 @@
 
     .actionButton {
         justify-content: center;
-        font-size: 0.8rem;
-        padding: 0.4rem 0.8rem;
+        font-size: 0.75rem;
+        padding: 0.35rem 0.7rem;
     }
 
     .actionButton.download {
@@ -448,8 +642,8 @@
     }
 
     .tabButton {
-        font-size: 0.75rem;
-        padding: 0.4rem 0.5rem;
+        font-size: 0.7rem;
+        padding: 0.35rem 0.45rem;
     }
 
     .commitmentActions {
@@ -467,10 +661,32 @@
     }
 
     .commitmentName {
-        font-size: 1.1rem;
+        font-size: 0.95rem;
     }
 
     .commitmentDetails {
-        font-size: 0.85rem;
+        font-size: 0.75rem;
+    }
+    
+    .sessionControls {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .sessionInfo {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .attendeeGrid {
+        grid-template-columns: 1fr;
+    }
+    
+    .attendanceStats {
+        flex-direction: column;
+    }
+    
+    .statCard {
+        width: 100%;
     }
 }

@@ -11,7 +11,10 @@ import {
     faDownload,
     faList,
     faCalendar,
-    faFileAlt
+    faFileAlt,
+    faPlay,
+    faStop,
+    faRedo
 } from '@fortawesome/free-solid-svg-icons';
 import { AttendanceSubmission } from '../components/AttendanceForm';
 
@@ -25,6 +28,10 @@ const WorshipDocketAdmin: React.FC = () => {
     const [selectedMinistry, setSelectedMinistry] = useState<string>('');
     const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
     const [localAttendance, setLocalAttendance] = useState<AttendanceSubmission[]>([]);
+    
+    // Session management
+    const [attendanceSession, setAttendanceSession] = useState<any>(null);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (authenticated) {
@@ -32,11 +39,29 @@ const WorshipDocketAdmin: React.FC = () => {
         }
     }, [authenticated]);
 
+    useEffect(() => {
+        if (authenticated && selectedMinistry) {
+            loadAttendanceSession();
+        }
+    }, [authenticated, selectedMinistry]);
+
     // Load local attendance data from localStorage
     const loadLocalAttendance = () => {
         const storedAttendance = localStorage.getItem('ministryAttendance');
         if (storedAttendance) {
             setLocalAttendance(JSON.parse(storedAttendance));
+        }
+    };
+
+    // Load attendance session for selected ministry
+    const loadAttendanceSession = () => {
+        if (!selectedMinistry) return;
+        
+        const storedSession = localStorage.getItem(`attendanceSession_${selectedMinistry}`);
+        if (storedSession) {
+            setAttendanceSession(JSON.parse(storedSession));
+        } else {
+            setAttendanceSession(null);
         }
     };
 
@@ -279,6 +304,111 @@ const WorshipDocketAdmin: React.FC = () => {
         setTimeout(() => setMessage(''), 3000);
     };
 
+    // Session management functions (using localStorage for now)
+    const startAttendanceSession = async () => {
+        if (!selectedMinistry) {
+            setMessage('Please select a ministry first');
+            setTimeout(() => setMessage(''), 3000);
+            return;
+        }
+        
+        setLoading(true);
+        try {
+            // Create session in localStorage
+            const session = {
+                _id: Date.now().toString(),
+                ministry: selectedMinistry,
+                isActive: true,
+                startTime: new Date().toISOString(),
+                attendanceCount: 0
+            };
+            
+            // Store session
+            localStorage.setItem(`attendanceSession_${selectedMinistry}`, JSON.stringify(session));
+            
+            setAttendanceSession(session);
+            setMessage('✅ Attendance session opened - Users can now sign attendance');
+            setTimeout(() => setMessage(''), 5000);
+        } catch (error: any) {
+            console.error('Error starting session:', error);
+            setMessage('❌ Error opening attendance session');
+            setTimeout(() => setMessage(''), 3000);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const endAttendanceSession = async () => {
+        if (!attendanceSession) return;
+        
+        if (!confirm('Are you sure you want to close the attendance session? Users will no longer be able to sign attendance.')) {
+            return;
+        }
+        
+        setLoading(true);
+        try {
+            // Update session in localStorage
+            const updatedSession = {
+                ...attendanceSession, 
+                isActive: false, 
+                endTime: new Date().toISOString()
+            };
+            
+            localStorage.setItem(`attendanceSession_${selectedMinistry}`, JSON.stringify(updatedSession));
+            setAttendanceSession(updatedSession);
+            setMessage('🔒 Attendance session closed - Users can no longer sign attendance');
+            setTimeout(() => setMessage(''), 5000);
+        } catch (error: any) {
+            console.error('Error ending session:', error);
+            setMessage('❌ Error closing attendance session');
+            setTimeout(() => setMessage(''), 3000);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const resetAttendance = async () => {
+        if (!selectedMinistry) {
+            setMessage('Please select a ministry first');
+            setTimeout(() => setMessage(''), 3000);
+            return;
+        }
+        
+        if (!confirm('Are you sure you want to reset attendance? This will clear all records for the current session and allow users to sign up again.')) {
+            return;
+        }
+        
+        setLoading(true);
+        try {
+            // Create new session in localStorage
+            const newSession = {
+                _id: Date.now().toString(),
+                ministry: selectedMinistry,
+                isActive: true,
+                startTime: new Date().toISOString(),
+                attendanceCount: 0
+            };
+            
+            // Store new session
+            localStorage.setItem(`attendanceSession_${selectedMinistry}`, JSON.stringify(newSession));
+            
+            // Clear any existing attendance records for this ministry
+            const existingAttendance = JSON.parse(localStorage.getItem('ministryAttendance') || '[]');
+            const filteredAttendance = existingAttendance.filter((record: any) => record.ministry !== selectedMinistry);
+            localStorage.setItem('ministryAttendance', JSON.stringify(filteredAttendance));
+            
+            setAttendanceSession(newSession);
+            setMessage('🔄 Attendance has been reset - All previous records cleared, users can sign again');
+            setTimeout(() => setMessage(''), 5000);
+        } catch (error: any) {
+            console.error('Error resetting attendance:', error);
+            setMessage(`Error resetting attendance: ${error.message}`);
+            setTimeout(() => setMessage(''), 5000);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const handleLogin = () => {
         if (password === 'Overseer') {
             setAuthenticated(true);
@@ -410,6 +540,49 @@ const WorshipDocketAdmin: React.FC = () => {
                             </button>
                         </div>
                     </div>
+                    
+                    {/* Session Control Section */}
+                    {selectedMinistry && (
+                        <div className={styles.sessionControlSection}>
+                            <h3 className={styles.sessionTitle}>
+                                <FontAwesomeIcon icon={faUsers} /> Attendance Session Controls
+                            </h3>
+                            <div className={styles.sessionButtons}>
+                                <button
+                                    onClick={startAttendanceSession}
+                                    disabled={loading}
+                                    className={styles.sessionButton}
+                                    style={{backgroundColor: '#10b981', color: 'white'}}
+                                >
+                                    <FontAwesomeIcon icon={faPlay} /> Open Session
+                                </button>
+                                <button
+                                    onClick={resetAttendance}
+                                    disabled={loading}
+                                    className={styles.sessionButton}
+                                    style={{backgroundColor: '#f59e0b', color: 'white'}}
+                                >
+                                    <FontAwesomeIcon icon={faRedo} /> Reset Attendance
+                                </button>
+                                <button
+                                    onClick={endAttendanceSession}
+                                    disabled={loading}
+                                    className={styles.sessionButton}
+                                    style={{backgroundColor: '#ef4444', color: 'white'}}
+                                >
+                                    <FontAwesomeIcon icon={faStop} /> Close Session
+                                </button>
+                            </div>
+                            {attendanceSession && (
+                                <div className={styles.sessionStatus}>
+                                    <p><strong>Status:</strong> {attendanceSession.isActive ? '🟢 Session Open - Users can sign attendance' : '🔴 Session Closed'}</p>
+                                    {attendanceSession.startTime && (
+                                        <p><strong>Started:</strong> {new Date(attendanceSession.startTime).toLocaleString()}</p>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </div>
 
                 {/* Attendance List Section */}

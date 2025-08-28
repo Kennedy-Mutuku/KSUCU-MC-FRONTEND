@@ -71,14 +71,30 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
 
     const checkActiveSession = async () => {
         try {
-            const response = await fetch(getApiUrl('attendanceSession') + `/${ministry}`, {
-                credentials: 'include'
-            });
+            console.log('Checking session for ministry:', ministry);
             
-            if (response.ok) {
-                const data = await response.json();
-                setSession(data.session);
-                setSigned(data.userSigned || false);
+            // Check localStorage for session
+            const storedSession = localStorage.getItem(`attendanceSession_${ministry}`);
+            
+            if (storedSession) {
+                const sessionData = JSON.parse(storedSession);
+                console.log('Session data from localStorage:', sessionData);
+                setSession(sessionData);
+                
+                // Check if user has already signed (if logged in)
+                if (userData) {
+                    const storedAttendance = JSON.parse(localStorage.getItem('ministryAttendance') || '[]');
+                    const userRecord = storedAttendance.find((record: any) => 
+                        record.ministry === ministry && record.sessionId === sessionData._id
+                    );
+                    setSigned(!!userRecord);
+                } else {
+                    setSigned(false);
+                }
+            } else {
+                console.log('No session found for ministry:', ministry);
+                setSession(null);
+                setSigned(false);
             }
         } catch (error) {
             console.error('Error checking session:', error);
@@ -91,33 +107,52 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
             return;
         }
 
+        if (!session) {
+            setError('No active session found');
+            return;
+        }
+
+        if (!session.isActive) {
+            setError('This attendance session is closed');
+            return;
+        }
+
         setLoading(true);
         setError('');
         setSuccess('');
 
         try {
-            const response = await fetch(getApiUrl('attendanceSign'), {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                credentials: 'include',
-                body: JSON.stringify({
-                    sessionId: session?._id,
-                    ministry: ministry
-                })
-            });
+            // Check if already signed
+            const storedAttendance = JSON.parse(localStorage.getItem('ministryAttendance') || '[]');
+            const existingRecord = storedAttendance.find((record: any) => 
+                record.ministry === ministry && record.sessionId === session._id
+            );
 
-            const data = await response.json();
-
-            if (response.ok) {
-                setSigned(true);
-                setSuccess('Attendance signed successfully!');
-                setTimeout(() => setSuccess(''), 3000);
-            } else {
-                setError(data.message || 'Failed to sign attendance');
+            if (existingRecord) {
+                setError('You have already signed attendance for this session');
                 setTimeout(() => setError(''), 5000);
+                setLoading(false);
+                return;
             }
+
+            // Create attendance record
+            const attendanceRecord = {
+                id: Date.now().toString(),
+                name: userData.username,
+                regNo: userData.regNo || 'N/A',
+                year: userData.year || 1,
+                ministry: ministry,
+                sessionId: session._id,
+                timestamp: new Date().toISOString()
+            };
+
+            // Add to stored attendance
+            storedAttendance.push(attendanceRecord);
+            localStorage.setItem('ministryAttendance', JSON.stringify(storedAttendance));
+
+            setSigned(true);
+            setSuccess('Attendance signed successfully!');
+            setTimeout(() => setSuccess(''), 3000);
         } catch (error) {
             setError('Error signing attendance. Please try again.');
             setTimeout(() => setError(''), 5000);
@@ -127,7 +162,20 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
     };
 
     if (!session) {
-        return null; // Don't show anything if no session
+        return (
+            <div className={styles.attendanceContainer}>
+                <div className={styles.attendanceCard}>
+                    <div className={styles.header}>
+                        <FontAwesomeIcon icon={faClock} className={styles.clockIcon} />
+                        <h3 className={styles.title}>No Active Attendance Session</h3>
+                    </div>
+                    <div className={styles.closedMessage}>
+                        <p>There is currently no attendance session for {ministry} ministry.</p>
+                        <p className={styles.closedNote}>Please wait for an admin to open the attendance session.</p>
+                    </div>
+                </div>
+            </div>
+        );
     }
 
     const isSessionClosed = !session.isActive && session.endTime;

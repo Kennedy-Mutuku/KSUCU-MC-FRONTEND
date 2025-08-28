@@ -11,7 +11,11 @@ import {
     faTimes,
     faDownload,
     faList,
-    faFileSignature
+    faFileSignature,
+    faRedo,
+    faPlay,
+    faStop,
+    faCalendarAlt
 } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 
@@ -40,6 +44,26 @@ interface CommitmentForm {
     reviewedAt?: string;
 }
 
+interface AttendanceSession {
+    _id: string;
+    ministry: string;
+    isActive: boolean;
+    startTime: string;
+    endTime?: string;
+}
+
+interface AttendanceRecord {
+    _id: string;
+    userId: {
+        _id: string;
+        username: string;
+        email: string;
+    };
+    sessionId: string;
+    ministry: string;
+    signedAt: string;
+}
+
 const MinistriesAdmin: React.FC = () => {
     const [authenticated, setAuthenticated] = useState(false);
     const [password, setPassword] = useState('');
@@ -51,6 +75,10 @@ const MinistriesAdmin: React.FC = () => {
     const [viewMode, setViewMode] = useState<'attendance' | 'commitments'>('commitments');
     const [commitmentForms, setCommitmentForms] = useState<CommitmentForm[]>([]);
     const [loading, setLoading] = useState(false);
+    
+    // Attendance state
+    const [attendanceSession, setAttendanceSession] = useState<AttendanceSession | null>(null);
+    const [attendanceRecords, setAttendanceRecords] = useState<AttendanceRecord[]>([]);
 
     type MinistryKey = 'wananzambe' | 'compassion' | 'pw' | 'intercessory' | 'cs' | 'hs' | 'ushering' | 'creativity' | 'choir';
 
@@ -145,6 +173,139 @@ const MinistriesAdmin: React.FC = () => {
         }
     };
 
+    // Load attendance session and records
+    const loadAttendanceData = async () => {
+        if (!selectedMinistry) return;
+        
+        console.log('Loading attendance data for:', selectedMinistry);
+        setLoading(true);
+        try {
+            // Load session info
+            const sessionResponse = await axios.get(
+                `http://localhost:3000/attendance/session/${selectedMinistry}`,
+                { withCredentials: true }
+            );
+            console.log('Session response:', sessionResponse.data);
+            setAttendanceSession(sessionResponse.data.session);
+            
+            // Load attendance records if there's an active session
+            if (sessionResponse.data.session) {
+                const recordsResponse = await axios.get(
+                    `http://localhost:3000/attendance/records/${sessionResponse.data.session._id}`,
+                    { withCredentials: true }
+                );
+                console.log('Records response:', recordsResponse.data);
+                setAttendanceRecords(recordsResponse.data.records || []);
+            } else {
+                setAttendanceRecords([]);
+            }
+        } catch (error: any) {
+            console.error('Error loading attendance data:', error);
+            // Don't show error message for non-existent sessions, that's normal
+            if (error.response?.status !== 404) {
+                setMessage('Error loading attendance data');
+                setTimeout(() => setMessage(''), 3000);
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
+    
+    // Start attendance session
+    const startAttendanceSession = async () => {
+        if (!selectedMinistry) return;
+        
+        setLoading(true);
+        try {
+            const response = await axios.post(
+                `http://localhost:3000/attendance/start-session`,
+                { ministry: selectedMinistry },
+                { withCredentials: true }
+            );
+            setAttendanceSession(response.data.session);
+            setAttendanceRecords([]);
+            setMessage('✅ Attendance session opened - Users can now sign attendance');
+            setTimeout(() => setMessage(''), 5000);
+        } catch (error) {
+            console.error('Error starting session:', error);
+            setMessage('❌ Error opening attendance session');
+            setTimeout(() => setMessage(''), 3000);
+        } finally {
+            setLoading(false);
+        }
+    };
+    
+    // End attendance session
+    const endAttendanceSession = async () => {
+        if (!attendanceSession) return;
+        
+        if (!confirm('Are you sure you want to close the attendance session? Users will no longer be able to sign attendance.')) {
+            return;
+        }
+        
+        setLoading(true);
+        try {
+            await axios.post(
+                `http://localhost:3000/attendance/end-session`,
+                { sessionId: attendanceSession._id },
+                { withCredentials: true }
+            );
+            // Keep the session but mark as inactive
+            setAttendanceSession({...attendanceSession, isActive: false, endTime: new Date().toISOString()});
+            setMessage('🔒 Attendance session closed - Users can no longer sign attendance');
+            setTimeout(() => setMessage(''), 5000);
+        } catch (error) {
+            console.error('Error ending session:', error);
+            setMessage('❌ Error closing attendance session');
+            setTimeout(() => setMessage(''), 3000);
+        } finally {
+            setLoading(false);
+        }
+    };
+    
+    // Reset attendance (clear records and end session)
+    const resetAttendance = async () => {
+        if (!selectedMinistry) {
+            setMessage('Please select a ministry first');
+            setTimeout(() => setMessage(''), 3000);
+            return;
+        }
+        
+        if (!confirm('Are you sure you want to reset attendance? This will clear all records for the current session and allow users to sign up again.')) {
+            return;
+        }
+        
+        setLoading(true);
+        try {
+            // First end the current session if it exists and is active
+            if (attendanceSession && attendanceSession.isActive) {
+                await axios.post(
+                    `http://localhost:3000/attendance/end-session`,
+                    { sessionId: attendanceSession._id },
+                    { withCredentials: true }
+                );
+            }
+            
+            // Then start a new session
+            const response = await axios.post(
+                `http://localhost:3000/attendance/start-session`,
+                { ministry: selectedMinistry },
+                { withCredentials: true }
+            );
+            
+            setAttendanceSession(response.data.session);
+            setAttendanceRecords([]);
+            setMessage('🔄 Attendance has been reset - All previous records cleared, users can sign again');
+            setTimeout(() => setMessage(''), 5000);
+        } catch (error: any) {
+            console.error('Error resetting attendance:', error);
+            setMessage(`Error resetting attendance: ${error.response?.data?.message || error.message}`);
+            setTimeout(() => setMessage(''), 5000);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     // Download commitment form as PDF
     const downloadCommitmentPDF = (commitment: CommitmentForm) => {
         const htmlContent = `
@@ -153,11 +314,11 @@ const MinistriesAdmin: React.FC = () => {
             <head>
                 <title>KSUCU - ${selectedMinistry ? ministryNames[selectedMinistry] : ''} - Commitment Form</title>
                 <style>
-                    @page { size: A4; margin: 20mm; }
+                    @page { size: A4; margin: 15mm; }
                     body { font-family: 'Times New Roman', serif; margin: 0; padding: 0; }
-                    .letterhead { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #333; padding-bottom: 20px; }
-                    .letterhead h1 { margin: 0; color: #730051; font-size: 24px; }
-                    .letterhead h2 { margin: 5px 0; color: #333; font-size: 18px; }
+                    .letterhead-img { width: 100%; max-width: 800px; height: auto; margin: 0 auto 20px; display: block; }
+                    .document-title { text-align: center; margin: 20px 0; }
+                    .document-title h2 { color: #730051; font-size: 20px; margin: 0; text-transform: uppercase; }
                     .form-section { margin: 20px 0; }
                     .form-row { display: flex; justify-content: space-between; margin: 10px 0; }
                     .form-field { flex: 1; margin-right: 20px; }
@@ -169,11 +330,15 @@ const MinistriesAdmin: React.FC = () => {
                     .status.approved { background-color: #dcfce7; color: #166534; }
                     .status.pending { background-color: #fef3c7; color: #92400e; }
                     .status.revoked { background-color: #fef2f2; color: #dc2626; }
+                    @media print {
+                        .letterhead-img { max-height: 150px; }
+                    }
                 </style>
             </head>
             <body>
-                <div class="letterhead">
-                    <h1>KSUCU - MAIN CAMPUS</h1>
+                <img src="/img/letterhead.png" class="letterhead-img" alt="KSUCU-MC Letterhead" />
+                
+                <div class="document-title">
                     <h2>${selectedMinistry ? ministryNames[selectedMinistry] : ''} - Commitment Form</h2>
                 </div>
                 
@@ -233,6 +398,28 @@ const MinistriesAdmin: React.FC = () => {
                             <img src="${commitment.croppedImage}" style="max-width: 150px; max-height: 150px; border: 1px solid #ccc;" alt="Photo" />
                         </div>` : ''}
                     </div>
+                    
+                    ${commitment.reviewedBy ? `
+                    <div style="margin-top: 30px; border-top: 1px solid #ccc; padding-top: 15px;">
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label>Reviewed By:</label>
+                                <div class="value">${commitment.reviewedBy.username}</div>
+                            </div>
+                            <div class="form-field">
+                                <label>Review Date:</label>
+                                <div class="value">${new Date(commitment.reviewedAt || '').toLocaleDateString()}</div>
+                            </div>
+                        </div>
+                    </div>
+                    ` : ''}
+                </div>
+                
+                <div style="margin-top: 50px; text-align: center; font-size: 12px; color: #666;">
+                    <hr style="border: none; border-top: 1px solid #ccc; margin-bottom: 10px;" />
+                    <p style="margin: 5px 0;">KSUCU-MC | P.O BOX 408-40200, KISII, KENYA</p>
+                    <p style="margin: 5px 0;">www.ksucumc.org | ksuchristianunion@gmail.com</p>
+                    <p style="margin: 5px 0; font-style: italic;">Generated on ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}</p>
                 </div>
             </body>
             </html>
@@ -248,8 +435,12 @@ const MinistriesAdmin: React.FC = () => {
     };
 
     useEffect(() => {
-        if (authenticated && selectedMinistry && viewMode === 'commitments') {
-            loadCommitmentForms();
+        if (authenticated && selectedMinistry) {
+            if (viewMode === 'commitments') {
+                loadCommitmentForms();
+            } else if (viewMode === 'attendance') {
+                loadAttendanceData();
+            }
         }
     }, [authenticated, selectedMinistry, viewMode]);
 
@@ -443,12 +634,151 @@ const MinistriesAdmin: React.FC = () => {
                     <div className={styles.contentArea}>
                         <div className={styles.sectionHeader}>
                             <h2 className={styles.sectionTitle}>
-                                {selectedMinistry && ministryNames[selectedMinistry]} - Attendance Records
+                                {selectedMinistry && ministryNames[selectedMinistry]} - Attendance Management
                             </h2>
+                            {/* Debug info */}
+                            {import.meta.env.DEV && (
+                                <div style={{fontSize: '12px', color: '#666', marginTop: '10px'}}>
+                                    DEBUG: Selected Ministry: {selectedMinistry}, View Mode: {viewMode}, Session: {attendanceSession ? 'EXISTS' : 'NONE'}, Active: {attendanceSession?.isActive ? 'YES' : 'NO'}
+                                </div>
+                            )}
+                            <div className={styles.sessionControls}>
+                                {/* ALWAYS VISIBLE BUTTONS FOR TESTING */}
+                                <div style={{display: 'flex', gap: '10px', marginBottom: '15px', flexWrap: 'wrap'}}>
+                                    <button
+                                        className={`${styles.actionButton} ${styles.startSession}`}
+                                        onClick={startAttendanceSession}
+                                        disabled={loading}
+                                        style={{backgroundColor: '#10b981', color: 'white', padding: '12px 24px', fontSize: '16px'}}
+                                    >
+                                        <FontAwesomeIcon icon={faPlay} /> Open Session
+                                    </button>
+                                    <button
+                                        className={`${styles.actionButton} ${styles.resetSession}`}
+                                        onClick={resetAttendance}
+                                        disabled={loading}
+                                        style={{backgroundColor: '#f59e0b', color: 'white', padding: '12px 24px', fontSize: '16px'}}
+                                    >
+                                        <FontAwesomeIcon icon={faRedo} /> Reset Attendance
+                                    </button>
+                                    <button
+                                        className={`${styles.actionButton} ${styles.endSession}`}
+                                        onClick={endAttendanceSession}
+                                        disabled={loading}
+                                        style={{backgroundColor: '#ef4444', color: 'white', padding: '12px 24px', fontSize: '16px'}}
+                                    >
+                                        <FontAwesomeIcon icon={faStop} /> Close Session
+                                    </button>
+                                </div>
+                                
+                                {/* Show open button when no active session */}
+                                {(!attendanceSession || !attendanceSession.isActive) && (
+                                    <div style={{padding: '10px', background: '#f0f0f0', margin: '10px 0', borderRadius: '8px'}}>
+                                        <p><strong>Status:</strong> No active session - Click button above to open session</p>
+                                    </div>
+                                )}
+                                
+                                {/* Show session controls when active */}
+                                {attendanceSession && attendanceSession.isActive && (
+                                    <>
+                                        <div className={styles.sessionInfo}>
+                                            <span className={`${styles.sessionStatus} ${styles.active}`}>
+                                                Session Open - Users can sign attendance
+                                            </span>
+                                            <span className={styles.sessionTime}>
+                                                Opened: {new Date(attendanceSession.startTime).toLocaleTimeString()}
+                                            </span>
+                                        </div>
+                                        <div className={styles.sessionActions}>
+                                            <button
+                                                className={`${styles.actionButton} ${styles.resetSession}`}
+                                                onClick={resetAttendance}
+                                                disabled={loading}
+                                                title="Reset attendance - clears all records and restarts session"
+                                            >
+                                                <FontAwesomeIcon icon={faRedo} /> Reset Attendance
+                                            </button>
+                                            <button
+                                                className={`${styles.actionButton} ${styles.endSession}`}
+                                                onClick={endAttendanceSession}
+                                                disabled={loading}
+                                            >
+                                                <FontAwesomeIcon icon={faStop} /> Close Session
+                                            </button>
+                                        </div>
+                                    </>
+                                )}
+                            </div>
                         </div>
-                        <div className={styles.noData}>
-                            Attendance management feature coming soon...
-                        </div>
+
+                        {loading ? (
+                            <div className={styles.loading}>Loading attendance data...</div>
+                        ) : (
+                            <div className={styles.attendanceContent}>
+                                {attendanceSession && attendanceRecords.length > 0 ? (
+                                    <>
+                                        <div className={styles.attendanceStats}>
+                                            <div className={styles.statCard}>
+                                                <FontAwesomeIcon icon={faUsers} className={styles.statIcon} />
+                                                <div className={styles.statNumber}>{attendanceRecords.length}</div>
+                                                <div className={styles.statLabel}>Total Attendees</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className={styles.attendanceList}>
+                                            <h3 className={styles.listTitle}>
+                                                <FontAwesomeIcon icon={faCalendarAlt} /> Attendance List
+                                            </h3>
+                                            <div className={styles.attendeeGrid}>
+                                                {attendanceRecords.map((record, index) => (
+                                                    <div key={record._id} className={styles.attendeeCard}>
+                                                        <div className={styles.attendeeNumber}>{index + 1}</div>
+                                                        <div className={styles.attendeeInfo}>
+                                                            <div className={styles.attendeeName}>
+                                                                {record.userId.username}
+                                                            </div>
+                                                            <div className={styles.attendeeEmail}>
+                                                                {record.userId.email}
+                                                            </div>
+                                                            <div className={styles.attendeeTime}>
+                                                                Signed: {new Date(record.signedAt).toLocaleTimeString()}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </>
+                                ) : attendanceSession ? (
+                                    <div className={styles.noData}>
+                                        <FontAwesomeIcon icon={faUsers} className={styles.noDataIcon} />
+                                        {attendanceSession.isActive ? (
+                                            <>
+                                                <p>No attendance records yet.</p>
+                                                <p className={styles.noDataSubtext}>
+                                                    Session is open - waiting for users to sign attendance...
+                                                </p>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <p>Session closed - Final attendance count: {attendanceRecords.length}</p>
+                                                <p className={styles.noDataSubtext}>
+                                                    Session was closed at {attendanceSession.endTime ? new Date(attendanceSession.endTime).toLocaleString() : 'unknown time'}
+                                                </p>
+                                            </>
+                                        )}
+                                    </div>
+                                ) : (
+                                    <div className={styles.noData}>
+                                        <FontAwesomeIcon icon={faCalendarAlt} className={styles.noDataIcon} />
+                                        <p>No attendance session started.</p>
+                                        <p className={styles.noDataSubtext}>
+                                            Click "Open Attendance Session" to allow users to sign attendance.
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+                        )}
                     </div>
                 )}
             </div>
