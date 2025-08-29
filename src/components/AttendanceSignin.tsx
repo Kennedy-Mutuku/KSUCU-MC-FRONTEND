@@ -19,7 +19,6 @@ interface AttendanceSigninProps {
 
 const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
     const [session, setSession] = useState<AttendanceSession | null>(null);
-    const [signed, setSigned] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
@@ -82,7 +81,6 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
                     );
                     const sessionAttendance = recordsResponse.data.records || [];
                     setDeviceAttendance(sessionAttendance);
-                    setSigned(false); // User needs to sign in
                 } catch (recordsError) {
                     console.log('No attendance records found');
                     setDeviceAttendance([]);
@@ -90,14 +88,12 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
             } else {
                 console.log('No active session found');
                 setSession(null);
-                setSigned(false);
                 setDeviceAttendance([]);
             }
         } catch (error: any) {
             console.error('Error checking session:', error.message);
             // If API fails, show no session (no localStorage fallback for true cross-device sync)
             setSession(null);
-            setSigned(false);
             setDeviceAttendance([]);
             setError('Unable to connect to attendance server. Please check your connection.');
             setTimeout(() => setError(''), 5000);
@@ -177,20 +173,27 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
             const newRecord = response.data.record;
             setDeviceAttendance(prev => [...prev, newRecord]);
             
-            // Mark as signed for this session
-            setSigned(true);
-
-            // Clear form after successful submission
+            // Clear form after successful submission for immediate next registration
             setAttendanceFormData({ name: '', regNo: '', year: '', phoneNumber: '', signature: '' });
+            
+            // Clear canvas signature
+            const canvas = document.querySelector('canvas') as HTMLCanvasElement;
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                if (ctx) {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+            }
             
             // Show success message with timestamp and guidance
             const now = new Date();
             const timeString = now.toLocaleString();
             setSuccess(`✅ Attendance signed successfully for ${attendanceFormData.name}! Submitted at: ${timeString}. Ready for next person...`);
+            
+            // Clear success message after 3 seconds (form ready immediately)
             setTimeout(() => {
                 setSuccess('');
-                setSigned(false); // Allow another person to sign
-            }, 5000);
+            }, 3000);
 
         } catch (error: any) {
             console.error('❌ Error during attendance signing:', error);
@@ -293,13 +296,6 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
                             </div>
                         )}
 
-                        {/* Show signed status if someone just signed */}
-                        {signed && (
-                            <div className={styles.signedStatus}>
-                                <FontAwesomeIcon icon={faCheckCircle} className={styles.signedIcon} />
-                                <p>Attendance signed successfully!</p>
-                            </div>
-                        )}
 
                         {/* Show device attendance count */}
                         {deviceAttendance.length > 0 && (

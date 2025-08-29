@@ -302,6 +302,15 @@ const LandingPage = () => {
         phoneNumber: '',
         signature: ''
       });
+      
+      // Clear canvas signature
+      const canvas = document.querySelector('canvas') as HTMLCanvasElement;
+      if (canvas) {
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      }
       // DON'T close the form - allow multiple registrations from one device
       // setShowAttendanceForm(false);
       
