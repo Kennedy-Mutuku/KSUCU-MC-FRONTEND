@@ -186,7 +186,7 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
             // Show success message with timestamp and guidance
             const now = new Date();
             const timeString = now.toLocaleString();
-            setSuccess(`✅ Attendance signed successfully for ${attendanceFormData.name}!\n\nSubmitted at: ${timeString}\n\n🔄 Ready for next person...`);
+            setSuccess(`✅ Attendance signed successfully for ${attendanceFormData.name}! Submitted at: ${timeString}. Ready for next person...`);
             setTimeout(() => {
                 setSuccess('');
                 setSigned(false); // Allow another person to sign
@@ -197,7 +197,7 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
             if (error.response?.status === 400) {
                 const errorMessage = error.response.data.message || 'Invalid attendance data';
                 if (errorMessage.includes('already signed attendance')) {
-                    setError(`❌ Registration Number Already Used!\n\n${errorMessage}\n\n💡 Please use a different registration number.`);
+                    setError(`❌ Registration Number Already Used! ${errorMessage}. Please use a different registration number.`);
                 } else {
                     setError(errorMessage);
                 }

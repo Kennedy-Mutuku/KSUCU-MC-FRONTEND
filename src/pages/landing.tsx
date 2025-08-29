@@ -291,7 +291,7 @@ const LandingPage = () => {
       // Show success message with name and timestamp
       const now = new Date();
       const timeString = now.toLocaleString();
-      alert(`✅ Attendance submitted successfully for ${attendanceData.fullName}!\n\nSubmitted at: ${timeString}\n\n🔄 You can now register another person with a different registration number.`);
+      alert(`✅ Attendance submitted successfully for ${attendanceData.fullName}! Submitted at: ${timeString}. You can now register another person with a different registration number.`);
       
       // Reset form but keep it open for multiple registrations
       setAttendanceData({
@@ -312,7 +312,7 @@ const LandingPage = () => {
         const errorMessage = error.response.data.message || 'Invalid attendance data';
         if (errorMessage.includes('already signed attendance')) {
           // Duplicate registration number error
-          alert(`❌ Registration Number Already Used!\n\n${errorMessage}\n\n💡 Please use a different registration number or check if this person has already signed attendance.`);
+          alert(`❌ Registration Number Already Used! ${errorMessage}. Please use a different registration number or check if this person has already signed attendance.`);
         } else {
           alert(`❌ ${errorMessage}`);
         }
