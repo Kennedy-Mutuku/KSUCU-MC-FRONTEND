@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { getApiUrl } from '../config/environment';
 import styles from '../styles/attendanceSignin.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheckCircle, faExclamationTriangle, faClock, faUsers, faUserPlus } from '@fortawesome/free-solid-svg-icons';
+import { faCheckCircle, faExclamationTriangle, faClock, faUsers } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 
 interface AttendanceSession {
@@ -361,7 +360,7 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
                                 <FontAwesomeIcon icon={faUsers} className={styles.usersIcon} />
                                 <p>{deviceAttendance.length} user{deviceAttendance.length !== 1 ? 's' : ''} signed from this device</p>
                                 <div className={styles.usersList}>
-                                    {deviceAttendance.map((record: any, index: number) => (
+                                    {deviceAttendance.map((record: any) => (
                                         <span key={record.id} className={styles.userBadge}>
                                             {record.name} ({record.regNo})
                                         </span>
@@ -445,21 +444,21 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
                                                 let lastX = 0;
                                                 let lastY = 0;
 
-                                                const startDrawing = (e) => {
+                                                const startDrawing = (e: MouseEvent | TouchEvent) => {
                                                     isDrawing = true;
                                                     const rect = canvas.getBoundingClientRect();
-                                                    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-                                                    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                                                    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+                                                    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
                                                     lastX = clientX - rect.left;
                                                     lastY = clientY - rect.top;
                                                 };
 
-                                                const draw = (e) => {
-                                                    if (!isDrawing) return;
+                                                const draw = (e: MouseEvent | TouchEvent) => {
+                                                    if (!isDrawing || !ctx) return;
                                                     e.preventDefault();
                                                     const rect = canvas.getBoundingClientRect();
-                                                    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-                                                    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                                                    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+                                                    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
                                                     const currentX = clientX - rect.left;
                                                     const currentY = clientY - rect.top;
 
@@ -518,9 +517,14 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
                                             type="button"
                                             disabled={loading}
                                             onClick={(e) => {
-                                                const canvas = e.target.parentElement.parentElement.querySelector('canvas');
-                                                const ctx = canvas.getContext('2d');
-                                                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                                                const target = e.target as HTMLElement;
+                                                const canvas = target.parentElement?.parentElement?.querySelector('canvas') as HTMLCanvasElement;
+                                                if (canvas) {
+                                                    const ctx = canvas.getContext('2d');
+                                                    if (ctx) {
+                                                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                                                    }
+                                                }
                                                 setAttendanceFormData(prev => ({...prev, signature: ''}));
                                             }}
                                             style={{

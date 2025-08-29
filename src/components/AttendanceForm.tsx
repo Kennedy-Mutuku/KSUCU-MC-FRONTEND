@@ -111,7 +111,7 @@ const AttendanceForm: React.FC<AttendanceFormProps> = ({ ministry, onSubmit }) =
           <div className={styles.attendanceCount}>
             <p>📊 {deviceAttendance.length} user{deviceAttendance.length !== 1 ? 's' : ''} signed from this device:</p>
             <div className={styles.usersList}>
-              {deviceAttendance.map((record, index) => (
+              {deviceAttendance.map((record) => (
                 <span key={record.id} className={styles.userBadge}>
                   {record.name} ({record.regNo})
                 </span>
@@ -231,7 +231,7 @@ const AttendanceForm: React.FC<AttendanceFormProps> = ({ ministry, onSubmit }) =
         <div className={styles.deviceAttendance}>
           <h4>✅ Users signed from this device ({deviceAttendance.length}):</h4>
           <div className={styles.signedUsersList}>
-            {deviceAttendance.map((record, index) => (
+            {deviceAttendance.map((record) => (
               <div key={record.id} className={styles.signedUserItem}>
                 <span className={styles.signedUserName}>{record.name}</span>
                 <span className={styles.signedUserRegNo}>({record.regNo})</span>

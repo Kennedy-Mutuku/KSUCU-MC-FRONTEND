@@ -271,21 +271,6 @@ const LandingPage = () => {
     }
   };
 
-  const handleSignAttendance = () => {
-    console.log('handleSignAttendance called');
-    console.log('Setting showAttendanceForm to true');
-    setShowAttendanceForm(true);
-    // Reset form data to empty
-    setAttendanceData({
-      fullName: '',
-      registrationNumber: '',
-      course: '',
-      yearOfStudy: '',
-      phoneNumber: '',
-      signature: ''
-    });
-    console.log('Form data reset');
-  };
 
   const handleLogout = async () => {
     setgeneralLoading(true)
@@ -670,14 +655,16 @@ const LandingPage = () => {
                 userSelect: 'none'
               }}
               onMouseEnter={(e) => {
-                e.target.style.background = '#0099cc';
-                e.target.style.transform = 'translateY(-3px)';
+                const target = e.target as HTMLElement;
+                target.style.background = '#0099cc';
+                target.style.transform = 'translateY(-3px)';
               }}
               onMouseLeave={(e) => {
-                e.target.style.background = '#00c6ff';
-                e.target.style.transform = 'translateY(0)';
+                const target = e.target as HTMLElement;
+                target.style.background = '#00c6ff';
+                target.style.transform = 'translateY(0)';
               }}
-              onClick={(e) => {
+              onClick={() => {
                 // Simply open the form without alert
                 setShowAttendanceForm(true);
                 setAttendanceData({
@@ -820,21 +807,21 @@ const LandingPage = () => {
                         let lastX = 0;
                         let lastY = 0;
 
-                        const startDrawing = (e) => {
+                        const startDrawing = (e: MouseEvent | TouchEvent) => {
                           isDrawing = true;
                           const rect = canvas.getBoundingClientRect();
-                          const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-                          const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                          const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+                          const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
                           lastX = clientX - rect.left;
                           lastY = clientY - rect.top;
                         };
 
-                        const draw = (e) => {
-                          if (!isDrawing) return;
+                        const draw = (e: MouseEvent | TouchEvent) => {
+                          if (!isDrawing || !ctx) return;
                           e.preventDefault();
                           const rect = canvas.getBoundingClientRect();
-                          const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-                          const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                          const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+                          const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
                           const currentX = clientX - rect.left;
                           const currentY = clientY - rect.top;
 
@@ -892,9 +879,14 @@ const LandingPage = () => {
                     <button
                       type="button"
                       onClick={(e) => {
-                        const canvas = e.target.parentElement.parentElement.querySelector('canvas');
-                        const ctx = canvas.getContext('2d');
-                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        const target = e.target as HTMLElement;
+                        const canvas = target.parentElement?.parentElement?.querySelector('canvas') as HTMLCanvasElement;
+                        if (canvas) {
+                          const ctx = canvas.getContext('2d');
+                          if (ctx) {
+                            ctx.clearRect(0, 0, canvas.width, canvas.height);
+                          }
+                        }
                         setAttendanceData(prev => ({...prev, signature: ''}));
                       }}
                       style={{
