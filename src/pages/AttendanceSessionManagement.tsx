@@ -257,7 +257,7 @@ const AttendanceSessionManagement: React.FC = () => {
         try {
             console.log('🔒 Closing session via backend API...');
             
-            // Try backend API first, fallback to localStorage if not available
+            // Close session via backend API
             try {
                 const response = await fetch(getApiUrl('attendanceSessionClose'), {
                     method: 'POST',
@@ -308,39 +308,79 @@ const AttendanceSessionManagement: React.FC = () => {
     };
 
     const resetSession = async () => {
-        if (!confirm('Are you sure you want to reset attendance? This will clear all records.')) return;
+        if (!confirm('Are you sure you want to reset attendance? This will clear all records and restart the session.')) return;
         
         setLoading(true);
         try {
-            // Clear all records
-            localStorage.removeItem(`attendance-records-${leadershipRole}`);
-            setAttendanceRecords([]);
+            console.log('🔄 Resetting session via backend API...');
             
-            // Create new session
-            const newSession: AttendanceSession = {
-                _id: Date.now().toString(),
-                leadershipRole,
-                isActive: true,
-                startTime: new Date().toISOString(),
-                totalAttendees: 0
-            };
+            // First close the current session (if any)
+            if (attendanceSession && attendanceSession.isActive) {
+                console.log('🔒 Closing current session before reset...');
+                const closeResponse = await fetch(getApiUrl('attendanceSessionClose'), {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                if (closeResponse.ok) {
+                    console.log('✅ Current session closed successfully');
+                } else {
+                    console.log('⚠️ Warning: Failed to close current session, proceeding with reset...');
+                }
+            }
             
-            localStorage.setItem(`attendance-session-${leadershipRole}`, JSON.stringify(newSession));
-            // Update global active session
-            const globalSessionData = {
-                leadershipRole,
-                isActive: true,
-                startTime: newSession.startTime,
-                sessionId: newSession._id
-            };
-            localStorage.setItem('global-active-session', JSON.stringify(globalSessionData));
-            
-            setAttendanceSession(newSession);
-            setGlobalActiveSession(globalSessionData);
-            setMessage('🔄 Attendance has been reset - All records cleared');
-            setTimeout(() => setMessage(''), 5000);
+            // Start a new session
+            console.log('🚀 Starting new session after reset...');
+            const response = await fetch(getApiUrl('attendanceSessionOpen'), {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    leadershipRole: leadershipRole,
+                    ministry: 'General'
+                })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('✅ New session started after reset:', data);
+                
+                const newSession: AttendanceSession = {
+                    _id: data.session._id || Date.now().toString(),
+                    leadershipRole,
+                    isActive: true,
+                    startTime: data.session.startTime || new Date().toISOString(),
+                    totalAttendees: 0
+                };
+                
+                // Clear local records and update state
+                setAttendanceRecords([]);
+                setAttendanceSession(newSession);
+                setGlobalActiveSession({
+                    leadershipRole,
+                    isActive: true,
+                    startTime: newSession.startTime,
+                    sessionId: newSession._id
+                });
+                
+                setMessage('🔄 Attendance session has been reset - All records cleared and new session started');
+                setTimeout(() => setMessage(''), 5000);
+                
+                // Refresh the attendance records from backend
+                setTimeout(() => {
+                    loadSessionData(leadershipRole);
+                }, 1000);
+            } else {
+                throw new Error('Failed to start new session after reset');
+            }
         } catch (error) {
-            setMessage('❌ Error resetting attendance');
+            console.error('❌ Error resetting attendance:', error);
+            setMessage('❌ Error resetting attendance session. Please try again.');
             setTimeout(() => setMessage(''), 3000);
         } finally {
             setLoading(false);
