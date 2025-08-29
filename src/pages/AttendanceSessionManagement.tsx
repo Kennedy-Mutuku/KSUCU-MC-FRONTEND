@@ -76,7 +76,6 @@ const AttendanceSessionManagement: React.FC = () => {
                 const data = await response.json();
                 if (data.session) {
                     console.log('Active session found:', data.session);
-                    setAttendanceSession(data.session);
                     setGlobalActiveSession({
                         leadershipRole: data.session.leadershipRole,
                         isActive: data.session.isActive,
@@ -84,47 +83,48 @@ const AttendanceSessionManagement: React.FC = () => {
                         sessionId: data.session._id
                     });
                     
-                    // Load attendance records if session exists
-                    if (data.session._id) {
-                        try {
-                            const recordsResponse = await fetch(`${getApiUrl('attendanceRecords')}/${data.session._id}`, {
-                                method: 'GET',
-                                credentials: 'include',
-                            });
-                            if (recordsResponse.ok) {
-                                const recordsData = await recordsResponse.json();
-                                const records = recordsData.records || [];
-                                console.log(`Loaded ${records.length} attendance records for session ${data.session._id}`);
-                                setAttendanceRecords(records);
-                                
-                                // Update the session attendance count with actual records count
-                                if (data.session.isActive) {
+                    // Check if this admin owns the current session
+                    if (data.session.leadershipRole === role) {
+                        // This admin owns the session - load their records
+                        setAttendanceSession(data.session);
+                        
+                        if (data.session._id) {
+                            try {
+                                const recordsResponse = await fetch(`${getApiUrl('attendanceRecords')}/${data.session._id}`, {
+                                    method: 'GET',
+                                    credentials: 'include',
+                                });
+                                if (recordsResponse.ok) {
+                                    const recordsData = await recordsResponse.json();
+                                    const records = recordsData.records || [];
+                                    console.log(`${role} loaded ${records.length} attendance records from their session`);
+                                    setAttendanceRecords(records);
+                                    
+                                    // Update the session attendance count
                                     setAttendanceSession({
                                         ...data.session,
                                         totalAttendees: records.length
                                     });
+                                } else {
+                                    setAttendanceRecords([]);
                                 }
-                            } else {
-                                console.error('Failed to load attendance records:', recordsResponse.statusText);
+                            } catch (error) {
+                                console.error('Error loading attendance records:', error);
                                 setAttendanceRecords([]);
                             }
-                        } catch (error) {
-                            console.error('Error loading attendance records:', error);
-                            setAttendanceRecords([]);
                         }
                     } else {
+                        // Another admin owns the session
+                        setAttendanceSession(null);
                         setAttendanceRecords([]);
-                    }
-                    
-                    if (data.session.leadershipRole !== role && data.session.isActive) {
-                        setMessage(`⚠️ Notice: ${data.session.leadershipRole} currently has an active session. Only one leader can manage attendance at a time.`);
-                        setTimeout(() => setMessage(''), 10000);
+                        setMessage(`🔒 ${data.session.leadershipRole} currently has an active session. You must wait for them to close it, or force close it to start your own session.`);
                     }
                 } else {
-                    console.log('No active session');
+                    console.log('No active session - admin can start new session');
                     setAttendanceSession(null);
                     setGlobalActiveSession(null);
                     setAttendanceRecords([]);
+                    setMessage('');
                 }
             }
         } catch (error) {
@@ -297,48 +297,55 @@ const AttendanceSessionManagement: React.FC = () => {
         }
     };
 
-    const forceStartSession = async () => {
-        const existingGlobalSession = localStorage.getItem('global-active-session');
-        if (!existingGlobalSession) {
-            // No conflict, just start normally
-            startSession();
+    const forceCloseSession = async () => {
+        if (!globalActiveSession || !globalActiveSession.leadershipRole) {
+            setMessage('❌ No active session found to force close');
+            setTimeout(() => setMessage(''), 3000);
             return;
         }
 
-        const existingSession = JSON.parse(existingGlobalSession);
-        if (!confirm(`⚠️ WARNING: ${existingSession.leadershipRole} currently has an active session.\n\nThis will FORCEFULLY close their session and take over control.\n\nOnly use this in emergencies or if you've coordinated with them.\n\nAre you absolutely sure you want to proceed?`)) {
+        if (!confirm(`⚠️ FORCE CLOSE WARNING!\n\n${globalActiveSession.leadershipRole} currently has an active session.\n\nThis will FORCEFULLY close their session and allow you to start your own.\n\n⚠️ Only use this in emergencies or if you've coordinated with them.\n\nAre you absolutely sure you want to proceed?`)) {
             return;
         }
 
         setLoading(true);
         try {
-            // Clear the existing leader's session
-            localStorage.removeItem(`attendance-session-${existingSession.leadershipRole}`);
+            console.log(`🚨 Force closing session owned by ${globalActiveSession.leadershipRole}`);
             
-            const newSession: AttendanceSession = {
-                _id: Date.now().toString(),
-                leadershipRole,
-                isActive: true,
-                startTime: new Date().toISOString(),
-                totalAttendees: 0
-            };
-            
-            // Take over global control
-            localStorage.setItem(`attendance-session-${leadershipRole}`, JSON.stringify(newSession));
-            const globalSessionData = {
-                leadershipRole,
-                isActive: true,
-                startTime: newSession.startTime,
-                sessionId: newSession._id
-            };
-            localStorage.setItem('global-active-session', JSON.stringify(globalSessionData));
-            
-            setAttendanceSession(newSession);
-            setGlobalActiveSession(globalSessionData);
-            setMessage(`🔄 Session taken over from ${existingSession.leadershipRole}. You now have control of attendance.`);
-            setTimeout(() => setMessage(''), 8000);
+            const response = await fetch(getApiUrl('attendanceSessionForceClose'), {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    newLeadershipRole: leadershipRole
+                })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('✅ Session forcefully closed:', data);
+                
+                // Clear current session data
+                setAttendanceSession(null);
+                setGlobalActiveSession(null);
+                setAttendanceRecords([]);
+                
+                setMessage(`🔄 ${data.closedSession.leadershipRole}'s session has been forcefully closed. You can now start your own session.`);
+                setTimeout(() => setMessage(''), 8000);
+                
+                // Refresh data to show updated state
+                loadSessionData(leadershipRole);
+            } else {
+                const errorData = await response.json();
+                console.error('❌ Failed to force close session:', errorData);
+                setMessage(`❌ ${errorData.message || 'Error force closing session'}`);
+                setTimeout(() => setMessage(''), 5000);
+            }
         } catch (error) {
-            setMessage('❌ Error taking over session');
+            console.error('❌ Error force closing session:', error);
+            setMessage('❌ Error force closing session - Check network connection');
             setTimeout(() => setMessage(''), 3000);
         } finally {
             setLoading(false);
@@ -565,85 +572,89 @@ const AttendanceSessionManagement: React.FC = () => {
                     <div className={styles.sessionStatus}>
                         {attendanceSession && attendanceSession.isActive ? (
                             <div className={`${styles.statusCard} ${styles.active}`}>
-                                <h3>✅ Session Active</h3>
-                                <p><strong>Your Role:</strong> {leadershipRole}</p>
-                                <p>Started: {new Date(attendanceSession.startTime).toLocaleString()}</p>
-                                {attendanceSession.endTime && (
-                                    <p>Ended: {new Date(attendanceSession.endTime).toLocaleString()}</p>
-                                )}
-                                <p>Total Attendees: {attendanceRecords.length}</p>
+                                <h3>✅ Your Session Active</h3>
+                                <p><strong>Leader:</strong> {leadershipRole}</p>
+                                <p><strong>Started:</strong> {new Date(attendanceSession.startTime).toLocaleString()}</p>
+                                <p><strong>Total Attendees:</strong> {attendanceRecords.length}</p>
+                                <p><strong>Status:</strong> Accepting new attendance</p>
                             </div>
-                        ) : globalActiveSession && globalActiveSession.isActive ? (
-                            <div className={`${styles.statusCard} ${styles.inactive}`}>
-                                <h3>⚠️ Another Session Active</h3>
-                                <p><strong>{globalActiveSession.leadershipRole}</strong> currently has an active session</p>
-                                <p>Only one leader can manage attendance at a time</p>
-                                <p>Use "Force Takeover" only in emergencies</p>
+                        ) : globalActiveSession && globalActiveSession.isActive && globalActiveSession.leadershipRole !== leadershipRole ? (
+                            <div className={`${styles.statusCard} ${styles.blocked}`}>
+                                <h3>🔒 Session Blocked</h3>
+                                <p><strong>Active Session Owner:</strong> {globalActiveSession.leadershipRole}</p>
+                                <p><strong>Started:</strong> {new Date(globalActiveSession.startTime || '').toLocaleString()}</p>
+                                <p><strong>Your Access:</strong> BLOCKED - Another admin is managing attendance</p>
+                                <p>You must wait for them to close their session or force close it to start yours</p>
                             </div>
                         ) : attendanceSession && !attendanceSession.isActive ? (
                             <div className={`${styles.statusCard} ${styles.inactive}`}>
-                                <h3>🔒 Your Session Closed</h3>
-                                <p>Started: {new Date(attendanceSession.startTime).toLocaleString()}</p>
-                                <p>Ended: {attendanceSession.endTime ? new Date(attendanceSession.endTime).toLocaleString() : 'Unknown'}</p>
-                                <p>Total Attendees: {attendanceRecords.length}</p>
+                                <h3>🔒 Your Previous Session</h3>
+                                <p><strong>Started:</strong> {new Date(attendanceSession.startTime).toLocaleString()}</p>
+                                <p><strong>Ended:</strong> {attendanceSession.endTime ? new Date(attendanceSession.endTime).toLocaleString() : 'Unknown'}</p>
+                                <p><strong>Final Attendees:</strong> {attendanceRecords.length}</p>
                             </div>
                         ) : (
                             <div className={`${styles.statusCard} ${styles.inactive}`}>
-                                <h3>⚪ No Active Session</h3>
+                                <h3>⚪ Ready to Start</h3>
+                                <p><strong>Leader:</strong> {leadershipRole}</p>
                                 <p>Click "Open Session" to start collecting attendance</p>
+                                <p>You will have exclusive control once started</p>
                             </div>
                         )}
                     </div>
 
                     <div className={styles.controlButtons}>
-                        <button
-                            onClick={startSession}
-                            disabled={loading || (attendanceSession?.isActive ?? false)}
-                            className={`${styles.controlButton} ${styles.startButton}`}
-                        >
-                            <FontAwesomeIcon icon={faPlay} />
-                            Open Session
-                        </button>
-                        
-                        {/* Force Takeover Button - only show if there's a conflict */}
-                        {(() => {
-                            const globalSession = localStorage.getItem('global-active-session');
-                            if (globalSession) {
-                                const sessionData = JSON.parse(globalSession);
-                                if (sessionData.isActive && sessionData.leadershipRole !== leadershipRole && !attendanceSession?.isActive) {
-                                    return (
-                                        <button
-                                            onClick={forceStartSession}
-                                            disabled={loading}
-                                            className={`${styles.controlButton} ${styles.forceButton}`}
-                                            title={`Take over from ${sessionData.leadershipRole}`}
-                                        >
-                                            <FontAwesomeIcon icon={faUsers} />
-                                            Force Takeover
-                                        </button>
-                                    );
-                                }
-                            }
-                            return null;
-                        })()}
-                        
-                        <button
-                            onClick={resetSession}
-                            disabled={loading}
-                            className={`${styles.controlButton} ${styles.resetButton}`}
-                        >
-                            <FontAwesomeIcon icon={faRedo} />
-                            Reset Attendance
-                        </button>
-                        
-                        <button
-                            onClick={closeSession}
-                            disabled={loading || !attendanceSession?.isActive}
-                            className={`${styles.controlButton} ${styles.stopButton}`}
-                        >
-                            <FontAwesomeIcon icon={faStop} />
-                            Close Session
-                        </button>
+                        {/* Show different UI based on session ownership */}
+                        {globalActiveSession && globalActiveSession.leadershipRole !== leadershipRole ? (
+                            // Another admin has an active session
+                            <>
+                                <div className={styles.blockedSessionInfo}>
+                                    <p><strong>🔒 Session Blocked</strong></p>
+                                    <p><strong>{globalActiveSession.leadershipRole}</strong> has an active session</p>
+                                    <p>Started: {new Date(globalActiveSession.startTime || '').toLocaleString()}</p>
+                                </div>
+                                
+                                <button
+                                    onClick={forceCloseSession}
+                                    disabled={loading}
+                                    className={`${styles.controlButton} ${styles.forceButton}`}
+                                    title={`Force close ${globalActiveSession.leadershipRole}'s session`}
+                                >
+                                    <FontAwesomeIcon icon={faStop} />
+                                    Force Close Their Session
+                                </button>
+                            </>
+                        ) : (
+                            // No conflict OR this admin owns the session
+                            <>
+                                <button
+                                    onClick={startSession}
+                                    disabled={loading || (attendanceSession?.isActive ?? false)}
+                                    className={`${styles.controlButton} ${styles.startButton}`}
+                                >
+                                    <FontAwesomeIcon icon={faPlay} />
+                                    Open Session
+                                </button>
+                                
+                                <button
+                                    onClick={resetSession}
+                                    disabled={loading || !attendanceSession?.isActive}
+                                    className={`${styles.controlButton} ${styles.resetButton}`}
+                                >
+                                    <FontAwesomeIcon icon={faRedo} />
+                                    Reset Attendance
+                                </button>
+                                
+                                <button
+                                    onClick={closeSession}
+                                    disabled={loading || !attendanceSession?.isActive}
+                                    className={`${styles.controlButton} ${styles.stopButton}`}
+                                >
+                                    <FontAwesomeIcon icon={faStop} />
+                                    Close Session
+                                </button>
+                            </>
+                        )}
                     </div>
                 </div>
 
