@@ -112,30 +112,49 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
             return;
         }
 
-        if (!session) {
-            setError('No active session found');
-            return;
-        }
-
-        if (!session.isActive) {
-            setError('This attendance session is closed');
-            return;
-        }
-
-        // Validate registration number format
-        const regNoPattern = /^[A-Z0-9\/\-]+$/i;
-        if (!regNoPattern.test(attendanceFormData.regNo.trim())) {
-            setError('Invalid registration number format');
-            setTimeout(() => setError(''), 3000);
-            return;
-        }
-
         setLoading(true);
         setError('');
         setSuccess('');
 
         try {
-            // Sign attendance via backend API (anonymous)
+            // CRITICAL: Always get the latest active session before signing
+            console.log('🔄 Refreshing session status before signing...');
+            const sessionResponse = await axios.get(
+                getApiUrl('attendanceSessionStatus', `ministry=${encodeURIComponent(ministry)}&t=${Date.now()}`),
+                { 
+                    withCredentials: true,
+                    headers: { 'Cache-Control': 'no-cache' }
+                }
+            );
+
+            const latestSession = sessionResponse.data.session;
+            
+            if (!latestSession) {
+                setError('No active session found. Please wait for admin to open a session.');
+                setLoading(false);
+                return;
+            }
+
+            if (!latestSession.isActive) {
+                setError('Session has been closed. Please wait for admin to open a new session.');
+                setSession(null);
+                setLoading(false);
+                return;
+            }
+
+            console.log('✅ Using latest active session:', latestSession._id);
+            setSession(latestSession); // Update state with latest session
+
+            // Validate registration number format
+            const regNoPattern = /^[A-Z0-9\/\-]+$/i;
+            if (!regNoPattern.test(attendanceFormData.regNo.trim())) {
+                setError('Invalid registration number format');
+                setTimeout(() => setError(''), 3000);
+                setLoading(false);
+                return;
+            }
+
+            // Sign attendance via backend API (anonymous) using the LATEST session
             const attendanceData = {
                 name: attendanceFormData.name.trim(),
                 regNo: attendanceFormData.regNo.trim().toUpperCase(),
@@ -143,7 +162,7 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
                 phoneNumber: attendanceFormData.phoneNumber.trim(),
                 signature: attendanceFormData.signature.trim(),
                 ministry: ministry,
-                sessionId: session._id
+                sessionId: latestSession._id  // Use latest session, not cached one!
             };
 
             const response = await axios.post(
@@ -169,8 +188,14 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
                 setSuccess('');
                 setSigned(false); // Allow another person to sign
             }, 4000);
-        } catch (error) {
-            setError('Error signing attendance. Please try again.');
+
+        } catch (error: any) {
+            console.error('❌ Error during attendance signing:', error);
+            if (error.response?.status === 400) {
+                setError(error.response.data.message || 'Invalid attendance data');
+            } else {
+                setError('Error signing attendance. Please check your connection and try again.');
+            }
             setTimeout(() => setError(''), 5000);
         } finally {
             setLoading(false);
