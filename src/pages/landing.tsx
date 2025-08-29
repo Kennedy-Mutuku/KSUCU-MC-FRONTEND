@@ -288,10 +288,12 @@ const LandingPage = () => {
 
       console.log('✅ Attendance submitted successfully:', response.data);
 
-      // Show success message
-      alert('✅ Attendance submitted successfully!');
+      // Show success message with name and timestamp
+      const now = new Date();
+      const timeString = now.toLocaleString();
+      alert(`✅ Attendance submitted successfully for ${attendanceData.fullName}!\n\nSubmitted at: ${timeString}\n\n🔄 You can now register another person with a different registration number.`);
       
-      // Reset form
+      // Reset form but keep it open for multiple registrations
       setAttendanceData({
         fullName: '',
         registrationNumber: '',
@@ -300,13 +302,20 @@ const LandingPage = () => {
         phoneNumber: '',
         signature: ''
       });
-      setShowAttendanceForm(false);
+      // DON'T close the form - allow multiple registrations from one device
+      // setShowAttendanceForm(false);
       
     } catch (error: any) {
       console.error('❌ Error submitting attendance:', error);
       
       if (error.response?.status === 400) {
-        alert(`❌ ${error.response.data.message || 'Invalid attendance data'}`);
+        const errorMessage = error.response.data.message || 'Invalid attendance data';
+        if (errorMessage.includes('already signed attendance')) {
+          // Duplicate registration number error
+          alert(`❌ Registration Number Already Used!\n\n${errorMessage}\n\n💡 Please use a different registration number or check if this person has already signed attendance.`);
+        } else {
+          alert(`❌ ${errorMessage}`);
+        }
       } else {
         alert('❌ Error submitting attendance. Please check your connection and try again.');
       }

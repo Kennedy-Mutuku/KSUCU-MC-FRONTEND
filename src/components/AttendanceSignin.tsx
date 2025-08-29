@@ -183,20 +183,28 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
             // Clear form after successful submission
             setAttendanceFormData({ name: '', regNo: '', year: '', phoneNumber: '', signature: '' });
             
-            setSuccess(`✅ Attendance signed successfully for ${attendanceFormData.name}!`);
+            // Show success message with timestamp and guidance
+            const now = new Date();
+            const timeString = now.toLocaleString();
+            setSuccess(`✅ Attendance signed successfully for ${attendanceFormData.name}!\n\nSubmitted at: ${timeString}\n\n🔄 Ready for next person...`);
             setTimeout(() => {
                 setSuccess('');
                 setSigned(false); // Allow another person to sign
-            }, 4000);
+            }, 5000);
 
         } catch (error: any) {
             console.error('❌ Error during attendance signing:', error);
             if (error.response?.status === 400) {
-                setError(error.response.data.message || 'Invalid attendance data');
+                const errorMessage = error.response.data.message || 'Invalid attendance data';
+                if (errorMessage.includes('already signed attendance')) {
+                    setError(`❌ Registration Number Already Used!\n\n${errorMessage}\n\n💡 Please use a different registration number.`);
+                } else {
+                    setError(errorMessage);
+                }
             } else {
                 setError('Error signing attendance. Please check your connection and try again.');
             }
-            setTimeout(() => setError(''), 5000);
+            setTimeout(() => setError(''), 6000);
         } finally {
             setLoading(false);
         }
