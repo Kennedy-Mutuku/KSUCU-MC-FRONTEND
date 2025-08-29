@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getApiUrl } from '../config/environment';
+import axios from 'axios';
 import styles from '../styles/index.module.css';
 import { FaYoutube, FaFacebook, FaTiktok } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
@@ -246,35 +247,46 @@ const LandingPage = () => {
     }
 
     try {
-      const attendanceRecord = {
-        _id: Date.now().toString(),
-        fullName: attendanceData.fullName,
-        registrationNumber: attendanceData.registrationNumber,
-        course: attendanceData.course,
-        yearOfStudy: attendanceData.yearOfStudy,
-        phoneNumber: attendanceData.phoneNumber,
-        signedAt: new Date().toISOString(),
-        signature: attendanceData.signature || 'Digital signature pending',
-        sessionId: activeSession.sessionId
-      };
-
-      // Get existing records for this leader's session
-      const existingRecordsKey = `attendance-records-${activeSession.leadershipRole}`;
-      const existingRecords = JSON.parse(localStorage.getItem(existingRecordsKey) || '[]');
-      
-      // Check if registration number already signed attendance
-      const alreadySigned = existingRecords.some((record: any) => 
-        record.registrationNumber === attendanceData.registrationNumber
+      // First get the latest active session to ensure we have the correct session ID
+      console.log('🔄 Getting latest active session before submitting attendance...');
+      const sessionResponse = await axios.get(
+        getApiUrl('attendanceSessionStatus'),
+        { withCredentials: true }
       );
-      
-      if (alreadySigned) {
-        setShowDuplicateOverlay(true);
+
+      const latestSession = sessionResponse.data.session;
+      if (!latestSession || !latestSession.isActive) {
+        alert('No active attendance session found. Please wait for admin to open a session.');
         return;
       }
 
-      // Add new record
-      existingRecords.push(attendanceRecord);
-      localStorage.setItem(existingRecordsKey, JSON.stringify(existingRecords));
+      console.log('✅ Using session ID:', latestSession._id);
+
+      // Prepare attendance data for backend API (matching the backend schema)
+      const attendanceData_backend = {
+        name: attendanceData.fullName.trim(),
+        regNo: attendanceData.registrationNumber.trim().toUpperCase(),
+        year: parseInt(attendanceData.yearOfStudy),
+        phoneNumber: attendanceData.phoneNumber.trim(),
+        signature: attendanceData.signature.trim(),
+        ministry: attendanceData.course.trim(), // Use course as ministry for general attendance
+        sessionId: latestSession._id
+      };
+
+      console.log('📝 Submitting attendance to backend API...', {
+        name: attendanceData_backend.name,
+        regNo: attendanceData_backend.regNo,
+        ministry: attendanceData_backend.ministry
+      });
+
+      // Submit to backend API
+      const response = await axios.post(
+        getApiUrl('attendanceSignAnonymous'),
+        attendanceData_backend,
+        { withCredentials: true }
+      );
+
+      console.log('✅ Attendance submitted successfully:', response.data);
 
       // Show success message
       alert('✅ Attendance submitted successfully!');
@@ -290,9 +302,14 @@ const LandingPage = () => {
       });
       setShowAttendanceForm(false);
       
-    } catch (error) {
-      console.error('Error submitting attendance:', error);
-      alert('❌ Error submitting attendance. Please try again.');
+    } catch (error: any) {
+      console.error('❌ Error submitting attendance:', error);
+      
+      if (error.response?.status === 400) {
+        alert(`❌ ${error.response.data.message || 'Invalid attendance data'}`);
+      } else {
+        alert('❌ Error submitting attendance. Please check your connection and try again.');
+      }
     }
   };
 

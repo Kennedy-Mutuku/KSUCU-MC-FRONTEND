@@ -2,6 +2,7 @@ import React from 'react';
 import styles from '../../styles/ministryPage.module.css';
 import UniversalHeader from '../../components/UniversalHeader';
 import Footer from '../../components/footer';
+import AttendanceSignin from '../../components/AttendanceSignin';
 import { Link } from 'react-router-dom';
 import usheringImg from '../../assets/ushering.jpg';
 
@@ -160,6 +161,11 @@ const UsheringPage: React.FC = () => {
             </p>
           </div>
         </div>
+      </div>
+      
+      {/* Attendance Section */}
+      <div className={styles.attendanceSection}>
+        <AttendanceSignin ministry="Ushering" />
       </div>
       <Footer />
     </>

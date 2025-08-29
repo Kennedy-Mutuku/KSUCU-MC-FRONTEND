@@ -51,11 +51,11 @@ const AttendanceSessionManagement: React.FC = () => {
             setLeadershipRole(decodeURIComponent(role));
             loadSessionData(role);
             
-            // Set up periodic refresh for attendance records every 3 seconds (more frequent)
+            // Set up periodic refresh for attendance records every 2 seconds for real-time updates
             const refreshInterval = setInterval(() => {
                 console.log('🔄 Auto-refreshing session data...');
                 loadSessionData(role);
-            }, 3000);
+            }, 2000); // Reduced to 2 seconds for faster updates
             
             return () => clearInterval(refreshInterval);
         }
@@ -63,7 +63,8 @@ const AttendanceSessionManagement: React.FC = () => {
 
     const loadSessionData = async (role: string) => {
         console.log(`📡 Loading session data for role: "${role}"`);
-        setLoading(true);
+        // Don't set loading true during auto-refresh to avoid UI flicker
+        // setLoading(true);
         try {
             // Check backend for active session status (with cache-busting)
             const timestamp = Date.now();
@@ -96,28 +97,63 @@ const AttendanceSessionManagement: React.FC = () => {
                         
                         if (data.session._id) {
                             try {
-                                const recordsResponse = await fetch(`${getApiUrl('attendanceRecords')}/${data.session._id}?t=${timestamp}`, {
+                                // Force fresh data by adding timestamp and no-cache headers
+                                const recordsUrl = `${getApiUrl('attendanceRecords')}/${data.session._id}?t=${timestamp}&refresh=${Math.random()}`;
+                                console.log(`📊 Fetching attendance records from: ${recordsUrl}`);
+                                
+                                const recordsResponse = await fetch(recordsUrl, {
                                     method: 'GET',
                                     credentials: 'include',
                                     headers: {
-                                        'Cache-Control': 'no-cache'
+                                        'Cache-Control': 'no-cache, no-store, must-revalidate',
+                                        'Pragma': 'no-cache',
+                                        'Expires': '0'
                                     }
                                 });
+                                
                                 if (recordsResponse.ok) {
                                     const recordsData = await recordsResponse.json();
                                     const records = recordsData.records || [];
                                     console.log(`✅ ${role} loaded ${records.length} attendance records from session ${data.session._id}`);
-                                    console.log('Records:', records);
-                                    setAttendanceRecords(records);
+                                    console.log('Records data:', recordsData);
+                                    console.log('Individual records:', records);
+                                    console.log('Record IDs:', records.map(r => r._id));
+                                    
+                                    // Always update records to ensure we have the latest data
+                                    // Force React to update by creating completely new array with mapped objects
+                                    const processedRecords = records.map(record => ({
+                                        _id: record._id,
+                                        userName: record.userName,
+                                        regNo: record.regNo,
+                                        year: record.year,
+                                        phoneNumber: record.phoneNumber || '',
+                                        ministry: record.ministry,
+                                        signedAt: record.signedAt,
+                                        signature: record.signature || ''
+                                    }));
+                                    
+                                    console.log('📝 Updating attendance records state with', processedRecords.length, 'records');
+                                    console.log('📝 Processed records:', processedRecords);
+                                    
+                                    // Force a state update with a completely new reference
+                                    setAttendanceRecords(prevRecords => {
+                                        console.log('📝 Previous records:', prevRecords.length);
+                                        console.log('📝 New records:', processedRecords.length);
+                                        return processedRecords;
+                                    });
                                     
                                     // Update the session with actual record count
                                     setAttendanceSession({
                                         ...data.session,
-                                        attendanceCount: Math.max(records.length, data.session.attendanceCount || 0),
+                                        attendanceCount: records.length,
                                         totalAttendees: records.length
                                     });
+                                    
+                                    console.log('📝 State update complete. Records should now display.');
                                 } else {
-                                    console.error(`❌ Failed to load records for ${role}:`, recordsResponse.statusText);
+                                    console.error(`❌ Failed to load records for ${role}:`, recordsResponse.status, recordsResponse.statusText);
+                                    const errorText = await recordsResponse.text();
+                                    console.error('Error response:', errorText);
                                     setAttendanceRecords([]);
                                 }
                             } catch (error) {
@@ -145,7 +181,8 @@ const AttendanceSessionManagement: React.FC = () => {
             setMessage('⚠️ Unable to connect to server. Session management may be limited.');
             setTimeout(() => setMessage(''), 5000);
         } finally {
-            setLoading(false);
+            // Don't set loading false here since we removed setLoading(true)
+            // setLoading(false);
         }
     };
 
@@ -545,6 +582,9 @@ const AttendanceSessionManagement: React.FC = () => {
         window.location.href = '/worship-docket-admin';
     };
 
+    console.log('🔄 Component render - attendanceRecords.length:', attendanceRecords.length);
+    console.log('🔄 Component render - attendanceRecords:', attendanceRecords);
+
     return (
         <>
             <UniversalHeader />
@@ -716,21 +756,24 @@ const AttendanceSessionManagement: React.FC = () => {
                         <div className={styles.loading}>Loading...</div>
                     ) : attendanceRecords.length > 0 ? (
                         <div className={styles.recordsList}>
-                            {attendanceRecords.map((record, index) => (
-                                <div key={record._id} className={styles.recordCard}>
-                                    <div className={styles.recordNumber}>{index + 1}</div>
-                                    <div className={styles.recordInfo}>
-                                        <p>
-                                            <strong>{record.userName}</strong> | 
-                                            <strong>Reg:</strong> {record.regNo} | 
-                                            <strong>Ministry:</strong> {record.ministry} | 
-                                            <strong>Year:</strong> {record.year} | 
-                                            <strong>Phone:</strong> {record.phoneNumber || 'Not provided'} | 
-                                            <strong>Signed:</strong> {new Date(record.signedAt).toLocaleString()}
-                                        </p>
+                            {attendanceRecords.map((record, index) => {
+                                console.log(`Rendering record ${index + 1}:`, record.userName, record._id);
+                                return (
+                                    <div key={`${record._id}-${index}`} className={styles.recordCard}>
+                                        <div className={styles.recordNumber}>{index + 1}</div>
+                                        <div className={styles.recordInfo}>
+                                            <p>
+                                                <strong>{record.userName}</strong> | 
+                                                <strong>Reg:</strong> {record.regNo} | 
+                                                <strong>Ministry:</strong> {record.ministry} | 
+                                                <strong>Year:</strong> {record.year} | 
+                                                <strong>Phone:</strong> {record.phoneNumber || 'Not provided'} | 
+                                                <strong>Signed:</strong> {new Date(record.signedAt).toLocaleString()}
+                                            </p>
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
                     ) : (
                         <div className={styles.noRecords}>

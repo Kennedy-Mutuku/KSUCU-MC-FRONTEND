@@ -890,6 +890,37 @@ body{
     color: #8b0061;
 }
 
+.boardsCategoryDiv:active {
+    background: rgba(255, 255, 255, 0.2) !important;
+}
+
+.boardsCategoryDiv:active .category-title,
+.boardsCategoryDiv:active h3,
+.boardsCategoryDiv:focus .category-title,
+.boardsCategoryDiv:focus h3,
+.boardsCategoryDiv.active .category-title,
+.boardsCategoryDiv.active h3 {
+    color: #ffffff !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Override any other color rules during click - HIGHEST PRIORITY */
+.landingPage .main .boardsCategoryDiv:active .category-title,
+.landingPage .main .boardsCategoryDiv:focus .category-title,
+.landingPage .main .boardsCategoryDiv:active h3,
+.landingPage .main .boardsCategoryDiv:focus h3,
+.landingPage .boardsCategoryDiv:active .category-title,
+.landingPage .boardsCategoryDiv:focus .category-title,
+.landingPage .boardsCategoryDiv:active h3,
+.landingPage .boardsCategoryDiv:focus h3,
+div.boardsCategoryDiv:active .category-title,
+div.boardsCategoryDiv:focus .category-title,
+div.boardsCategoryDiv:active h3,
+div.boardsCategoryDiv:focus h3 {
+    color: #ffffff !important;
+    background: transparent !important;
+}
+
 /* Mobile responsive adjustments */
 @media (max-width: 768px) {
     .category-list {
