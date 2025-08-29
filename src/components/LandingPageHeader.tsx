@@ -28,11 +28,13 @@ const LandingPageHeader = () => {
   const [error, setError] = useState('');
   const [generalLoading, setgeneralLoading] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   // const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
   const navigate = useNavigate();
 
   const handleNavToggle = () => {
     document.body.classList.toggle(styles['nav-open']);
+    setIsMobileNavOpen(!isMobileNavOpen);
   };
 
   const images = [
@@ -242,9 +244,6 @@ const LandingPageHeader = () => {
     }
   }
 
-  function handleTalkToUs() {
-    navigate('/feedBackForm');
-  }
 
   function handleProtectedLink(path: string, linkName: string) {
     if(userData){
@@ -260,6 +259,18 @@ const LandingPageHeader = () => {
 
   function handlePublicLink(path: string) {
     navigate(path);
+  }
+
+  function handleAboutUsClick() {
+    const aboutSection = document.getElementById('about');
+    if (aboutSection) {
+      aboutSection.scrollIntoView({ behavior: 'smooth' });
+    }
+    // Close any open menus
+    setIsDropdownOpen(false);
+    setIsMobileNavOpen(false);
+    document.body.classList.remove(styles['nav-open']);
+    document.body.classList.remove('quick-links-open');
   }
 
   return (
@@ -287,9 +298,9 @@ const LandingPageHeader = () => {
               {/* Desktop icons */}
               <div className={styles['nav-one--hidden']}>
                 <div className={styles['About-btn']}>
-                  <Link to="/#about" className={styles['nav-link']}>
+                  <button onClick={handleAboutUsClick} className={styles['nav-link']} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'inherit', fontSize: 'inherit', fontFamily: 'inherit', textDecoration: 'none' }}>
                     About us
-                  </Link>
+                  </button>
                 </div>
 
                 <div className={styles['Quick-links-btn']} onClick={toggleDropdown} >
@@ -340,15 +351,33 @@ const LandingPageHeader = () => {
                 <Link to="/signIn" className={styles['Login-btn']}>Log in</Link>
               }
               <div className={styles['About-btn']}>
-                <Link to="/#about" className={styles['nav-link']}>
+                <button onClick={handleAboutUsClick} className={styles['nav-link']} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'inherit', fontSize: 'inherit', fontFamily: 'inherit', textDecoration: 'none' }}>
                   About us
-                </Link>
+                </button>
               </div>
             </div>
           </div>
 
-          <div className={styles['main-quick--links']}>
-            {error && <div className={styles.error}>{error}</div>}
+          {(isDropdownOpen || isMobileNavOpen) && (
+            <div className={styles['main-quick--links']} style={{
+              position: 'fixed',
+              top: '80px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              zIndex: 1000,
+              backgroundColor: 'white',
+              borderRadius: '15px',
+              padding: '30px',
+              boxShadow: '0 10px 40px rgba(0, 0, 0, 0.2)',
+              minWidth: '350px',
+              maxWidth: '450px',
+              maxHeight: '500px',
+              overflow: 'visible',
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr',
+              gap: '10px'
+            }}>
+            {error && <div className={styles.error} style={{ textAlign: 'center', position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 1001, backgroundColor: '#ff4444', color: 'white', padding: '15px 25px', borderRadius: '8px', boxShadow: '0 4px 20px rgba(0,0,0,0.3)' }}>{error}</div>}
             <div className={styles['quick-access-header']} style={{
               textAlign: 'center', 
               marginBottom: '15px', 
@@ -372,9 +401,6 @@ const LandingPageHeader = () => {
                 fontWeight: '400'
               }}>Services & resources</p>
             </div>
-            <div onClick={handleTalkToUs} className={styles['quick-item--link']}>
-              Talk to Us
-            </div>
             <a onClick={navigateMedia} className={styles['quick-item--link']}>
               Media
             </a>
@@ -397,17 +423,15 @@ const LandingPageHeader = () => {
             >
               Constitution
             </a>
-            <div onClick={() => handlePublicLink('/ministries')} className={styles['quick-item--link']}>
-              Ministries
-            </div>
-            <div onClick={() => handlePublicLink('/#about')} className={styles['quick-item--link']}>
+            <div onClick={handleAboutUsClick} className={styles['quick-item--link']}>
               About Us
             </div>
             { userData && <div onClick={handleLogout} className={styles['quick-item--link']} style={{borderTop: '1px solid rgba(255,255,255,0.12)', marginTop: '6px', paddingTop: '8px', cursor: 'pointer', gridColumn: '1 / -1'}}>Log out</div> }
-          </div>
+            </div>
+          )}
         </div>
 
-        {error && <div className={styles.error}>{error}</div>}
+        {error && <div className={styles.error} style={{ textAlign: 'center', position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 1001, backgroundColor: '#ff4444', color: 'white', padding: '15px 25px', borderRadius: '8px', boxShadow: '0 4px 20px rgba(0,0,0,0.3)' }}>{error}</div>}
         
         <div className={`${styles['']} ${styles['container-vidTitle']}`}>
           <div className={styles['intro-video--header']}>

@@ -206,8 +206,10 @@ const SignIn: React.FC = () => {
                 </div>
             )}
             <div className={styles['container']}>
-                <Link to={"/"} className={styles.logo_div}>
-                    <div className={styles['logo_signUp']}><img src={cuLogo} alt="CU logo" /></div>
+                <Link to={"/"} className={styles.logo_div} style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+                    <div className={styles['logo_signUp']} style={{ textAlign: 'center' }}>
+                        <img src={cuLogo} alt="CU logo" style={{ maxWidth: '150px', height: 'auto' }} />
+                    </div>
                 </Link>
                 
                 {error && <div className={styles.error}>{error}</div>}

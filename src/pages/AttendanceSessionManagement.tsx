@@ -17,13 +17,13 @@ import {
 
 interface AttendanceRecord {
     _id: string;
-    fullName: string;
-    registrationNumber: string;
-    course: string;
-    yearOfStudy: string;
+    userName: string;
+    regNo: string;
+    year: number;
     phoneNumber: string;
     signedAt: string;
     signature: string;
+    ministry: string;
 }
 
 interface AttendanceSession {
@@ -50,44 +50,87 @@ const AttendanceSessionManagement: React.FC = () => {
         if (role) {
             setLeadershipRole(decodeURIComponent(role));
             loadSessionData(role);
+            
+            // Set up periodic refresh for attendance records every 5 seconds
+            const refreshInterval = setInterval(() => {
+                loadSessionData(role);
+            }, 5000);
+            
+            return () => clearInterval(refreshInterval);
         }
     }, []);
 
     const loadSessionData = async (role: string) => {
         setLoading(true);
         try {
-            // In a real app, this would be an API call
-            // For now, using localStorage simulation
-            const sessionData = localStorage.getItem(`attendance-session-${role}`);
-            const recordsData = localStorage.getItem(`attendance-records-${role}`);
-            
-            if (sessionData) {
-                const session = JSON.parse(sessionData);
-                setAttendanceSession(session);
-                console.log('Loaded session:', session);
-            }
-            if (recordsData) {
-                const records = JSON.parse(recordsData);
-                setAttendanceRecords(records);
-                console.log('Loaded records:', records);
-            }
-            
-            // Check for session conflicts with other leaders
-            const globalSession = localStorage.getItem('global-active-session');
-            if (globalSession) {
-                const globalSessionData = JSON.parse(globalSession);
-                setGlobalActiveSession(globalSessionData);
-                if (globalSessionData.isActive && globalSessionData.leadershipRole !== role) {
-                    setMessage(`⚠️ Notice: ${globalSessionData.leadershipRole} currently has an active session. Only one leader can manage attendance at a time.`);
-                    setTimeout(() => setMessage(''), 10000);
-                } else if (globalSessionData.leadershipRole === role && globalSessionData.isActive) {
-                    console.log('Global session active for', role);
+            // Check backend for active session status
+            const response = await fetch(getApiUrl('attendanceSessionStatus'), {
+                method: 'GET',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
                 }
-            } else {
-                setGlobalActiveSession(null);
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                if (data.session) {
+                    console.log('Active session found:', data.session);
+                    setAttendanceSession(data.session);
+                    setGlobalActiveSession({
+                        leadershipRole: data.session.leadershipRole,
+                        isActive: data.session.isActive,
+                        startTime: data.session.startTime,
+                        sessionId: data.session._id
+                    });
+                    
+                    // Load attendance records if session exists
+                    if (data.session._id) {
+                        try {
+                            const recordsResponse = await fetch(`${getApiUrl('attendanceRecords')}/${data.session._id}`, {
+                                method: 'GET',
+                                credentials: 'include',
+                            });
+                            if (recordsResponse.ok) {
+                                const recordsData = await recordsResponse.json();
+                                const records = recordsData.records || [];
+                                console.log(`Loaded ${records.length} attendance records for session ${data.session._id}`);
+                                setAttendanceRecords(records);
+                                
+                                // Update the session attendance count with actual records count
+                                if (data.session.isActive) {
+                                    setAttendanceSession({
+                                        ...data.session,
+                                        totalAttendees: records.length
+                                    });
+                                }
+                            } else {
+                                console.error('Failed to load attendance records:', recordsResponse.statusText);
+                                setAttendanceRecords([]);
+                            }
+                        } catch (error) {
+                            console.error('Error loading attendance records:', error);
+                            setAttendanceRecords([]);
+                        }
+                    } else {
+                        setAttendanceRecords([]);
+                    }
+                    
+                    if (data.session.leadershipRole !== role && data.session.isActive) {
+                        setMessage(`⚠️ Notice: ${data.session.leadershipRole} currently has an active session. Only one leader can manage attendance at a time.`);
+                        setTimeout(() => setMessage(''), 10000);
+                    }
+                } else {
+                    console.log('No active session');
+                    setAttendanceSession(null);
+                    setGlobalActiveSession(null);
+                    setAttendanceRecords([]);
+                }
             }
         } catch (error) {
             console.error('Error loading session data:', error);
+            setMessage('⚠️ Unable to connect to server. Session management may be limited.');
+            setTimeout(() => setMessage(''), 5000);
         } finally {
             setLoading(false);
         }
@@ -201,8 +244,8 @@ const AttendanceSessionManagement: React.FC = () => {
                     throw new Error('Backend API failed');
                 }
             } catch (backendError) {
-                console.log('❌ Backend API required for cross-device sessions');
-                setMessage('❌ Cannot close session - Backend API required for cross-device functionality');
+                console.error('❌ Error closing session:', backendError);
+                setMessage('❌ Error closing session. Please check your connection.');
                 setTimeout(() => setMessage(''), 5000);
             }
         } catch (error) {
@@ -425,9 +468,9 @@ const AttendanceSessionManagement: React.FC = () => {
                         ${attendanceRecords.map((record, index) => `
                             <tr>
                                 <td class="number-col">${index + 1}</td>
-                                <td class="name-col">${record.fullName}</td>
-                                <td>${record.registrationNumber}</td>
-                                <td>${record.yearOfStudy}</td>
+                                <td class="name-col">${record.userName}</td>
+                                <td>${record.regNo}</td>
+                                <td>${record.year}</td>
                                 <td>${record.phoneNumber || 'N/A'}</td>
                                 <td>${new Date(record.signedAt).toLocaleString('en-US', {
                                     month: 'short', 
@@ -631,10 +674,10 @@ const AttendanceSessionManagement: React.FC = () => {
                                     <div className={styles.recordNumber}>{index + 1}</div>
                                     <div className={styles.recordInfo}>
                                         <p>
-                                            <strong>{record.fullName}</strong> | 
-                                            <strong>Reg:</strong> {record.registrationNumber} | 
-                                            <strong>Course:</strong> {record.course} | 
-                                            <strong>Year:</strong> {record.yearOfStudy} | 
+                                            <strong>{record.userName}</strong> | 
+                                            <strong>Reg:</strong> {record.regNo} | 
+                                            <strong>Ministry:</strong> {record.ministry} | 
+                                            <strong>Year:</strong> {record.year} | 
                                             <strong>Phone:</strong> {record.phoneNumber || 'Not provided'} | 
                                             <strong>Signed:</strong> {new Date(record.signedAt).toLocaleString()}
                                         </p>

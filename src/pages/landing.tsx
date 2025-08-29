@@ -16,7 +16,7 @@ import missionImg from '../assets/ladies.jpg'
 import valuesImg from '../assets/amptheatre.jpg'
 import prayerPNG from '../assets/RIVET.jpg'
 import { faUserLock } from '@fortawesome/free-solid-svg-icons';
-import { Heart, Camera, BookOpen, Library, DollarSign, GraduationCap, MessageCircle } from "lucide-react";
+import { Heart, Camera, BookOpen, Library, DollarSign, GraduationCap } from "lucide-react";
 import LandingPageHeader from '../components/LandingPageHeader';
 
 
@@ -388,19 +388,15 @@ const LandingPage = () => {
 
       // navigate('/media')
 
-      setError('Login required 😔');
+      setError('Please log in to access Media 😔');
 
       setTimeout(() => {
         setError('')
-      }, 5000);
+        navigate('/signIn');
+      }, 2000);
     }
   }
 
-  function navigateToTalkToUs() {
-    // For now, we'll navigate to a contact/message page
-    // This can be updated later when the messaging functionality is implemented
-    navigate('/contact-us');
-  }
 
   // The commission dialog content will be handled in the main return below
   const renderCommissionDialog = () => {
@@ -1201,14 +1197,6 @@ const LandingPage = () => {
         <div className={styles['quick-links-sidebar']}>
           <div 
             className={styles['quick-link-item']}
-            data-text="Talk to Us"
-            onClick={(e) => handleQuickLinkClick(navigateToTalkToUs, e)}
-          >
-            <MessageCircle className={styles.icon} />
-          </div>
-
-          <div 
-            className={styles['quick-link-item']}
             data-text="Media"
             onClick={(e) => handleQuickLinkClick(navigateMedia, e)}
           >
@@ -1393,6 +1381,25 @@ const LandingPage = () => {
             </button>
           </div>
         </div>
+      </div>
+    )}
+
+    {/* Error Display */}
+    {error && (
+      <div style={{ 
+        position: 'fixed', 
+        top: '50%', 
+        left: '50%', 
+        transform: 'translate(-50%, -50%)', 
+        zIndex: 1001, 
+        backgroundColor: '#ff4444', 
+        color: 'white', 
+        padding: '15px 25px', 
+        borderRadius: '8px', 
+        boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
+        textAlign: 'center' 
+      }}>
+        {error}
       </div>
     )}
   </React.Fragment>

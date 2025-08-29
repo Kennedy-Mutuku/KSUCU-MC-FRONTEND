@@ -5,18 +5,9 @@ import cuLogo from '../assets/cuLogoUAR.png';
 import { Link, useNavigate } from 'react-router-dom';
 import loadingAnime from '../assets/Animation - 1716747954931.gif';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faHome } from '@fortawesome/free-solid-svg-icons';
 import { faUser, faUserLock } from '@fortawesome/free-solid-svg-icons';
 
-interface UniversalHeaderProps {
-  showBackButton?: boolean;
-  customBackPath?: string;
-}
-
-const UniversalHeader: React.FC<UniversalHeaderProps> = ({ 
-  showBackButton = true, 
-  customBackPath 
-}) => {
+const UniversalHeader: React.FC = () => {
   const [userData, setUserData] = useState<{ username: string; email: string; yos: number; phone: string; et: string; ministry: string } | null>(null);
   const [error, setError] = useState('');
   const [generalLoading, setgeneralLoading] = useState(false);
@@ -132,17 +123,9 @@ const UniversalHeader: React.FC<UniversalHeaderProps> = ({
     navigate('/signIn')
   }
 
-  const handleBackClick = () => {
-    if (customBackPath) {
-      navigate(customBackPath);
-    } else {
-      navigate(-1); // Go back in history
-    }
-  };
-
   const handleHomeClick = () => {
     navigate('/');
-  };
+  }
 
   return (
     <>
@@ -175,54 +158,13 @@ const UniversalHeader: React.FC<UniversalHeaderProps> = ({
                 <span className={styles['short-title']}>Kisii Uni CU</span>
               </p>
 
-              {/* Desktop navigation */}
+              {/* Desktop navigation - simplified without Back/Home buttons */}
               <div className={styles['nav-one--hidden']}>
                 <div className={styles['About-btn']}>
                   <Link to="/#about" className={styles['nav-link']}>
                     About us
                   </Link>
                 </div>
-
-                {showBackButton && (
-                  <div className={styles['Quick-links-btn']} style={{ display: 'flex', gap: '10px' }}>
-                    <button 
-                      onClick={handleBackClick}
-                      className={styles['nav-link-quick-link']}
-                      style={{ 
-                        background: 'none', 
-                        border: 'none', 
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '5px',
-                        color: '#ffffff',
-                        fontSize: 'inherit',
-                        fontFamily: 'inherit'
-                      }}
-                    >
-                      <FontAwesomeIcon icon={faArrowLeft} />
-                      Back
-                    </button>
-                    <button 
-                      onClick={handleHomeClick}
-                      className={styles['nav-link-quick-link']}
-                      style={{ 
-                        background: 'none', 
-                        border: 'none', 
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '5px',
-                        color: '#ffffff',
-                        fontSize: 'inherit',
-                        fontFamily: 'inherit'
-                      }}
-                    >
-                      <FontAwesomeIcon icon={faHome} />
-                      Home
-                    </button>
-                  </div>
-                )}
 
                 <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', minWidth: '80px', minHeight: '50px', justifyContent: 'center'}} onClick={userData ? handleRedirectToUserInfo : handleRedirectToLogin}>
                   <FontAwesomeIcon className={`${styles['user-icon']} `} icon={userData ? faUser : faUserLock} />
@@ -269,47 +211,9 @@ const UniversalHeader: React.FC<UniversalHeaderProps> = ({
             </div>
           </div>
 
-          {/* Mobile Navigation Links */}
+          {/* Mobile Navigation Links - simplified without Back/Home */}
           <div className={styles['main-quick--links']}>
             {error && <div className={styles.error}>{error}</div>}
-            
-            {showBackButton && (
-              <>
-                <div className={styles['quick-access-header']} style={{
-                  textAlign: 'center', 
-                  marginBottom: '15px', 
-                  padding: '0 10px',
-                  borderBottom: '1px solid rgba(115, 0, 81, 0.08)',
-                  paddingBottom: '10px',
-                  width: '100%'
-                }}>
-                  <h3 className={styles['quick-access-title']} style={{
-                    margin: '0',
-                    color: '#730051',
-                    fontSize: '1rem',
-                    fontWeight: '700',
-                    letterSpacing: '0.4px',
-                    textTransform: 'uppercase'
-                  }}>Navigation</h3>
-                  <p className={styles['quick-access-subtitle']} style={{
-                    margin: '2px 0 0 0',
-                    color: '#666',
-                    fontSize: '0.75rem',
-                    fontWeight: '400'
-                  }}>Go back or home</p>
-                </div>
-                
-                <div onClick={handleBackClick} className={styles['quick-item--link']} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <FontAwesomeIcon icon={faArrowLeft} />
-                  Back
-                </div>
-                
-                <div onClick={handleHomeClick} className={styles['quick-item--link']} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <FontAwesomeIcon icon={faHome} />
-                  Home
-                </div>
-              </>
-            )}
             
             { userData && <div onClick={handleLogout} className={styles['quick-item--link']} style={{borderTop: '1px solid rgba(255,255,255,0.12)', marginTop: '6px', paddingTop: '8px', cursor: 'pointer', gridColumn: '1 / -1'}}>Log out</div> }
           </div>

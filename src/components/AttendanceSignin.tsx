@@ -3,6 +3,7 @@ import styles from '../styles/attendanceSignin.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckCircle, faExclamationTriangle, faClock, faUsers } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
+import { getApiUrl } from '../config/environment';
 
 interface AttendanceSession {
     _id: string;
@@ -29,37 +30,13 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
     useEffect(() => {
         checkActiveSession();
         
-        // Check for session updates every 10 seconds for better responsiveness
+        // Check for session updates every 10 seconds for cross-device sync
         const interval = setInterval(() => {
             checkActiveSession();
         }, 10000);
 
-        // Listen for cross-tab session updates
-        const handleStorageChange = (event: StorageEvent) => {
-            if (event.key === 'attendanceSessionUpdate') {
-                try {
-                    const updateData = JSON.parse(event.newValue || '{}');
-                    if (updateData.ministry === ministry) {
-                        console.log('Session update detected from another tab:', updateData);
-                        setSession(updateData.session);
-                        
-                        // Update localStorage for this ministry
-                        localStorage.setItem(`attendanceSession_${ministry}`, JSON.stringify(updateData.session));
-                        
-                        // Refresh attendance records
-                        checkActiveSession();
-                    }
-                } catch (error) {
-                    console.error('Error parsing session update:', error);
-                }
-            }
-        };
-
-        window.addEventListener('storage', handleStorageChange);
-
         return () => {
             clearInterval(interval);
-            window.removeEventListener('storage', handleStorageChange);
         };
     }, [ministry]);
 
@@ -84,90 +61,46 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
 
     const checkActiveSession = async () => {
         try {
-            console.log('Checking session for ministry:', ministry);
+            console.log('Checking for active attendance session...');
             
-            // First check the backend API for active sessions
-            try {
-                const sessionResponse = await axios.get(
-                    `http://localhost:3000/attendance/session/${ministry}`,
-                    { withCredentials: true }
-                );
+            // Check the backend API for active sessions (cross-device sync)
+            const sessionResponse = await axios.get(
+                getApiUrl('attendanceSessionStatus'),
+                { withCredentials: true }
+            );
+            
+            if (sessionResponse.data.session) {
+                const sessionData = sessionResponse.data.session;
+                console.log('Active session found:', sessionData);
+                setSession(sessionData);
                 
-                if (sessionResponse.data.session) {
-                    const sessionData = sessionResponse.data.session;
-                    console.log('Session data from API:', sessionData);
-                    setSession(sessionData);
-                    
-                    // Store in localStorage for offline access
-                    localStorage.setItem(`attendanceSession_${ministry}`, JSON.stringify(sessionData));
-                    
-                    // Load attendance records from API
-                    try {
-                        const recordsResponse = await axios.get(
-                            `http://localhost:3000/attendance/records/${sessionData._id}`,
-                            { withCredentials: true }
-                        );
-                        const sessionAttendance = recordsResponse.data.records || [];
-                        setDeviceAttendance(sessionAttendance);
-                        
-                        // No automatic sign detection without login
-                        setSigned(false);
-                    } catch (recordsError) {
-                        console.log('No attendance records found or error loading records');
-                        setDeviceAttendance([]);
-                    }
-                } else {
-                    console.log('No active session found from API');
-                    setSession(null);
-                    setSigned(false);
-                    setDeviceAttendance([]);
-                    localStorage.removeItem(`attendanceSession_${ministry}`);
-                }
-            } catch (apiError: any) {
-                console.log('API error, checking localStorage as fallback:', apiError.message);
-                
-                // Fallback to localStorage if API fails
-                const storedSession = localStorage.getItem(`attendanceSession_${ministry}`);
-                
-                if (storedSession) {
-                    const sessionData = JSON.parse(storedSession);
-                    console.log('Using localStorage session data:', sessionData);
-                    
-                    // Verify if session is still valid (not too old)
-                    const sessionAge = Date.now() - new Date(sessionData.startTime).getTime();
-                    const maxAge = 24 * 60 * 60 * 1000; // 24 hours
-                    
-                    if (sessionAge < maxAge) {
-                        setSession(sessionData);
-                        
-                        // Load device attendance records from localStorage
-                        const storedAttendance = JSON.parse(localStorage.getItem('ministryAttendance') || '[]');
-                        const sessionAttendance = storedAttendance.filter((record: any) => 
-                            record.ministry === ministry && record.sessionId === sessionData._id
-                        );
-                        setDeviceAttendance(sessionAttendance);
-                        
-                        // No automatic sign detection without login
-                        setSigned(false);
-                    } else {
-                        console.log('Session too old, removing from localStorage');
-                        localStorage.removeItem(`attendanceSession_${ministry}`);
-                        setSession(null);
-                        setSigned(false);
-                        setDeviceAttendance([]);
-                    }
-                } else {
-                    console.log('No session found in localStorage either');
-                    setSession(null);
-                    setSigned(false);
+                // Load attendance records from API if session exists
+                try {
+                    const recordsResponse = await axios.get(
+                        `${getApiUrl('attendanceRecords')}/${sessionData._id}`,
+                        { withCredentials: true }
+                    );
+                    const sessionAttendance = recordsResponse.data.records || [];
+                    setDeviceAttendance(sessionAttendance);
+                    setSigned(false); // User needs to sign in
+                } catch (recordsError) {
+                    console.log('No attendance records found');
                     setDeviceAttendance([]);
                 }
+            } else {
+                console.log('No active session found');
+                setSession(null);
+                setSigned(false);
+                setDeviceAttendance([]);
             }
-        } catch (error) {
-            console.error('Error checking session:', error);
+        } catch (error: any) {
+            console.error('Error checking session:', error.message);
+            // If API fails, show no session (no localStorage fallback for true cross-device sync)
             setSession(null);
             setSigned(false);
             setDeviceAttendance([]);
+            setError('Unable to connect to attendance server. Please check your connection.');
+            setTimeout(() => setError(''), 5000);
         }
     };
 
@@ -202,80 +135,31 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
         setSuccess('');
 
         try {
-            // First try to sign attendance via API
-            try {
-                const attendanceData = {
-                    name: attendanceFormData.name.trim(),
-                    regNo: attendanceFormData.regNo.trim().toUpperCase(),
-                    year: parseInt(attendanceFormData.year),
-                    phoneNumber: attendanceFormData.phoneNumber.trim(),
-                    signature: attendanceFormData.signature.trim(),
-                    ministry: ministry,
-                    sessionId: session._id
-                };
+            // Sign attendance via backend API (anonymous)
+            const attendanceData = {
+                name: attendanceFormData.name.trim(),
+                regNo: attendanceFormData.regNo.trim().toUpperCase(),
+                year: parseInt(attendanceFormData.year),
+                phoneNumber: attendanceFormData.phoneNumber.trim(),
+                signature: attendanceFormData.signature.trim(),
+                ministry: ministry,
+                sessionId: session._id
+            };
 
-                const response = await axios.post(
-                    `http://localhost:3000/attendance/sign`,
-                    attendanceData,
-                    { withCredentials: true }
-                );
+            const response = await axios.post(
+                getApiUrl('attendanceSignAnonymous'),
+                attendanceData,
+                { withCredentials: true }
+            );
 
-                console.log('Attendance signed via API:', response.data);
-                
-                // Update local state
-                const newRecord = response.data.record || {
-                    id: Date.now().toString(),
-                    ...attendanceData,
-                    timestamp: new Date().toISOString()
-                };
-                
-                setDeviceAttendance(prev => [...prev, newRecord]);
-                
-                // Mark as signed for this session
-                setSigned(true);
-                
-                // Also store in localStorage as backup
-                const storedAttendance = JSON.parse(localStorage.getItem('ministryAttendance') || '[]');
-                storedAttendance.push(newRecord);
-                localStorage.setItem('ministryAttendance', JSON.stringify(storedAttendance));
-                
-            } catch (apiError: any) {
-                console.log('API error, using localStorage fallback:', apiError.message);
-                
-                // Fallback to localStorage if API fails
-                const storedAttendance = JSON.parse(localStorage.getItem('ministryAttendance') || '[]');
-                const existingRecord = storedAttendance.find((record: any) => 
-                    record.regNo === attendanceFormData.regNo.trim().toUpperCase() && 
-                    record.ministry === ministry && 
-                    record.sessionId === session._id
-                );
-
-                if (existingRecord) {
-                    setError(`Registration number ${attendanceFormData.regNo} has already signed attendance for this session`);
-                    setTimeout(() => setError(''), 5000);
-                    setLoading(false);
-                    return;
-                }
-
-                // Create attendance record for localStorage
-                const attendanceRecord = {
-                    id: Date.now().toString(),
-                    name: attendanceFormData.name.trim(),
-                    regNo: attendanceFormData.regNo.trim().toUpperCase(),
-                    year: parseInt(attendanceFormData.year),
-                    phoneNumber: attendanceFormData.phoneNumber.trim(),
-                    signature: attendanceFormData.signature.trim(),
-                    ministry: ministry,
-                    sessionId: session._id,
-                    timestamp: new Date().toISOString()
-                };
-
-                storedAttendance.push(attendanceRecord);
-                localStorage.setItem('ministryAttendance', JSON.stringify(storedAttendance));
-                setDeviceAttendance(prev => [...prev, attendanceRecord]);
-                
-                setSigned(true);
-            }
+            console.log('✅ Attendance signed successfully:', response.data);
+            
+            // Update local state with the response
+            const newRecord = response.data.record;
+            setDeviceAttendance(prev => [...prev, newRecord]);
+            
+            // Mark as signed for this session
+            setSigned(true);
 
             // Clear form after successful submission
             setAttendanceFormData({ name: '', regNo: '', year: '', phoneNumber: '', signature: '' });
