@@ -221,6 +221,12 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
                         errorMessage.includes(attendanceFormData.regNo.trim().toUpperCase())) {
                         setError(`❌ Registration Number Already Used! This registration number has already been used for attendance in this session. Please use a different registration number.`);
                         setTimeout(() => setError(''), 6000);
+                        
+                        // Clear only the registration number field to allow correction
+                        setAttendanceFormData(prev => ({
+                            ...prev,
+                            regNo: ''
+                        }));
                         return;
                     }
                 } else {

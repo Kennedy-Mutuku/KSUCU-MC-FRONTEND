@@ -246,6 +246,7 @@ const LandingPage = () => {
       return;
     }
 
+    setgeneralLoading(true);
     try {
       // First get the latest active session to ensure we have the correct session ID
       console.log('🔄 Getting latest active session before submitting attendance...');
@@ -339,6 +340,12 @@ const LandingPage = () => {
               errorMessage.toLowerCase().includes('already used') ||
               errorMessage.includes(attendanceData.registrationNumber.trim().toUpperCase())) {
             alert(`❌ Registration Number Already Used! This registration number has already been used for attendance in this session. Please use a different registration number or check if this person has already signed attendance.`);
+            
+            // Clear only the registration number field to allow correction
+            setAttendanceData(prev => ({
+              ...prev, 
+              registrationNumber: ''
+            }));
             return;
           }
         } else {
@@ -355,6 +362,8 @@ const LandingPage = () => {
       }
       
       alert(`❌ ${errorMessage}`);
+    } finally {
+      setgeneralLoading(false);
     }
   };
 
@@ -792,12 +801,14 @@ const LandingPage = () => {
                   placeholder="Enter your full name" 
                   value={attendanceData.fullName}
                   onChange={(e) => setAttendanceData(prev => ({...prev, fullName: e.target.value}))}
+                  disabled={generalLoading}
                   required
                   style={{
                     padding: '12px',
                     border: '2px solid #ddd',
                     borderRadius: '8px',
-                    fontSize: '16px'
+                    fontSize: '16px',
+                    opacity: generalLoading ? 0.7 : 1
                   }}
                 />
               </div>
@@ -809,12 +820,14 @@ const LandingPage = () => {
                   placeholder="e.g., C025-01-1234/2023" 
                   value={attendanceData.registrationNumber}
                   onChange={(e) => setAttendanceData(prev => ({...prev, registrationNumber: e.target.value}))}
+                  disabled={generalLoading}
                   required
                   style={{
                     padding: '12px',
                     border: '2px solid #ddd',
                     borderRadius: '8px',
-                    fontSize: '16px'
+                    fontSize: '16px',
+                    opacity: generalLoading ? 0.7 : 1
                   }}
                 />
               </div>
@@ -826,12 +839,14 @@ const LandingPage = () => {
                   placeholder="e.g., Computer Science" 
                   value={attendanceData.course}
                   onChange={(e) => setAttendanceData(prev => ({...prev, course: e.target.value}))}
+                  disabled={generalLoading}
                   required
                   style={{
                     padding: '12px',
                     border: '2px solid #ddd',
                     borderRadius: '8px',
-                    fontSize: '16px'
+                    fontSize: '16px',
+                    opacity: generalLoading ? 0.7 : 1
                   }}
                 />
               </div>
@@ -995,19 +1010,21 @@ const LandingPage = () => {
               <div style={{display: 'flex', gap: '10px', marginTop: '20px'}}>
                 <button 
                   type="submit"
+                  disabled={generalLoading}
                   style={{
                     flex: '1',
                     padding: '12px 20px',
-                    background: '#00c6ff',
+                    background: generalLoading ? '#ccc' : '#00c6ff',
                     color: 'white',
                     border: 'none',
                     borderRadius: '8px',
                     fontSize: '16px',
                     fontWeight: '600',
-                    cursor: 'pointer'
+                    cursor: generalLoading ? 'not-allowed' : 'pointer',
+                    opacity: generalLoading ? 0.7 : 1
                   }}
                 >
-                  Submit Attendance
+                  {generalLoading ? 'Submitting...' : 'Submit Attendance'}
                 </button>
                 <button 
                   type="button"
