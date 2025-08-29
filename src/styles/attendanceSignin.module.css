@@ -138,6 +138,8 @@
     box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    width: 100%;
+    margin-top: 20px;
 }
 
 .signButton:hover:not(:disabled) {
@@ -150,10 +152,18 @@
     transform: translateY(0);
 }
 
-.signButton:disabled {
+.signButton:disabled, .signButton.disabled {
     opacity: 0.6;
     cursor: not-allowed;
     transform: none;
+    background: #ccc !important;
+}
+
+.multiUserButton:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    background: #ccc !important;
 }
 
 .loading {
@@ -236,6 +246,38 @@
     background: linear-gradient(45deg, #0099cc, #007aa3);
 }
 
+.attendanceForm {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 25px;
+    margin-top: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.formTitle {
+    margin: 0 0 20px 0;
+    color: #ffffff;
+    font-size: 1.2rem;
+    text-align: center;
+    font-weight: 600;
+}
+
+.formLabel {
+    display: block;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.formNote {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    margin-top: 15px;
+    font-style: italic;
+}
+
 .multiUserForm {
     background: rgba(255, 255, 255, 0.1);
     border-radius: 15px;
@@ -257,10 +299,10 @@
 
 .formInput, .formSelect {
     width: 100%;
-    padding: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.1);
+    padding: 12px 15px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.15);
     color: white;
     font-size: 1rem;
     transition: all 0.3s ease;
@@ -268,7 +310,14 @@
 }
 
 .formInput::placeholder {
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(255, 255, 255, 0.5);
+    font-style: italic;
+}
+
+.formInput:disabled, .formSelect:disabled {
+    opacity: 0.6;
+    background: rgba(255, 255, 255, 0.05);
+    cursor: not-allowed;
 }
 
 .formInput:focus, .formSelect:focus {
@@ -308,6 +357,7 @@
     opacity: 0.6;
     cursor: not-allowed;
     transform: none;
+    background: #ccc !important;
 }
 
 /* Animations */
@@ -384,6 +434,14 @@
     .multiUserButton {
         padding: 10px 20px;
         font-size: 0.9rem;
+    }
+    
+    .attendanceForm {
+        padding: 20px;
+    }
+    
+    .formTitle {
+        font-size: 1.1rem;
     }
     
     .multiUserForm {

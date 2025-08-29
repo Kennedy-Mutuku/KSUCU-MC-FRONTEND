@@ -50,6 +50,7 @@ const LandingPage = () => {
     sessionId: string;
   } | null>(null);
   const [showAttendanceForm, setShowAttendanceForm] = useState(false);
+  const [showDuplicateOverlay, setShowDuplicateOverlay] = useState(false);
   const [attendanceData, setAttendanceData] = useState({
     fullName: '',
     registrationNumber: '',
@@ -208,14 +209,14 @@ const LandingPage = () => {
   const handleAttendanceSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!activeSession || !userData) {
-      alert('Please sign in to submit attendance');
+    if (!activeSession) {
+      alert('No active attendance session found');
       return;
     }
 
     if (!attendanceData.fullName || !attendanceData.registrationNumber || 
-        !attendanceData.course || !attendanceData.yearOfStudy || !attendanceData.phoneNumber) {
-      alert('Please fill in all required fields');
+        !attendanceData.course || !attendanceData.yearOfStudy || !attendanceData.phoneNumber || !attendanceData.signature) {
+      alert('Please fill in all required fields including your signature');
       return;
     }
 
@@ -229,7 +230,6 @@ const LandingPage = () => {
         phoneNumber: attendanceData.phoneNumber,
         signedAt: new Date().toISOString(),
         signature: attendanceData.signature || 'Digital signature pending',
-        userId: userData.username,
         sessionId: activeSession.sessionId
       };
 
@@ -243,7 +243,7 @@ const LandingPage = () => {
       );
       
       if (alreadySigned) {
-        alert('You have already signed, thank you');
+        setShowDuplicateOverlay(true);
         return;
       }
 
@@ -272,17 +272,19 @@ const LandingPage = () => {
   };
 
   const handleSignAttendance = () => {
-    if (!userData) {
-      alert('Please sign in first to sign attendance');
-      navigate('/signIn');
-      return;
-    }
+    console.log('handleSignAttendance called');
+    console.log('Setting showAttendanceForm to true');
     setShowAttendanceForm(true);
-    // Pre-fill form with user data if available
-    setAttendanceData(prev => ({
-      ...prev,
-      fullName: userData.username || ''
-    }));
+    // Reset form data to empty
+    setAttendanceData({
+      fullName: '',
+      registrationNumber: '',
+      course: '',
+      yearOfStudy: '',
+      phoneNumber: '',
+      signature: ''
+    });
+    console.log('Form data reset');
   };
 
   const handleLogout = async () => {
@@ -634,10 +636,11 @@ const LandingPage = () => {
               </div>
             </div>
           ) : (
-            <div className={`${styles.sessionStatus} ${styles.closed}`}>
-              <span className={styles.sessionStatusIcon}>🔒</span>
+            <div className={`${styles.sessionStatus} ${styles.closed}`} style={{maxWidth: '400px', margin: '0 auto'}}>
               <div className={styles.sessionStatusContent}>
-                <div className={styles.sessionStatusText}>No Session Open</div>
+                <div className={styles.sessionStatusText}>
+                  🔒 No Session Open
+                </div>
                 <div className={styles.sessionStatusDescription}>
                   Currently, no attendance session is open for signing. 
                   Please check back later when a leadership member opens a session.
@@ -646,64 +649,132 @@ const LandingPage = () => {
             </div>
           )}
           
-          {/* Attendance Button */}
-          <button 
-            className={styles.attendanceButton} 
-            disabled={!activeSession || !activeSession.isActive}
-            onClick={handleSignAttendance}
-          >
-            Sign Attendance
-          </button>
+          {/* Test Button - Simpler approach */}
+          <div style={{ textAlign: 'center', margin: '20px 0' }}>
+            <div 
+              style={{
+                display: 'inline-block',
+                background: '#00c6ff',
+                color: 'white',
+                padding: '18px 40px',
+                borderRadius: '50px',
+                fontSize: '1.2rem',
+                fontWeight: '600',
+                textTransform: 'uppercase',
+                letterSpacing: '1px',
+                cursor: 'pointer',
+                boxShadow: '0 8px 25px rgba(0, 198, 255, 0.4)',
+                border: 'none',
+                position: 'relative',
+                zIndex: 99999,
+                userSelect: 'none'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.background = '#0099cc';
+                e.target.style.transform = 'translateY(-3px)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.background = '#00c6ff';
+                e.target.style.transform = 'translateY(0)';
+              }}
+              onClick={(e) => {
+                // Simply open the form without alert
+                setShowAttendanceForm(true);
+                setAttendanceData({
+                  fullName: '',
+                  registrationNumber: '',
+                  course: '',
+                  yearOfStudy: '',
+                  phoneNumber: '',
+                  signature: ''
+                });
+              }}
+            >
+              SIGN ATTENDANCE
+            </div>
+          </div>
           
           {/* Attendance Form */}
-          {showAttendanceForm && activeSession && activeSession.isActive ? (
+          {showAttendanceForm ? (
             /* Attendance Form */
-            <form className={styles.attendanceForm} onSubmit={handleAttendanceSubmit}>
-              <h3 className={styles.attendanceFormTitle}>Sign Your Attendance</h3>
+            <div style={{
+              background: 'white',
+              padding: '30px',
+              margin: '20px auto',
+              borderRadius: '15px',
+              boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
+              maxWidth: '500px',
+              border: '3px solid #00c6ff'
+            }}>
+              <h3 style={{color: '#730051', textAlign: 'center', marginBottom: '20px'}}>
+                Sign Your Attendance
+              </h3>
+            <form onSubmit={handleAttendanceSubmit} style={{display: 'flex', flexDirection: 'column', gap: '15px'}}>
               
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Full Name *</label>
+              <div style={{display: 'flex', flexDirection: 'column', gap: '5px'}}>
+                <label style={{fontWeight: '600', color: '#333'}}>Full Name *</label>
                 <input 
-                  type="text" 
-                  className={styles.formInput} 
+                  type="text"
                   placeholder="Enter your full name" 
                   value={attendanceData.fullName}
                   onChange={(e) => setAttendanceData(prev => ({...prev, fullName: e.target.value}))}
-                  required 
+                  required
+                  style={{
+                    padding: '12px',
+                    border: '2px solid #ddd',
+                    borderRadius: '8px',
+                    fontSize: '16px'
+                  }}
                 />
               </div>
               
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Registration Number *</label>
+              <div style={{display: 'flex', flexDirection: 'column', gap: '5px'}}>
+                <label style={{fontWeight: '600', color: '#333'}}>Registration Number *</label>
                 <input 
-                  type="text" 
-                  className={styles.formInput} 
+                  type="text"
                   placeholder="e.g., C025-01-1234/2023" 
                   value={attendanceData.registrationNumber}
                   onChange={(e) => setAttendanceData(prev => ({...prev, registrationNumber: e.target.value}))}
-                  required 
+                  required
+                  style={{
+                    padding: '12px',
+                    border: '2px solid #ddd',
+                    borderRadius: '8px',
+                    fontSize: '16px'
+                  }}
                 />
               </div>
               
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Course *</label>
+              <div style={{display: 'flex', flexDirection: 'column', gap: '5px'}}>
+                <label style={{fontWeight: '600', color: '#333'}}>Course *</label>
                 <input 
-                  type="text" 
-                  className={styles.formInput} 
+                  type="text"
                   placeholder="e.g., Computer Science" 
                   value={attendanceData.course}
                   onChange={(e) => setAttendanceData(prev => ({...prev, course: e.target.value}))}
-                  required 
+                  required
+                  style={{
+                    padding: '12px',
+                    border: '2px solid #ddd',
+                    borderRadius: '8px',
+                    fontSize: '16px'
+                  }}
                 />
               </div>
               
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Year of Study *</label>
+              <div style={{display: 'flex', flexDirection: 'column', gap: '5px'}}>
+                <label style={{fontWeight: '600', color: '#333'}}>Year of Study *</label>
                 <select 
-                  className={styles.formSelect} 
                   value={attendanceData.yearOfStudy}
                   onChange={(e) => setAttendanceData(prev => ({...prev, yearOfStudy: e.target.value}))}
                   required
+                  style={{
+                    padding: '12px',
+                    border: '2px solid #ddd',
+                    borderRadius: '8px',
+                    fontSize: '16px',
+                    background: 'white'
+                  }}
                 >
                   <option value="">Select Year</option>
                   <option value="1">Year 1</option>
@@ -715,31 +786,170 @@ const LandingPage = () => {
                 </select>
               </div>
               
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Phone Number *</label>
+              <div style={{display: 'flex', flexDirection: 'column', gap: '5px'}}>
+                <label style={{fontWeight: '600', color: '#333'}}>Phone Number *</label>
                 <input 
-                  type="tel" 
-                  className={styles.formInput} 
+                  type="tel"
                   placeholder="e.g., +254712345678" 
                   value={attendanceData.phoneNumber}
                   onChange={(e) => setAttendanceData(prev => ({...prev, phoneNumber: e.target.value}))}
-                  required 
+                  required
+                  style={{
+                    padding: '12px',
+                    border: '2px solid #ddd',
+                    borderRadius: '8px',
+                    fontSize: '16px'
+                  }}
                 />
               </div>
               
-              <div className={styles.formActions}>
-                <button type="submit" className={styles.submitAttendanceBtn}>
+              <div style={{display: 'flex', flexDirection: 'column', gap: '5px'}}>
+                <label style={{fontWeight: '600', color: '#333'}}>Digital Signature *</label>
+                <div style={{
+                  border: '2px solid #ddd',
+                  borderRadius: '8px',
+                  padding: '10px',
+                  background: '#f9f9f9'
+                }}>
+                  <canvas
+                    ref={(canvas) => {
+                      if (canvas && !canvas.hasAttribute('data-initialized')) {
+                        canvas.setAttribute('data-initialized', 'true');
+                        const ctx = canvas.getContext('2d');
+                        let isDrawing = false;
+                        let lastX = 0;
+                        let lastY = 0;
+
+                        const startDrawing = (e) => {
+                          isDrawing = true;
+                          const rect = canvas.getBoundingClientRect();
+                          const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                          const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                          lastX = clientX - rect.left;
+                          lastY = clientY - rect.top;
+                        };
+
+                        const draw = (e) => {
+                          if (!isDrawing) return;
+                          e.preventDefault();
+                          const rect = canvas.getBoundingClientRect();
+                          const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                          const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                          const currentX = clientX - rect.left;
+                          const currentY = clientY - rect.top;
+
+                          ctx.lineWidth = 2;
+                          ctx.lineCap = 'round';
+                          ctx.strokeStyle = '#000';
+                          ctx.beginPath();
+                          ctx.moveTo(lastX, lastY);
+                          ctx.lineTo(currentX, currentY);
+                          ctx.stroke();
+                          
+                          lastX = currentX;
+                          lastY = currentY;
+                          
+                          // Update signature data
+                          setAttendanceData(prev => ({...prev, signature: canvas.toDataURL()}));
+                        };
+
+                        const stopDrawing = () => {
+                          isDrawing = false;
+                        };
+
+                        // Mouse events
+                        canvas.addEventListener('mousedown', startDrawing);
+                        canvas.addEventListener('mousemove', draw);
+                        canvas.addEventListener('mouseup', stopDrawing);
+                        
+                        // Touch events for mobile
+                        canvas.addEventListener('touchstart', startDrawing, {passive: false});
+                        canvas.addEventListener('touchmove', draw, {passive: false});
+                        canvas.addEventListener('touchend', stopDrawing);
+                      }
+                    }}
+                    width={400}
+                    height={150}
+                    style={{
+                      width: '100%',
+                      height: '150px',
+                      border: '1px solid #ccc',
+                      borderRadius: '4px',
+                      background: 'white',
+                      cursor: 'crosshair',
+                      touchAction: 'none'
+                    }}
+                  />
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginTop: '10px'
+                  }}>
+                    <small style={{color: '#666', fontSize: '14px'}}>
+                      ✍️ Draw your signature above
+                    </small>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        const canvas = e.target.parentElement.parentElement.querySelector('canvas');
+                        const ctx = canvas.getContext('2d');
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        setAttendanceData(prev => ({...prev, signature: ''}));
+                      }}
+                      style={{
+                        padding: '6px 12px',
+                        background: '#ff4444',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '4px',
+                        fontSize: '12px',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      🔄 Clear Signature
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+              <div style={{display: 'flex', gap: '10px', marginTop: '20px'}}>
+                <button 
+                  type="submit"
+                  style={{
+                    flex: '1',
+                    padding: '12px 20px',
+                    background: '#00c6ff',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '8px',
+                    fontSize: '16px',
+                    fontWeight: '600',
+                    cursor: 'pointer'
+                  }}
+                >
                   Submit Attendance
                 </button>
                 <button 
-                  type="button" 
-                  className={styles.cancelAttendanceBtn}
+                  type="button"
                   onClick={() => setShowAttendanceForm(false)}
+                  style={{
+                    flex: '1',
+                    padding: '12px 20px',
+                    background: '#6c757d',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '8px',
+                    fontSize: '16px',
+                    fontWeight: '600',
+                    cursor: 'pointer'
+                  }}
                 >
                   Cancel
                 </button>
               </div>
             </form>
+            </div>
           ) : null}
         </div>
 
@@ -1066,6 +1276,104 @@ const LandingPage = () => {
         </div>
     </div>
     </div>
+
+    {/* Duplicate Registration Overlay */}
+    {showDuplicateOverlay && (
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        background: 'rgba(0, 0, 0, 0.8)',
+        backdropFilter: 'blur(5px)',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 99999
+      }}>
+        <div style={{
+          background: 'white',
+          padding: '40px',
+          borderRadius: '20px',
+          textAlign: 'center',
+          maxWidth: '400px',
+          margin: '20px',
+          boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)'
+        }}>
+          <div style={{
+            fontSize: '48px',
+            marginBottom: '20px'
+          }}>✅</div>
+          
+          <h2 style={{
+            color: '#730051',
+            marginBottom: '15px',
+            fontSize: '24px'
+          }}>Already Signed!</h2>
+          
+          <p style={{
+            color: '#666',
+            marginBottom: '30px',
+            fontSize: '16px',
+            lineHeight: '1.5'
+          }}>
+            Registration number <strong>{attendanceData.registrationNumber}</strong> has already signed attendance for this session. Thank you!
+          </p>
+          
+          <div style={{
+            display: 'flex',
+            gap: '15px',
+            justifyContent: 'center'
+          }}>
+            <button
+              onClick={() => {
+                setShowDuplicateOverlay(false);
+                setShowAttendanceForm(false);
+              }}
+              style={{
+                padding: '12px 25px',
+                background: '#730051',
+                color: 'white',
+                border: 'none',
+                borderRadius: '10px',
+                fontSize: '16px',
+                fontWeight: '600',
+                cursor: 'pointer'
+              }}
+            >
+              Done
+            </button>
+            
+            <button
+              onClick={() => {
+                setShowDuplicateOverlay(false);
+                setAttendanceData({
+                  fullName: '',
+                  registrationNumber: '',
+                  course: '',
+                  yearOfStudy: '',
+                  phoneNumber: '',
+                  signature: ''
+                });
+              }}
+              style={{
+                padding: '12px 25px',
+                background: '#00c6ff',
+                color: 'white',
+                border: 'none',
+                borderRadius: '10px',
+                fontSize: '16px',
+                fontWeight: '600',
+                cursor: 'pointer'
+              }}
+            >
+              Clear Form
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
   </React.Fragment>
   );
 };

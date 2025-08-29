@@ -254,8 +254,20 @@ const MinistriesAdmin: React.FC = () => {
                 { ministry: selectedMinistry },
                 { withCredentials: true }
             );
-            setAttendanceSession(response.data.session);
+            const newSession = response.data.session;
+            setAttendanceSession(newSession);
             setAttendanceRecords([]);
+            
+            // Store session in localStorage for cross-device access
+            localStorage.setItem(`attendanceSession_${selectedMinistry}`, JSON.stringify(newSession));
+            
+            // Broadcast session to other tabs/windows on same device
+            window.localStorage.setItem('attendanceSessionUpdate', JSON.stringify({
+                ministry: selectedMinistry,
+                session: newSession,
+                timestamp: Date.now()
+            }));
+            
             setMessage('✅ Attendance session opened - Users can now sign attendance');
             setTimeout(() => setMessage(''), 5000);
         } catch (error) {
@@ -283,7 +295,19 @@ const MinistriesAdmin: React.FC = () => {
                 { withCredentials: true }
             );
             // Keep the session but mark as inactive
-            setAttendanceSession({...attendanceSession, isActive: false, endTime: new Date().toISOString()});
+            const closedSession = {...attendanceSession, isActive: false, endTime: new Date().toISOString()};
+            setAttendanceSession(closedSession);
+            
+            // Update localStorage
+            localStorage.setItem(`attendanceSession_${selectedMinistry}`, JSON.stringify(closedSession));
+            
+            // Broadcast session closure to other tabs/windows
+            window.localStorage.setItem('attendanceSessionUpdate', JSON.stringify({
+                ministry: selectedMinistry,
+                session: closedSession,
+                timestamp: Date.now()
+            }));
+            
             setMessage('🔒 Attendance session closed - Users can no longer sign attendance');
             setTimeout(() => setMessage(''), 5000);
         } catch (error) {
@@ -325,8 +349,20 @@ const MinistriesAdmin: React.FC = () => {
                 { withCredentials: true }
             );
             
-            setAttendanceSession(response.data.session);
+            const resetSession = response.data.session;
+            setAttendanceSession(resetSession);
             setAttendanceRecords([]);
+            
+            // Update localStorage with reset session
+            localStorage.setItem(`attendanceSession_${selectedMinistry}`, JSON.stringify(resetSession));
+            
+            // Broadcast reset to other tabs/windows
+            window.localStorage.setItem('attendanceSessionUpdate', JSON.stringify({
+                ministry: selectedMinistry,
+                session: resetSession,
+                timestamp: Date.now()
+            }));
+            
             setMessage('🔄 Attendance has been reset - All previous records cleared, users can sign again');
             setTimeout(() => setMessage(''), 5000);
         } catch (error: any) {
@@ -346,75 +382,155 @@ const MinistriesAdmin: React.FC = () => {
             <head>
                 <title>KSUCU-MC - ${formData.title}</title>
                 <style>
-                    @page { size: A4; margin: 15mm; }
-                    body { font-family: 'Times New Roman', serif; margin: 0; padding: 0; line-height: 1.4; }
-                    .letterhead-img { width: 100%; max-width: 800px; height: auto; margin: 0 auto 20px; display: block; }
-                    .header { text-align: center; margin-bottom: 30px; }
-                    .header h1 { color: #730051; font-size: 24px; margin: 10px 0; text-transform: uppercase; }
-                    .header h2 { color: #00C6FF; font-size: 18px; margin: 5px 0; }
-                    .session-info { background: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0; }
-                    .session-info h3 { color: #730051; margin: 0 0 10px 0; }
-                    .attendance-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-                    .attendance-table th, .attendance-table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-                    .attendance-table th { background: #730051; color: white; font-weight: bold; }
-                    .attendance-table tr:nth-child(even) { background: #f9f9f9; }
-                    .footer { margin-top: 40px; text-align: center; font-size: 12px; color: #666; border-top: 1px solid #ccc; padding-top: 20px; }
-                    .leader-signature { margin-top: 50px; }
-                    .signature-line { border-bottom: 1px solid #333; width: 200px; margin: 20px 0 5px 0; }
+                    @page { size: A4; margin: 10mm; }
+                    body { font-family: 'Arial', sans-serif; margin: 0; padding: 0; font-size: 12px; }
+                    .letterhead-img { width: 100%; max-width: 100%; height: auto; margin: 0 auto 15px; display: block; }
+                    .header { text-align: center; margin-bottom: 15px; }
+                    .header h2 { color: #730051; font-size: 18px; margin: 5px 0; font-weight: bold; }
+                    .session-info { 
+                        background: linear-gradient(135deg, #730051, #00C6FF); 
+                        color: white; 
+                        padding: 8px 15px; 
+                        border-radius: 5px; 
+                        margin: 10px 0;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                    }
+                    .session-left { text-align: left; }
+                    .session-right { text-align: right; }
+                    .attendance-table { 
+                        width: 100%; 
+                        border-collapse: collapse; 
+                        margin: 10px 0; 
+                        font-size: 11px;
+                    }
+                    .attendance-table th { 
+                        background: linear-gradient(135deg, #730051, #8e1a6b); 
+                        color: white; 
+                        padding: 8px 4px; 
+                        text-align: center; 
+                        font-weight: bold; 
+                        border: 1px solid #fff;
+                        font-size: 10px;
+                    }
+                    .attendance-table td { 
+                        padding: 4px; 
+                        text-align: center; 
+                        border: 1px solid #ddd; 
+                        vertical-align: middle;
+                    }
+                    .signature-cell img {
+                        max-width: 100%;
+                        max-height: 26px;
+                        object-fit: contain;
+                        border: none;
+                    }
+                    .attendance-table tr:nth-child(even) { background: #f0f8ff; }
+                    .attendance-table tr:nth-child(odd) { background: #fff; }
+                    .attendance-table tr:hover { background: #e6f3ff; }
+                    .name-col { text-align: left !important; font-weight: bold; color: #730051; }
+                    .number-col { background: #00C6FF !important; color: white; font-weight: bold; }
+                    .footer { 
+                        margin-top: 15px; 
+                        text-align: center; 
+                        font-size: 9px; 
+                        color: #666; 
+                        border-top: 2px solid #730051; 
+                        padding-top: 10px; 
+                    }
+                    .signature-section {
+                        margin-top: 20px;
+                        display: flex;
+                        justify-content: space-between;
+                    }
+                    .signature-box {
+                        width: 45%;
+                        text-align: center;
+                        border: 2px solid #730051;
+                        padding: 15px;
+                        border-radius: 5px;
+                    }
+                    .signature-line { 
+                        border-bottom: 2px solid #730051; 
+                        margin: 10px 0; 
+                        height: 30px;
+                    }
                 </style>
             </head>
             <body>
-                <img src="/img/letterhead.png" class="letterhead-img" alt="KSUCU-MC Letterhead" />
+                <img src="${window.location.origin}/img/letterhead.png" class="letterhead-img" alt="KSUCU-MC Letterhead" />
                 
                 <div class="header">
-                    <h1>Kisii University Christian Union - Main Campus</h1>
                     <h2>${formData.title}</h2>
                 </div>
                 
                 <div class="session-info">
-                    <h3>Session Information</h3>
-                    <p><strong>Ministry:</strong> ${formData.ministry}</p>
-                    <p><strong>Leader Role:</strong> ${formData.leaderRole}</p>
-                    <p><strong>Session Date:</strong> ${formData.sessionDate}</p>
-                    <p><strong>Total Attendees:</strong> ${formData.recordCount}</p>
-                    <p><strong>Generated Date:</strong> ${new Date(formData.createdAt).toLocaleString()}</p>
+                    <div class="session-left">
+                        <strong>${formData.ministry} Ministry</strong><br>
+                        <strong>Leader:</strong> ${formData.leaderRole}
+                    </div>
+                    <div class="session-right">
+                        <strong>${formData.recordCount} Attendees</strong><br>
+                        <strong>Date:</strong> ${formData.sessionDate}
+                    </div>
                 </div>
 
                 <table class="attendance-table">
                     <thead>
                         <tr>
-                            <th>#</th>
-                            <th>Name</th>
-                            <th>Registration No.</th>
-                            <th>Year</th>
-                            <th>Sign Time</th>
+                            <th style="width: 6%;">#</th>
+                            <th style="width: 28%;">NAME</th>
+                            <th style="width: 22%;">REGISTRATION NO.</th>
+                            <th style="width: 8%;">YEAR</th>
+                            <th style="width: 15%;">PHONE</th>
+                            <th style="width: 15%;">SIGN TIME</th>
+                            <th style="width: 6%;">SIGNATURE</th>
                         </tr>
                     </thead>
                     <tbody>
                         ${formData.data.map((record: any, index: number) => `
                             <tr>
-                                <td>${index + 1}</td>
-                                <td>${record.userId?.username || record.name || 'N/A'}</td>
-                                <td>${record.regNo || 'N/A'}</td>
-                                <td>${record.year || 'N/A'}</td>
-                                <td>${new Date(record.signedAt || record.timestamp).toLocaleString()}</td>
+                                <td class="number-col">${index + 1}</td>
+                                <td class="name-col">${record.userId?.username || record.name || record.fullName || 'N/A'}</td>
+                                <td>${record.regNo || record.registrationNumber || 'N/A'}</td>
+                                <td>${record.year || record.yearOfStudy || 'N/A'}</td>
+                                <td>${record.phoneNumber || record.phone || 'N/A'}</td>
+                                <td>${new Date(record.signedAt || record.timestamp).toLocaleString('en-US', {
+                                    month: 'short', 
+                                    day: 'numeric', 
+                                    hour: '2-digit', 
+                                    minute: '2-digit'
+                                })}</td>
+                                <td style="height: 30px; border: 1px solid #ccc; padding: 2px; text-align: center;">
+                                    ${(record.signature && record.signature.startsWith('data:image')) ? 
+                                        `<img src="${record.signature}" style="max-width: 100%; max-height: 26px; object-fit: contain;" alt="Signature" />` : 
+                                        '<span style="font-size: 10px; color: #999;">No signature</span>'
+                                    }
+                                </td>
                             </tr>
                         `).join('')}
                     </tbody>
                 </table>
 
-                <div class="leader-signature">
-                    <p><strong>Leader Signature:</strong></p>
-                    <div class="signature-line"></div>
-                    <p>Name: _________________________</p>
-                    <p>Date: _________________________</p>
+                <div class="signature-section">
+                    <div class="signature-box">
+                        <strong style="color: #730051;">LEADER SIGNATURE</strong>
+                        <div class="signature-line"></div>
+                        <p>Name: _______________________</p>
+                        <p>Date: _______________________</p>
+                    </div>
+                    <div class="signature-box">
+                        <strong style="color: #730051;">MINISTRY COORDINATOR</strong>
+                        <div class="signature-line"></div>
+                        <p>Name: _______________________</p>
+                        <p>Date: _______________________</p>
+                    </div>
                 </div>
                 
                 <div class="footer">
-                    <hr />
-                    <p><strong>KSUCU-MC | P.O BOX 408-40200, KISII, KENYA</strong></p>
+                    <p style="color: #730051; font-weight: bold;">KSUCU-MC | P.O BOX 408-40200, KISII, KENYA</p>
                     <p>www.ksucumc.org | ksuchristianunion@gmail.com</p>
-                    <p style="font-style: italic;">Generated on ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}</p>
                 </div>
             </body>
             </html>

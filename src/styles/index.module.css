@@ -2747,10 +2747,21 @@ hr{
 }
 
 .attendanceButton:disabled {
-    background: #6c757d;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    background: #6c757d !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
+    pointer-events: none !important;
+}
+
+.attendanceButton:not(:disabled) {
+    pointer-events: auto !important;
+}
+
+.attendanceButton {
+    position: relative !important;
+    z-index: 9999 !important;
+    pointer-events: auto !important;
 }
 
 .attendanceButton::before {
