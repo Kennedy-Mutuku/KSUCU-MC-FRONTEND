@@ -24,6 +24,9 @@ interface ApiConfig {
     admissionAdminResetPassword: string;
     authGoogle: string;
     attendanceSession: string;
+    attendanceSessionStatus: string;
+    attendanceSessionOpen: string;
+    attendanceSessionClose: string;
     attendanceSign: string;
     attendanceSessions: string;
     attendanceStartSession: string;
@@ -61,6 +64,9 @@ const developmentConfig: ApiConfig = {
     admissionAdminResetPassword: '/admissionadmin/reset-password',
     authGoogle: '/auth/google',
     attendanceSession: '/attendance/session',
+    attendanceSessionStatus: '/attendance/session/status',
+    attendanceSessionOpen: '/attendance/session/open',
+    attendanceSessionClose: '/attendance/session/close',
     attendanceSign: '/attendance/sign',
     attendanceSessions: '/attendance/sessions',
     attendanceStartSession: '/attendance/start-session',
@@ -96,6 +102,9 @@ const productionConfig: ApiConfig = {
     admissionAdminResetPassword: '/admissionadmin/reset-password',
     authGoogle: '/auth/google',
     attendanceSession: '/attendance/session',
+    attendanceSessionStatus: '/attendance/session/status',
+    attendanceSessionOpen: '/attendance/session/open',
+    attendanceSessionClose: '/attendance/session/close',
     attendanceSign: '/attendance/sign',
     attendanceSessions: '/attendance/sessions',
     attendanceStartSession: '/attendance/start-session',

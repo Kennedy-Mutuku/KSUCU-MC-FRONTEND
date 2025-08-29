@@ -3,6 +3,7 @@ import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
 import styles from '../styles/attendanceSession.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { getApiUrl } from '../config/environment';
 import { 
     faUsers, 
     faPlay,
@@ -95,56 +96,59 @@ const AttendanceSessionManagement: React.FC = () => {
     const startSession = async () => {
         setLoading(true);
         try {
-            // First, check if any other leader already has an active session
-            const existingGlobalSession = localStorage.getItem('global-active-session');
+            console.log('🚀 Starting session via backend API...');
             
-            if (existingGlobalSession) {
-                const existingSession = JSON.parse(existingGlobalSession);
-                if (existingSession.isActive && existingSession.leadershipRole !== leadershipRole) {
-                    setMessage(`❌ Cannot open session: ${existingSession.leadershipRole} already has an active session. Please coordinate with them to close their session first.`);
-                    setTimeout(() => setMessage(''), 8000);
-                    setLoading(false);
-                    return;
+            // Call backend API to start session
+            const response = await fetch(getApiUrl('attendanceSessionOpen'), {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    leadershipRole: leadershipRole,
+                    ministry: 'General'
+                })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('✅ Session started successfully:', data);
+                
+                const newSession: AttendanceSession = {
+                    _id: data.session._id || Date.now().toString(),
+                    leadershipRole,
+                    isActive: true,
+                    startTime: data.session.startTime || new Date().toISOString(),
+                    totalAttendees: 0
+                };
+                
+                // Backend-only mode - no localStorage backup needed for cross-device functionality
+                
+                setAttendanceSession(newSession);
+                setGlobalActiveSession({
+                    leadershipRole,
+                    isActive: true,
+                    startTime: newSession.startTime,
+                    sessionId: newSession._id
+                });
+                setMessage('✅ Attendance session opened - Users across all devices can now sign attendance');
+                setTimeout(() => setMessage(''), 5000);
+            } else {
+                const errorData = await response.json();
+                console.error('❌ Failed to start session:', errorData);
+                
+                if (response.status === 409) {
+                    // Session conflict
+                    setMessage(`❌ Cannot open session: ${errorData.activeSession?.leadershipRole || 'Another leader'} already has an active session. Please coordinate with them to close their session first.`);
+                } else {
+                    setMessage(`❌ ${errorData.message || 'Error opening attendance session'}`);
                 }
+                setTimeout(() => setMessage(''), 8000);
             }
-            
-            const newSession: AttendanceSession = {
-                _id: Date.now().toString(),
-                leadershipRole,
-                isActive: true,
-                startTime: new Date().toISOString(),
-                totalAttendees: 0
-            };
-            
-            // Double-check right before setting (race condition prevention)
-            const lastMinuteCheck = localStorage.getItem('global-active-session');
-            if (lastMinuteCheck) {
-                const lastMinuteSession = JSON.parse(lastMinuteCheck);
-                if (lastMinuteSession.isActive && lastMinuteSession.leadershipRole !== leadershipRole) {
-                    setMessage(`❌ Session conflict detected: ${lastMinuteSession.leadershipRole} opened a session just now. Please refresh and try again.`);
-                    setTimeout(() => setMessage(''), 8000);
-                    setLoading(false);
-                    return;
-                }
-            }
-            
-            // Save to localStorage (in real app, would be API call)
-            localStorage.setItem(`attendance-session-${leadershipRole}`, JSON.stringify(newSession));
-            // Store global active session for landing page
-            const globalSessionData = {
-                leadershipRole,
-                isActive: true,
-                startTime: newSession.startTime,
-                sessionId: newSession._id
-            };
-            localStorage.setItem('global-active-session', JSON.stringify(globalSessionData));
-            
-            setAttendanceSession(newSession);
-            setGlobalActiveSession(globalSessionData);
-            setMessage('✅ Attendance session opened - Users can now sign attendance');
-            setTimeout(() => setMessage(''), 5000);
         } catch (error) {
-            setMessage('❌ Error opening attendance session');
+            console.error('❌ Error starting session:', error);
+            setMessage('❌ Error opening attendance session - Check network connection');
             setTimeout(() => setMessage(''), 3000);
         } finally {
             setLoading(false);
@@ -158,22 +162,51 @@ const AttendanceSessionManagement: React.FC = () => {
         
         setLoading(true);
         try {
-            const updatedSession = {
-                ...attendanceSession,
-                isActive: false,
-                endTime: new Date().toISOString(),
-                totalAttendees: attendanceRecords.length
-            };
+            console.log('🔒 Closing session via backend API...');
             
-            localStorage.setItem(`attendance-session-${leadershipRole}`, JSON.stringify(updatedSession));
-            // Remove global active session
-            localStorage.removeItem('global-active-session');
-            
-            setAttendanceSession(updatedSession);
-            setGlobalActiveSession(null);
-            setMessage('🔒 Attendance session closed');
-            setTimeout(() => setMessage(''), 5000);
+            // Try backend API first, fallback to localStorage if not available
+            try {
+                const response = await fetch(getApiUrl('attendanceSessionClose'), {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        leadershipRole: leadershipRole,
+                        totalAttendees: attendanceRecords.length
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('✅ Session closed successfully via backend:', data);
+                    
+                    const updatedSession = {
+                        ...attendanceSession,
+                        isActive: false,
+                        endTime: data.session.endTime || new Date().toISOString(),
+                        totalAttendees: attendanceRecords.length
+                    };
+                    
+                    // Backend-only mode - session closed centrally
+                    
+                    setAttendanceSession(updatedSession);
+                    setGlobalActiveSession(null);
+                    setMessage('🔒 Attendance session closed - No longer accepting new attendance across all devices');
+                    setTimeout(() => setMessage(''), 5000);
+                    return; // Exit early on success
+                } else {
+                    console.log('Backend API failed, falling back to localStorage...');
+                    throw new Error('Backend API failed');
+                }
+            } catch (backendError) {
+                console.log('❌ Backend API required for cross-device sessions');
+                setMessage('❌ Cannot close session - Backend API required for cross-device functionality');
+                setTimeout(() => setMessage(''), 5000);
+            }
         } catch (error) {
+            console.error('❌ Error closing session:', error);
             setMessage('❌ Error closing attendance session');
             setTimeout(() => setMessage(''), 3000);
         } finally {

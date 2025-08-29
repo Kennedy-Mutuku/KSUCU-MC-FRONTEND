@@ -73,23 +73,40 @@ const LandingPage = () => {
   
 
   // Check for active attendance session
-  const checkActiveSession = () => {
+  const checkActiveSession = async () => {
     try {
-      const activeSessionData = localStorage.getItem('global-active-session');
-      if (activeSessionData) {
-        const sessionInfo = JSON.parse(activeSessionData);
-        console.log('Session info found:', sessionInfo);
-        if (sessionInfo.isActive) {
-          setActiveSession(sessionInfo);
+      console.log('🔄 Checking active session from backend...');
+      const response = await fetch(getApiUrl('attendanceSessionStatus'), {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('📡 Session status from backend:', data);
+        
+        if (data.session && data.session.isActive) {
+          setActiveSession({
+            leadershipRole: data.session.leadershipRole || 'Leader',
+            isActive: true,
+            startTime: data.session.startTime,
+            sessionId: data.session._id || data.session.sessionId
+          });
+          console.log('✅ Active session found:', data.session);
         } else {
+          console.log('❌ No active session');
           setActiveSession(null);
         }
       } else {
-        console.log('No active session found');
+        console.log('❌ Backend session API not available - sessions require backend');
         setActiveSession(null);
       }
     } catch (error) {
-      console.error('Error checking active session:', error);
+      console.error('❌ Error checking active session:', error);
+      console.log('🚫 Backend required for cross-device sessions');
       setActiveSession(null);
     }
   };
@@ -116,6 +133,14 @@ const LandingPage = () => {
     };
 
   }, [images.length]);
+
+  // Close form if session becomes inactive
+  useEffect(() => {
+    if (showAttendanceForm && (!activeSession || !activeSession.isActive)) {
+      setShowAttendanceForm(false);
+      alert('⚠️ Attendance session has been closed. The form has been closed.');
+    }
+  }, [activeSession, showAttendanceForm]);
 
   const fetchUserData = async () => {
     console.log('🏠 Landing: Fetching user data...');
@@ -665,16 +690,20 @@ const LandingPage = () => {
                 target.style.transform = 'translateY(0)';
               }}
               onClick={() => {
-                // Simply open the form without alert
-                setShowAttendanceForm(true);
-                setAttendanceData({
-                  fullName: '',
-                  registrationNumber: '',
-                  course: '',
-                  yearOfStudy: '',
-                  phoneNumber: '',
-                  signature: ''
-                });
+                // Check if there's an active session before opening form
+                if (activeSession && activeSession.isActive) {
+                  setShowAttendanceForm(true);
+                  setAttendanceData({
+                    fullName: '',
+                    registrationNumber: '',
+                    course: '',
+                    yearOfStudy: '',
+                    phoneNumber: '',
+                    signature: ''
+                  });
+                } else {
+                  alert('⚠️ No active attendance session found. Please wait for a leader to open an attendance session.');
+                }
               }}
             >
               SIGN ATTENDANCE
@@ -682,7 +711,7 @@ const LandingPage = () => {
           </div>
           
           {/* Attendance Form */}
-          {showAttendanceForm ? (
+          {showAttendanceForm && activeSession && activeSession.isActive ? (
             /* Attendance Form */
             <div style={{
               background: 'white',
