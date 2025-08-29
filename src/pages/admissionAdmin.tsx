@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import styles from '../styles/signup.module.css'; 
 import { ChevronDown } from 'lucide-react';
 import { getApiUrl } from '../config/environment';
-import Header from '../components/header';
+import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
 
 type FormData = {
@@ -151,7 +151,7 @@ const AdmissionAdmin: React.FC = () => {
 
   return (
     <>
-      <Header />
+      <UniversalHeader />
       <div className={styles.body}>
       <div className={styles['container']}>
 

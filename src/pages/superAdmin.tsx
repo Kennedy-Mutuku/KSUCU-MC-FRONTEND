@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styles from '../styles/superAdmin.module.css';
-import Header from '../components/header';
+import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
 import { getApiUrl } from '../config/environment';
 
@@ -112,7 +112,7 @@ const SuperAdmin: React.FC = () => {
 
     return (
         <>
-            <Header />
+            <UniversalHeader />
             <div className={styles.container}>
                 <h4>Total Students: {userCount}</h4>
 

@@ -3,7 +3,7 @@ import axios from 'axios';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import styles from '../styles/savedSoulsList.module.css'; 
-import Header from '../components/header';
+import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
 import letterhead from '../assets/letterhead.png'; 
 
@@ -181,7 +181,7 @@ const handleExportPdf = () => {
 
   return (
     <> 
-      <Header />
+      <UniversalHeader />
       <div className={styles.container}>
         <h4>Saved Souls List</h4>
         <div className={styles.userCount}>

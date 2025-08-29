@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Header from '../components/header';
+import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
 import styles from '../styles/ministriesAdmin.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -15,7 +15,10 @@ import {
     faRedo,
     faPlay,
     faStop,
-    faCalendarAlt
+    faCalendarAlt,
+    faFilePdf,
+    faTrash,
+    faArchive
 } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 
@@ -64,6 +67,18 @@ interface AttendanceRecord {
     signedAt: string;
 }
 
+interface GeneratedForm {
+    id: string;
+    title: string;
+    ministry: string;
+    leaderRole: string;
+    sessionDate: string;
+    createdAt: string;
+    type: 'attendance' | 'commitment';
+    recordCount: number;
+    data: any[];
+}
+
 const MinistriesAdmin: React.FC = () => {
     const [authenticated, setAuthenticated] = useState(false);
     const [password, setPassword] = useState('');
@@ -72,13 +87,30 @@ const MinistriesAdmin: React.FC = () => {
     
     // Ministry selection and view mode
     const [selectedMinistry, setSelectedMinistry] = useState<'' | MinistryKey>('');
-    const [viewMode, setViewMode] = useState<'attendance' | 'commitments'>('commitments');
+    const [viewMode, setViewMode] = useState<'attendance' | 'commitments' | 'forms'>('commitments');
     const [commitmentForms, setCommitmentForms] = useState<CommitmentForm[]>([]);
     const [loading, setLoading] = useState(false);
+    const [selectedLeaderRole, setSelectedLeaderRole] = useState('');
+    const [generatedForms, setGeneratedForms] = useState<GeneratedForm[]>([]);
     
     // Attendance state
     const [attendanceSession, setAttendanceSession] = useState<AttendanceSession | null>(null);
     const [attendanceRecords, setAttendanceRecords] = useState<AttendanceRecord[]>([]);
+    
+    // Leadership roles
+    const leadershipRoles = [
+        'Chairperson',
+        'Vice Chairperson', 
+        'Secretary',
+        'Treasurer',
+        'Publicity Secretary',
+        'Worship Coordinator',
+        'Bible Study Coordinator',
+        'Discipleship Coordinator',
+        'Prayer Coordinator',
+        'Missions Coordinator',
+        'Boards Coordinator'
+    ];
 
     type MinistryKey = 'wananzambe' | 'compassion' | 'pw' | 'intercessory' | 'cs' | 'hs' | 'ushering' | 'creativity' | 'choir';
 
@@ -306,6 +338,171 @@ const MinistriesAdmin: React.FC = () => {
         }
     };
 
+    // Generate attendance PDF content
+    const generateAttendancePDFContent = (formData: GeneratedForm) => {
+        return `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>KSUCU-MC - ${formData.title}</title>
+                <style>
+                    @page { size: A4; margin: 15mm; }
+                    body { font-family: 'Times New Roman', serif; margin: 0; padding: 0; line-height: 1.4; }
+                    .letterhead-img { width: 100%; max-width: 800px; height: auto; margin: 0 auto 20px; display: block; }
+                    .header { text-align: center; margin-bottom: 30px; }
+                    .header h1 { color: #730051; font-size: 24px; margin: 10px 0; text-transform: uppercase; }
+                    .header h2 { color: #00C6FF; font-size: 18px; margin: 5px 0; }
+                    .session-info { background: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0; }
+                    .session-info h3 { color: #730051; margin: 0 0 10px 0; }
+                    .attendance-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+                    .attendance-table th, .attendance-table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                    .attendance-table th { background: #730051; color: white; font-weight: bold; }
+                    .attendance-table tr:nth-child(even) { background: #f9f9f9; }
+                    .footer { margin-top: 40px; text-align: center; font-size: 12px; color: #666; border-top: 1px solid #ccc; padding-top: 20px; }
+                    .leader-signature { margin-top: 50px; }
+                    .signature-line { border-bottom: 1px solid #333; width: 200px; margin: 20px 0 5px 0; }
+                </style>
+            </head>
+            <body>
+                <img src="/img/letterhead.png" class="letterhead-img" alt="KSUCU-MC Letterhead" />
+                
+                <div class="header">
+                    <h1>Kisii University Christian Union - Main Campus</h1>
+                    <h2>${formData.title}</h2>
+                </div>
+                
+                <div class="session-info">
+                    <h3>Session Information</h3>
+                    <p><strong>Ministry:</strong> ${formData.ministry}</p>
+                    <p><strong>Leader Role:</strong> ${formData.leaderRole}</p>
+                    <p><strong>Session Date:</strong> ${formData.sessionDate}</p>
+                    <p><strong>Total Attendees:</strong> ${formData.recordCount}</p>
+                    <p><strong>Generated Date:</strong> ${new Date(formData.createdAt).toLocaleString()}</p>
+                </div>
+
+                <table class="attendance-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>Registration No.</th>
+                            <th>Year</th>
+                            <th>Sign Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${formData.data.map((record: any, index: number) => `
+                            <tr>
+                                <td>${index + 1}</td>
+                                <td>${record.userId?.username || record.name || 'N/A'}</td>
+                                <td>${record.regNo || 'N/A'}</td>
+                                <td>${record.year || 'N/A'}</td>
+                                <td>${new Date(record.signedAt || record.timestamp).toLocaleString()}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+
+                <div class="leader-signature">
+                    <p><strong>Leader Signature:</strong></p>
+                    <div class="signature-line"></div>
+                    <p>Name: _________________________</p>
+                    <p>Date: _________________________</p>
+                </div>
+                
+                <div class="footer">
+                    <hr />
+                    <p><strong>KSUCU-MC | P.O BOX 408-40200, KISII, KENYA</strong></p>
+                    <p>www.ksucumc.org | ksuchristianunion@gmail.com</p>
+                    <p style="font-style: italic;">Generated on ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}</p>
+                </div>
+            </body>
+            </html>
+        `;
+    };
+
+    // Generate commitment PDF content
+    const generateCommitmentPDFContent = (formData: GeneratedForm) => {
+        return `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>KSUCU-MC - ${formData.title}</title>
+                <style>
+                    @page { size: A4; margin: 15mm; }
+                    body { font-family: 'Times New Roman', serif; margin: 0; padding: 0; line-height: 1.4; }
+                    .letterhead-img { width: 100%; max-width: 800px; height: auto; margin: 0 auto 20px; display: block; }
+                    .header { text-align: center; margin-bottom: 30px; }
+                    .header h1 { color: #730051; font-size: 24px; margin: 10px 0; text-transform: uppercase; }
+                    .header h2 { color: #00C6FF; font-size: 18px; margin: 5px 0; }
+                    .report-info { background: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0; }
+                    .report-info h3 { color: #730051; margin: 0 0 10px 0; }
+                    .commitments-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+                    .commitments-table th, .commitments-table td { border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 12px; }
+                    .commitments-table th { background: #730051; color: white; font-weight: bold; }
+                    .commitments-table tr:nth-child(even) { background: #f9f9f9; }
+                    .status-badge { padding: 3px 8px; border-radius: 12px; font-size: 10px; font-weight: bold; }
+                    .status-approved { background: #e8f5e8; color: #2d5a2d; }
+                    .status-pending { background: #fff3cd; color: #856404; }
+                    .status-revoked { background: #f8d7da; color: #721c24; }
+                    .footer { margin-top: 40px; text-align: center; font-size: 12px; color: #666; border-top: 1px solid #ccc; padding-top: 20px; }
+                </style>
+            </head>
+            <body>
+                <img src="/img/letterhead.png" class="letterhead-img" alt="KSUCU-MC Letterhead" />
+                
+                <div class="header">
+                    <h1>Kisii University Christian Union - Main Campus</h1>
+                    <h2>${formData.title}</h2>
+                </div>
+                
+                <div class="report-info">
+                    <h3>Report Information</h3>
+                    <p><strong>Ministry:</strong> ${formData.ministry}</p>
+                    <p><strong>Leader Role:</strong> ${formData.leaderRole}</p>
+                    <p><strong>Report Date:</strong> ${formData.sessionDate}</p>
+                    <p><strong>Total Forms:</strong> ${formData.recordCount}</p>
+                    <p><strong>Generated Date:</strong> ${new Date(formData.createdAt).toLocaleString()}</p>
+                </div>
+
+                <table class="commitments-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Full Name</th>
+                            <th>Reg No.</th>
+                            <th>Year</th>
+                            <th>Phone</th>
+                            <th>Status</th>
+                            <th>Submitted</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${formData.data.map((commitment: any, index: number) => `
+                            <tr>
+                                <td>${index + 1}</td>
+                                <td>${commitment.fullName}</td>
+                                <td>${commitment.regNo}</td>
+                                <td>${commitment.yearOfStudy}</td>
+                                <td>${commitment.phoneNumber}</td>
+                                <td><span class="status-badge status-${commitment.status}">${commitment.status.toUpperCase()}</span></td>
+                                <td>${new Date(commitment.submittedAt).toLocaleDateString()}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+                
+                <div class="footer">
+                    <hr />
+                    <p><strong>KSUCU-MC | P.O BOX 408-40200, KISII, KENYA</strong></p>
+                    <p>www.ksucumc.org | ksuchristianunion@gmail.com</p>
+                    <p style="font-style: italic;">Generated on ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}</p>
+                </div>
+            </body>
+            </html>
+        `;
+    };
+
     // Download commitment form as PDF
     const downloadCommitmentPDF = (commitment: CommitmentForm) => {
         const htmlContent = `
@@ -434,20 +631,161 @@ const MinistriesAdmin: React.FC = () => {
         }
     };
 
+    // Load generated forms from localStorage
+    const loadGeneratedForms = () => {
+        try {
+            const storedForms = localStorage.getItem('generatedForms');
+            if (storedForms) {
+                const forms = JSON.parse(storedForms);
+                // Filter forms by selected role or ministry if specified
+                let filteredForms = forms;
+                if (selectedLeaderRole) {
+                    filteredForms = forms.filter((form: GeneratedForm) => form.leaderRole === selectedLeaderRole);
+                } else if (selectedMinistry) {
+                    filteredForms = forms.filter((form: GeneratedForm) => form.ministry === selectedMinistry);
+                }
+                // Sort by creation date, newest first
+                filteredForms.sort((a: GeneratedForm, b: GeneratedForm) => 
+                    new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+                );
+                setGeneratedForms(filteredForms);
+            } else {
+                setGeneratedForms([]);
+            }
+        } catch (error) {
+            console.error('Error loading generated forms:', error);
+            setGeneratedForms([]);
+        }
+    };
+
+    // Generate attendance form PDF
+    const generateAttendanceForm = () => {
+        if (!attendanceRecords.length && selectedMinistry) {
+            setMessage('No attendance records to generate form');
+            setTimeout(() => setMessage(''), 3000);
+            return;
+        }
+
+        const ministry = selectedMinistry ? ministryNames[selectedMinistry] : 'All Ministries';
+        const leaderRole = selectedLeaderRole || 'Ministry Leader';
+        const sessionDate = attendanceSession?.startTime ? 
+            new Date(attendanceSession.startTime).toLocaleDateString() : 
+            new Date().toLocaleDateString();
+
+        const formData: GeneratedForm = {
+            id: Date.now().toString(),
+            title: `${ministry} - Attendance Form`,
+            ministry: ministry,
+            leaderRole: leaderRole,
+            sessionDate: sessionDate,
+            createdAt: new Date().toISOString(),
+            type: 'attendance',
+            recordCount: attendanceRecords.length,
+            data: attendanceRecords
+        };
+
+        // Save to localStorage
+        const existingForms = JSON.parse(localStorage.getItem('generatedForms') || '[]');
+        existingForms.push(formData);
+        localStorage.setItem('generatedForms', JSON.stringify(existingForms));
+
+        // Generate PDF
+        downloadFormPDF(formData);
+        
+        setMessage('Attendance form generated successfully!');
+        setTimeout(() => setMessage(''), 3000);
+        loadGeneratedForms();
+    };
+
+    // Generate commitment form PDF
+    const generateCommitmentForm = () => {
+        if (!commitmentForms.length && selectedMinistry) {
+            setMessage('No commitment forms to generate PDF');
+            setTimeout(() => setMessage(''), 3000);
+            return;
+        }
+
+        const ministry = selectedMinistry ? ministryNames[selectedMinistry] : 'All Ministries';
+        const leaderRole = selectedLeaderRole || 'Ministry Leader';
+
+        const formData: GeneratedForm = {
+            id: Date.now().toString(),
+            title: `${ministry} - Commitment Forms Report`,
+            ministry: ministry,
+            leaderRole: leaderRole,
+            sessionDate: new Date().toLocaleDateString(),
+            createdAt: new Date().toISOString(),
+            type: 'commitment',
+            recordCount: commitmentForms.length,
+            data: commitmentForms
+        };
+
+        // Save to localStorage
+        const existingForms = JSON.parse(localStorage.getItem('generatedForms') || '[]');
+        existingForms.push(formData);
+        localStorage.setItem('generatedForms', JSON.stringify(existingForms));
+
+        // Generate PDF
+        downloadFormPDF(formData);
+        
+        setMessage('Commitment forms report generated successfully!');
+        setTimeout(() => setMessage(''), 3000);
+        loadGeneratedForms();
+    };
+
+    // Download form PDF
+    const downloadFormPDF = (formData: GeneratedForm) => {
+        let htmlContent = '';
+        
+        if (formData.type === 'attendance') {
+            htmlContent = generateAttendancePDFContent(formData);
+        } else {
+            htmlContent = generateCommitmentPDFContent(formData);
+        }
+
+        const printWindow = window.open('', '_blank');
+        if (printWindow) {
+            printWindow.document.write(htmlContent);
+            printWindow.document.close();
+            printWindow.focus();
+            setTimeout(() => printWindow.print(), 100);
+        }
+    };
+
+    // Delete form
+    const deleteForm = (formId: string) => {
+        if (confirm('Are you sure you want to delete this form?')) {
+            const existingForms = JSON.parse(localStorage.getItem('generatedForms') || '[]');
+            const updatedForms = existingForms.filter((form: GeneratedForm) => form.id !== formId);
+            localStorage.setItem('generatedForms', JSON.stringify(updatedForms));
+            loadGeneratedForms();
+            setMessage('Form deleted successfully!');
+            setTimeout(() => setMessage(''), 3000);
+        }
+    };
+
     useEffect(() => {
         if (authenticated && selectedMinistry) {
             if (viewMode === 'commitments') {
                 loadCommitmentForms();
             } else if (viewMode === 'attendance') {
                 loadAttendanceData();
+            } else if (viewMode === 'forms') {
+                loadGeneratedForms();
             }
         }
-    }, [authenticated, selectedMinistry, viewMode]);
+    }, [authenticated, selectedMinistry, viewMode, selectedLeaderRole]);
+
+    useEffect(() => {
+        if (authenticated && viewMode === 'forms') {
+            loadGeneratedForms();
+        }
+    }, [authenticated, viewMode, selectedLeaderRole]);
 
     if (!authenticated) {
         return (
             <div className={styles.container}>
-                <Header />
+                <UniversalHeader />
                 <div className={styles.authContainer}>
                     <div className={styles.authCard}>
                         <FontAwesomeIcon icon={faLock} className={styles.lockIcon} />
@@ -482,7 +820,7 @@ const MinistriesAdmin: React.FC = () => {
 
     return (
         <div className={styles.container}>
-            <Header />
+            <UniversalHeader />
             <div className={styles.adminContainer}>
                 <div className={styles.adminHeader}>
                     <h1 className={styles.adminTitle}>
@@ -496,9 +834,51 @@ const MinistriesAdmin: React.FC = () => {
                 </div>
 
                 <div className={styles.controlPanel}>
+                    {/* Leadership Role Selection Section */}
+                    <div className={styles.leadershipSelection}>
+                        <h3 className={styles.leadershipTitle}>
+                            <FontAwesomeIcon icon={faUsers} /> Leadership Role Selection
+                        </h3>
+                        <p className={styles.leadershipDescription}>
+                            Select your leadership role to open centralized attendance for all members
+                        </p>
+                        <div className={styles.leadershipRoleGrid}>
+                            {[
+                                'Chairperson',
+                                'Vice Chairperson', 
+                                'Secretary',
+                                'Treasurer',
+                                'Publicity Secretary',
+                                'Worship Coordinator',
+                                'Bible Study Coordinator',
+                                'Discipleship Coordinator',
+                                'Prayer Coordinator',
+                                'Missions Coordinator',
+                                'Boards Coordinator'
+                            ].map((role) => (
+                                <button 
+                                    key={role}
+                                    className={styles.leadershipRoleButton}
+                                    onClick={() => {
+                                        setSelectedMinistry(''); // Clear ministry selection for centralized mode
+                                        setViewMode('attendance');
+                                        setMessage(`Selected role: ${role} - Managing centralized attendance`);
+                                        setTimeout(() => setMessage(''), 3000);
+                                    }}
+                                >
+                                    {role}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className={styles.sectionDivider}>
+                        <span className={styles.dividerText}>OR</span>
+                    </div>
+
                     <div className={styles.ministrySelector}>
                         <label htmlFor="ministry-select" className={styles.selectorLabel}>
-                            <FontAwesomeIcon icon={faList} /> Select Ministry:
+                            <FontAwesomeIcon icon={faList} /> Select Specific Ministry:
                         </label>
                         <select
                             id="ministry-select"
@@ -530,6 +910,12 @@ const MinistriesAdmin: React.FC = () => {
                                     onClick={() => setViewMode('attendance')}
                                 >
                                     <FontAwesomeIcon icon={faUsers} /> Attendance
+                                </button>
+                                <button
+                                    className={`${styles.tabButton} ${viewMode === 'forms' ? styles.active : ''}`}
+                                    onClick={() => setViewMode('forms')}
+                                >
+                                    <FontAwesomeIcon icon={faArchive} /> Forms Management
                                 </button>
                             </div>
                         </div>
@@ -621,6 +1007,14 @@ const MinistriesAdmin: React.FC = () => {
                                                 >
                                                     <FontAwesomeIcon icon={faDownload} /> Download PDF
                                                 </button>
+                        
+                                        <button
+                                            className={`${styles.actionButton} ${styles.generate}`}
+                                            onClick={generateCommitmentForm}
+                                            title="Generate forms report with KSUCU header"
+                                        >
+                                            <FontAwesomeIcon icon={faFilePdf} /> Generate Report
+                                        </button>
                                             </div>
                                         </div>
                                     ))
@@ -630,11 +1024,14 @@ const MinistriesAdmin: React.FC = () => {
                     </div>
                 )}
 
-                {selectedMinistry && viewMode === 'attendance' && (
+                {viewMode === 'attendance' && (
                     <div className={styles.contentArea}>
                         <div className={styles.sectionHeader}>
                             <h2 className={styles.sectionTitle}>
-                                {selectedMinistry && ministryNames[selectedMinistry]} - Attendance Management
+                                {selectedMinistry ? 
+                                    `${ministryNames[selectedMinistry]} - Attendance Management` : 
+                                    'Centralized Attendance Management'
+                                }
                             </h2>
                             {/* Debug info */}
                             {import.meta.env.DEV && (
@@ -748,6 +1145,19 @@ const MinistriesAdmin: React.FC = () => {
                                                 ))}
                                             </div>
                                         </div>
+                                        
+                                        {/* Generate attendance form button */}
+                                        {attendanceRecords.length > 0 && (
+                                            <div className={styles.generateFormSection}>
+                                                <button
+                                                    className={`${styles.actionButton} ${styles.generate}`}
+                                                    onClick={generateAttendanceForm}
+                                                    title="Generate attendance form with KSUCU header"
+                                                >
+                                                    <FontAwesomeIcon icon={faFilePdf} /> Generate Attendance Form
+                                                </button>
+                                            </div>
+                                        )}
                                     </>
                                 ) : attendanceSession ? (
                                     <div className={styles.noData}>
@@ -776,6 +1186,106 @@ const MinistriesAdmin: React.FC = () => {
                                             Click "Open Attendance Session" to allow users to sign attendance.
                                         </p>
                                     </div>
+                                )}
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {/* Forms Management View */}
+                {viewMode === 'forms' && (
+                    <div className={styles.contentArea}>
+                        <div className={styles.sectionHeader}>
+                            <h2 className={styles.sectionTitle}>
+                                <FontAwesomeIcon icon={faArchive} /> Forms Management
+                            </h2>
+                            <p className={styles.sectionDescription}>
+                                View, download, and manage all generated forms with KSUCU headers
+                            </p>
+                        </div>
+
+                        {/* Leader Role Selector */}
+                        <div className={styles.leaderRoleSelector}>
+                            <label className={styles.selectorLabel}>
+                                <FontAwesomeIcon icon={faUsers} /> Filter by Leader Role:
+                            </label>
+                            <select
+                                className={styles.select}
+                                value={selectedLeaderRole}
+                                onChange={(e) => setSelectedLeaderRole(e.target.value)}
+                            >
+                                <option value="">All Leader Roles</option>
+                                {leadershipRoles.map(role => (
+                                    <option key={role} value={role}>{role}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {loading ? (
+                            <div className={styles.loading}>Loading forms...</div>
+                        ) : (
+                            <div className={styles.formsList}>
+                                {generatedForms.length === 0 ? (
+                                    <div className={styles.noData}>
+                                        <FontAwesomeIcon icon={faFilePdf} className={styles.noDataIcon} />
+                                        <p>No forms have been generated yet.</p>
+                                        <p className={styles.noDataSubtext}>
+                                            Generate forms from the Attendance or Commitment Forms sections.
+                                        </p>
+                                    </div>
+                                ) : (
+                                    <>
+                                        <div className={styles.formsHeader}>
+                                            <h3>Generated Forms ({generatedForms.length})</h3>
+                                            <p>Latest forms appear first</p>
+                                        </div>
+                                        
+                                        <div className={styles.formsGrid}>
+                                            {generatedForms.map((form, index) => (
+                                                <div key={form.id} className={styles.formCard}>
+                                                    <div className={styles.formHeader}>
+                                                        <div className={styles.formNumber}>{index + 1}.</div>
+                                                        <div className={styles.formInfo}>
+                                                            <h4 className={styles.formTitle}>{form.title}</h4>
+                                                            <div className={styles.formMeta}>
+                                                                <span className={styles.formType}>
+                                                                    <FontAwesomeIcon icon={form.type === 'attendance' ? faUsers : faFileSignature} />
+                                                                    {form.type === 'attendance' ? 'Attendance' : 'Commitment'}
+                                                                </span>
+                                                                <span className={styles.formCount}>
+                                                                    {form.recordCount} records
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div className={styles.formDetails}>
+                                                        <p><strong>Ministry:</strong> {form.ministry}</p>
+                                                        <p><strong>Leader Role:</strong> {form.leaderRole}</p>
+                                                        <p><strong>Session Date:</strong> {form.sessionDate}</p>
+                                                        <p><strong>Generated:</strong> {new Date(form.createdAt).toLocaleString()}</p>
+                                                    </div>
+                                                    
+                                                    <div className={styles.formActions}>
+                                                        <button
+                                                            className={`${styles.actionButton} ${styles.download}`}
+                                                            onClick={() => downloadFormPDF(form)}
+                                                            title="Download PDF"
+                                                        >
+                                                            <FontAwesomeIcon icon={faDownload} /> Download
+                                                        </button>
+                                                        <button
+                                                            className={`${styles.actionButton} ${styles.delete}`}
+                                                            onClick={() => deleteForm(form.id)}
+                                                            title="Delete form"
+                                                        >
+                                                            <FontAwesomeIcon icon={faTrash} /> Delete
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </>
                                 )}
                             </div>
                         )}

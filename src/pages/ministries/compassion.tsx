@@ -1,8 +1,7 @@
 import React from 'react';
 import styles from '../../styles/ministryPage.module.css';
-import Header from '../../components/header';
+import UniversalHeader from '../../components/UniversalHeader';
 import Footer from '../../components/footer';
-import AttendanceSignin from '../../components/AttendanceSignin';
 import { Link } from 'react-router-dom';
 import compassionImg from '../../assets/compassion.jpg';
 
@@ -10,7 +9,7 @@ const CompassionPage: React.FC = () => {
 
   return (
     <>
-      <Header />
+      <UniversalHeader />
       <div className={styles.container}>
         <div className={styles.heroSection}>
           <div className={styles.heroContent}>
@@ -22,7 +21,6 @@ const CompassionPage: React.FC = () => {
           </div>
         </div>
 
-        <AttendanceSignin ministry="Compassion" />
 
         <div className={styles.contentSection}>
           <div className={styles.description}>

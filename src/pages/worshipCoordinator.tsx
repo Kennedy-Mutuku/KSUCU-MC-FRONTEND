@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from '../styles/worshipCoordinator.module.css';
-import Header from '../components/header';
+import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
 
 interface Member {
@@ -95,7 +95,7 @@ const WorshipCoordinator: React.FC = () => {
 
   return (
     <>
-      <Header />
+      <UniversalHeader />
       <div className={styles.container}>
         <h1 className={styles.title}>Worship Coordinator Dashboard</h1>
         

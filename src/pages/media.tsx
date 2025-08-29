@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from '../styles/Media.module.css';
-import Header from '../components/header';
+import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
 import loadingAnime from '../assets/Animation - 1716747954931.gif';
 import { FaYoutube, FaFacebook, FaTiktok, FaTwitter, FaImage, FaNewspaper, FaBook, FaTimes } from 'react-icons/fa';
@@ -86,7 +86,7 @@ const Media: React.FC = () => {
   
   return (
     <>
-      <Header />
+      <UniversalHeader />
       
       {generalLoading && (
         <div className={styles['loading-screen']}>

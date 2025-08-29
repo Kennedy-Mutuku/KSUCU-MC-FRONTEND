@@ -1,0 +1,410 @@
+/* Attendance Session Management Styles */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: 80vh;
+}
+
+/* Header */
+.header {
+    background: linear-gradient(135deg, #730051, #5a003d);
+    color: white;
+    padding: 2rem;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+    text-align: center;
+    position: relative;
+}
+
+.header h1 {
+    margin: 0 0 1rem 0;
+    font-size: 2rem;
+}
+
+.roleInfo {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    margin: 0;
+}
+
+.backButton {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.backButton:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Active Role Indicator */
+.activeRoleIndicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    background: rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50px;
+    padding: 0.75rem 1.5rem;
+    margin: 0 auto 1.5rem auto;
+    width: fit-content;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.activeRoleIcon {
+    font-size: 1.5rem;
+    animation: glow 2s infinite alternate;
+}
+
+.activeRoleText {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #ffffff;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes glow {
+    0% { text-shadow: 0 0 5px rgba(255, 215, 0, 0.7); }
+    100% { text-shadow: 0 0 15px rgba(255, 215, 0, 1), 0 0 25px rgba(255, 215, 0, 0.8); }
+}
+
+/* Message */
+.message {
+    background: #e8f5e8;
+    color: #2d5a2d;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    text-align: center;
+    border-left: 4px solid #4caf50;
+}
+
+/* Session Controls */
+.sessionControls {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.sessionControls h2 {
+    color: #730051;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.sessionStatus {
+    margin-bottom: 2rem;
+}
+
+.statusCard {
+    padding: 1.5rem;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.statusCard.active {
+    background: linear-gradient(135deg, #e8f5e8, #d4edda);
+    border: 2px solid #4caf50;
+}
+
+.statusCard.inactive {
+    background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+    border: 2px solid #ffc107;
+}
+
+.statusCard h3 {
+    margin: 0 0 1rem 0;
+    font-size: 1.3rem;
+}
+
+.statusCard p {
+    margin: 0.5rem 0;
+    color: #666;
+}
+
+.controlButtons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.controlButton {
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 140px;
+    justify-content: center;
+}
+
+.startButton {
+    background: #4caf50;
+    color: white;
+}
+
+.startButton:hover:not(:disabled) {
+    background: #45a049;
+    transform: translateY(-2px);
+}
+
+.resetButton {
+    background: #ff9800;
+    color: white;
+}
+
+.resetButton:hover:not(:disabled) {
+    background: #e68900;
+    transform: translateY(-2px);
+}
+
+.stopButton {
+    background: #f44336;
+    color: white;
+}
+
+.stopButton:hover:not(:disabled) {
+    background: #da190b;
+    transform: translateY(-2px);
+}
+
+.forceButton {
+    background: #dc3545;
+    color: white;
+    border: 2px solid #dc3545;
+    animation: pulse-warning 2s infinite;
+}
+
+.forceButton:hover:not(:disabled) {
+    background: #c82333;
+    border-color: #c82333;
+    transform: translateY(-2px);
+    animation: none;
+}
+
+@keyframes pulse-warning {
+    0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+}
+
+.controlButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+/* Attendance Records */
+.attendanceRecords {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.recordsHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.recordsHeader h2 {
+    color: #730051;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.downloadButton {
+    background: #730051;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.downloadButton:hover {
+    background: #5a003d;
+    transform: translateY(-2px);
+}
+
+.loading {
+    text-align: center;
+    padding: 3rem;
+    color: #666;
+    font-size: 1.1rem;
+}
+
+.recordsList {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+}
+
+.recordCard {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    transition: all 0.3s ease;
+}
+
+.recordCard:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.recordNumber {
+    background: #730051;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.recordInfo h3 {
+    margin: 0 0 0.5rem 0;
+    color: #730051;
+    font-size: 1.1rem;
+}
+
+.recordInfo p {
+    margin: 0.25rem 0;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.noRecords {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #666;
+}
+
+.noRecordsIcon {
+    font-size: 4rem;
+    color: #ccc;
+    margin-bottom: 1rem;
+}
+
+.noRecords h3 {
+    margin: 1rem 0;
+    color: #333;
+}
+
+.noRecords p {
+    color: #666;
+    line-height: 1.6;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .header {
+        padding: 1.5rem;
+        text-align: center;
+    }
+    
+    .header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .backButton {
+        position: static;
+        margin-bottom: 1rem;
+    }
+    
+    .activeRoleIndicator {
+        padding: 0.5rem 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .activeRoleText {
+        font-size: 1rem;
+    }
+    
+    .activeRoleIcon {
+        font-size: 1.25rem;
+    }
+    
+    .controlButtons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .controlButton {
+        width: 100%;
+        max-width: 250px;
+    }
+    
+    .recordsHeader {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .recordsList {
+        grid-template-columns: 1fr;
+    }
+    
+    .recordCard {
+        padding: 1rem;
+    }
+    
+    .noRecords {
+        padding: 2rem 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .sessionControls,
+    .attendanceRecords {
+        padding: 1rem;
+    }
+    
+    .recordCard {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .recordNumber {
+        align-self: center;
+    }
+}

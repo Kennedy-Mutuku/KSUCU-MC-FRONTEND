@@ -24,6 +24,7 @@ const AttendanceForm: React.FC<AttendanceFormProps> = ({ ministry, onSubmit }) =
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState('');
   const [showForm, setShowForm] = useState(false);
+  const [deviceAttendance, setDeviceAttendance] = useState<AttendanceSubmission[]>([]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -59,15 +60,14 @@ const AttendanceForm: React.FC<AttendanceFormProps> = ({ ministry, onSubmit }) =
       // Save to localStorage (will be moved to proper backend later)
       const existingAttendance = JSON.parse(localStorage.getItem('ministryAttendance') || '[]');
       
-      // Check for duplicate registration
+      // Check for duplicate registration number (not tied to specific session or date)
       const isDuplicate = existingAttendance.some((record: AttendanceSubmission) => 
         record.regNo === submission.regNo && 
-        record.ministry === ministry &&
-        new Date(record.timestamp).toDateString() === new Date().toDateString()
+        record.ministry === ministry
       );
 
       if (isDuplicate) {
-        setMessage('You have already signed attendance for this ministry today');
+        setMessage(`Registration number ${submission.regNo} has already signed attendance for ${ministry} ministry`);
         setIsSubmitting(false);
         return;
       }
@@ -75,13 +75,15 @@ const AttendanceForm: React.FC<AttendanceFormProps> = ({ ministry, onSubmit }) =
       existingAttendance.push(submission);
       localStorage.setItem('ministryAttendance', JSON.stringify(existingAttendance));
 
+      // Update device attendance list
+      setDeviceAttendance(prev => [...prev, submission]);
+
       onSubmit(submission);
-      setMessage('✅ Attendance signed successfully!');
+      setMessage(`✅ Attendance signed successfully for ${submission.name}!`);
       setFormData({ name: '', regNo: '', year: '' });
       
-      // Hide form after successful submission
+      // Keep form open for more users, just show success message
       setTimeout(() => {
-        setShowForm(false);
         setMessage('');
       }, 3000);
 
@@ -93,9 +95,30 @@ const AttendanceForm: React.FC<AttendanceFormProps> = ({ ministry, onSubmit }) =
     setIsSubmitting(false);
   };
 
+  // Load device attendance on component mount
+  React.useEffect(() => {
+    const existingAttendance = JSON.parse(localStorage.getItem('ministryAttendance') || '[]');
+    const ministryAttendance = existingAttendance.filter((record: AttendanceSubmission) => 
+      record.ministry === ministry
+    );
+    setDeviceAttendance(ministryAttendance);
+  }, [ministry]);
+
   if (!showForm) {
     return (
       <div className={styles.attendanceToggle}>
+        {deviceAttendance.length > 0 && (
+          <div className={styles.attendanceCount}>
+            <p>📊 {deviceAttendance.length} user{deviceAttendance.length !== 1 ? 's' : ''} signed from this device:</p>
+            <div className={styles.usersList}>
+              {deviceAttendance.map((record, index) => (
+                <span key={record.id} className={styles.userBadge}>
+                  {record.name} ({record.regNo})
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
         <button 
           className={styles.toggleButton}
           onClick={() => setShowForm(true)}
@@ -185,11 +208,14 @@ const AttendanceForm: React.FC<AttendanceFormProps> = ({ ministry, onSubmit }) =
         <div className={styles.formActions}>
           <button
             type="button"
-            onClick={() => setShowForm(false)}
+            onClick={() => {
+              setShowForm(false);
+              setMessage('');
+            }}
             className={styles.cancelButton}
             disabled={isSubmitting}
           >
-            Cancel
+            Done Signing
           </button>
           <button
             type="submit"
@@ -201,9 +227,29 @@ const AttendanceForm: React.FC<AttendanceFormProps> = ({ ministry, onSubmit }) =
         </div>
       </form>
 
+      {deviceAttendance.length > 0 && (
+        <div className={styles.deviceAttendance}>
+          <h4>✅ Users signed from this device ({deviceAttendance.length}):</h4>
+          <div className={styles.signedUsersList}>
+            {deviceAttendance.map((record, index) => (
+              <div key={record.id} className={styles.signedUserItem}>
+                <span className={styles.signedUserName}>{record.name}</span>
+                <span className={styles.signedUserRegNo}>({record.regNo})</span>
+                <span className={styles.signedUserTime}>
+                  {new Date(record.timestamp).toLocaleTimeString()}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+      
       <div className={styles.formFooter}>
         <p className={styles.footerText}>
-          🕐 Signed at: {new Date().toLocaleString()}
+          🕐 Current time: {new Date().toLocaleString()}
+        </p>
+        <p className={styles.footerNote}>
+          💡 You can sign attendance for multiple users from this device
         </p>
       </div>
     </div>

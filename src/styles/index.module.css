@@ -799,17 +799,128 @@ body{
     max-height: 0;
     opacity: 0;
     overflow: hidden;
-    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
-    margin: 15px 0 0 0;
-    padding: 0 15px;
-    border-radius: 10px;
-    background: rgba(0, 0, 0, 0.1);
+    transition: max-height 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                opacity 0.4s ease,
+                transform 0.4s ease;
+    margin: 20px 0 0 0;
+    padding: 0;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.9));
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(115, 0, 81, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    transform: translateY(-10px);
+    position: relative;
+    z-index: 10;
 }
 
 .show {
-    max-height: 500px;
+    max-height: 600px;
     opacity: 1;
-    padding: 15px;
+    padding: 25px 20px;
+    transform: translateY(0);
+}
+
+/* Enhanced dropdown list styling */
+.category-list {
+    display: grid;
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.category-list li {
+    background: linear-gradient(135deg, #730051, #8b0061);
+    border-radius: 8px;
+    padding: 0;
+    box-shadow: 0 4px 12px rgba(115, 0, 81, 0.2);
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    overflow: hidden;
+}
+
+.category-list li:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(115, 0, 81, 0.3);
+}
+
+.category-list li a {
+    display: block;
+    padding: 16px 20px;
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.category-list li a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.category-list li:hover a::before {
+    opacity: 1;
+}
+
+/* Enhanced category title styling */
+.category-title {
+    color: #730051;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: color 0.3s ease;
+}
+
+.boardsCategoryDiv:hover .category-title {
+    color: #8b0061;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+    .category-list {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .category-list li a {
+        padding: 14px 18px;
+        font-size: 0.9rem;
+    }
+    
+    .category-title {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .dropdown-content.show {
+        padding: 20px 15px;
+    }
+    
+    .category-list li a {
+        padding: 12px 16px;
+        font-size: 0.85rem;
+    }
+    
+    .category-title {
+        font-size: 0.95rem;
+        letter-spacing: 0.5px;
+    }
 }
 
 .dropdown-icon {
@@ -2202,6 +2313,10 @@ hr{
 }
 
 @media (max-width: 900px) {
+    .flex-title {
+        background: #00c6ff;
+    }
+    
     .full-title {
         display: none;
     }
@@ -2222,6 +2337,8 @@ hr{
     
     .logo {
         flex: 0 0 auto;
+        text-align: center;
+        cursor: pointer;
     }
     
     .logo-image {
@@ -2277,6 +2394,10 @@ hr{
 }
 
 @media (max-width: 480px) {
+    .flex-title {
+        background: #00c6ff;
+    }
+    
     .full-title {
         display: none;
     }
@@ -2472,6 +2593,10 @@ hr{
 
 /* Extra small screens - Even more compact UIK title */
 @media (max-width: 360px) {
+    .flex-title {
+        background: #00c6ff;
+    }
+    
     .container {
         padding: 0 6px;
         position: relative;
@@ -2495,5 +2620,1050 @@ hr{
     .logo-image {
         width: 35px;
         height: 35px;
+    }
+}
+
+/* ===== CENTRALIZED ATTENDANCE SYSTEM ===== */
+
+/* Attendance Section Container */
+.attendanceSection {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    padding: 40px 20px;
+    margin: 40px 0;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+.attendanceSection::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #730051, #00c6ff);
+}
+
+.attendanceSectionTitle {
+    font-size: 1.8rem;
+    font-weight: 700;
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Session Status Display */
+.sessionStatus {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 25px;
+    text-align: center;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.sessionStatus.open {
+    border-color: #28a745;
+    background: linear-gradient(135deg, #d4edda, #ffffff);
+}
+
+.sessionStatus.closed {
+    border-color: #dc3545;
+    background: linear-gradient(135deg, #f8d7da, #ffffff);
+}
+
+.sessionStatusIcon {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.sessionStatus.open .sessionStatusIcon {
+    color: #28a745;
+}
+
+.sessionStatus.closed .sessionStatusIcon {
+    color: #dc3545;
+}
+
+.sessionStatusText {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.sessionStatusText.open {
+    color: #155724;
+}
+
+.sessionStatusText.closed {
+    color: #721c24;
+}
+
+.sessionLeadershipRole {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #666;
+    font-style: italic;
+}
+
+/* Attendance Button */
+.attendanceButton {
+    display: inline-block;
+    background: linear-gradient(135deg, #00c6ff, #0099cc);
+    color: white;
+    text-decoration: none;
+    padding: 18px 40px;
+    border-radius: 50px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 25px rgba(0, 198, 255, 0.4);
+    border: none;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    margin: 0 auto;
+    display: block;
+    width: fit-content;
+}
+
+.attendanceButton:hover {
+    background: linear-gradient(135deg, #0099cc, #007aa3);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(0, 198, 255, 0.5);
+    color: white;
+    text-decoration: none;
+}
+
+.attendanceButton:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.attendanceButton::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.attendanceButton:hover::before {
+    left: 100%;
+}
+
+/* Attendance Form */
+.attendanceForm {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    margin-top: 20px;
+    display: none;
+}
+
+.attendanceForm.show {
+    display: block;
+    animation: slideDown 0.5s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.attendanceFormTitle {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.formGroup {
+    margin-bottom: 20px;
+}
+
+.formLabel {
+    display: block;
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+.formInput {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+    box-sizing: border-box;
+}
+
+.formInput:focus {
+    outline: none;
+    border-color: #00c6ff;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(0, 198, 255, 0.1);
+}
+
+.formSelect {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    font-size: 1rem;
+    background: #f8f9fa;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.formSelect:focus {
+    outline: none;
+    border-color: #00c6ff;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(0, 198, 255, 0.1);
+}
+
+.signatureCanvas {
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    cursor: crosshair;
+    background: white;
+    width: 100%;
+    height: 150px;
+    box-sizing: border-box;
+}
+
+.signatureCanvas:focus {
+    border-color: #00c6ff;
+    box-shadow: 0 0 0 3px rgba(0, 198, 255, 0.1);
+}
+
+.signatureControls {
+    margin-top: 10px;
+    text-align: right;
+}
+
+.clearSignatureBtn {
+    background: #6c757d;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.clearSignatureBtn:hover {
+    background: #545b62;
+}
+
+.submitAttendanceBtn {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+    margin-top: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.submitAttendanceBtn:hover {
+    background: linear-gradient(135deg, #20c997, #17a2b8);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+}
+
+.attendanceSuccess {
+    background: linear-gradient(135deg, #d4edda, #ffffff);
+    border: 2px solid #28a745;
+    border-radius: 15px;
+    padding: 25px;
+    text-align: center;
+    margin-top: 20px;
+    display: none;
+}
+
+.attendanceSuccess.show {
+    display: block;
+    animation: fadeInSuccess 0.5s ease-out;
+}
+
+@keyframes fadeInSuccess {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.successIcon {
+    font-size: 3rem;
+    color: #28a745;
+    margin-bottom: 15px;
+    display: block;
+}
+
+.successTitle {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #155724;
+    margin-bottom: 10px;
+}
+
+.successMessage {
+    font-size: 1rem;
+    color: #155724;
+}
+
+/* No Session Message */
+.noSessionMessage {
+    background: linear-gradient(135deg, #f8d7da, #ffffff);
+    border: 2px solid #dc3545;
+    border-radius: 15px;
+    padding: 25px;
+    text-align: center;
+    margin-top: 20px;
+    display: none;
+}
+
+.noSessionMessage.show {
+    display: block;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.noSessionIcon {
+    font-size: 3rem;
+    color: #dc3545;
+    margin-bottom: 15px;
+    display: block;
+}
+
+.noSessionTitle {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #721c24;
+    margin-bottom: 10px;
+}
+
+.noSessionText {
+    font-size: 1rem;
+    color: #721c24;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .attendanceSection {
+        padding: 25px 15px;
+        margin: 25px 10px;
+        border-radius: 15px;
+    }
+    
+    .attendanceSectionTitle {
+        font-size: 1.4rem;
+        margin-bottom: 20px;
+    }
+    
+    .sessionStatus {
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+    
+    .attendanceButton {
+        padding: 15px 30px;
+        font-size: 1rem;
+    }
+    
+    .attendanceForm {
+        padding: 20px;
+        border-radius: 15px;
+    }
+    
+    .signatureCanvas {
+        height: 120px;
+    }
+    
+    .submitAttendanceBtn {
+        padding: 12px 25px;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .attendanceSection {
+        padding: 20px 10px;
+        margin: 20px 5px;
+    }
+    
+    .attendanceSectionTitle {
+        font-size: 1.2rem;
+    }
+    
+    .attendanceButton {
+        padding: 12px 25px;
+        font-size: 0.9rem;
+        width: calc(100% - 20px);
+    }
+    
+    .formInput, .formSelect {
+        padding: 10px 12px;
+        font-size: 0.95rem;
+    }
+    
+    .signatureCanvas {
+        height: 100px;
+    }
+}
+
+/* ===== MINISTRY ADMIN INTERFACE ===== */
+
+/* Admin Page Container */
+.ministriesAdminContainer {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    min-height: 100vh;
+    padding: 40px 20px;
+    position: relative;
+}
+
+.ministriesAdminContainer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #730051, #00c6ff);
+}
+
+.adminPageTitle {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.adminPageSubtitle {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #6c757d;
+    margin-bottom: 50px;
+    font-weight: 400;
+}
+
+/* Leadership Role Selection */
+.leadershipSelection {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    margin-bottom: 40px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.leadershipSelectionTitle {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #730051;
+    margin-bottom: 25px;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.leadershipRoleGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.leadershipRoleCard {
+    background: linear-gradient(135deg, #f8f9fa, #ffffff);
+    border: 2px solid #e9ecef;
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.leadershipRoleCard::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #730051, #00c6ff);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.leadershipRoleCard:hover {
+    border-color: #00c6ff;
+    background: linear-gradient(135deg, #e3f2fd, #ffffff);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 198, 255, 0.2);
+}
+
+.leadershipRoleCard:hover::before {
+    transform: scaleX(1);
+}
+
+.leadershipRoleCard.selected {
+    border-color: #730051;
+    background: linear-gradient(135deg, #730051, #8e1a6b);
+    color: white;
+    box-shadow: 0 10px 30px rgba(115, 0, 81, 0.3);
+}
+
+.leadershipRoleCard.selected::before {
+    transform: scaleX(1);
+    background: linear-gradient(90deg, #00c6ff, #0099cc);
+}
+
+.roleIcon {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    display: block;
+    color: #730051;
+    transition: all 0.3s ease;
+}
+
+.leadershipRoleCard.selected .roleIcon {
+    color: #00c6ff;
+}
+
+.roleName {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.roleDescription {
+    font-size: 0.85rem;
+    opacity: 0.8;
+    line-height: 1.4;
+}
+
+.leadershipRoleCard.selected .roleDescription {
+    opacity: 0.9;
+}
+
+/* Session Management Controls */
+.sessionManagementPanel {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    margin-bottom: 40px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    display: none;
+}
+
+.sessionManagementPanel.show {
+    display: block;
+    animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.sessionManagementTitle {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #730051;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.selectedRoleDisplay {
+    background: linear-gradient(135deg, #730051, #8e1a6b);
+    color: white;
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+    margin-bottom: 30px;
+    position: relative;
+    overflow: hidden;
+}
+
+.selectedRoleDisplay::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #00c6ff, #0099cc);
+}
+
+.selectedRoleText {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.selectedRoleSubtext {
+    font-size: 1rem;
+    opacity: 0.9;
+}
+
+.sessionControlButtons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.sessionControlBtn {
+    padding: 15px 30px;
+    border: none;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+}
+
+.openSessionBtn {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+}
+
+.openSessionBtn:hover {
+    background: linear-gradient(135deg, #20c997, #17a2b8);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.5);
+}
+
+.closeSessionBtn {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    color: white;
+    box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+}
+
+.closeSessionBtn:hover {
+    background: linear-gradient(135deg, #c82333, #bd2130);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(220, 53, 69, 0.5);
+}
+
+.refreshSessionBtn {
+    background: linear-gradient(135deg, #00c6ff, #0099cc);
+    color: white;
+    box-shadow: 0 6px 20px rgba(0, 198, 255, 0.4);
+}
+
+.refreshSessionBtn:hover {
+    background: linear-gradient(135deg, #0099cc, #007aa3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 198, 255, 0.5);
+}
+
+/* Session Status Indicator */
+.adminSessionStatus {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    margin-top: 30px;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.adminSessionStatus.open {
+    border-color: #28a745;
+    background: linear-gradient(135deg, #d4edda, #ffffff);
+}
+
+.adminSessionStatus.closed {
+    border-color: #dc3545;
+    background: linear-gradient(135deg, #f8d7da, #ffffff);
+}
+
+.sessionStatusBadge {
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.sessionStatusBadge.open {
+    background: #28a745;
+    color: white;
+}
+
+.sessionStatusBadge.closed {
+    background: #dc3545;
+    color: white;
+}
+
+/* Attendance Records Display */
+.attendanceRecordsPanel {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    margin-bottom: 40px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    display: none;
+}
+
+.attendanceRecordsPanel.show {
+    display: block;
+    animation: slideUp 0.5s ease-out;
+}
+
+.attendanceRecordsTitle {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #730051;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.recordsHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.recordsCount {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #6c757d;
+}
+
+.downloadPdfBtn {
+    background: linear-gradient(135deg, #730051, #8e1a6b);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.downloadPdfBtn:hover {
+    background: linear-gradient(135deg, #8e1a6b, #a0246e);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(115, 0, 81, 0.4);
+}
+
+.attendanceTable {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    background: white;
+}
+
+.attendanceTable th {
+    background: linear-gradient(135deg, #730051, #8e1a6b);
+    color: white;
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.9rem;
+}
+
+.attendanceTable td {
+    padding: 15px;
+    border-bottom: 1px solid #e9ecef;
+    font-size: 0.95rem;
+    color: #495057;
+}
+
+.attendanceTable tr:hover {
+    background: #f8f9fa;
+}
+
+.attendanceTable tr:last-child td {
+    border-bottom: none;
+}
+
+/* Mobile Responsiveness for Admin */
+@media (max-width: 768px) {
+    .ministriesAdminContainer {
+        padding: 20px 10px;
+    }
+    
+    .adminPageTitle {
+        font-size: 2rem;
+        margin-bottom: 15px;
+    }
+    
+    .adminPageSubtitle {
+        font-size: 1rem;
+        margin-bottom: 30px;
+    }
+    
+    .leadershipSelection, .sessionManagementPanel, .attendanceRecordsPanel {
+        padding: 25px 15px;
+        border-radius: 15px;
+    }
+    
+    .leadershipRoleGrid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 10px;
+    }
+    
+    .leadershipRoleCard {
+        padding: 15px;
+    }
+    
+    .roleIcon {
+        font-size: 2rem;
+        margin-bottom: 10px;
+    }
+    
+    .roleName {
+        font-size: 0.9rem;
+    }
+    
+    .roleDescription {
+        font-size: 0.8rem;
+    }
+    
+    .sessionControlButtons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .sessionControlBtn {
+        width: 100%;
+        max-width: 250px;
+    }
+    
+    .recordsHeader {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .attendanceTable {
+        font-size: 0.85rem;
+    }
+    
+    .attendanceTable th, .attendanceTable td {
+        padding: 10px 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .adminPageTitle {
+        font-size: 1.6rem;
+    }
+    
+    .leadershipRoleGrid {
+        grid-template-columns: 1fr;
+    }
+    
+    .sessionControlBtn {
+        padding: 12px 20px;
+        font-size: 0.9rem;
+    }
+    
+    .attendanceTable {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}
+
+/* Additional styles for dynamic attendance system */
+.sessionStatus {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 25px;
+    border: 2px solid;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+}
+
+.sessionStatusContent {
+    flex: 1;
+    text-align: left;
+}
+
+.sessionStartTime {
+    font-size: 0.9rem;
+    color: #666;
+    font-style: italic;
+    margin-top: 0.5rem;
+}
+
+.sessionStatus.open .sessionStatusText {
+    color: #28a745;
+    font-weight: 600;
+}
+
+.sessionStatus.closed .sessionStatusText {
+    color: #dc3545;
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.sessionStatusDescription {
+    font-size: 0.9rem;
+    color: #666;
+    line-height: 1.4;
+    margin-top: 0.5rem;
+}
+
+.sessionStatusText {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.sessionLeadershipRole {
+    color: #730051;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.formActions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    justify-content: center;
+}
+
+.cancelAttendanceBtn {
+    background: #6c757d;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.cancelAttendanceBtn:hover {
+    background: #5a6268;
+    transform: translateY(-2px);
+}
+
+.attendanceButton:disabled {
+    background: #6c757d !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+    opacity: 0.6;
+}
+
+/* Responsive adjustments for attendance form */
+@media (max-width: 768px) {
+    .sessionStatus {
+        padding: 15px;
+        gap: 12px;
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .sessionStatusContent {
+        text-align: center;
+    }
+    
+    .sessionStartTime {
+        font-size: 0.8rem;
+    }
+    
+    .sessionStatusDescription {
+        font-size: 0.85rem;
+    }
+    
+    .formActions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .cancelAttendanceBtn,
+    .submitAttendanceBtn {
+        width: 100%;
     }
 }

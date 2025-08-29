@@ -43,6 +43,21 @@ const LandingPage = () => {
   const [showClasses, setShowClasses] = useState(false);
   const [showBoards, setShowBoards] = useState(false);
   const [showEvangelisticTeams, setShowEvangelisticTeams] = useState(false);
+  const [activeSession, setActiveSession] = useState<{
+    leadershipRole: string;
+    isActive: boolean;
+    startTime: string;
+    sessionId: string;
+  } | null>(null);
+  const [showAttendanceForm, setShowAttendanceForm] = useState(false);
+  const [attendanceData, setAttendanceData] = useState({
+    fullName: '',
+    registrationNumber: '',
+    course: '',
+    yearOfStudy: '',
+    phoneNumber: '',
+    signature: ''
+  });
   const navigate = useNavigate();
 
 
@@ -56,20 +71,47 @@ const LandingPage = () => {
   ];
   
 
+  // Check for active attendance session
+  const checkActiveSession = () => {
+    try {
+      const activeSessionData = localStorage.getItem('global-active-session');
+      if (activeSessionData) {
+        const sessionInfo = JSON.parse(activeSessionData);
+        console.log('Session info found:', sessionInfo);
+        if (sessionInfo.isActive) {
+          setActiveSession(sessionInfo);
+        } else {
+          setActiveSession(null);
+        }
+      } else {
+        console.log('No active session found');
+        setActiveSession(null);
+      }
+    } catch (error) {
+      console.error('Error checking active session:', error);
+      setActiveSession(null);
+    }
+  };
+
   useEffect(() => {
     fetchUserData()
     fetchNewsData()
+    checkActiveSession()
     
+    // Set up interval to check for session updates every 5 seconds
+    const sessionCheckInterval = setInterval(checkActiveSession, 5000);
 
     // Refetch user data when window gains focus (user returns from login)
     const handleFocus = () => {
       fetchUserData();
+      checkActiveSession();
     };
 
     window.addEventListener('focus', handleFocus);
 
     return () => {
       window.removeEventListener('focus', handleFocus);
+      clearInterval(sessionCheckInterval);
     };
 
   }, [images.length]);
@@ -160,6 +202,87 @@ const LandingPage = () => {
     }finally{
       setgeneralLoading(false)
     }
+  };
+
+  // Handle attendance form submission
+  const handleAttendanceSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!activeSession || !userData) {
+      alert('Please sign in to submit attendance');
+      return;
+    }
+
+    if (!attendanceData.fullName || !attendanceData.registrationNumber || 
+        !attendanceData.course || !attendanceData.yearOfStudy || !attendanceData.phoneNumber) {
+      alert('Please fill in all required fields');
+      return;
+    }
+
+    try {
+      const attendanceRecord = {
+        _id: Date.now().toString(),
+        fullName: attendanceData.fullName,
+        registrationNumber: attendanceData.registrationNumber,
+        course: attendanceData.course,
+        yearOfStudy: attendanceData.yearOfStudy,
+        phoneNumber: attendanceData.phoneNumber,
+        signedAt: new Date().toISOString(),
+        signature: attendanceData.signature || 'Digital signature pending',
+        userId: userData.username,
+        sessionId: activeSession.sessionId
+      };
+
+      // Get existing records for this leader's session
+      const existingRecordsKey = `attendance-records-${activeSession.leadershipRole}`;
+      const existingRecords = JSON.parse(localStorage.getItem(existingRecordsKey) || '[]');
+      
+      // Check if registration number already signed attendance
+      const alreadySigned = existingRecords.some((record: any) => 
+        record.registrationNumber === attendanceData.registrationNumber
+      );
+      
+      if (alreadySigned) {
+        alert('You have already signed, thank you');
+        return;
+      }
+
+      // Add new record
+      existingRecords.push(attendanceRecord);
+      localStorage.setItem(existingRecordsKey, JSON.stringify(existingRecords));
+
+      // Show success message
+      alert('✅ Attendance submitted successfully!');
+      
+      // Reset form
+      setAttendanceData({
+        fullName: '',
+        registrationNumber: '',
+        course: '',
+        yearOfStudy: '',
+        phoneNumber: '',
+        signature: ''
+      });
+      setShowAttendanceForm(false);
+      
+    } catch (error) {
+      console.error('Error submitting attendance:', error);
+      alert('❌ Error submitting attendance. Please try again.');
+    }
+  };
+
+  const handleSignAttendance = () => {
+    if (!userData) {
+      alert('Please sign in first to sign attendance');
+      navigate('/signIn');
+      return;
+    }
+    setShowAttendanceForm(true);
+    // Pre-fill form with user data if available
+    setAttendanceData(prev => ({
+      ...prev,
+      fullName: userData.username || ''
+    }));
   };
 
   const handleLogout = async () => {
@@ -490,6 +613,134 @@ const LandingPage = () => {
                 
               </div>
               
+        </div>
+
+        {/* Centralized Attendance Section */}
+        <div className={styles.attendanceSection}>
+          <h2 className={styles.attendanceSectionTitle}>Attendance System</h2>
+          
+          {/* Unified Session Status Display */}
+          {activeSession && activeSession.isActive ? (
+            <div className={`${styles.sessionStatus} ${styles.open}`}>
+              <span className={styles.sessionStatusIcon}>✅</span>
+              <div className={styles.sessionStatusContent}>
+                <div className={styles.sessionStatusText}>Session Active</div>
+                <div className={styles.sessionLeadershipRole}>
+                  {activeSession.leadershipRole} has opened attendance
+                </div>
+                <div className={styles.sessionStartTime}>
+                  Started: {new Date(activeSession.startTime).toLocaleString()}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className={`${styles.sessionStatus} ${styles.closed}`}>
+              <span className={styles.sessionStatusIcon}>🔒</span>
+              <div className={styles.sessionStatusContent}>
+                <div className={styles.sessionStatusText}>No Session Open</div>
+                <div className={styles.sessionStatusDescription}>
+                  Currently, no attendance session is open for signing. 
+                  Please check back later when a leadership member opens a session.
+                </div>
+              </div>
+            </div>
+          )}
+          
+          {/* Attendance Button */}
+          <button 
+            className={styles.attendanceButton} 
+            disabled={!activeSession || !activeSession.isActive}
+            onClick={handleSignAttendance}
+          >
+            Sign Attendance
+          </button>
+          
+          {/* Attendance Form */}
+          {showAttendanceForm && activeSession && activeSession.isActive ? (
+            /* Attendance Form */
+            <form className={styles.attendanceForm} onSubmit={handleAttendanceSubmit}>
+              <h3 className={styles.attendanceFormTitle}>Sign Your Attendance</h3>
+              
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>Full Name *</label>
+                <input 
+                  type="text" 
+                  className={styles.formInput} 
+                  placeholder="Enter your full name" 
+                  value={attendanceData.fullName}
+                  onChange={(e) => setAttendanceData(prev => ({...prev, fullName: e.target.value}))}
+                  required 
+                />
+              </div>
+              
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>Registration Number *</label>
+                <input 
+                  type="text" 
+                  className={styles.formInput} 
+                  placeholder="e.g., C025-01-1234/2023" 
+                  value={attendanceData.registrationNumber}
+                  onChange={(e) => setAttendanceData(prev => ({...prev, registrationNumber: e.target.value}))}
+                  required 
+                />
+              </div>
+              
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>Course *</label>
+                <input 
+                  type="text" 
+                  className={styles.formInput} 
+                  placeholder="e.g., Computer Science" 
+                  value={attendanceData.course}
+                  onChange={(e) => setAttendanceData(prev => ({...prev, course: e.target.value}))}
+                  required 
+                />
+              </div>
+              
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>Year of Study *</label>
+                <select 
+                  className={styles.formSelect} 
+                  value={attendanceData.yearOfStudy}
+                  onChange={(e) => setAttendanceData(prev => ({...prev, yearOfStudy: e.target.value}))}
+                  required
+                >
+                  <option value="">Select Year</option>
+                  <option value="1">Year 1</option>
+                  <option value="2">Year 2</option>
+                  <option value="3">Year 3</option>
+                  <option value="4">Year 4</option>
+                  <option value="5">Year 5</option>
+                  <option value="6">Year 6</option>
+                </select>
+              </div>
+              
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>Phone Number *</label>
+                <input 
+                  type="tel" 
+                  className={styles.formInput} 
+                  placeholder="e.g., +254712345678" 
+                  value={attendanceData.phoneNumber}
+                  onChange={(e) => setAttendanceData(prev => ({...prev, phoneNumber: e.target.value}))}
+                  required 
+                />
+              </div>
+              
+              <div className={styles.formActions}>
+                <button type="submit" className={styles.submitAttendanceBtn}>
+                  Submit Attendance
+                </button>
+                <button 
+                  type="button" 
+                  className={styles.cancelAttendanceBtn}
+                  onClick={() => setShowAttendanceForm(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          ) : null}
         </div>
 
         <div className={styles.weeklyActivities}>

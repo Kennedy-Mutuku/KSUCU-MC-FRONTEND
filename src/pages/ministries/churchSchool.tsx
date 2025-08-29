@@ -1,19 +1,15 @@
 import React from 'react';
 import styles from '../../styles/ministryPage.module.css';
-import Header from '../../components/header';
+import UniversalHeader from '../../components/UniversalHeader';
 import Footer from '../../components/footer';
-import AttendanceForm, { AttendanceSubmission } from '../../components/AttendanceForm';
 import { Link } from 'react-router-dom';
 import csImg from '../../assets/churchschool.jpg';
 
 const ChurchSchoolPage: React.FC = () => {
-  const handleAttendanceSubmit = (submission: AttendanceSubmission) => {
-    console.log('Attendance submitted:', submission);
-  };
 
   return (
     <>
-      <Header />
+      <UniversalHeader />
       <div className={styles.container}>
         <div className={styles.heroSection}>
           <div className={styles.heroContent}>
@@ -25,10 +21,6 @@ const ChurchSchoolPage: React.FC = () => {
           </div>
         </div>
 
-        <AttendanceForm 
-          ministry="Church School" 
-          onSubmit={handleAttendanceSubmit}
-        />
 
         <div className={styles.contentSection}>
           <div className={styles.description}>

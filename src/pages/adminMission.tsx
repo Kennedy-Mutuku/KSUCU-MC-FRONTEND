@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styles from '../styles/savedSoulsList.module.css'; 
-import Header from '../components/header';
+import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
 
 const SavedSoulsList: React.FC = () => {
@@ -37,7 +37,7 @@ const SavedSoulsList: React.FC = () => {
 
   return (
     <> 
-        <Header />
+        <UniversalHeader />
         <div className={styles.container}>
         <h4>Saved Souls List</h4>
         {souls.length === 0 ? (

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import styles from '../styles/ministries.module.css';
 
-import Header from '../components/header';
+import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
 import { useLocation } from 'react-router-dom';
 import PW from '../assets/praise-and-worship.jpg'
@@ -98,7 +98,7 @@ const MinistriesPage: React.FC = () => {
             </div>
       )} */}
 
-      <Header />
+      <UniversalHeader />
 
       <div className={styles.main}>
         <h2 className={styles['ministries--title']}>MINISTRIES</h2>

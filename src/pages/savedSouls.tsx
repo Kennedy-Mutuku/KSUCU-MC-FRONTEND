@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from '../styles/savedSouls.module.css';
-import Header from '../components/header';
+import UniversalHeader from '../components/UniversalHeader';
 import axios from 'axios';
 import Footer from '../components/footer';
 
@@ -83,7 +83,7 @@ const SavedSouls: React.FC = () => {
 
   return (
     <>
-        <Header />
+        <UniversalHeader />
         <div className={styles.container}>
 
             <h4 className={styles.title}>MISSION DEPARTMENT</h4>

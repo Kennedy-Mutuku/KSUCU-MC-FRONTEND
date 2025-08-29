@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from '../styles/classes.module.css'; 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Header from '../components/header';
+import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebook, faTiktok, faXTwitter, faYoutube } from '@fortawesome/free-brands-svg-icons'; 
@@ -61,7 +61,7 @@ const classData: ClassInfo[] = [
 const ClassesSection: React.FC = () => {
   return (
     <section id="Classes" className="">
-        <Header />
+        <UniversalHeader />
       <div className={styles.container}>
 
         <div className={styles.title}>

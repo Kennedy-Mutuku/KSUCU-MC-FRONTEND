@@ -4,7 +4,7 @@ import styles from '../styles/signin.module.css';
 import cuLogo from '../assets/KSUCU logo updated document.png';
 import loadingAnime from '../assets/Animation - 1716747954931.gif';
 import { getApiUrl } from '../config/environment';
-import Header from '../components/header';
+import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
 
 interface UserData {
@@ -84,7 +84,7 @@ const UserProfilePage: React.FC = () => {
     if (loading) {
         return (
             <>
-                <Header />
+                <UniversalHeader />
                 <div className={styles.container}>
                     <div style={{ textAlign: 'center', padding: '50px' }}>
                         <img src={loadingAnime} alt="Loading..." className={styles['loading-gif']} />
@@ -99,7 +99,7 @@ const UserProfilePage: React.FC = () => {
     if (error || !userData) {
         return (
             <>
-                <Header />
+                <UniversalHeader />
                 <div className={styles.container}>
                     <div style={{ textAlign: 'center', padding: '50px' }}>
                         <p>Failed to load profile. <Link to="/signIn">Please login again</Link></p>
@@ -112,7 +112,7 @@ const UserProfilePage: React.FC = () => {
 
     return (
         <>
-            <Header />
+            <UniversalHeader />
             <div className={styles.body} style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px 0' }}>
                 <div className={styles.container} style={{ margin: '20px auto', maxHeight: '90vh', overflowY: 'auto' }}>
                 <Link to={"/"} className={styles.logo_div} style={{ marginTop: '20px' }}>

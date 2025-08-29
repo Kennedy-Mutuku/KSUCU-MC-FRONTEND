@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import styles from '../styles/ET.module.css';
-import Header from '../components/header';
+import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
 import { useLocation } from 'react-router-dom';
 import WESO from '../assets/WESO.jpg';
@@ -28,7 +28,7 @@ const Etpage: React.FC = () => {
 
   return (
     <>
-      <Header />
+      <UniversalHeader />
       <div className={styles['main']}>
         <h2 className={styles['ET--title']}>EVANGELISTIC TEAMS</h2>
 

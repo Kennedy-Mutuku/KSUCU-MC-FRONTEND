@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getApiUrl } from '../config/environment';
 import styles from '../styles/feedback.module.css';
-import Header from '../components/header';
+import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
 
 const FeedbackForm: React.FC = () => {
@@ -110,7 +110,7 @@ const FeedbackForm: React.FC = () => {
 
     return (
         <>
-            <Header />
+            <UniversalHeader />
             <h2 className={styles.bsTitle}>Feedback</h2>
             {error && <div className={styles.error}>{error}</div>}
 

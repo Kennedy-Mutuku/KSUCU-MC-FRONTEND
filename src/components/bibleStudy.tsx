@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import styles from '../styles/bs.module.css';
 import { Link } from 'react-router-dom';
-import Header from '../components/header';
+import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
 
 const Bs: React.FC = () => {
@@ -61,7 +61,7 @@ const Bs: React.FC = () => {
 
     return (
         <>
-            <Header />
+            <UniversalHeader />
             <h2 className={styles.bsTitle}>Bible Study</h2>
             
             {error && <div className={styles.error}>{error}</div>}

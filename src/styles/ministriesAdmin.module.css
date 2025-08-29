@@ -690,3 +690,310 @@
         width: 100%;
     }
 }
+
+/* Leadership Role Selection Styles */
+.leadershipSelection {
+    background: var(--surface-color);
+    border-radius: var(--radius);
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow);
+    border: 2px solid var(--primary-color);
+}
+
+.leadershipTitle {
+    color: var(--primary-color);
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.leadershipDescription {
+    color: var(--text-muted-color);
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.leadershipRoleGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.leadershipRoleButton {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-hover-color));
+    color: white;
+    border: none;
+    padding: 1rem 1.5rem;
+    border-radius: var(--radius);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.leadershipRoleButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(115, 0, 81, 0.3);
+    background: linear-gradient(135deg, var(--primary-hover-color), var(--primary-color));
+}
+
+.leadershipRoleButton:active {
+    transform: translateY(0);
+}
+
+.sectionDivider {
+    text-align: center;
+    margin: 2rem 0;
+    position: relative;
+}
+
+.sectionDivider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--border-color);
+    transform: translateY(-50%);
+}
+
+.dividerText {
+    background: var(--background-color);
+    padding: 0 1rem;
+    color: var(--text-muted-color);
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+/* Forms Management Styles */
+.sectionDescription {
+    color: var(--text-muted-color);
+    font-size: 0.9rem;
+    margin: 0.5rem 0 1.5rem 0;
+    font-style: italic;
+}
+
+.leaderRoleSelector {
+    margin-bottom: 2rem;
+}
+
+.formsList {
+    width: 100%;
+}
+
+.formsHeader {
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.formsHeader h3 {
+    color: var(--primary-color);
+    font-size: 1.3rem;
+    margin: 0 0 0.5rem 0;
+}
+
+.formsHeader p {
+    color: var(--text-muted-color);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.formsGrid {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: 1fr;
+}
+
+.formCard {
+    background: var(--surface-color);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.formCard:hover {
+    box-shadow: 0 8px 25px rgba(115, 0, 81, 0.15);
+    transform: translateY(-2px);
+}
+
+.formHeader {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.formNumber {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-hover-color));
+    color: white;
+    border-radius: 50%;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.formInfo {
+    flex: 1;
+}
+
+.formTitle {
+    color: var(--text-color);
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+}
+
+.formMeta {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.formType, .formCount {
+    background: rgba(0, 198, 255, 0.1);
+    color: #0066cc;
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.formDetails {
+    background: rgba(245, 245, 245, 0.5);
+    border-radius: var(--radius);
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.formDetails p {
+    margin: 0.5rem 0;
+    font-size: 0.9rem;
+    color: var(--text-color);
+}
+
+.formDetails strong {
+    color: var(--primary-color);
+}
+
+.formActions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+}
+
+.generate {
+    background: linear-gradient(135deg, #ff6b35, #f7931e);
+    color: white;
+}
+
+.generate:hover {
+    background: linear-gradient(135deg, #e55a2b, #d4831a);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+}
+
+.delete {
+    background: linear-gradient(135deg, #ff4757, #ff3742);
+    color: white;
+}
+
+.delete:hover {
+    background: linear-gradient(135deg, #e84054, #e53935);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 71, 87, 0.4);
+}
+
+.generateFormSection {
+    margin-top: 1.5rem;
+    text-align: center;
+    padding: 1rem;
+    background: rgba(255, 107, 53, 0.05);
+    border-radius: var(--radius);
+    border: 1px solid rgba(255, 107, 53, 0.2);
+}
+
+/* Responsive Design for Leadership Interface */
+@media (max-width: 768px) {
+    .leadershipRoleGrid {
+        grid-template-columns: 1fr;
+    }
+    
+    .leadershipRoleButton {
+        padding: 0.875rem 1.25rem;
+        font-size: 0.85rem;
+    }
+    
+    .leadershipSelection {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .leadershipRoleGrid {
+        gap: 0.75rem;
+    }
+    
+    .leadershipRoleButton {
+        padding: 0.75rem 1rem;
+        font-size: 0.8rem;
+    }
+    
+    .leadershipTitle {
+        font-size: 1.1rem;
+    }
+    
+    .formsGrid {
+        gap: 1rem;
+    }
+    
+    .formCard {
+        padding: 1.25rem;
+    }
+    
+    .formHeader {
+        flex-direction: column;
+        gap: 0.75rem;
+        align-items: flex-start;
+    }
+    
+    .formNumber {
+        align-self: flex-start;
+    }
+    
+    .formActions {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .formActions .actionButton {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .generateFormSection {
+        margin-top: 1rem;
+        padding: 0.75rem;
+    }
+    
+    .formMeta {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: flex-start;
+    }
+}

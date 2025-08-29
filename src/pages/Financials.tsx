@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styles from '../styles/financials.module.css';
 
-import Header from '../components/header';
+import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
 
 const FinancialsPage: React.FC = () => {
@@ -19,7 +19,7 @@ const FinancialsPage: React.FC = () => {
 
   return (
     <>
-      <Header />
+      <UniversalHeader />
 
       <main className={styles.main}>
 

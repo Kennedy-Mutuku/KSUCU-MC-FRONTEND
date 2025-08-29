@@ -535,6 +535,122 @@
     color: #555;
 }
 
+/* Leadership Role Selection Styles */
+.leadershipSelection {
+    margin-bottom: 2rem;
+}
+
+.leadershipDescription {
+    color: #666;
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+    text-align: center;
+}
+
+.leadershipRoleGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.leadershipRoleButton {
+    background: linear-gradient(135deg, #730051, #5a003d);
+    color: white;
+    border: none;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(115, 0, 81, 0.2);
+}
+
+.leadershipRoleButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(115, 0, 81, 0.35);
+    background: linear-gradient(135deg, #5a003d, #730051);
+}
+
+.leadershipRoleButton:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(115, 0, 81, 0.3);
+}
+
+.leadershipRoleButton:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+.arrowIcon {
+    margin-left: 0.5rem;
+    transition: transform 0.3s ease;
+}
+
+.leadershipRoleButton:hover .arrowIcon {
+    transform: translateX(5px);
+}
+
+.loadingSection {
+    background: white;
+    border-radius: 12px;
+    padding: 3rem;
+    text-align: center;
+    margin-top: 2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.loadingMessage h3 {
+    color: #730051;
+    margin: 1rem 0;
+}
+
+.loadingMessage p {
+    color: #666;
+    margin: 0;
+}
+
+.loadingIcon {
+    font-size: 3rem;
+    color: #730051;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+}
+
+.sectionDivider {
+    text-align: center;
+    margin: 2.5rem 0;
+    position: relative;
+}
+
+.sectionDivider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #ccc, transparent);
+    transform: translateY(-50%);
+}
+
+.dividerText {
+    background: white;
+    padding: 0 1.5rem;
+    color: #666;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+}
+
 @media (max-width: 768px) {
     .sessionButtons {
         flex-direction: column;
@@ -543,5 +659,20 @@
     .sessionButton {
         width: 100%;
         min-width: auto;
+    }
+    
+    .leadershipRoleGrid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+    
+    .leadershipRoleButton {
+        padding: 0.875rem 1.25rem;
+        font-size: 0.9rem;
+    }
+    
+    .leadershipDescription {
+        font-size: 0.95rem;
+        margin-bottom: 1.25rem;
     }
 }

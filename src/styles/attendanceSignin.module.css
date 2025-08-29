@@ -179,6 +179,137 @@
     color: #ffcdd2;
 }
 
+/* Multi-user styles */
+.attendanceCount {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.usersIcon {
+    color: #4CAF50;
+    margin-right: 8px;
+}
+
+.usersList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.userBadge {
+    background: rgba(76, 175, 80, 0.2);
+    border: 1px solid rgba(76, 175, 80, 0.4);
+    color: #c8e6c9;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.multiUserButton {
+    background: linear-gradient(45deg, #00c6ff, #0099cc);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 20px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 10px rgba(0, 198, 255, 0.3);
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+    width: 100%;
+}
+
+.multiUserButton:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 198, 255, 0.4);
+    background: linear-gradient(45deg, #0099cc, #007aa3);
+}
+
+.multiUserForm {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    margin-top: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.multiUserForm h4 {
+    margin: 0 0 15px 0;
+    color: #ffffff;
+    font-size: 1.1rem;
+    text-align: center;
+}
+
+.formGroup {
+    margin-bottom: 15px;
+}
+
+.formInput, .formSelect {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.formInput::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.formInput:focus, .formSelect:focus {
+    outline: none;
+    border-color: rgba(0, 198, 255, 0.6);
+    box-shadow: 0 0 0 2px rgba(0, 198, 255, 0.2);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.formSelect option {
+    background: #730051;
+    color: white;
+}
+
+.submitButton {
+    background: linear-gradient(45deg, #4CAF50, #45a049);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 10px rgba(76, 175, 80, 0.3);
+    width: 100%;
+    margin-top: 5px;
+}
+
+.submitButton:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+    background: linear-gradient(45deg, #45a049, #388e3c);
+}
+
+.submitButton:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
 /* Animations */
 @keyframes slideIn {
     from {
@@ -248,5 +379,23 @@
     .signButton {
         padding: 10px 25px;
         font-size: 0.95rem;
+    }
+    
+    .multiUserButton {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+    
+    .multiUserForm {
+        padding: 15px;
+    }
+    
+    .usersList {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .userBadge {
+        font-size: 0.8rem;
     }
 }

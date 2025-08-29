@@ -5,7 +5,7 @@ import styles from '../styles/signup.module.css';
 import cuLogo from '../assets/KSUCU logo updated document.png';
 import { getApiUrl } from '../config/environment';
 import { Search, RefreshCw, Phone, Mail, User, BookOpen } from 'lucide-react';
-import Header from '../components/header';
+import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
 
 interface UserData {
@@ -107,7 +107,7 @@ const UserManagement: React.FC = () => {
 
   return (
     <>
-      <Header />
+      <UniversalHeader />
       <div className={styles.body}>
       <div className={styles.container}>
         <Link to="/" className={styles.logo_div}>

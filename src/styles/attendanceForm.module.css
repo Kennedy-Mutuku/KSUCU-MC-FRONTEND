@@ -205,6 +205,97 @@
   font-style: italic;
 }
 
+.footerNote {
+  color: #00c6ff;
+  font-size: 0.85rem;
+  text-align: center;
+  margin: 5px 0 0 0;
+  font-weight: 500;
+}
+
+/* Multi-user attendance styles */
+.attendanceCount {
+  background: linear-gradient(135deg, #e8f5ff, #d4f0ff);
+  border: 1px solid rgba(0, 198, 255, 0.3);
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.attendanceCount p {
+  color: #0066cc;
+  font-weight: 600;
+  margin: 0 0 15px 0;
+  font-size: 1rem;
+}
+
+.usersList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.userBadge {
+  background: rgba(0, 198, 255, 0.1);
+  border: 1px solid rgba(0, 198, 255, 0.3);
+  color: #0066cc;
+  padding: 6px 12px;
+  border-radius: 15px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.deviceAttendance {
+  background: linear-gradient(135deg, #e8f5e8, #d4f4d4);
+  border: 1px solid rgba(76, 175, 80, 0.3);
+  border-radius: 15px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.deviceAttendance h4 {
+  color: #2d5a2d;
+  margin: 0 0 15px 0;
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.signedUsersList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.signedUserItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 10px 15px;
+  border-radius: 10px;
+  border: 1px solid rgba(76, 175, 80, 0.2);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.signedUserName {
+  font-weight: 600;
+  color: #2d5a2d;
+}
+
+.signedUserRegNo {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.signedUserTime {
+  color: #999;
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .attendanceContainer {
@@ -259,5 +350,36 @@
   .submitButton {
     padding: 10px 15px;
     font-size: 0.95rem;
+  }
+  
+  .attendanceCount {
+    padding: 15px;
+    margin-bottom: 15px;
+  }
+  
+  .usersList {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .userBadge {
+    font-size: 0.85rem;
+    padding: 5px 10px;
+  }
+  
+  .signedUserItem {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+    padding: 8px 12px;
+  }
+  
+  .deviceAttendance {
+    padding: 15px;
+    margin-top: 15px;
+  }
+  
+  .deviceAttendance h4 {
+    font-size: 1rem;
   }
 }

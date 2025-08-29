@@ -10,6 +10,21 @@
     overflow: visible;
 }
 
+/* Mobile Blue Background for Logo Section */
+.mobile-blue-section {
+    background: #00c6ff;
+    display: none;
+    padding: 10px 0;
+    position: relative;
+    text-align: center;
+}
+
+.mobile-blue-section .logo-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .flex-title-phone {
     display: flex;
     align-items: center;
@@ -249,8 +264,18 @@
 }
 
 @media (max-width: 900px) {
+    .mobile-blue-section {
+        display: none;
+    }
+    
     .flex-title-phone {
         padding: 12px 15px;
+        position: relative;
+        background: #00c6ff;
+    }
+    
+    .container .logo-section {
+        display: flex;
     }
     
     .logo-image {
@@ -268,20 +293,26 @@
     
     .container {
         gap: 8px;
+        justify-content: center;
+    }
+    
+    .title-section {
+        flex: none;
     }
     
     .nav-section {
         gap: 8px;
         min-width: 0;
         flex-shrink: 0;
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 101;
     }
     
     .title-text {
         font-size: 0.9rem;
-    }
-    
-    .nav-section {
-        gap: 10px;
     }
     
     .nav-text {
@@ -294,12 +325,15 @@
     
     .user-section {
         min-width: 60px;
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
     }
 }
 
 @media (max-width: 500px) {
     .flex-title-phone {
         padding: 8px 10px;
+        background: #00c6ff;
     }
     
     .logo-image {
@@ -343,6 +377,7 @@
 @media (max-width: 380px) {
     .flex-title-phone {
         padding: 6px 8px;
+        background: #00c6ff;
     }
     
     .container {

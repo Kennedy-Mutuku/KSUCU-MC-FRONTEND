@@ -1,11 +1,11 @@
-import Header from '../components/header';
+import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
 import { Link } from 'react-router-dom';
 
 export default function NoPage(){
     return(
         <>
-            <Header />
+            <UniversalHeader />
             <div style={{
                 minHeight: '70vh',
                 display: 'flex',

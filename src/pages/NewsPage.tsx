@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from '../styles/NewsPage.module.css';
-import Header from '../components/header';
+import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
 
 interface NewsData {
@@ -52,7 +52,7 @@ const NewsPage: React.FC = () => {
 
   return (
     <>
-      <Header />
+      <UniversalHeader />
       <div className={styles.newsPageContainer}>
         <h2 className={styles.title}>Communication Board</h2>
 
