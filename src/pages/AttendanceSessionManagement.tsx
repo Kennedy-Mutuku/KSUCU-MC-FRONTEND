@@ -117,11 +117,11 @@ const AttendanceSessionManagement: React.FC = () => {
                                     console.log(`✅ ${role} loaded ${records.length} attendance records from session ${data.session._id}`);
                                     console.log('Records data:', recordsData);
                                     console.log('Individual records:', records);
-                                    console.log('Record IDs:', records.map(r => r._id));
+                                    console.log('Record IDs:', records.map((r: { _id: string }) => r._id));
                                     
                                     // Always update records to ensure we have the latest data
                                     // Force React to update by creating completely new array with mapped objects
-                                    const processedRecords = records.map(record => ({
+                                    const processedRecords = records.map((record: AttendanceRecord) => ({
                                         _id: record._id,
                                         userName: record.userName,
                                         regNo: record.regNo,
