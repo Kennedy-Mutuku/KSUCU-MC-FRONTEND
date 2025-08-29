@@ -39,7 +39,7 @@ const AttendanceSessionManagement: React.FC = () => {
     const [leadershipRole, setLeadershipRole] = useState<string>('');
     const [attendanceSession, setAttendanceSession] = useState<AttendanceSession | null>(null);
     const [attendanceRecords, setAttendanceRecords] = useState<AttendanceRecord[]>([]);
-    const [globalActiveSession, setGlobalActiveSession] = useState<{leadershipRole: string; isActive: boolean} | null>(null);
+    const [globalActiveSession, setGlobalActiveSession] = useState<{leadershipRole: string; isActive: boolean; startTime?: string; sessionId?: string} | null>(null);
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState('');
 
