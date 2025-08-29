@@ -51,24 +51,28 @@ const AttendanceSessionManagement: React.FC = () => {
             setLeadershipRole(decodeURIComponent(role));
             loadSessionData(role);
             
-            // Set up periodic refresh for attendance records every 5 seconds
+            // Set up periodic refresh for attendance records every 3 seconds (more frequent)
             const refreshInterval = setInterval(() => {
+                console.log('🔄 Auto-refreshing session data...');
                 loadSessionData(role);
-            }, 5000);
+            }, 3000);
             
             return () => clearInterval(refreshInterval);
         }
     }, []);
 
     const loadSessionData = async (role: string) => {
+        console.log(`📡 Loading session data for role: "${role}"`);
         setLoading(true);
         try {
-            // Check backend for active session status
-            const response = await fetch(getApiUrl('attendanceSessionStatus'), {
+            // Check backend for active session status (with cache-busting)
+            const timestamp = Date.now();
+            const response = await fetch(`${getApiUrl('attendanceSessionStatus')}?t=${timestamp}`, {
                 method: 'GET',
                 credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Cache-Control': 'no-cache'
                 }
             });
             
@@ -84,28 +88,36 @@ const AttendanceSessionManagement: React.FC = () => {
                     });
                     
                     // Check if this admin owns the current session
+                    console.log(`🔍 Session ownership check: "${data.session.leadershipRole}" === "${role}" ?`, data.session.leadershipRole === role);
                     if (data.session.leadershipRole === role) {
+                        console.log(`✅ ${role} owns the current session - loading records`);
                         // This admin owns the session - load their records
                         setAttendanceSession(data.session);
                         
                         if (data.session._id) {
                             try {
-                                const recordsResponse = await fetch(`${getApiUrl('attendanceRecords')}/${data.session._id}`, {
+                                const recordsResponse = await fetch(`${getApiUrl('attendanceRecords')}/${data.session._id}?t=${timestamp}`, {
                                     method: 'GET',
                                     credentials: 'include',
+                                    headers: {
+                                        'Cache-Control': 'no-cache'
+                                    }
                                 });
                                 if (recordsResponse.ok) {
                                     const recordsData = await recordsResponse.json();
                                     const records = recordsData.records || [];
-                                    console.log(`${role} loaded ${records.length} attendance records from their session`);
+                                    console.log(`✅ ${role} loaded ${records.length} attendance records from session ${data.session._id}`);
+                                    console.log('Records:', records);
                                     setAttendanceRecords(records);
                                     
-                                    // Update the session attendance count
+                                    // Update the session with actual record count
                                     setAttendanceSession({
                                         ...data.session,
+                                        attendanceCount: Math.max(records.length, data.session.attendanceCount || 0),
                                         totalAttendees: records.length
                                     });
                                 } else {
+                                    console.error(`❌ Failed to load records for ${role}:`, recordsResponse.statusText);
                                     setAttendanceRecords([]);
                                 }
                             } catch (error) {
@@ -114,6 +126,7 @@ const AttendanceSessionManagement: React.FC = () => {
                             }
                         }
                     } else {
+                        console.log(`🔒 ${role} does NOT own the session - session belongs to ${data.session.leadershipRole}`);
                         // Another admin owns the session
                         setAttendanceSession(null);
                         setAttendanceRecords([]);
@@ -564,10 +577,30 @@ const AttendanceSessionManagement: React.FC = () => {
 
                 {/* Session Controls */}
                 <div className={styles.sessionControls}>
-                    <h2>
-                        <FontAwesomeIcon icon={faFileSignature} />
-                        Session Management
-                    </h2>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                        <h2 style={{ margin: 0 }}>
+                            <FontAwesomeIcon icon={faFileSignature} />
+                            Session Management
+                        </h2>
+                        <button
+                            onClick={() => {
+                                console.log('🔄 Manual refresh requested');
+                                loadSessionData(leadershipRole);
+                            }}
+                            disabled={loading}
+                            style={{
+                                padding: '8px 16px',
+                                backgroundColor: '#007bff',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '4px',
+                                cursor: 'pointer',
+                                fontSize: '14px'
+                            }}
+                        >
+                            🔄 Refresh
+                        </button>
+                    </div>
                     
                     <div className={styles.sessionStatus}>
                         {attendanceSession && attendanceSession.isActive ? (
@@ -664,6 +697,9 @@ const AttendanceSessionManagement: React.FC = () => {
                         <h2>
                             <FontAwesomeIcon icon={faCalendar} />
                             Attendance Records ({attendanceRecords.length})
+                            <span style={{ fontSize: '12px', color: '#666', fontWeight: 'normal', marginLeft: '10px' }}>
+                                Last updated: {new Date().toLocaleTimeString()}
+                            </span>
                         </h2>
                         {attendanceRecords.length > 0 && (
                             <button
