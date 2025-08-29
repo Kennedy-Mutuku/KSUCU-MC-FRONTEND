@@ -308,17 +308,44 @@ const LandingPage = () => {
     } catch (error: any) {
       console.error('❌ Error submitting attendance:', error);
       
-      if (error.response?.status === 400) {
-        const errorMessage = error.response.data.message || 'Invalid attendance data';
-        if (errorMessage.includes('already signed attendance')) {
-          // Duplicate registration number error
-          alert(`❌ Registration Number Already Used! ${errorMessage}. Please use a different registration number or check if this person has already signed attendance.`);
+      let errorMessage = 'Error submitting attendance. Please try again.';
+      
+      // Handle different error response formats (development vs production)
+      if (error.response) {
+        if (error.response.status === 400) {
+          // Extract error message from different possible formats
+          errorMessage = error.response.data?.message || 
+                        error.response.data?.error || 
+                        error.response.data || 
+                        'Invalid attendance data';
+          
+          // Convert to string if it's not already
+          if (typeof errorMessage !== 'string') {
+            errorMessage = String(errorMessage);
+          }
+          
+          // Check for duplicate registration number in various formats
+          if (errorMessage.toLowerCase().includes('already signed') || 
+              errorMessage.toLowerCase().includes('duplicate') ||
+              errorMessage.toLowerCase().includes('already used') ||
+              errorMessage.includes(attendanceData.registrationNumber.trim().toUpperCase())) {
+            alert(`❌ Registration Number Already Used! This registration number has already been used for attendance in this session. Please use a different registration number or check if this person has already signed attendance.`);
+            return;
+          }
         } else {
-          alert(`❌ ${errorMessage}`);
+          // Handle other HTTP error statuses
+          errorMessage = error.response.data?.message || 
+                        `Server error (${error.response.status}). Please try again.`;
         }
+      } else if (error.request) {
+        // Network error
+        errorMessage = 'Network error. Please check your internet connection and try again.';
       } else {
-        alert('❌ Error submitting attendance. Please check your connection and try again.');
+        // Other error
+        errorMessage = error.message || 'Unexpected error occurred.';
       }
+      
+      alert(`❌ ${errorMessage}`);
     }
   };
 
