@@ -27,7 +27,9 @@ interface ApiConfig {
     attendanceSessionStatus: string;
     attendanceSessionOpen: string;
     attendanceSessionClose: string;
+    attendanceSessionForceClose: string;
     attendanceSign: string;
+    attendanceSignAnonymous: string;
     attendanceSessions: string;
     attendanceStartSession: string;
     attendanceEndSession: string;
