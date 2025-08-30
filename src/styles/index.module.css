@@ -94,7 +94,10 @@ body{
 .user-icon-container{
     margin: 0;
     padding: 0;
-    align-self: flex-end;
+    align-self: center; /* Center the user icon instead of flex-end */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .flex-title{
@@ -2667,6 +2670,10 @@ hr{
         flex: 0 0 auto;
         order: 4;
         margin-left: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        align-self: center; /* Ensure it aligns to center of container */
     }
     
     .user-icon {

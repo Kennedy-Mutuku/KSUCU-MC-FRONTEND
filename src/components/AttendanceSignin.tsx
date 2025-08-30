@@ -376,9 +376,8 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
                             ? 'Attendance Session Closed' 
                             : `${session.ministry || 'General'} Ministry Attendance`}
                     </h3>
-                    {!isSessionClosed && session.leadershipRole && (
+                    {!isSessionClosed && (
                         <p className={styles.sessionInfo}>
-                            <strong>Session Leader:</strong> {session.leadershipRole} | 
                             <strong> Started:</strong> {new Date(session.startTime).toLocaleString()}
                         </p>
                     )}
