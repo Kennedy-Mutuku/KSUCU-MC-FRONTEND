@@ -10,8 +10,6 @@ import {
     faEdit, 
     faSave,
     faCancel,
-    faLink,
-    faUpload,
     faCalendarAlt,
     faEye
 } from '@fortawesome/free-solid-svg-icons';
