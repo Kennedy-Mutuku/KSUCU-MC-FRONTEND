@@ -38,6 +38,8 @@ const LandingPage = () => {
   const [openFocus, setOpenFocus] = useState(false);
   const [userData, setUserData] = useState<{ username: string; email: string; yos: number; phone: string; et: string; ministry: string } | null>(null);
   const [error, setError] = useState('');
+  const [attendanceError, setAttendanceError] = useState('');
+  const [attendanceSuccess, setAttendanceSuccess] = useState('');
   const [generalLoading, setgeneralLoading] = useState(false);
   const [showCommissionDialog, setShowCommissionDialog] = useState(false);
   const [showMinistries, setShowMinistries] = useState(false);
@@ -235,14 +237,18 @@ const LandingPage = () => {
   const handleAttendanceSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Clear previous messages
+    setAttendanceError('');
+    setAttendanceSuccess('');
+    
     if (!activeSession) {
-      alert('No active attendance session found');
+      setAttendanceError('No active attendance session found');
       return;
     }
 
     if (!attendanceData.fullName || !attendanceData.registrationNumber || 
         !attendanceData.course || !attendanceData.yearOfStudy || !attendanceData.phoneNumber || !attendanceData.signature) {
-      alert('Please fill in all required fields including your signature');
+      setAttendanceError('Please fill in all required fields including your signature');
       return;
     }
 
@@ -292,7 +298,10 @@ const LandingPage = () => {
       // Show success message with name and timestamp
       const now = new Date();
       const timeString = now.toLocaleString();
-      alert(`✅ Attendance submitted successfully for ${attendanceData.fullName}! Submitted at: ${timeString}. You can now register another person with a different registration number.`);
+      setAttendanceSuccess(`✅ Attendance submitted successfully for ${attendanceData.fullName}! Submitted at: ${timeString}. You can now register another person with a different registration number.`);
+      
+      // Auto-clear success message after 5 seconds
+      setTimeout(() => setAttendanceSuccess(''), 5000);
       
       // Reset form but keep it open for multiple registrations
       setAttendanceData({
@@ -339,13 +348,16 @@ const LandingPage = () => {
               errorMessage.toLowerCase().includes('duplicate') ||
               errorMessage.toLowerCase().includes('already used') ||
               errorMessage.includes(attendanceData.registrationNumber.trim().toUpperCase())) {
-            alert(`❌ Registration Number Already Used! This registration number has already been used for attendance in this session. Please use a different registration number or check if this person has already signed attendance.`);
+            setAttendanceError(`❌ Registration Number Already Used! This registration number has already been used for attendance in this session. Please use a different registration number or check if this person has already signed attendance.`);
             
             // Clear only the registration number field to allow correction
             setAttendanceData(prev => ({
               ...prev, 
               registrationNumber: ''
             }));
+            
+            // Auto-clear error message after 8 seconds
+            setTimeout(() => setAttendanceError(''), 8000);
             return;
           }
         } else {
@@ -361,7 +373,10 @@ const LandingPage = () => {
         errorMessage = error.message || 'Unexpected error occurred.';
       }
       
-      alert(`❌ ${errorMessage}`);
+      setAttendanceError(`❌ ${errorMessage}`);
+      
+      // Auto-clear error message after 6 seconds
+      setTimeout(() => setAttendanceError(''), 6000);
     } finally {
       setgeneralLoading(false);
     }
@@ -792,6 +807,39 @@ const LandingPage = () => {
               <h3 style={{color: '#730051', textAlign: 'center', marginBottom: '20px'}}>
                 Sign Your Attendance
               </h3>
+              
+              {/* Success Message */}
+              {attendanceSuccess && (
+                <div style={{
+                  padding: '15px',
+                  background: '#d4edda',
+                  border: '1px solid #c3e6cb',
+                  borderRadius: '8px',
+                  color: '#155724',
+                  fontSize: '14px',
+                  lineHeight: '1.5',
+                  marginBottom: '15px'
+                }}>
+                  {attendanceSuccess}
+                </div>
+              )}
+              
+              {/* Error Message */}
+              {attendanceError && (
+                <div style={{
+                  padding: '15px',
+                  background: '#f8d7da',
+                  border: '1px solid #f5c6cb',
+                  borderRadius: '8px',
+                  color: '#721c24',
+                  fontSize: '14px',
+                  lineHeight: '1.5',
+                  marginBottom: '15px'
+                }}>
+                  {attendanceError}
+                </div>
+              )}
+              
             <form onSubmit={handleAttendanceSubmit} style={{display: 'flex', flexDirection: 'column', gap: '15px'}}>
               
               <div style={{display: 'flex', flexDirection: 'column', gap: '5px'}}>
