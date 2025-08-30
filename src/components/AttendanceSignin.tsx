@@ -244,6 +244,12 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
             
             // Handle different error response formats (development vs production)
             if (error.response) {
+                console.log('🔍 Full error response received:', {
+                    status: error.response.status,
+                    data: error.response.data,
+                    headers: error.response.headers
+                });
+                
                 if (error.response.status === 400) {
                     // Extract error message from different possible formats
                     // Check both 'message' and 'error' fields for consistency
@@ -251,6 +257,8 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
                                   error.response.data?.error || 
                                   error.response.data || 
                                   'Invalid attendance data';
+                    
+                    console.log('🔍 Extracted error message:', errorMessage);
                     
                     // Convert to string if it's not already
                     if (typeof errorMessage !== 'string') {
@@ -261,16 +269,28 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
                         }
                     }
                     
-                    // Check for duplicate registration number in various formats
+                    // Check for duplicate registration number more specifically
                     const regNoUpper = attendanceFormData.regNo.trim().toUpperCase();
-                    if (errorMessage.toLowerCase().includes('already signed') || 
-                        errorMessage.toLowerCase().includes('already') ||
-                        errorMessage.toLowerCase().includes('duplicate') ||
-                        errorMessage.toLowerCase().includes('already used') ||
-                        errorMessage.includes(regNoUpper)) {
+                    
+                    console.log('🔍 Checking if error is duplicate-related:', {
+                        errorMessage: errorMessage,
+                        regNoUpper: regNoUpper,
+                        errorMessageLower: errorMessage.toLowerCase()
+                    });
+                    
+                    const isDuplicateError = errorMessage.toLowerCase().includes('already signed attendance') || 
+                                           errorMessage.toLowerCase().includes('already been used for attendance') ||
+                                           errorMessage.toLowerCase().includes('duplicate registration') ||
+                                           errorMessage.toLowerCase().includes('has already signed') ||
+                                           (errorMessage.toLowerCase().includes('has already') && errorMessage.includes(regNoUpper));
+                    
+                    console.log('🔍 Is duplicate error?', isDuplicateError);
+                    
+                    if (isDuplicateError) {
                         
                         // Extract just the registration number from the error for cleaner display
                         const cleanMessage = `❌ Registration Number ${regNoUpper} Already Used! This registration number has already been used for attendance in this session. Please use a different registration number.`;
+                        console.log('🔍 Showing duplicate error message:', cleanMessage);
                         setError(cleanMessage);
                         setTimeout(() => setError(''), 8000);
                         
@@ -288,27 +308,37 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
                         
                         setLoading(false);
                         return;
+                    } else {
+                        // Not a duplicate error - show the original error message
+                        console.log('🔍 Not a duplicate error - showing original message:', errorMessage);
+                        setError(`❌ ${errorMessage}`);
+                        setTimeout(() => setError(''), 6000);
                     }
                 } else if (error.response.status === 404) {
                     errorMessage = error.response.data?.message || 
                                   error.response.data?.error ||
                                   'Session not found. Please refresh and try again.';
+                    setError(`❌ ${errorMessage}`);
+                    setTimeout(() => setError(''), 6000);
                 } else {
                     // Handle other HTTP error statuses
                     errorMessage = error.response.data?.message || 
                                   error.response.data?.error ||
                                   `Server error (${error.response.status}). Please try again.`;
+                    setError(`❌ ${errorMessage}`);
+                    setTimeout(() => setError(''), 6000);
                 }
             } else if (error.request) {
                 // Network error
                 errorMessage = 'Network error. Please check your internet connection and try again.';
+                setError(`❌ ${errorMessage}`);
+                setTimeout(() => setError(''), 6000);
             } else {
                 // Other error
                 errorMessage = error.message || 'Unexpected error occurred.';
+                setError(`❌ ${errorMessage}`);
+                setTimeout(() => setError(''), 6000);
             }
-            
-            setError(`❌ ${errorMessage}`);
-            setTimeout(() => setError(''), 6000);
         } finally {
             setLoading(false);
         }
