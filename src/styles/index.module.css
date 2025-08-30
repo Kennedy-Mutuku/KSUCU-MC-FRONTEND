@@ -2488,10 +2488,14 @@ hr{
 /* Worship Docket Admin Section */
 .worshipAdminSection {
     background: linear-gradient(135deg, #2c1810, #3d2317);
-    padding: 60px 0;
+    padding: 60px 20px;
     margin: 0;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
 }
 
 .worshipAdminCard {
@@ -2501,7 +2505,8 @@ hr{
     text-align: center;
     box-shadow: 0 15px 35px rgba(115, 0, 81, 0.4);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    max-width: 600px;
+    max-width: 400px;
+    width: 100%;
     margin: 0 auto;
     position: relative;
     overflow: hidden;
@@ -2585,12 +2590,12 @@ hr{
 /* Responsive Design */
 @media (max-width: 768px) {
     .worshipAdminSection {
-        padding: 40px 0;
+        padding: 40px 15px;
     }
     
     .worshipAdminCard {
         padding: 30px 20px;
-        margin: 0 15px;
+        max-width: 350px;
     }
     
     .worshipAdminCard h3 {
@@ -2608,8 +2613,13 @@ hr{
 }
 
 @media (max-width: 480px) {
+    .worshipAdminSection {
+        padding: 30px 10px;
+    }
+    
     .worshipAdminCard {
         padding: 25px 15px;
+        max-width: 320px;
     }
     
     .worshipAdminCard h3 {

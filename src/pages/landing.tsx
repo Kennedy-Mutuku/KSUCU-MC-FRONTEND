@@ -1262,14 +1262,12 @@ const LandingPage = () => {
 
           {/* Ministries Admin Section */}
         <div className={styles.worshipAdminSection}>
-          <div className={styles.container}>
-            <div className={styles.worshipAdminCard}>
-              <h3>Ministries Administration</h3>
-              <p>Manage ministries</p>
-              <Link to="/worship-docket-admin" className={styles.worshipAdminButton}>
-                Ministries Admin
-              </Link>
-            </div>
+          <div className={styles.worshipAdminCard}>
+            <h3>Ministries Administration</h3>
+            <p>Manage ministries</p>
+            <Link to="/worship-docket-admin" className={styles.worshipAdminButton}>
+              MINISTRIES ADMIN
+            </Link>
           </div>
         </div>
 
