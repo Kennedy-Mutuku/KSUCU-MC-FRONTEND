@@ -60,42 +60,68 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
 
     const checkActiveSession = async () => {
         try {
-            console.log('Checking for active attendance session...');
+            console.log('🔍 Checking for active attendance session...');
             
-            // Check the backend API for active sessions (cross-device sync)
+            // Add cache-busting parameters for real-time sync
+            const timestamp = Date.now();
             const sessionResponse = await axios.get(
-                getApiUrl('attendanceSessionStatus'),
-                { withCredentials: true }
+                `${getApiUrl('attendanceSessionStatus')}?t=${timestamp}&refresh=${Math.random()}`,
+                { 
+                    withCredentials: true,
+                    headers: {
+                        'Cache-Control': 'no-cache, no-store, must-revalidate',
+                        'Pragma': 'no-cache',
+                        'Expires': '0'
+                    }
+                }
             );
             
             if (sessionResponse.data.session) {
                 const sessionData = sessionResponse.data.session;
-                console.log('Active session found:', sessionData);
+                console.log('✅ Active session found:', {
+                    id: sessionData._id,
+                    ministry: sessionData.ministry,
+                    leader: sessionData.leadershipRole,
+                    isActive: sessionData.isActive
+                });
+                
+                // Set session regardless of ministry - global attendance
                 setSession(sessionData);
                 
-                // Load attendance records from API if session exists
+                // Load current signed attendees for this device
                 try {
                     const recordsResponse = await axios.get(
-                        `${getApiUrl('attendanceRecords')}/${sessionData._id}`,
-                        { withCredentials: true }
+                        `${getApiUrl('attendanceRecords')}/${sessionData._id}?t=${timestamp}`,
+                        { 
+                            withCredentials: true,
+                            headers: {
+                                'Cache-Control': 'no-cache, no-store, must-revalidate',
+                                'Pragma': 'no-cache',
+                                'Expires': '0'
+                            }
+                        }
                     );
                     const sessionAttendance = recordsResponse.data.records || [];
+                    console.log(`📊 Loaded ${sessionAttendance.length} attendance records from session`);
                     setDeviceAttendance(sessionAttendance);
                 } catch (recordsError) {
-                    console.log('No attendance records found');
+                    console.log('⚠️ No attendance records found or error loading records');
                     setDeviceAttendance([]);
                 }
             } else {
-                console.log('No active session found');
+                console.log('❌ No active session found');
                 setSession(null);
                 setDeviceAttendance([]);
             }
         } catch (error: any) {
-            console.error('Error checking session:', error.message);
-            // If API fails, show no session (no localStorage fallback for true cross-device sync)
+            console.error('❌ Error checking session:', error.message);
             setSession(null);
             setDeviceAttendance([]);
-            setError('Unable to connect to attendance server. Please check your connection.');
+            if (error.code === 'ECONNREFUSED' || error.code === 'ERR_NETWORK') {
+                setError('⚠️ Cannot connect to attendance server. Please check your internet connection.');
+            } else {
+                setError('⚠️ Error connecting to attendance system. Please try again.');
+            }
             setTimeout(() => setError(''), 5000);
         }
     };
@@ -114,10 +140,10 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
 
         try {
             // CRITICAL: Always get the latest active session before signing
-            // Add timestamp and no-cache headers to prevent caching issues
             console.log('🔄 Refreshing session status before signing...');
+            const timestamp = Date.now();
             const sessionResponse = await axios.get(
-                getApiUrl('attendanceSessionStatus') + `?ministry=${encodeURIComponent(ministry)}&t=${Date.now()}`,
+                `${getApiUrl('attendanceSessionStatus')}?t=${timestamp}&refresh=${Math.random()}`,
                 { 
                     withCredentials: true,
                     headers: { 
@@ -162,7 +188,7 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
                 year: parseInt(attendanceFormData.year),
                 phoneNumber: attendanceFormData.phoneNumber.trim(),
                 signature: attendanceFormData.signature.trim(),
-                ministry: ministry,
+                ministry: latestSession.ministry || 'General', // Use session ministry or default
                 sessionId: latestSession._id  // Use latest session, not cached one!
             };
 
@@ -174,11 +200,22 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
 
             console.log('✅ Attendance signed successfully:', response.data);
             
-            // Update local state with the response
+            // Update local state with the new record
             const newRecord = response.data.record;
-            setDeviceAttendance(prev => [...prev, newRecord]);
+            console.log('✅ New attendance record created:', newRecord);
             
-            // Clear form after successful submission for immediate next registration
+            // Store the name for success message before clearing form
+            const signedName = attendanceFormData.name.trim();
+            const signedRegNo = attendanceFormData.regNo.trim().toUpperCase();
+            
+            // Add to local device attendance list
+            setDeviceAttendance(prev => {
+                const updated = [...prev, newRecord];
+                console.log(`📝 Device attendance updated: ${updated.length} total records`);
+                return updated;
+            });
+            
+            // Clear form after successful submission for next person
             setAttendanceFormData({ name: '', regNo: '', year: '', phoneNumber: '', signature: '' });
             
             // Clear canvas signature
@@ -190,15 +227,15 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
                 }
             }
             
-            // Show success message with timestamp and guidance
+            // Show success message with clear feedback
             const now = new Date();
-            const timeString = now.toLocaleString();
-            setSuccess(`✅ Attendance signed successfully for ${attendanceFormData.name}! Submitted at: ${timeString}. Ready for next person...`);
+            const timeString = now.toLocaleTimeString();
+            setSuccess(`✅ ${signedName} (${signedRegNo}) successfully signed attendance at ${timeString}! Ready for next person.`);
             
-            // Clear success message after 3 seconds (form ready immediately)
+            // Clear success message after 4 seconds
             setTimeout(() => {
                 setSuccess('');
-            }, 3000);
+            }, 4000);
 
         } catch (error: any) {
             console.error('❌ Error during attendance signing:', error);
@@ -305,8 +342,16 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
                         className={`${styles.icon} ${isSessionClosed ? styles.clockIcon : styles.checkIcon}`}
                     />
                     <h3 className={styles.title}>
-                        {isSessionClosed ? 'Attendance Session Closed' : `${ministry} Ministry Attendance`}
+                        {isSessionClosed 
+                            ? 'Attendance Session Closed' 
+                            : `${session.ministry || 'General'} Ministry Attendance`}
                     </h3>
+                    {!isSessionClosed && session.leadershipRole && (
+                        <p className={styles.sessionInfo}>
+                            <strong>Session Leader:</strong> {session.leadershipRole} | 
+                            <strong> Started:</strong> {new Date(session.startTime).toLocaleString()}
+                        </p>
+                    )}
                 </div>
 
                 {isSessionClosed ? (
@@ -331,17 +376,25 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
                         )}
 
 
-                        {/* Show device attendance count */}
+                        {/* Show attendance count and recent signups */}
                         {deviceAttendance.length > 0 && (
                             <div className={styles.attendanceCount}>
                                 <FontAwesomeIcon icon={faUsers} className={styles.usersIcon} />
-                                <p>{deviceAttendance.length} user{deviceAttendance.length !== 1 ? 's' : ''} signed from this device</p>
+                                <p>
+                                    <strong>{deviceAttendance.length}</strong> total attendee{deviceAttendance.length !== 1 ? 's' : ''} in this session
+                                </p>
                                 <div className={styles.usersList}>
-                                    {deviceAttendance.map((record: any) => (
-                                        <span key={record.id} className={styles.userBadge}>
-                                            {record.name} ({record.regNo})
+                                    <h4 className={styles.recentTitle}>Recent Attendees:</h4>
+                                    {deviceAttendance.slice(-5).reverse().map((record: any, index: number) => (
+                                        <span key={record._id || `${record.regNo}-${index}`} className={styles.userBadge}>
+                                            {record.userName || record.name} ({record.regNo})
                                         </span>
                                     ))}
+                                    {deviceAttendance.length > 5 && (
+                                        <span className={styles.moreIndicator}>
+                                            ... and {deviceAttendance.length - 5} more
+                                        </span>
+                                    )}
                                 </div>
                             </div>
                         )}
@@ -530,7 +583,8 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
                             </button>
                             
                             <p className={styles.formNote}>
-                                💡 After signing, you can sign for another person
+                                💡 <strong>Note:</strong> Each registration number can only be used once per session. 
+                                After signing, you can immediately sign for another person.
                             </p>
                         </div>
                     </>
