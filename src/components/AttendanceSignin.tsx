@@ -269,7 +269,7 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
                         }
                     }
                     
-                    // Check for duplicate registration number more specifically
+                    // Check for duplicate registration number VERY specifically
                     const regNoUpper = attendanceFormData.regNo.trim().toUpperCase();
                     
                     console.log('🔍 Checking if error is duplicate-related:', {
@@ -278,42 +278,25 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
                         errorMessageLower: errorMessage.toLowerCase()
                     });
                     
-                    const isDuplicateError = errorMessage.toLowerCase().includes('already signed attendance') || 
-                                           errorMessage.toLowerCase().includes('already been used for attendance') ||
-                                           errorMessage.toLowerCase().includes('duplicate registration') ||
-                                           errorMessage.toLowerCase().includes('has already signed') ||
-                                           (errorMessage.toLowerCase().includes('has already') && errorMessage.includes(regNoUpper));
+                    // Only treat as duplicate if it EXPLICITLY mentions the exact registration number
+                    const isDuplicateError = (
+                        (errorMessage.toLowerCase().includes('already signed attendance') && errorMessage.includes(regNoUpper)) ||
+                        (errorMessage.toLowerCase().includes('already been used for attendance') && errorMessage.includes(regNoUpper)) ||
+                        (errorMessage.toLowerCase().includes('has already signed') && errorMessage.includes(regNoUpper)) ||
+                        (errorMessage.toLowerCase().includes('duplicate') && errorMessage.includes(regNoUpper))
+                    );
                     
                     console.log('🔍 Is duplicate error?', isDuplicateError);
                     
-                    if (isDuplicateError) {
-                        
-                        // Extract just the registration number from the error for cleaner display
-                        const cleanMessage = `❌ Registration Number ${regNoUpper} Already Used! This registration number has already been used for attendance in this session. Please use a different registration number.`;
-                        console.log('🔍 Showing duplicate error message:', cleanMessage);
-                        setError(cleanMessage);
-                        setTimeout(() => setError(''), 8000);
-                        
-                        // Clear only the registration number field to allow correction
-                        setAttendanceFormData(prev => ({
-                            ...prev,
-                            regNo: ''
-                        }));
-                        
-                        // Focus on the registration number input for easy correction
-                        const regNoInput = document.querySelector('input[placeholder*="KU/2024"]') as HTMLInputElement;
-                        if (regNoInput) {
-                            regNoInput.focus();
-                        }
-                        
-                        setLoading(false);
-                        return;
-                    } else {
-                        // Not a duplicate error - show the original error message
-                        console.log('🔍 Not a duplicate error - showing original message:', errorMessage);
-                        setError(`❌ ${errorMessage}`);
-                        setTimeout(() => setError(''), 6000);
-                    }
+                    // TEMPORARY DEBUG MODE - Show raw error instead of custom handling
+                    console.log('🚨 RAW ERROR MODE - Showing original backend error:', errorMessage);
+                    setError(`RAW ERROR: ${errorMessage}`);
+                    setTimeout(() => setError(''), 10000);
+                    
+                    // Temporarily disabled duplicate handling to debug the issue
+                    // if (isDuplicateError) {
+                    //     // ... duplicate handling code
+                    // }
                 } else if (error.response.status === 404) {
                     errorMessage = error.response.data?.message || 
                                   error.response.data?.error ||

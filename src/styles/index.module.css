@@ -2504,8 +2504,9 @@ hr{
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 0 10px;
+        padding: 8px 10px;
         position: relative;
+        min-height: 60px; /* Ensure consistent height matching logo */
     }
     
     
@@ -2513,6 +2514,10 @@ hr{
         flex: 0 0 auto;
         text-align: center;
         cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 60px; /* Match container height */
     }
     
     .logo-image {
@@ -2529,6 +2534,7 @@ hr{
         display: flex;
         align-items: center;
         justify-content: center;
+        height: 60px; /* Match container height */
     }
     
     .title-text {
