@@ -5,6 +5,35 @@
     min-height: 80vh;
 }
 
+/* Media Management Section */
+.mediaManagementSection {
+    margin-bottom: 2rem;
+}
+
+.mediaManagementButton {
+    width: 100%;
+    background: linear-gradient(135deg, #6f42c1, #5a3aa7);
+    color: white;
+    border: none;
+    padding: 1.5rem 2rem;
+    border-radius: 15px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    box-shadow: 0 8px 25px rgba(111, 66, 193, 0.3);
+}
+
+.mediaManagementButton:hover {
+    background: linear-gradient(135deg, #5a3aa7, #4a328a);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(111, 66, 193, 0.4);
+}
+
 /* Login Section */
 .loginCard {
     background: linear-gradient(135deg, #730051, #5a003d);

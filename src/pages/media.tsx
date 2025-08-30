@@ -7,13 +7,23 @@ import loadingAnime from '../assets/Animation - 1716747954931.gif';
 import { FaYoutube, FaFacebook, FaTiktok, FaTwitter, FaImage, FaNewspaper, FaBook, FaTimes } from 'react-icons/fa';
 import { getApiUrl } from '../config/environment';
 
+interface MediaItem {
+  id?: string;
+  event: string;
+  date: string;
+  link: string;
+  imageUrl?: string;
+}
+
 const Media: React.FC = () => {
   const [showMediaEvents, setShowMediaEvents] = useState(false);
   const [error, setError] = useState('');
   const [generalLoading, setGeneralLoading] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [events, setEvents] = useState<MediaItem[]>([]);
 
-  const events = [
+  // Default events as fallback
+  const defaultEvents: MediaItem[] = [
     { event: "Subcomm photos", date: "2025-01-20", link: "https://photos.app.goo.gl/PrxWoMuyRNEet22b7" },
     { event: "Sunday service", date: "2025-22-13", link: "https://photos.app.goo.gl/Vt6HDo1xEtgA3Nmn9" },
     { event: "Worship Weekend", date: "2025-02-10", link: "https://photos.app.goo.gl/wbNV3coJREGEUSZX7" },
@@ -35,7 +45,23 @@ const Media: React.FC = () => {
   
   useEffect(() => {
     fetchUserData();
+    loadMediaItems();
   }, []);
+
+  const loadMediaItems = () => {
+    const savedItems = localStorage.getItem('ksucu-media-items');
+    if (savedItems) {
+      try {
+        const parsedItems = JSON.parse(savedItems);
+        setEvents(parsedItems);
+      } catch (error) {
+        console.error('Error parsing saved media items:', error);
+        setEvents(defaultEvents);
+      }
+    } else {
+      setEvents(defaultEvents);
+    }
+  };
 
   const fetchUserData = async () => {
     if (!navigator.onLine) {
@@ -146,9 +172,13 @@ const Media: React.FC = () => {
             <h2 className={styles.sectionTitle}>Recent Events</h2>
             <div className={styles.eventsPreview}>
               {events.slice(0, 6).map((event, index) => (
-                <div key={index} className={styles.eventCard}>
+                <div key={event.id || index} className={styles.eventCard}>
                   <div className={styles.eventImage}>
-                    <FaImage />
+                    {event.imageUrl ? (
+                      <img src={event.imageUrl} alt={event.event} />
+                    ) : (
+                      <FaImage />
+                    )}
                   </div>
                   <div className={styles.eventContent}>
                     <h4>{event.event}</h4>
@@ -221,9 +251,13 @@ const Media: React.FC = () => {
               <div className={styles.modalBody}>
                 <div className={styles.galleryGrid}>
                   {reversedEvents.map((event, index) => (
-                    <div key={index} className={styles.galleryItem}>
+                    <div key={event.id || index} className={styles.galleryItem}>
                       <div className={styles.galleryImagePlaceholder}>
-                        <FaImage />
+                        {event.imageUrl ? (
+                          <img src={event.imageUrl} alt={event.event} />
+                        ) : (
+                          <FaImage />
+                        )}
                       </div>
                       <div className={styles.galleryItemContent}>
                         <h4>{event.event}</h4>

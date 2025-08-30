@@ -114,6 +114,26 @@ const WorshipDocketAdmin: React.FC = () => {
                     </div>
                 )}
 
+                {/* Media Management Section */}
+                <div className={styles.mediaManagementSection}>
+                    <div className={styles.selectionCard}>
+                        <h2>
+                            <FontAwesomeIcon icon={faUsers} />
+                            Media Management
+                        </h2>
+                        <p className={styles.leadershipDescription}>
+                            Manage photos and media for the KSUCU website gallery
+                        </p>
+                        <button 
+                            className={styles.mediaManagementButton}
+                            onClick={() => window.location.href = '/media-admin'}
+                        >
+                            Manage Media Gallery
+                            <FontAwesomeIcon icon={faArrowRight} className={styles.arrowIcon} />
+                        </button>
+                    </div>
+                </div>
+
                 {/* Leadership Role Selection Section */}
                 <div className={styles.leadershipSelection}>
                     <div className={styles.selectionCard}>

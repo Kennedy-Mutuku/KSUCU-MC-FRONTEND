@@ -19,6 +19,7 @@ import SavedSoulsList from "./adminMission";
 import BsMembersList from "./adminBs";
 import Library from "./library";
 import Media from "./media"
+import MediaAdmin from "./MediaAdmin"
 import Elders from "./eldersPage"
 import FeedbackForm from "../components/feedBackForm";
 import SuperAdmin from "./superAdmin";
@@ -76,6 +77,7 @@ export const router = createBrowserRouter([
             {path: "/user-management", element: <UserManagement />},
             {path: "/profile", element: <UserProfilePage />},
             {path: "/worship-docket-admin", element: <WorshipDocketAdmin />},
+            {path: "/media-admin", element: <MediaAdmin />},
             {path: "/ministries/ushering", element: <UsheringPage />},
             {path: "/ministries/creativity", element: <CreativityPage />},
             {path: "/ministries/compassion", element: <CompassionPage />},

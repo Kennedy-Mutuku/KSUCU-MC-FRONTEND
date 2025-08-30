@@ -250,6 +250,13 @@
     overflow: hidden;
 }
 
+.eventImage img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 0;
+}
+
 .eventImage::before {
     content: '';
     position: absolute;
@@ -476,6 +483,13 @@
     color: white;
     position: relative;
     overflow: hidden;
+}
+
+.galleryImagePlaceholder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 0;
 }
 
 .galleryImagePlaceholder::before {
