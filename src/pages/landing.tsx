@@ -19,17 +19,12 @@ import prayerPNG from '../assets/RIVET.jpg'
 import { faUserLock } from '@fortawesome/free-solid-svg-icons';
 import { Heart, Camera, BookOpen, Library, DollarSign, GraduationCap } from "lucide-react";
 import LandingPageHeader from '../components/LandingPageHeader';
+import ModernNewsDisplay from '../components/ModernNewsDisplay';
 
 
-interface NewsData {
-  title: string;
-  body: string;
-  imageUrl: string;
-}
 
 const LandingPage = () => {
   
-  const [newsData, setNewsData] = useState<NewsData | null>(null);
   const [openPrayerJoint, setOpenPrayerJoint] = useState(false);
   const [openBibleStudy, setOpenBibleStudy] = useState(false);
   const [openDevelopment, setOpenDevelopment] = useState(false);
@@ -116,7 +111,6 @@ const LandingPage = () => {
 
   useEffect(() => {
     fetchUserData()
-    fetchNewsData()
     checkActiveSession()
     
     // Set up interval to check for session updates every 5 seconds
@@ -213,25 +207,6 @@ const LandingPage = () => {
     }
   };
 
-  const fetchNewsData = async () => {
-    setgeneralLoading(true)
-    try {
-      const response = await fetch(getApiUrl('news'), {
-        method: 'GET',
-        credentials: 'include'  // Ensures cookies (for authentication) are sent with the request
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch news data');
-      }
-      const data = await response.json();
-      setNewsData(data);
-    } catch (error: any) {
-      console.log(error)
-    }finally{
-      setgeneralLoading(false)
-    }
-  };
 
   // Handle attendance form submission
   const handleAttendanceSubmit = async (e: React.FormEvent) => {
@@ -507,20 +482,9 @@ const LandingPage = () => {
             </p>
           </div>
 
-          {/* NEWS SECTION */}
-          <div className={styles.newsInModal}>
-            <span className={styles.newsLabel}><FontAwesomeIcon icon={faGlobe} /> Latest News</span>
-            {newsData ? (
-              <div className={styles.newsModalFlex}>
-                <img className={styles.newsModalImg} src={newsData.imageUrl} alt="news" />
-                <div>
-                  <span className={styles.newsModalTitle}>{newsData.title}</span>
-                  <Link className={styles.newsModalLink} to="/news">...read more</Link>
-                </div>
-              </div>
-            ) : (
-              <span className={styles.newsLoading}>Loading news...</span>
-            )}
+          {/* MODERN NEWS SECTION */}
+          <div className={styles.modernNewsSection}>
+            <ModernNewsDisplay />
           </div>
           <button className={styles.closeBtn} onClick={handleCloseCommission}>
             <FontAwesomeIcon icon={faXmark} />

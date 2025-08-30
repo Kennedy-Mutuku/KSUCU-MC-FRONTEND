@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckCircle, faExclamationTriangle, faClock, faUsers } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import { getApiUrl } from '../config/environment';
+import { formatDateTime, getTimeAgo, isRecentTime } from '../utils/timeUtils';
 
 interface AttendanceSession {
     _id: string;
@@ -23,7 +24,7 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [sessionClosedAgo, setSessionClosedAgo] = useState('');
-    const [attendanceFormData, setAttendanceFormData] = useState({ name: '', regNo: '', year: '', phoneNumber: '', signature: '' });
+    const [attendanceFormData, setAttendanceFormData] = useState({ name: '', regNo: '', course: '', year: '', phoneNumber: '', signature: '' });
     const [deviceAttendance, setDeviceAttendance] = useState<any[]>([]);
 
     useEffect(() => {
@@ -50,10 +51,9 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
 
     const updateClosedTime = () => {
         if (session?.endTime) {
-            const endTime = new Date(session.endTime);
-            const now = new Date();
-            const diffInMinutes = Math.floor((now.getTime() - endTime.getTime()) / (1000 * 60));
-            setSessionClosedAgo(`${diffInMinutes} minute${diffInMinutes !== 1 ? 's' : ''} ago`);
+            const timeAgo = getTimeAgo(session.endTime);
+            const exactTime = formatDateTime(session.endTime, { format: 'medium', includeSeconds: true });
+            setSessionClosedAgo(`${timeAgo} (${exactTime})`);
         }
     };
 
@@ -128,8 +128,16 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
 
     const signAttendance = async () => {
         // Validate form data
-        if (!attendanceFormData.name || !attendanceFormData.regNo || !attendanceFormData.year || !attendanceFormData.phoneNumber || !attendanceFormData.signature) {
+        if (!attendanceFormData.name || !attendanceFormData.regNo || !attendanceFormData.course || !attendanceFormData.year || !attendanceFormData.phoneNumber || !attendanceFormData.signature) {
             setError('Please fill in all fields including phone number and signature');
+            setTimeout(() => setError(''), 3000);
+            return;
+        }
+        
+        // Validate phone number (minimum 10 digits)
+        const phoneDigits = attendanceFormData.phoneNumber.replace(/\D/g, ''); // Remove all non-digits
+        if (phoneDigits.length < 10) {
+            setError('Phone number must have at least 10 digits');
             setTimeout(() => setError(''), 3000);
             return;
         }
@@ -185,6 +193,7 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
             const attendanceData = {
                 name: attendanceFormData.name.trim(),
                 regNo: attendanceFormData.regNo.trim().toUpperCase(),
+                course: attendanceFormData.course.trim(),
                 year: parseInt(attendanceFormData.year),
                 phoneNumber: attendanceFormData.phoneNumber.trim(),
                 signature: attendanceFormData.signature.trim(),
@@ -216,7 +225,7 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
             });
             
             // Clear form after successful submission for next person
-            setAttendanceFormData({ name: '', regNo: '', year: '', phoneNumber: '', signature: '' });
+            setAttendanceFormData({ name: '', regNo: '', course: '', year: '', phoneNumber: '', signature: '' });
             
             // Clear canvas signature
             const canvas = document.querySelector('canvas') as HTMLCanvasElement;
@@ -227,9 +236,9 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
                 }
             }
             
-            // Show success message with clear feedback
+            // Show success message with accurate timestamp
             const now = new Date();
-            const timeString = now.toLocaleTimeString();
+            const timeString = formatDateTime(now, { format: 'short', includeSeconds: true, includeDate: false });
             setSuccess(`✅ ${signedName} (${signedRegNo}) successfully signed attendance at ${timeString}! Ready for next person.`);
             
             // Clear success message after 4 seconds
@@ -302,7 +311,7 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
                         }));
                         
                         // Focus on the registration number input for easy correction
-                        const regNoInput = document.querySelector('input[placeholder*="KU/2024"]') as HTMLInputElement;
+                        const regNoInput = document.querySelector('input[placeholder*="IN16"]') as HTMLInputElement;
                         if (regNoInput) {
                             regNoInput.focus();
                         }
@@ -379,7 +388,8 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
                     </h3>
                     {!isSessionClosed && (
                         <p className={styles.sessionInfo}>
-                            <strong> Started:</strong> {new Date(session.startTime).toLocaleString()}
+                            <strong>Started:</strong> {formatDateTime(session.startTime, { format: 'medium', includeSeconds: true })}
+                            {isRecentTime(session.startTime, 10) && <span className={styles.recentIndicator}> • Just opened</span>}
                         </p>
                     )}
                 </div>
@@ -415,7 +425,7 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
                                 </p>
                                 <div className={styles.usersList}>
                                     <h4 className={styles.recentTitle}>Recent Attendees:</h4>
-                                    {deviceAttendance.slice(-5).reverse().map((record: any, index: number) => (
+                                    {deviceAttendance.slice(0, 5).map((record: any, index: number) => (
                                         <span key={record._id || `${record.regNo}-${index}`} className={styles.userBadge}>
                                             {record.userName || record.name} ({record.regNo})
                                         </span>
@@ -449,9 +459,21 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
                                 <label className={styles.formLabel}>Registration Number *</label>
                                 <input
                                     type="text"
-                                    placeholder="e.g., KU/2024/001234"
+                                    placeholder="e.g., IN16/00014/22"
                                     value={attendanceFormData.regNo}
                                     onChange={(e) => setAttendanceFormData({...attendanceFormData, regNo: e.target.value.toUpperCase()})}
+                                    className={styles.formInput}
+                                    disabled={loading}
+                                />
+                            </div>
+
+                            <div className={styles.formGroup}>
+                                <label className={styles.formLabel}>Course *</label>
+                                <input
+                                    type="text"
+                                    placeholder="e.g., Computer Science"
+                                    value={attendanceFormData.course}
+                                    onChange={(e) => setAttendanceFormData({...attendanceFormData, course: e.target.value})}
                                     className={styles.formInput}
                                     disabled={loading}
                                 />

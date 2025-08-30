@@ -193,8 +193,8 @@
 .attendanceCount {
     background: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
-    padding: 15px;
-    margin-bottom: 20px;
+    padding: 12px;
+    margin-bottom: 15px;
     text-align: center;
 }
 
@@ -248,16 +248,16 @@
 
 .attendanceForm {
     background: rgba(255, 255, 255, 0.1);
-    border-radius: 15px;
-    padding: 25px;
-    margin-top: 20px;
+    border-radius: 6px;
+    padding: 6px;
+    margin-top: 6px;
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .formTitle {
-    margin: 0 0 20px 0;
+    margin: 0 0 4px 0;
     color: #ffffff;
-    font-size: 1.2rem;
+    font-size: 0.85rem;
     text-align: center;
     font-weight: 600;
 }
@@ -265,48 +265,50 @@
 .formLabel {
     display: block;
     color: rgba(255, 255, 255, 0.9);
-    font-size: 0.95rem;
-    margin-bottom: 8px;
+    font-size: 0.75rem;
+    margin-bottom: 2px;
     font-weight: 500;
 }
 
 .formNote {
     text-align: center;
     color: rgba(255, 255, 255, 0.7);
-    font-size: 0.9rem;
-    margin-top: 15px;
+    font-size: 0.7rem;
+    margin-top: 4px;
     font-style: italic;
 }
 
 .multiUserForm {
     background: rgba(255, 255, 255, 0.1);
-    border-radius: 15px;
-    padding: 20px;
-    margin-top: 15px;
+    border-radius: 8px;
+    padding: 8px;
+    margin-top: 8px;
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .multiUserForm h4 {
-    margin: 0 0 15px 0;
+    margin: 0 0 6px 0;
     color: #ffffff;
-    font-size: 1.1rem;
+    font-size: 0.9rem;
     text-align: center;
+    font-weight: 500;
 }
 
 .formGroup {
-    margin-bottom: 15px;
+    margin-bottom: 4px;
 }
 
 .formInput, .formSelect {
     width: 100%;
-    padding: 12px 15px;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: 10px;
+    padding: 4px 6px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
     background: rgba(255, 255, 255, 0.15);
     color: white;
-    font-size: 1rem;
+    font-size: 0.8rem;
     transition: all 0.3s ease;
     box-sizing: border-box;
+    height: 28px;
 }
 
 .formInput::placeholder {
@@ -336,15 +338,16 @@
     background: linear-gradient(45deg, #4CAF50, #45a049);
     color: white;
     border: none;
-    padding: 12px 30px;
-    border-radius: 20px;
-    font-size: 1rem;
+    padding: 6px 16px;
+    border-radius: 8px;
+    font-size: 0.8rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 3px 10px rgba(76, 175, 80, 0.3);
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
     width: 100%;
-    margin-top: 5px;
+    margin-top: 4px;
+    height: 32px;
 }
 
 .submitButton:hover:not(:disabled) {
@@ -432,20 +435,21 @@
     }
     
     .multiUserButton {
-        padding: 10px 20px;
-        font-size: 0.9rem;
+        padding: 6px 12px;
+        font-size: 0.8rem;
+        height: 28px;
     }
     
     .attendanceForm {
-        padding: 20px;
+        padding: 4px;
     }
     
     .formTitle {
-        font-size: 1.1rem;
+        font-size: 0.8rem;
     }
     
     .multiUserForm {
-        padding: 15px;
+        padding: 6px;
     }
     
     .usersList {
@@ -456,4 +460,25 @@
     .userBadge {
         font-size: 0.8rem;
     }
+}
+
+/* Time-related styles */
+.recentIndicator {
+    background: rgba(76, 175, 80, 0.3);
+    color: #4CAF50;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    animation: pulse 2s infinite;
+    margin-left: 8px;
+    display: inline-block;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
 }

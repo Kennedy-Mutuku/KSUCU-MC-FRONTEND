@@ -48,3 +48,162 @@
     }
 
 }
+
+/* Event Section Styles */
+.eventSection {
+    margin: 0 auto 40px auto;
+    width: 90%;
+    max-width: 800px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 30px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.eventInfo {
+    margin-bottom: 30px;
+}
+
+.eventTitle {
+    font-size: 2rem;
+    margin-bottom: 15px;
+    color: #FFD700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.eventDateTime {
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+    color: #fff;
+    font-weight: 500;
+}
+
+/* Countdown Timer Styles */
+.countdownTimer {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    padding: 25px;
+    margin-top: 20px;
+}
+
+.countdownTitle {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: #FFD700;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.countdownGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.timeUnit {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 15px 10px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.timeUnit:hover {
+    transform: translateY(-3px);
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.timeNumber {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    margin-bottom: 5px;
+}
+
+.timeLabel {
+    display: block;
+    font-size: 0.9rem;
+    color: #FFD700;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+/* Event Passed Styles */
+.eventPassed {
+    background: rgba(34, 197, 94, 0.2);
+    border: 1px solid rgba(34, 197, 94, 0.4);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.eventPassedTitle {
+    font-size: 1.5rem;
+    color: #10B981;
+    margin-bottom: 10px;
+}
+
+.eventPassed p {
+    color: #fff;
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .eventSection {
+        width: 95%;
+        padding: 20px;
+    }
+
+    .eventTitle {
+        font-size: 1.5rem;
+    }
+
+    .eventDateTime {
+        font-size: 1.1rem;
+    }
+
+    .countdownGrid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .timeNumber {
+        font-size: 2rem;
+    }
+
+    .timeLabel {
+        font-size: 0.8rem;
+    }
+
+    .countdownTitle {
+        font-size: 1.3rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .countdownGrid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    .timeUnit {
+        padding: 10px 5px;
+    }
+
+    .timeNumber {
+        font-size: 1.8rem;
+    }
+
+    .timeLabel {
+        font-size: 0.7rem;
+    }
+}

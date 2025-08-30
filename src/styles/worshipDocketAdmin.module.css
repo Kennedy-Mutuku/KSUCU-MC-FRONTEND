@@ -10,6 +10,35 @@
     margin-bottom: 2rem;
 }
 
+/* News Management Section */
+.newsManagementSection {
+    margin-bottom: 2rem;
+}
+
+.newsManagementButton {
+    width: 100%;
+    background: linear-gradient(135deg, #ff6b35, #f7931e);
+    color: white;
+    border: none;
+    padding: 1.5rem 2rem;
+    border-radius: 15px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    box-shadow: 0 8px 25px rgba(255, 107, 53, 0.3);
+}
+
+.newsManagementButton:hover {
+    background: linear-gradient(135deg, #e85a30, #e6831a);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(255, 107, 53, 0.4);
+}
+
 .mediaManagementButton {
     width: 100%;
     background: linear-gradient(135deg, #6f42c1, #5a3aa7);

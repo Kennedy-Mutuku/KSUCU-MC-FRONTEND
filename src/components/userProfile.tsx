@@ -58,93 +58,95 @@ const UserProfile: React.FC<UserProfileProps> = ({ userData, onLogout, isLoading
     return (
         <div className={styles.container}>
             <Link to={"/"} className={styles.logo_div}>
-                <div className={styles['logo_signUp']}>
-                    <img src={cuLogo} alt="CU logo" />
+                <div className={styles['logo_signUp']} style={{ marginBottom: '10px' }}>
+                    <img src={cuLogo} alt="CU logo" style={{ height: '8vh' }} />
                 </div>
             </Link>
 
-            <h2 className={styles.text}>Welcome back, {userData.username}!</h2>
+            <h2 className={styles.text} style={{ margin: '10px 0 15px 0', fontSize: '1.5rem' }}>Welcome back, {userData.username}!</h2>
             
             {/* Continue to KSUCUMC Button */}
-            <div style={{ textAlign: 'center', margin: '30px 0' }}>
+            <div style={{ textAlign: 'center', margin: '15px 0' }}>
                 <button 
                     onClick={handleContinueToKSUCUMC}
                     style={{
                         backgroundColor: '#007bff',
                         color: 'white',
                         border: 'none',
-                        padding: '15px 40px',
-                        borderRadius: '50px',
-                        fontSize: '18px',
+                        padding: '12px 30px',
+                        borderRadius: '25px',
+                        fontSize: '16px',
                         fontWeight: '600',
                         cursor: 'pointer',
-                        boxShadow: '0 4px 8px rgba(0,123,255,0.3)',
+                        boxShadow: '0 3px 6px rgba(0,123,255,0.3)',
                         transition: 'all 0.3s ease',
-                        minWidth: '250px'
+                        minWidth: '200px'
                     }}
                     onMouseOver={(e) => {
                         e.currentTarget.style.backgroundColor = '#0056b3';
                         e.currentTarget.style.transform = 'translateY(-2px)';
-                        e.currentTarget.style.boxShadow = '0 6px 12px rgba(0,123,255,0.4)';
+                        e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,123,255,0.4)';
                     }}
                     onMouseOut={(e) => {
                         e.currentTarget.style.backgroundColor = '#007bff';
                         e.currentTarget.style.transform = 'translateY(0)';
-                        e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,123,255,0.3)';
+                        e.currentTarget.style.boxShadow = '0 3px 6px rgba(0,123,255,0.3)';
                     }}
                 >
                     Continue to KSUCUMC
                 </button>
             </div>
             
-            <div className={styles.form}>
+            <div className={styles.form} style={{ marginTop: '10px' }}>
                 <div className={styles['user-details']}>
-                    <h3 style={{ marginBottom: '20px', color: '#2c3e50' }}>Your Profile</h3>
+                    <h3 style={{ marginBottom: '10px', color: '#2c3e50', fontSize: '1.2rem' }}>Your Profile</h3>
                     
-                    <div className={styles['detail-item']} style={{ marginBottom: '15px', padding: '10px', backgroundColor: '#f8f9fa', borderRadius: '5px' }}>
-                        <strong>Name:</strong> {userData.username}
-                    </div>
-                    
-                    <div className={styles['detail-item']} style={{ marginBottom: '15px', padding: '10px', backgroundColor: '#f8f9fa', borderRadius: '5px' }}>
-                        <strong>Email:</strong> {userData.email}
-                    </div>
-                    
-                    <div className={styles['detail-item']} style={{ marginBottom: '15px', padding: '10px', backgroundColor: '#f8f9fa', borderRadius: '5px' }}>
-                        <strong>Phone:</strong> {userData.phone}
-                    </div>
-                    
-                    <div className={styles['detail-item']} style={{ marginBottom: '15px', padding: '10px', backgroundColor: '#f8f9fa', borderRadius: '5px' }}>
-                        <strong>Year of Study:</strong> {userData.yos}
-                    </div>
-                    
-                    <div className={styles['detail-item']} style={{ marginBottom: '15px', padding: '10px', backgroundColor: '#f8f9fa', borderRadius: '5px' }}>
-                        <strong>Evangelistic Team:</strong> {userData.et}
-                    </div>
-                    
-                    <div className={styles['detail-item']} style={{ marginBottom: '15px', padding: '10px', backgroundColor: '#f8f9fa', borderRadius: '5px' }}>
-                        <strong>Ministry:</strong> {userData.ministry}
-                    </div>
-
-                    {userData.course && (
-                        <div className={styles['detail-item']} style={{ marginBottom: '15px', padding: '10px', backgroundColor: '#f8f9fa', borderRadius: '5px' }}>
-                            <strong>Course:</strong> {userData.course}
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', fontSize: '14px' }}>
+                        <div className={styles['detail-item']} style={{ padding: '6px 8px', backgroundColor: '#f8f9fa', borderRadius: '4px' }}>
+                            <strong>Name:</strong> {userData.username}
                         </div>
-                    )}
-
-                    {userData.reg && (
-                        <div className={styles['detail-item']} style={{ marginBottom: '15px', padding: '10px', backgroundColor: '#f8f9fa', borderRadius: '5px' }}>
-                            <strong>Registration:</strong> {userData.reg}
+                        
+                        <div className={styles['detail-item']} style={{ padding: '6px 8px', backgroundColor: '#f8f9fa', borderRadius: '4px' }}>
+                            <strong>Year:</strong> {userData.yos}
                         </div>
-                    )}
+                        
+                        <div className={styles['detail-item']} style={{ padding: '6px 8px', backgroundColor: '#f8f9fa', borderRadius: '4px' }}>
+                            <strong>Phone:</strong> {userData.phone}
+                        </div>
+                        
+                        <div className={styles['detail-item']} style={{ padding: '6px 8px', backgroundColor: '#f8f9fa', borderRadius: '4px' }}>
+                            <strong>ET:</strong> {userData.et}
+                        </div>
+                        
+                        <div className={styles['detail-item']} style={{ padding: '6px 8px', backgroundColor: '#f8f9fa', borderRadius: '4px', gridColumn: '1 / -1' }}>
+                            <strong>Email:</strong> {userData.email}
+                        </div>
+                        
+                        <div className={styles['detail-item']} style={{ padding: '6px 8px', backgroundColor: '#f8f9fa', borderRadius: '4px', gridColumn: '1 / -1' }}>
+                            <strong>Ministry:</strong> {userData.ministry}
+                        </div>
+
+                        {userData.course && (
+                            <div className={styles['detail-item']} style={{ padding: '6px 8px', backgroundColor: '#f8f9fa', borderRadius: '4px', gridColumn: '1 / -1' }}>
+                                <strong>Course:</strong> {userData.course}
+                            </div>
+                        )}
+
+                        {userData.reg && (
+                            <div className={styles['detail-item']} style={{ padding: '6px 8px', backgroundColor: '#f8f9fa', borderRadius: '4px', gridColumn: '1 / -1' }}>
+                                <strong>Registration:</strong> {userData.reg}
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
 
             {/* Edit Details and Log Out buttons on the same row */}
             <div style={{ 
                 display: 'flex', 
-                gap: '15px', 
+                gap: '12px', 
                 justifyContent: 'center', 
-                marginTop: '30px',
+                marginTop: '20px',
                 flexWrap: 'wrap'
             }}>
                 <Link 
@@ -153,26 +155,26 @@ const UserProfile: React.FC<UserProfileProps> = ({ userData, onLogout, isLoading
                         backgroundColor: '#28a745',
                         color: 'white',
                         textDecoration: 'none',
-                        padding: '12px 25px',
-                        borderRadius: '25px',
-                        fontSize: '16px',
+                        padding: '10px 20px',
+                        borderRadius: '20px',
+                        fontSize: '14px',
                         fontWeight: '500',
                         cursor: 'pointer',
-                        boxShadow: '0 3px 6px rgba(40,167,69,0.3)',
+                        boxShadow: '0 2px 4px rgba(40,167,69,0.3)',
                         transition: 'all 0.3s ease',
-                        minWidth: '140px',
+                        minWidth: '120px',
                         textAlign: 'center',
                         display: 'inline-block'
                     }}
                     onMouseOver={(e) => {
                         e.currentTarget.style.backgroundColor = '#218838';
                         e.currentTarget.style.transform = 'translateY(-1px)';
-                        e.currentTarget.style.boxShadow = '0 4px 8px rgba(40,167,69,0.4)';
+                        e.currentTarget.style.boxShadow = '0 3px 6px rgba(40,167,69,0.4)';
                     }}
                     onMouseOut={(e) => {
                         e.currentTarget.style.backgroundColor = '#28a745';
                         e.currentTarget.style.transform = 'translateY(0)';
-                        e.currentTarget.style.boxShadow = '0 3px 6px rgba(40,167,69,0.3)';
+                        e.currentTarget.style.boxShadow = '0 2px 4px rgba(40,167,69,0.3)';
                     }}
                 >
                     Edit Details
@@ -183,24 +185,24 @@ const UserProfile: React.FC<UserProfileProps> = ({ userData, onLogout, isLoading
                         backgroundColor: '#dc3545',
                         color: 'white',
                         border: 'none',
-                        padding: '12px 25px',
-                        borderRadius: '25px',
-                        fontSize: '16px',
+                        padding: '10px 20px',
+                        borderRadius: '20px',
+                        fontSize: '14px',
                         fontWeight: '500',
                         cursor: 'pointer',
-                        boxShadow: '0 3px 6px rgba(220,53,69,0.3)',
+                        boxShadow: '0 2px 4px rgba(220,53,69,0.3)',
                         transition: 'all 0.3s ease',
-                        minWidth: '140px'
+                        minWidth: '120px'
                     }}
                     onMouseOver={(e) => {
                         e.currentTarget.style.backgroundColor = '#c82333';
                         e.currentTarget.style.transform = 'translateY(-1px)';
-                        e.currentTarget.style.boxShadow = '0 4px 8px rgba(220,53,69,0.4)';
+                        e.currentTarget.style.boxShadow = '0 3px 6px rgba(220,53,69,0.4)';
                     }}
                     onMouseOut={(e) => {
                         e.currentTarget.style.backgroundColor = '#dc3545';
                         e.currentTarget.style.transform = 'translateY(0)';
-                        e.currentTarget.style.boxShadow = '0 3px 6px rgba(220,53,69,0.3)';
+                        e.currentTarget.style.boxShadow = '0 2px 4px rgba(220,53,69,0.3)';
                     }}
                 >
                     Log Out

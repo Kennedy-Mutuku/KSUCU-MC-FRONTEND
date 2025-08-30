@@ -42,6 +42,7 @@ import ChoirPage from "./ministries/choir";
 import ContactUs from "./ContactUs";
 import MessagesAdmin from "./MessagesAdmin";
 import AttendanceSessionManagement from "./AttendanceSessionManagement";
+import NewsAdmin from "./NewsAdmin";
 
 export const router = createBrowserRouter([
     {
@@ -90,6 +91,7 @@ export const router = createBrowserRouter([
             {path: "/contact-us", element: <ContactUs />},
             {path: "/messages-admin", element: <MessagesAdmin />},
             {path: "/attendance-session-management", element: <AttendanceSessionManagement />},
+            {path: "/news-admin", element: <NewsAdmin />},
             {path: "*", element: <NoPage />}
         ]
     }

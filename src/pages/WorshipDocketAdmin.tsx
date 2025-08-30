@@ -134,6 +134,26 @@ const WorshipDocketAdmin: React.FC = () => {
                     </div>
                 </div>
 
+                {/* News Management Section */}
+                <div className={styles.newsManagementSection}>
+                    <div className={styles.selectionCard}>
+                        <h2>
+                            <FontAwesomeIcon icon={faUsers} />
+                            News Administration
+                        </h2>
+                        <p className={styles.leadershipDescription}>
+                            Update news, manage events with countdown timers, and add photos
+                        </p>
+                        <button 
+                            className={styles.newsManagementButton}
+                            onClick={() => window.location.href = '/news-admin'}
+                        >
+                            News Admin
+                            <FontAwesomeIcon icon={faArrowRight} className={styles.arrowIcon} />
+                        </button>
+                    </div>
+                </div>
+
                 {/* Leadership Role Selection Section */}
                 <div className={styles.leadershipSelection}>
                     <div className={styles.selectionCard}>

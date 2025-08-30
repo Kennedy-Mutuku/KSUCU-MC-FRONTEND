@@ -46,6 +46,17 @@ const Media: React.FC = () => {
   useEffect(() => {
     fetchUserData();
     loadMediaItems();
+    
+    // Refresh media items when the page gains focus (when user returns from admin)
+    const handleFocus = () => {
+      loadMediaItems();
+    };
+    
+    window.addEventListener('focus', handleFocus);
+    
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+    };
   }, []);
 
   const loadMediaItems = () => {
@@ -108,7 +119,35 @@ const Media: React.FC = () => {
       setGeneralLoading(false);      
     }
   };
-  const reversedEvents = [...events].reverse(); // Spread operator to avoid mutating the original array
+  // Sort events to show newest first - prioritize recently added items (by id timestamp) then by date
+  const sortedEvents = [...events].sort((a, b) => {
+    // First, prioritize items with newer IDs (recently added)
+    const aId = parseInt(a.id || '0');
+    const bId = parseInt(b.id || '0');
+    
+    // If both have timestamp IDs, sort by ID (newest first)
+    if (aId > 1000000000000 && bId > 1000000000000) { // Both are timestamp IDs
+      return bId - aId;
+    }
+    
+    // If only one has a timestamp ID, prioritize it
+    if (aId > 1000000000000) return -1;
+    if (bId > 1000000000000) return 1;
+    
+    // For items without timestamp IDs, sort by date string (newest first)
+    try {
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
+      if (!isNaN(dateA.getTime()) && !isNaN(dateB.getTime())) {
+        return dateB.getTime() - dateA.getTime();
+      }
+    } catch (error) {
+      // If date parsing fails, maintain original order
+    }
+    
+    // Fallback: maintain original order
+    return 0;
+  });
   
   return (
     <>
@@ -171,7 +210,7 @@ const Media: React.FC = () => {
           <div className={styles.container}>
             <h2 className={styles.sectionTitle}>Recent Events</h2>
             <div className={styles.eventsPreview}>
-              {events.slice(0, 6).map((event, index) => (
+              {sortedEvents.slice(0, 6).map((event, index) => (
                 <div key={event.id || index} className={styles.eventCard}>
                   <div className={styles.eventImage}>
                     {event.imageUrl ? (
@@ -250,7 +289,7 @@ const Media: React.FC = () => {
               </div>
               <div className={styles.modalBody}>
                 <div className={styles.galleryGrid}>
-                  {reversedEvents.map((event, index) => (
+                  {sortedEvents.map((event, index) => (
                     <div key={event.id || index} className={styles.galleryItem}>
                       <div className={styles.galleryImagePlaceholder}>
                         {event.imageUrl ? (

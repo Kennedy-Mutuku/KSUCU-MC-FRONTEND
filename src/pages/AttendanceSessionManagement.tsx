@@ -4,6 +4,7 @@ import Footer from '../components/footer';
 import styles from '../styles/attendanceSession.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getApiUrl } from '../config/environment';
+import { formatDateTime, getTimeAgo, formatSessionDuration, isRecentTime } from '../utils/timeUtils';
 import { 
     faUsers, 
     faPlay,
@@ -308,57 +309,37 @@ const AttendanceSessionManagement: React.FC = () => {
     };
 
     const resetSession = async () => {
-        if (!confirm('Are you sure you want to reset attendance? This will clear all records and restart the session.')) return;
+        if (!confirm('⚠️ RESET WARNING!\n\nThis will permanently DELETE ALL attendance records from all sessions and create a fresh start.\n\nThis action cannot be undone!\n\nAre you sure you want to proceed?')) return;
         
         setLoading(true);
         try {
-            console.log('🔄 Resetting session via backend API...');
+            console.log('🔄 RESETTING entire attendance system...');
             
-            // First close the current session (if any)
-            if (attendanceSession && attendanceSession.isActive) {
-                console.log('🔒 Closing current session before reset...');
-                const closeResponse = await fetch(getApiUrl('attendanceSessionClose'), {
-                    method: 'POST',
-                    credentials: 'include',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                });
-                
-                if (closeResponse.ok) {
-                    console.log('✅ Current session closed successfully');
-                } else {
-                    console.log('⚠️ Warning: Failed to close current session, proceeding with reset...');
-                }
-            }
-            
-            // Start a new session
-            console.log('🚀 Starting new session after reset...');
-            const response = await fetch(getApiUrl('attendanceSessionOpen'), {
+            // Call the dedicated reset endpoint that clears everything
+            const response = await fetch(getApiUrl('attendanceSessionReset'), {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    leadershipRole: leadershipRole,
-                    ministry: 'General'
+                    leadershipRole: leadershipRole
                 })
             });
 
             if (response.ok) {
                 const data = await response.json();
-                console.log('✅ New session started after reset:', data);
+                console.log('✅ System reset completed:', data);
                 
                 const newSession: AttendanceSession = {
-                    _id: data.session._id || Date.now().toString(),
+                    _id: data.session._id,
                     leadershipRole,
                     isActive: true,
-                    startTime: data.session.startTime || new Date().toISOString(),
+                    startTime: data.session.startTime,
                     totalAttendees: 0
                 };
                 
-                // Clear local records and update state
+                // Clear all local state
                 setAttendanceRecords([]);
                 setAttendanceSession(newSession);
                 setGlobalActiveSession({
@@ -368,20 +349,21 @@ const AttendanceSessionManagement: React.FC = () => {
                     sessionId: newSession._id
                 });
                 
-                setMessage('🔄 Attendance session has been reset - All records cleared and new session started');
-                setTimeout(() => setMessage(''), 5000);
+                setMessage(`🔄 Complete system reset successful! Cleared ${data.recordsCleared} attendance records and created fresh session.`);
+                setTimeout(() => setMessage(''), 8000);
                 
-                // Refresh the attendance records from backend
+                // Refresh data from backend to confirm clean state
                 setTimeout(() => {
                     loadSessionData(leadershipRole);
                 }, 1000);
             } else {
-                throw new Error('Failed to start new session after reset');
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to reset system');
             }
         } catch (error) {
-            console.error('❌ Error resetting attendance:', error);
-            setMessage('❌ Error resetting attendance session. Please try again.');
-            setTimeout(() => setMessage(''), 3000);
+            console.error('❌ Error resetting attendance system:', error);
+            setMessage('❌ Error resetting attendance system. Please try again.');
+            setTimeout(() => setMessage(''), 5000);
         } finally {
             setLoading(false);
         }
@@ -545,7 +527,7 @@ const AttendanceSessionManagement: React.FC = () => {
                     </div>
                     <div class="session-right">
                         <strong>${attendanceRecords.length} Attendees</strong><br>
-                        <strong>Date:</strong> ${attendanceSession ? new Date(attendanceSession.startTime).toLocaleDateString() : new Date().toLocaleDateString()}
+                        <strong>Date:</strong> ${attendanceSession ? formatDateTime(attendanceSession.startTime, { format: 'medium' }) : formatDateTime(new Date(), { format: 'medium' })}
                     </div>
                 </div>
 
@@ -569,12 +551,7 @@ const AttendanceSessionManagement: React.FC = () => {
                                 <td>${record.regNo}</td>
                                 <td>${record.year}</td>
                                 <td>${record.phoneNumber || 'N/A'}</td>
-                                <td>${new Date(record.signedAt).toLocaleString('en-US', {
-                                    month: 'short', 
-                                    day: 'numeric', 
-                                    hour: '2-digit', 
-                                    minute: '2-digit'
-                                })}</td>
+                                <td>${formatDateTime(record.signedAt, { format: 'short', includeSeconds: false })}</td>
                                 <td style="height: 30px; border: 1px solid #ccc; padding: 2px; text-align: center;">
                                     ${record.signature && record.signature.startsWith('data:image') ? 
                                         `<img src="${record.signature}" style="max-width: 100%; max-height: 26px; object-fit: contain;" alt="Signature" />` : 
@@ -687,23 +664,25 @@ const AttendanceSessionManagement: React.FC = () => {
                             <div className={`${styles.statusCard} ${styles.active}`}>
                                 <h3>✅ Your Session Active</h3>
                                 <p><strong>Leader:</strong> {leadershipRole}</p>
-                                <p><strong>Started:</strong> {new Date(attendanceSession.startTime).toLocaleString()}</p>
+                                <p><strong>Started:</strong> {formatDateTime(attendanceSession.startTime, { format: 'medium', includeSeconds: true })} {isRecentTime(attendanceSession.startTime, 15) && <span className={styles.recentBadge}>Recently opened</span>}</p>
                                 <p><strong>Total Attendees:</strong> {attendanceRecords.length}</p>
                                 <p><strong>Status:</strong> Accepting new attendance</p>
+                                <p><strong>Duration:</strong> {formatSessionDuration(attendanceSession.startTime)}</p>
                             </div>
                         ) : globalActiveSession && globalActiveSession.isActive && globalActiveSession.leadershipRole !== leadershipRole ? (
                             <div className={`${styles.statusCard} ${styles.blocked}`}>
                                 <h3>🔒 Session Blocked</h3>
                                 <p><strong>Active Session Owner:</strong> {globalActiveSession.leadershipRole}</p>
-                                <p><strong>Started:</strong> {new Date(globalActiveSession.startTime || '').toLocaleString()}</p>
+                                <p><strong>Started:</strong> {formatDateTime(globalActiveSession.startTime || '', { format: 'medium', includeSeconds: true })} ({getTimeAgo(globalActiveSession.startTime || '')})</p>
                                 <p><strong>Your Access:</strong> BLOCKED - Another admin is managing attendance</p>
                                 <p>You must wait for them to close their session or force close it to start yours</p>
                             </div>
                         ) : attendanceSession && !attendanceSession.isActive ? (
                             <div className={`${styles.statusCard} ${styles.inactive}`}>
                                 <h3>🔒 Your Previous Session</h3>
-                                <p><strong>Started:</strong> {new Date(attendanceSession.startTime).toLocaleString()}</p>
-                                <p><strong>Ended:</strong> {attendanceSession.endTime ? new Date(attendanceSession.endTime).toLocaleString() : 'Unknown'}</p>
+                                <p><strong>Started:</strong> {formatDateTime(attendanceSession.startTime, { format: 'medium', includeSeconds: true })}</p>
+                                <p><strong>Ended:</strong> {attendanceSession.endTime ? `${formatDateTime(attendanceSession.endTime, { format: 'medium', includeSeconds: true })} (${getTimeAgo(attendanceSession.endTime)})` : 'Unknown'}</p>
+                                <p><strong>Session Duration:</strong> {formatSessionDuration(attendanceSession.startTime, attendanceSession.endTime)}</p>
                                 <p><strong>Final Attendees:</strong> {attendanceRecords.length}</p>
                             </div>
                         ) : (
@@ -724,7 +703,7 @@ const AttendanceSessionManagement: React.FC = () => {
                                 <div className={styles.blockedSessionInfo}>
                                     <p><strong>🔒 Session Blocked</strong></p>
                                     <p><strong>{globalActiveSession.leadershipRole}</strong> has an active session</p>
-                                    <p>Started: {new Date(globalActiveSession.startTime || '').toLocaleString()}</p>
+                                    <p>Started: {formatDateTime(globalActiveSession.startTime || '', { format: 'medium', includeSeconds: true })} ({getTimeAgo(globalActiveSession.startTime || '')})</p>
                                 </div>
                                 
                                 <button
@@ -808,7 +787,7 @@ const AttendanceSessionManagement: React.FC = () => {
                                                 <strong>Ministry:</strong> {record.ministry} | 
                                                 <strong>Year:</strong> {record.year} | 
                                                 <strong>Phone:</strong> {record.phoneNumber || 'Not provided'} | 
-                                                <strong>Signed:</strong> {new Date(record.signedAt).toLocaleString()}
+                                                <strong>Signed:</strong> {formatDateTime(record.signedAt, { format: 'medium', includeSeconds: true })} ({getTimeAgo(record.signedAt)})
                                             </p>
                                         </div>
                                     </div>

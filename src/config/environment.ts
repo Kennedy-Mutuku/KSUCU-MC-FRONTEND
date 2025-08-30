@@ -28,6 +28,7 @@ interface ApiConfig {
     attendanceSessionOpen: string;
     attendanceSessionClose: string;
     attendanceSessionForceClose: string;
+    attendanceSessionReset: string;
     attendanceSign: string;
     attendanceSignAnonymous: string;
     attendanceSessions: string;
@@ -70,6 +71,7 @@ const developmentConfig: ApiConfig = {
     attendanceSessionOpen: '/attendance/session/open',
     attendanceSessionClose: '/attendance/session/close',
     attendanceSessionForceClose: '/attendance/session/force-close',
+    attendanceSessionReset: '/attendance/session/reset',
     attendanceSign: '/attendance/sign',
     attendanceSignAnonymous: '/attendance/sign-anonymous',
     attendanceSessions: '/attendance/sessions',
@@ -110,6 +112,7 @@ const productionConfig: ApiConfig = {
     attendanceSessionOpen: '/attendance/session/open',
     attendanceSessionClose: '/attendance/session/close',
     attendanceSessionForceClose: '/attendance/session/force-close',
+    attendanceSessionReset: '/attendance/session/reset',
     attendanceSign: '/attendance/sign',
     attendanceSignAnonymous: '/attendance/sign-anonymous',
     attendanceSessions: '/attendance/sessions',

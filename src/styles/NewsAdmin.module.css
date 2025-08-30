@@ -1,0 +1,583 @@
+/* News Admin Styles */
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: 80vh;
+}
+
+/* Login Section */
+.loginCard {
+    background: linear-gradient(135deg, #ff6b35, #f7931e);
+    border-radius: 20px;
+    padding: 50px 40px;
+    text-align: center;
+    box-shadow: 0 15px 35px rgba(255, 107, 53, 0.4);
+    color: white;
+    max-width: 500px;
+    margin: 50px auto;
+    position: relative;
+    overflow: hidden;
+}
+
+.loginCard::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #fff, #ffcc00, #fff);
+    animation: shimmer 2s infinite;
+}
+
+.lockIcon {
+    font-size: 3rem;
+    color: #fff;
+    margin-bottom: 20px;
+    opacity: 0.9;
+}
+
+.loginCard h2 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.loginCard p {
+    margin-bottom: 30px;
+    opacity: 0.9;
+    font-size: 1.1rem;
+}
+
+.inputGroup {
+    margin-bottom: 20px;
+}
+
+.passwordInput {
+    padding: 15px 20px;
+    border: none;
+    border-radius: 25px;
+    font-size: 1rem;
+    width: 100%;
+    max-width: 300px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.95);
+    color: #333;
+    transition: all 0.3s ease;
+}
+
+.passwordInput:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.loginButton {
+    background: linear-gradient(45deg, #fff, #f0f0f0);
+    color: #ff6b35;
+    border: none;
+    padding: 15px 40px;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 auto;
+}
+
+.loginButton:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+    color: #e85a30;
+}
+
+.error {
+    background: rgba(244, 67, 54, 0.2);
+    border: 1px solid rgba(244, 67, 54, 0.4);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 15px;
+    color: #ffcdd2;
+}
+
+/* Admin Interface */
+.adminHeader {
+    text-align: center;
+    margin-bottom: 40px;
+    color: #333;
+}
+
+.adminHeader h1 {
+    font-size: 2.5rem;
+    color: #ff6b35;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.adminHeader p {
+    font-size: 1.1rem;
+    color: #666;
+}
+
+.message {
+    padding: 15px 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    text-align: center;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.successMessage {
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    color: white;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+}
+
+.errorMessage {
+    background: linear-gradient(135deg, #f44336, #d32f2f);
+    color: white;
+    box-shadow: 0 4px 15px rgba(244, 67, 54, 0.3);
+}
+
+/* News Form Card */
+.newsFormCard {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    border: 2px solid rgba(255, 107, 53, 0.05);
+    margin-bottom: 30px;
+}
+
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.cardHeader h2 {
+    color: #ff6b35;
+    font-size: 1.8rem;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.actionButtons {
+    display: flex;
+    gap: 10px;
+}
+
+.previewButton {
+    background: linear-gradient(135deg, #17a2b8, #138496);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.previewButton:hover {
+    background: linear-gradient(135deg, #138496, #117a8b);
+    transform: translateY(-2px);
+}
+
+/* Form Styles */
+.newsForm {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.formRow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.formGroup label {
+    font-weight: 600;
+    color: #333;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.formGroup small {
+    color: #666;
+    font-size: 0.85rem;
+    font-style: italic;
+}
+
+.textInput,
+.dateInput,
+.timeInput,
+.textArea {
+    padding: 12px 15px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    font-size: 1rem;
+    background: white;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+.textInput:focus,
+.dateInput:focus,
+.timeInput:focus,
+.textArea:focus {
+    outline: none;
+    border-color: #ff6b35;
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+}
+
+.textArea {
+    resize: vertical;
+    min-height: 120px;
+    line-height: 1.5;
+}
+
+/* Image Upload */
+.imageUploadSection {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.fileInput {
+    display: none;
+}
+
+.uploadButton {
+    background: linear-gradient(135deg, #6c757d, #5a6268);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.uploadButton:hover {
+    background: linear-gradient(135deg, #5a6268, #495057);
+    transform: translateY(-2px);
+}
+
+.imagePreview {
+    position: relative;
+    display: inline-block;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.imagePreview img {
+    width: 200px;
+    height: 120px;
+    object-fit: cover;
+    display: block;
+}
+
+.removeImageButton {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(244, 67, 54, 0.9);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.removeImageButton:hover {
+    background: #f44336;
+    transform: scale(1.1);
+}
+
+/* Form Actions */
+.formActions {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 2px solid #f0f0f0;
+}
+
+.clearButton {
+    background: linear-gradient(135deg, #6c757d, #5a6268);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.clearButton:hover {
+    background: linear-gradient(135deg, #5a6268, #495057);
+    transform: translateY(-2px);
+}
+
+.submitButton {
+    background: linear-gradient(135deg, #ff6b35, #f7931e);
+    color: white;
+    border: none;
+    padding: 15px 35px;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 6px 20px rgba(255, 107, 53, 0.3);
+}
+
+.submitButton:hover {
+    background: linear-gradient(135deg, #e85a30, #e6831a);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+}
+
+.submitButton:disabled,
+.clearButton:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+/* Preview Section */
+.previewSection {
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 15px;
+    border: 2px dashed #ddd;
+}
+
+.previewSection h3 {
+    color: #ff6b35;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.newsPreview {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.previewEventInfo {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.previewEventInfo h4 {
+    margin: 0 0 10px 0;
+    font-size: 1.2rem;
+}
+
+.previewEventInfo p {
+    margin: 5px 0;
+    opacity: 0.9;
+}
+
+.previewImage {
+    margin-bottom: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.previewImage img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    display: block;
+}
+
+.previewContent h2 {
+    color: #2c3e50;
+    font-size: 2rem;
+    margin-bottom: 15px;
+    line-height: 1.3;
+}
+
+.previewBody {
+    color: #555;
+    line-height: 1.7;
+    font-size: 1.1rem;
+}
+
+.previewBody p {
+    margin-bottom: 15px;
+}
+
+/* Current News Card */
+.currentNewsCard {
+    background: linear-gradient(135deg, #e8f5e8, #f0fff0);
+    border-radius: 15px;
+    padding: 25px;
+    border: 2px solid #28a745;
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.1);
+}
+
+.currentNewsCard h3 {
+    color: #28a745;
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.currentNewsContent h4 {
+    color: #155724;
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+}
+
+.currentNewsContent p {
+    color: #155724;
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+.currentEventInfo {
+    background: rgba(40, 167, 69, 0.1);
+    padding: 8px 15px;
+    border-radius: 8px;
+    color: #155724;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+/* Animations */
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+    
+    .loginCard {
+        padding: 30px 20px;
+        margin: 20px auto;
+    }
+    
+    .adminHeader h1 {
+        font-size: 2rem;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .cardHeader {
+        flex-direction: column;
+        gap: 15px;
+        align-items: stretch;
+    }
+    
+    .cardHeader h2 {
+        text-align: center;
+        justify-content: center;
+    }
+    
+    .formRow {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .formActions {
+        flex-direction: column;
+    }
+    
+    .newsFormCard {
+        padding: 20px 15px;
+    }
+    
+    .imagePreview img {
+        width: 150px;
+        height: 90px;
+    }
+    
+    .previewContent h2 {
+        font-size: 1.6rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .passwordInput {
+        max-width: 100%;
+    }
+    
+    .formActions {
+        gap: 10px;
+    }
+    
+    .submitButton,
+    .clearButton {
+        padding: 12px 20px;
+        font-size: 0.9rem;
+    }
+    
+    .textArea {
+        min-height: 100px;
+    }
+}
