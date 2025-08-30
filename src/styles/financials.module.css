@@ -128,7 +128,7 @@ body{
     padding-bottom: 75px;
 }
 
-@media(min-width:600px){
+@media (min-width: 768px){
     .hiding-container{
         font-size: 3em;
     }

@@ -284,7 +284,7 @@ select{
 
 
 
-@media(min-width:600px){
+@media (min-width: 768px) {
 
 
     .flex-title .container{
@@ -398,26 +398,4 @@ select{
     }
 }
 
-@media(min-width:1200px){
-    .flex-title .container{
-        padding: 25px 50px;
-        gap: 40px;
-        width: 80%;
-    }
-
-    .logo{
-        width: 70px;
-        height: 70px;
-        margin-left: 20px;
-    }
-    
-    .nav-one--hidden{
-        margin-right: 20px;
-    }
-
-    .title-text{
-        font-size: 1.6rem;
-        letter-spacing: 1px;
-    }
-}
 

@@ -582,7 +582,7 @@
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
     .heroTitle {
         font-size: 2.5rem;
     }
@@ -692,7 +692,7 @@
     }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 767px) {
     .heroTitle {
         font-size: 2rem;
     }

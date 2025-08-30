@@ -2,28 +2,14 @@
 
 /* Header Container */
 .header {
-    background: #730051;
-    color: #fff;
+    background: #00c6ff;
+    color: #000;
     position: sticky;
     top: 0;
     z-index: 100;
     overflow: visible;
 }
 
-/* Mobile Blue Background for Logo Section */
-.mobile-blue-section {
-    background: #00c6ff;
-    display: none;
-    padding: 10px 0;
-    position: relative;
-    text-align: center;
-}
-
-.mobile-blue-section .logo-section {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
 
 .flex-title-phone {
     display: flex;
@@ -31,6 +17,7 @@
     justify-content: center;
     padding: 15px 20px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    background: #00c6ff;
 }
 
 .container {
@@ -74,6 +61,7 @@
     letter-spacing: 0.5px;
     white-space: nowrap;
     transition: all 0.3s ease;
+    color: #000;
 }
 
 .short-title {
@@ -105,7 +93,7 @@
 }
 
 .nav-item:hover {
-    background-color: rgba(255, 255, 255, 0.15);
+    background-color: rgba(0, 0, 0, 0.1);
     transform: translateY(-1px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
@@ -113,13 +101,13 @@
 .nav-text {
     font-size: 0.9rem;
     font-weight: 500;
-    color: #fff;
+    color: #000;
     text-decoration: none;
     transition: all 0.3s ease;
 }
 
 .nav-text:hover {
-    color: #f0f0f0;
+    color: #333;
     text-decoration: none;
 }
 
@@ -138,20 +126,20 @@
 }
 
 .user-section:hover {
-    background-color: rgba(255, 255, 255, 0.15);
+    background-color: rgba(0, 0, 0, 0.1);
     transform: translateY(-1px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .user-icon {
-    color: #fff;
+    color: #000;
     flex-shrink: 0;
 }
 
 .user-text {
     font-size: 0.75rem;
     font-weight: 500;
-    color: #fff;
+    color: #000;
     text-align: center;
     white-space: nowrap;
     overflow: hidden;
@@ -159,15 +147,22 @@
     max-width: 80px;
 }
 
-/* Desktop View Enhancements */
-@media (min-width: 1024px) {
+/* Desktop view (768px and above) */
+@media (min-width: 768px) {
     .flex-title-phone {
         padding: 20px 30px;
+        background: #00c6ff;
     }
     
     .container {
         max-width: 1400px;
         padding: 0 20px;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .logo-section {
+        flex-shrink: 0;
     }
     
     .logo-image {
@@ -175,112 +170,106 @@
         height: 70px;
     }
     
+    .title-section {
+        flex: 1;
+        text-align: center;
+    }
+    
     .title-text {
         font-size: 1.4rem;
         font-weight: 700;
         letter-spacing: 1px;
+        color: #000;
+    }
+    
+    .full-title {
+        display: inline;
+    }
+    
+    .short-title {
+        display: none;
     }
     
     .nav-section {
         gap: 30px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
     }
     
     .nav-item {
         padding: 12px 16px;
         border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
     
     .nav-text {
         font-size: 1rem;
         font-weight: 600;
+        color: #000;
     }
     
     .user-section {
         padding: 12px 16px;
         border-radius: 8px;
         min-width: 90px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
     }
     
     .user-icon {
         width: 28px;
         height: 28px;
+        color: #000;
     }
     
     .user-text {
         font-size: 0.85rem;
         font-weight: 600;
         max-width: 100px;
+        color: #000;
+        text-align: center;
     }
 }
 
-@media (min-width: 1200px) {
-    .container {
-        max-width: 1600px;
-    }
-    
-    .title-text {
-        font-size: 1.6rem;
-    }
-    
-    .nav-section {
-        gap: 40px;
-    }
-    
-    .nav-item,
-    .user-section {
-        padding: 14px 20px;
-    }
-    
-    .nav-text {
-        font-size: 1.1rem;
-    }
-    
-    .user-text {
-        font-size: 0.9rem;
-    }
-}
 
-/* Tablet and Mobile Responsive Design */
-@media (max-width: 768px) {
-    .container {
-        padding: 0 10px;
-    }
-    
-    .title-text {
-        font-size: 1rem;
-    }
-    
-    .nav-section {
-        gap: 15px;
-    }
-    
-    .nav-text {
-        font-size: 0.8rem;
-    }
-    
-    .user-text {
-        font-size: 0.7rem;
-    }
-}
-
-@media (max-width: 900px) {
-    .mobile-blue-section {
-        display: none;
-    }
-    
+/* Mobile view (anything up to 767px) */
+@media (max-width: 767px) {
     .flex-title-phone {
-        padding: 12px 15px;
-        position: relative;
+        padding: 10px 15px;
         background: #00c6ff;
     }
     
-    .container .logo-section {
-        display: flex;
+    .container {
+        padding: 0 10px;
+        gap: 8px;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .logo-section {
+        flex-shrink: 0;
     }
     
     .logo-image {
-        width: 50px;
-        height: 50px;
+        width: 40px;
+        height: 40px;
+    }
+    
+    .title-section {
+        flex: 1;
+        text-align: center;
+        min-width: 0;
+    }
+    
+    .title-text {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #000;
     }
     
     .full-title {
@@ -291,133 +280,46 @@
         display: inline;
     }
     
-    .container {
-        gap: 8px;
-        justify-content: center;
-    }
-    
-    .title-section {
-        flex: none;
-    }
-    
     .nav-section {
         gap: 8px;
-        min-width: 0;
         flex-shrink: 0;
-        position: absolute;
-        right: 15px;
-        top: 50%;
-        transform: translateY(-50%);
-        z-index: 101;
-    }
-    
-    .title-text {
-        font-size: 0.9rem;
-    }
-    
-    .nav-text {
-        font-size: 0.75rem;
-    }
-    
-    .user-text {
-        font-size: 0.65rem;
-    }
-    
-    .user-section {
-        min-width: 60px;
-        background: rgba(255, 255, 255, 0.2);
-        backdrop-filter: blur(10px);
-    }
-}
-
-@media (max-width: 500px) {
-    .flex-title-phone {
-        padding: 8px 10px;
-        background: #00c6ff;
-    }
-    
-    .logo-image {
-        width: 40px;
-        height: 40px;
-    }
-    
-    .title-text {
-        font-size: 0.8rem;
+        display: flex;
+        align-items: center;
     }
     
     .nav-item {
-        padding: 4px 6px;
+        padding: 6px 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-width: 50px;
     }
     
     .nav-text {
         font-size: 0.7rem;
+        color: #000;
+        text-align: center;
     }
     
     .user-section {
-        padding: 4px 6px;
-        min-width: 45px;
-        gap: 2px;
-    }
-    
-    .user-icon {
-        width: 18px;
-        height: 18px;
-    }
-    
-    .user-text {
-        font-size: 0.6rem;
-        max-width: 50px;
-    }
-    
-    .nav-section {
-        gap: 4px;
-    }
-}
-
-@media (max-width: 380px) {
-    .flex-title-phone {
         padding: 6px 8px;
-        background: #00c6ff;
-    }
-    
-    .container {
-        gap: 4px;
-    }
-    
-    .logo-image {
-        width: 35px;
-        height: 35px;
-    }
-    
-    .title-text {
-        font-size: 0.75rem;
-    }
-    
-    .nav-item {
-        padding: 3px 5px;
-    }
-    
-    .nav-text {
-        font-size: 0.65rem;
-    }
-    
-    .user-section {
-        padding: 3px 5px;
-        min-width: 40px;
-        gap: 1px;
+        min-width: 50px;
+        gap: 2px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
     
     .user-icon {
-        width: 16px;
-        height: 16px;
+        width: 20px;
+        height: 20px;
+        color: #000;
     }
     
     .user-text {
-        font-size: 0.55rem;
-        max-width: 45px;
-    }
-    
-    .nav-section {
-        gap: 3px;
+        font-size: 0.65rem;
+        color: #000;
+        max-width: 60px;
+        text-align: center;
     }
 }

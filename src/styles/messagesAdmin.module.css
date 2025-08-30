@@ -639,7 +639,7 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .mainContent {
     grid-template-columns: 1fr;
     padding: 15px;

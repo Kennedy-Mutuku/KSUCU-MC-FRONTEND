@@ -84,7 +84,7 @@ html{
     color: #730051;
 }
 
-@media(min-width:600px){
+@media (min-width: 768px){
     .ministry-section{
         display: flex;
         align-items: center;

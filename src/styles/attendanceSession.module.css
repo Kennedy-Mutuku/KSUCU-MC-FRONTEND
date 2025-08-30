@@ -333,7 +333,7 @@
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
     .container {
         padding: 10px;
     }
@@ -393,7 +393,7 @@
     }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 767px) {
     .sessionControls,
     .attendanceRecords {
         padding: 1rem;

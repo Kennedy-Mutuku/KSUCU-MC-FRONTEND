@@ -99,7 +99,7 @@
   }
 }
   
-@media(min-width:600px) {
+@media (min-width: 768px) {
   .row{
     margin: 50px auto 0 auto;
     width: 60%;

@@ -339,7 +339,7 @@
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .heroSection {
     flex-direction: column;
     text-align: center;
@@ -407,7 +407,7 @@
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 767px) {
   .title {
     font-size: 1.8rem;
   }

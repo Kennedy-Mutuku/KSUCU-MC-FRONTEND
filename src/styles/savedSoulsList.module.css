@@ -3,7 +3,7 @@
     width: 96%;
 }
 
-@media(min-width:600px){
+@media (min-width: 768px){
     .container{
         margin: 20px auto;
         width: 70%;

@@ -569,7 +569,7 @@
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
     .adminContainer {
         padding: 1rem;
     }
@@ -631,7 +631,7 @@
 }
 
 /* Extra small screens */
-@media (max-width: 480px) {
+@media (max-width: 767px) {
     .adminContainer {
         padding: 0.5rem;
     }
@@ -929,7 +929,7 @@
 }
 
 /* Responsive Design for Leadership Interface */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
     .leadershipRoleGrid {
         grid-template-columns: 1fr;
     }
@@ -944,7 +944,7 @@
     }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 767px) {
     .leadershipRoleGrid {
         gap: 0.75rem;
     }

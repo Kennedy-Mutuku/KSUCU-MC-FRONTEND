@@ -48,8 +48,8 @@
     min-width: 280px;
 }
 
-/* Mobile-first responsive breakpoints */
-@media (max-width: 480px) {
+/* Mobile view (anything up to 767px) */
+@media (max-width: 767px) {
     .responsive-container {
         padding: 0 15px;
     }
@@ -63,25 +63,14 @@
     }
 }
 
-@media (min-width: 481px) and (max-width: 768px) {
+/* Desktop view (768px and above) */
+@media (min-width: 768px) {
     .responsive-container {
-        padding: 0 20px;
+        padding: 0 40px;
     }
     
     .flex-grid > * {
         min-width: calc(50% - 10px);
-    }
-}
-
-@media (min-width: 769px) and (max-width: 1024px) {
-    .responsive-container {
-        padding: 0 30px;
-    }
-}
-
-@media (min-width: 1025px) {
-    .responsive-container {
-        padding: 0 40px;
     }
 }
 

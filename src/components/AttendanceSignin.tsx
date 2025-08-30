@@ -114,12 +114,17 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
 
         try {
             // CRITICAL: Always get the latest active session before signing
+            // Add timestamp and no-cache headers to prevent caching issues
             console.log('🔄 Refreshing session status before signing...');
             const sessionResponse = await axios.get(
-                getApiUrl('attendanceSessionStatus', `ministry=${encodeURIComponent(ministry)}&t=${Date.now()}`),
+                getApiUrl('attendanceSessionStatus') + `?ministry=${encodeURIComponent(ministry)}&t=${Date.now()}`,
                 { 
                     withCredentials: true,
-                    headers: { 'Cache-Control': 'no-cache' }
+                    headers: { 
+                        'Cache-Control': 'no-cache, no-store, must-revalidate',
+                        'Pragma': 'no-cache',
+                        'Expires': '0'
+                    }
                 }
             );
 
@@ -204,6 +209,7 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
             if (error.response) {
                 if (error.response.status === 400) {
                     // Extract error message from different possible formats
+                    // Check both 'message' and 'error' fields for consistency
                     errorMessage = error.response.data?.message || 
                                   error.response.data?.error || 
                                   error.response.data || 
@@ -211,27 +217,49 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
                     
                     // Convert to string if it's not already
                     if (typeof errorMessage !== 'string') {
-                        errorMessage = String(errorMessage);
+                        try {
+                            errorMessage = JSON.stringify(errorMessage);
+                        } catch {
+                            errorMessage = String(errorMessage);
+                        }
                     }
                     
                     // Check for duplicate registration number in various formats
+                    const regNoUpper = attendanceFormData.regNo.trim().toUpperCase();
                     if (errorMessage.toLowerCase().includes('already signed') || 
+                        errorMessage.toLowerCase().includes('already') ||
                         errorMessage.toLowerCase().includes('duplicate') ||
                         errorMessage.toLowerCase().includes('already used') ||
-                        errorMessage.includes(attendanceFormData.regNo.trim().toUpperCase())) {
-                        setError(`❌ Registration Number Already Used! This registration number has already been used for attendance in this session. Please use a different registration number.`);
-                        setTimeout(() => setError(''), 6000);
+                        errorMessage.includes(regNoUpper)) {
+                        
+                        // Extract just the registration number from the error for cleaner display
+                        const cleanMessage = `❌ Registration Number ${regNoUpper} Already Used! This registration number has already been used for attendance in this session. Please use a different registration number.`;
+                        setError(cleanMessage);
+                        setTimeout(() => setError(''), 8000);
                         
                         // Clear only the registration number field to allow correction
                         setAttendanceFormData(prev => ({
                             ...prev,
                             regNo: ''
                         }));
+                        
+                        // Focus on the registration number input for easy correction
+                        const regNoInput = document.querySelector('input[placeholder*="KU/2024"]') as HTMLInputElement;
+                        if (regNoInput) {
+                            regNoInput.focus();
+                        }
+                        
+                        setLoading(false);
                         return;
                     }
+                } else if (error.response.status === 404) {
+                    errorMessage = error.response.data?.message || 
+                                  error.response.data?.error ||
+                                  'Session not found. Please refresh and try again.';
                 } else {
                     // Handle other HTTP error statuses
                     errorMessage = error.response.data?.message || 
+                                  error.response.data?.error ||
                                   `Server error (${error.response.status}). Please try again.`;
                 }
             } else if (error.request) {

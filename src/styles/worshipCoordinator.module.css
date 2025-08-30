@@ -388,7 +388,7 @@
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .container {
     padding: 20px 15px;
   }
@@ -433,7 +433,7 @@
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 767px) {
   .statsPanel {
     grid-template-columns: 1fr;
   }

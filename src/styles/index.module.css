@@ -254,8 +254,8 @@ body{
     min-height: 28px;
 }
 
-/* Mobile specific styles for very small screens */
-@media(max-width: 480px) {
+/* Mobile view (anything up to 767px) */
+@media (max-width: 767px) {
     .main-quick--links {
         margin: 6px -2px 4px -2px;
         border-radius: 8px;
@@ -295,8 +295,8 @@ body{
     }
 }
 
-/* Desktop specific styles for quick links */
-@media(min-width:600px) {
+/* Desktop view (768px and above) */
+@media (min-width: 768px) {
     .nav-open .main-quick--links {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -921,8 +921,8 @@ div.boardsCategoryDiv:focus h3 {
     background: transparent !important;
 }
 
-/* Mobile responsive adjustments */
-@media (max-width: 768px) {
+/* Mobile view (anything up to 767px) */
+@media (max-width: 767px) {
     .category-list {
         grid-template-columns: 1fr;
         gap: 10px;
@@ -938,21 +938,6 @@ div.boardsCategoryDiv:focus h3 {
     }
 }
 
-@media (max-width: 480px) {
-    .dropdown-content.show {
-        padding: 20px 15px;
-    }
-    
-    .category-list li a {
-        padding: 12px 16px;
-        font-size: 0.85rem;
-    }
-    
-    .category-title {
-        font-size: 0.95rem;
-        letter-spacing: 0.5px;
-    }
-}
 
 .dropdown-icon {
     transition: transform 0.3s ease;
@@ -1445,8 +1430,8 @@ hr{
 
 
   
-/* Mobile-first responsive design for weekly activities */
-@media (max-width: 480px) {
+/* Mobile view (anything up to 767px) */
+@media (max-width: 767px) {
     .weeklyActivities {
         padding: 5px 10px 30px 10px;
     }
@@ -1506,65 +1491,12 @@ hr{
     }
 }
 
-@media (min-width: 481px) and (max-width: 768px) {
-    .weeklyActivities {
-        padding: 35px 15px;
-    }
 
-    .weeklyActivities .container {
-        width: 100%;
-        display: block;
-    }
 
-    .sectionTitle {
-        font-size: 1.6rem;
-        margin: 0 0 30px 0;
-        width: 100%;
-        display: block;
-        text-align: center;
-        clear: both;
-    }
-
-    .activityCardContainer {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 18px;
-    }
-
-    .cardClasses {
-        padding: 25px 20px;
-    }
-
-    .cardTitle {
-        font-size: 1.1rem;
-    }
-}
-
-@media (min-width: 769px) and (max-width: 1024px) {
-    .weeklyActivities {
-        padding: 50px 25px;
-    }
-
-    .weeklyActivities .container {
-        display: block;
-    }
-
-    .sectionTitle {
-        width: 100%;
-        display: block;
-        text-align: center;
-        clear: both;
-    }
-
-    .activityCardContainer {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 25px;
-    }
-}
-
-@media(min-width:490px){
+/* Desktop view (768px and above) */
+@media (min-width: 768px) {
     .user-icon-container{
-        align-self: center;
-        margin-right: 20px;
+        display: none !important; /* Hide mobile user icon on desktop */
     }
 
     .intro-video{
@@ -1611,7 +1543,8 @@ hr{
     margin: 0 0 20px 0;
 }
 
-@media(min-width:600px) {
+/* Desktop view (768px and above) */
+@media (min-width: 768px) {
 
     .error{
         text-transform: uppercase;
@@ -1700,8 +1633,9 @@ hr{
         
     }
 
+    /* Hide mobile user icon on desktop */
     .user-icon-container{
-        display: none;
+        display: none !important; /* Hide mobile user icon on desktop */
     }
 
     .title{
@@ -2305,32 +2239,170 @@ hr{
 
 }
 
-@media(min-width:605px){
-
-    .flex-title .container{
-        width: 95%;
+/* Consolidated Desktop view (768px and above) - Fix header layout consistency */
+@media (min-width: 768px) {
+    /* Ensure consistent header container width across all desktop sizes */
+    .flex-title .container {
+        width: 85% !important; /* Consistent width that works for all desktop sizes */
+        max-width: 1200px; /* Prevent it from getting too wide on very large screens */
     }
 
-    .main-flex{
-        width: 80%;
+    .main-flex {
+        width: 60%; /* Balanced width for main content */
+    }
+
+    /* Ensure About Us button is visible but user icon takes priority */
+    .About-btn {
+        display: flex !important; /* Show About Us button on desktop */
+    }
+
+    /* Enhanced Navigation Dropdown - ensure proper spacing */
+    .nav-one--hidden {
+        display: flex;
+        align-items: center;
+        gap: 15px; /* Increased gap for better spacing */
+        z-index: 10000 !important;
+        position: relative;
+        background: rgba(115, 0, 81, 0.04);
+        padding: 6px 12px;
+        border-radius: 40px;
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(115, 0, 81, 0.08);
+        overflow: visible !important;
+        flex-shrink: 0; /* Prevent shrinking */
     }
 }
 
-/* Hide About Us button on small desktop screens to ensure user icon visibility */
-@media(min-width:600px) and (max-width: 1100px){
-    .About-btn{
+/* Additional breakpoints for better desktop responsiveness */
+@media (min-width: 768px) and (max-width: 1024px) {
+    /* Medium desktop screens */
+    .flex-title .container {
+        width: 90% !important; /* Slightly wider for medium screens */
+        padding: 12px 0 !important; /* Reduced padding to accommodate 2-line title */
+    }
+    
+    .nav-one--hidden {
+        gap: 12px; /* Reduced gap for tighter screens */
+        flex-shrink: 0; /* Prevent shrinking */
+    }
+    
+    /* Ensure title container has enough height for 2 lines */
+    .title {
+        min-height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Hide mobile user icon on smaller desktops */
+    .user-icon-container {
         display: none !important;
     }
+    
+    /* Slightly smaller buttons for medium desktops */
+    .About-btn {
+        padding: 7px 12px !important;
+        font-size: 0.88rem !important;
+    }
+    
+    .Quick-links-btn {
+        padding: 7px 12px !important;
+        font-size: 0.88rem !important;
+    }
 }
 
-@media(min-width:800px){
-
-    .flex-title .container{
-        width: 70%;
+@media (min-width: 1025px) and (max-width: 1440px) {
+    /* Large desktop screens */
+    .flex-title .container {
+        width: 80% !important; /* Optimal for large screens */
     }
+}
 
-    .main-flex{
-        width: 33%;
+/* Specific fixes for ~1110px width */
+@media (min-width: 1050px) and (max-width: 1150px) {
+    .flex-title {
+        background: #00c6ff !important; /* Ensure blue background */
+        width: 100%;
+        padding: 0;
+    }
+    
+    .flex-title .container {
+        width: 95% !important; /* Full width usage */
+        max-width: none !important;
+        padding: 15px 20px !important;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .nav-one--hidden {
+        background: rgba(255, 255, 255, 0.15) !important; /* Semi-transparent white */
+        border: 1px solid rgba(255, 255, 255, 0.25) !important;
+        padding: 6px 10px !important;
+        gap: 10px !important;
+    }
+    
+    .About-btn {
+        background: rgba(255, 255, 255, 0.2) !important;
+        border: 1px solid rgba(255, 255, 255, 0.3) !important;
+        color: white !important;
+    }
+    
+    .Quick-links-btn {
+        background: rgba(255, 255, 255, 0.2) !important;
+        border: 1px solid rgba(255, 255, 255, 0.3) !important;
+        color: white !important;
+    }
+    
+    .nav-link, .nav-link-quick-link {
+        color: white !important;
+    }
+    
+    .dropdown-toggle {
+        color: white !important;
+    }
+    
+    .About-btn:hover {
+        background: rgba(255, 255, 255, 0.3) !important;
+        border-color: rgba(255, 255, 255, 0.4) !important;
+    }
+    
+    .Quick-links-btn:hover {
+        background: rgba(255, 255, 255, 0.3) !important;
+        border-color: rgba(255, 255, 255, 0.4) !important;
+    }
+    
+    /* Ensure title text is white on blue background */
+    .title-text {
+        color: white !important;
+    }
+    
+    /* User icon styling on blue background */
+    .user-icon {
+        color: white !important;
+        border-color: rgba(255, 255, 255, 0.5) !important;
+    }
+    
+    /* Logo styling adjustments */
+    .logo {
+        background: white;
+        padding: 8px;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .logo-image {
+        width: 45px !important;
+        height: 45px !important;
+    }
+}
+
+@media (min-width: 1441px) {
+    /* Extra large desktop screens */
+    .flex-title .container {
+        width: 75% !important; /* Prevent too wide on very large screens */
+        max-width: 1400px;
     }
 }
 
@@ -2343,17 +2415,85 @@ hr{
     display: inline;
 }
 
-@media (max-width: 900px) {
+/* Two-line title for smaller desktop screens to ensure user icon visibility */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .title-text {
+        font-size: 0.95rem !important;
+        line-height: 1.2 !important;
+        white-space: normal !important;
+        text-align: center !important;
+        max-width: 280px !important; /* Force text wrapping */
+        margin: 0 auto !important;
+    }
+    
+    .full-title {
+        display: inline !important;
+        word-break: break-word;
+        hyphens: auto;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 900px) {
+    /* Extra tight spacing for smaller desktop screens */
+    .title-text {
+        font-size: 0.85rem !important;
+        max-width: 240px !important; /* Even tighter for better wrapping */
+        line-height: 1.1 !important;
+    }
+    
+    .nav-one--hidden {
+        gap: 8px !important; /* Reduce gap to save space */
+        padding: 4px 8px !important; /* Reduced padding */
+    }
+    
+    .flex-title .container {
+        padding: 10px 0 !important; /* Even more compact */
+    }
+    
+    /* Hide mobile user icon on very small desktops */
+    .user-icon-container {
+        display: none !important;
+    }
+    
+    /* Compact buttons for small desktops */
+    .About-btn {
+        font-size: 0.85rem !important;
+        padding: 6px 10px !important;
+    }
+    
+    .Quick-links-btn {
+        font-size: 0.85rem !important;
+        padding: 6px 10px !important;
+    }
+    
+    /* Use shorter text on small desktops */
+    .nav-link-quick-link::after {
+        content: "Links" !important;
+    }
+    
+    .nav-link-quick-link {
+        font-size: 0 !important; /* Hide original text */
+    }
+    
+    .nav-link-quick-link::after {
+        font-size: 0.85rem !important; /* Show new text */
+    }
+}
+
+/* Mobile view (anything up to 767px) */
+@media (max-width: 767px) {
     .flex-title {
         background: #00c6ff;
     }
     
+    /* Show full title on mobile, hide short title */
     .full-title {
-        display: none;
+        display: block !important;
+        width: 100%;
     }
     
     .short-title {
-        display: inline;
+        display: none !important;
     }
     
     /* Mobile header improvements */
@@ -2381,18 +2521,133 @@ hr{
     .title {
         flex: 1;
         text-align: center;
-        margin: 0 10px;
+        margin: 0 8px;
         min-width: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     
     .title-text {
-        font-size: 0.9rem;
-        font-weight: 600;
+        font-size: 0.85rem;
+        font-weight: 700;
         margin: 0;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        color: #000000;
+        color: #ffffff;
+        line-height: 1.1;
+        text-align: center;
+        display: block;
+    }
+    
+    /* Style the full title to display in two lines */
+    .title-text .full-title {
+        display: block;
+        font-size: 0.85rem;
+        letter-spacing: 0.2px;
+        font-weight: 700;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    }
+    
+    /* Split the title using CSS content manipulation */
+    .title-text .full-title::before {
+        content: "Kisii University";
+        display: block;
+        line-height: 1.1;
+    }
+    
+    .title-text .full-title::after {
+        content: "Christian Union";
+        display: block;
+        line-height: 1.1;
+        margin-top: 1px;
+    }
+    
+    /* Hide the original text */
+    .title-text .full-title {
+        font-size: 0 !important; /* Hide original text */
+        color: transparent;
+    }
+    
+    .title-text .full-title::before,
+    .title-text .full-title::after {
+        font-size: 1.05rem;
+        color: #ffffff;
+        font-weight: 700;
+        text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        letter-spacing: 0.5px;
+    }
+}
+
+/* Small mobile screens - use shorter name to prevent wrapping */
+@media (max-width: 400px) {
+    /* Hide the two-line full title */
+    .title-text .full-title::before,
+    .title-text .full-title::after {
+        display: none !important;
+    }
+    
+    /* Show short title instead */
+    .full-title {
+        display: none !important;
+    }
+    
+    .short-title {
+        display: block !important;
+        font-size: 1.1rem !important;
+        font-weight: 700 !important;
+        color: #ffffff !important;
+        text-shadow: 0 1px 3px rgba(0,0,0,0.3) !important;
+        letter-spacing: 0.8px !important;
+        line-height: 1.2 !important;
+        white-space: nowrap !important;
+    }
+    
+    .title {
+        margin: 0 6px;
+    }
+}
+
+/* Very small mobile screens - maintain short title */
+@media (max-width: 480px) and (min-width: 401px) {
+    .title-text .full-title::before,
+    .title-text .full-title::after {
+        font-size: 0.9rem !important;
+        letter-spacing: 0.3px;
+    }
+    
+    .title {
+        margin: 0 6px;
+    }
+}
+
+/* Extra small mobile screens */
+@media (max-width: 360px) {
+    .short-title {
+        font-size: 1.0rem !important;
+        letter-spacing: 0.6px !important;
+    }
+    
+    .title {
+        margin: 0 4px;
+    }
+    
+    .container {
+        padding: 0 8px;
+    }
+}
+
+/* Ultra small screens */
+@media (max-width: 320px) {
+    .short-title {
+        font-size: 0.9rem !important;
+        letter-spacing: 0.4px !important;
+    }
+    
+    .title {
+        margin: 0 3px;
+    }
+    
+    .container {
+        padding: 0 6px;
     }
     
     .hambuger-div {
@@ -2424,66 +2679,6 @@ hr{
     }
 }
 
-@media (max-width: 480px) {
-    .flex-title {
-        background: #00c6ff;
-    }
-    
-    .full-title {
-        display: none;
-    }
-    
-    .short-title {
-        display: inline;
-    }
-    
-    .container {
-        padding: 0 8px;
-        position: relative;
-    }
-    
-    
-    .logo-image {
-        width: 40px;
-        height: 40px;
-    }
-    
-    .title-text {
-        font-size: 0.75rem;
-        font-weight: 500;
-        letter-spacing: 0.3px;
-        padding: 0 8px;
-        text-align: center;
-        max-width: 120px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        color: #000000;
-    }
-    
-    .short-title {
-        font-size: 0.7rem !important;
-        font-weight: 600 !important;
-        color: #000000;
-        text-shadow: 0 0 1px rgba(255, 255, 255, 0.8);
-    }
-    
-    .nav-toggle__btn {
-        width: 40px;
-        height: 40px;
-    }
-    
-    .user-icon {
-        width: 20px !important;
-        height: 20px !important;
-        padding: 6px !important;
-    }
-    
-    .user-icon-container > div {
-        min-width: 50px !important;
-        min-height: 40px !important;
-    }
-}
 
 /* Worship Docket Admin Section */
 .worshipAdminSection {
@@ -2587,8 +2782,8 @@ hr{
     }
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
+/* Mobile view (anything up to 767px) */
+@media (max-width: 767px) {
     .worshipAdminSection {
         padding: 40px 15px;
     }
@@ -2612,57 +2807,7 @@ hr{
     }
 }
 
-@media (max-width: 480px) {
-    .worshipAdminSection {
-        padding: 30px 10px;
-    }
-    
-    .worshipAdminCard {
-        padding: 25px 15px;
-        max-width: 320px;
-    }
-    
-    .worshipAdminCard h3 {
-        font-size: 1.4rem;
-    }
-    
-    .worshipAdminButton {
-        padding: 10px 25px;
-        font-size: 0.9rem;
-    }
-}
 
-/* Extra small screens - Even more compact UIK title */
-@media (max-width: 360px) {
-    .flex-title {
-        background: #00c6ff;
-    }
-    
-    .container {
-        padding: 0 6px;
-        position: relative;
-    }
-    
-    
-    .title-text {
-        font-size: 0.65rem;
-        max-width: 100px;
-        padding: 0 4px;
-        color: #000000;
-    }
-    
-    .short-title {
-        font-size: 0.6rem !important;
-        color: #000000 !important;
-        font-weight: 600 !important;
-        text-shadow: 0 0 1px rgba(255, 255, 255, 0.8) !important;
-    }
-    
-    .logo-image {
-        width: 35px;
-        height: 35px;
-    }
-}
 
 /* ===== CENTRALIZED ATTENDANCE SYSTEM ===== */
 
@@ -3041,8 +3186,8 @@ hr{
     color: #721c24;
 }
 
-/* Mobile Responsiveness */
-@media (max-width: 768px) {
+/* Mobile view (anything up to 767px) */
+@media (max-width: 767px) {
     .attendanceSection {
         padding: 25px 15px;
         margin: 25px 10px;
@@ -3079,31 +3224,6 @@ hr{
     }
 }
 
-@media (max-width: 480px) {
-    .attendanceSection {
-        padding: 20px 10px;
-        margin: 20px 5px;
-    }
-    
-    .attendanceSectionTitle {
-        font-size: 1.2rem;
-    }
-    
-    .attendanceButton {
-        padding: 12px 25px;
-        font-size: 0.9rem;
-        width: calc(100% - 20px);
-    }
-    
-    .formInput, .formSelect {
-        padding: 10px 12px;
-        font-size: 0.95rem;
-    }
-    
-    .signatureCanvas {
-        height: 100px;
-    }
-}
 
 /* ===== MINISTRY ADMIN INTERFACE ===== */
 
@@ -3515,8 +3635,8 @@ hr{
     border-bottom: none;
 }
 
-/* Mobile Responsiveness for Admin */
-@media (max-width: 768px) {
+/* Mobile view (anything up to 767px) */
+@media (max-width: 767px) {
     .ministriesAdminContainer {
         padding: 20px 10px;
     }
@@ -3582,26 +3702,6 @@ hr{
     }
 }
 
-@media (max-width: 480px) {
-    .adminPageTitle {
-        font-size: 1.6rem;
-    }
-    
-    .leadershipRoleGrid {
-        grid-template-columns: 1fr;
-    }
-    
-    .sessionControlBtn {
-        padding: 12px 20px;
-        font-size: 0.9rem;
-    }
-    
-    .attendanceTable {
-        display: block;
-        overflow-x: auto;
-        white-space: nowrap;
-    }
-}
 
 /* Additional styles for dynamic attendance system */
 .sessionStatus {
@@ -3688,8 +3788,8 @@ hr{
     opacity: 0.6;
 }
 
-/* Responsive adjustments for attendance form */
-@media (max-width: 768px) {
+/* Mobile view (anything up to 767px) */
+@media (max-width: 767px) {
     .sessionStatus {
         padding: 15px;
         gap: 12px;

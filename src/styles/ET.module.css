@@ -36,7 +36,7 @@
     background: rgb(53, 53, 53);
 }
 
-@media(min-width:600px){
+@media (min-width: 768px){
     .ET-section{
         display: flex;
 

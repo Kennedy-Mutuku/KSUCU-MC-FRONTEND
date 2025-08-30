@@ -573,7 +573,7 @@
 }
 
 /* Mobile Responsiveness */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .headerContent {
     padding: 12px 15px;
     flex-wrap: wrap;
@@ -641,7 +641,7 @@
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 767px) {
   .headerContent {
     padding: 10px 12px;
   }
