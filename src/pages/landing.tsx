@@ -764,7 +764,8 @@ const LandingPage = () => {
                     course: '',
                     yearOfStudy: '',
                     phoneNumber: '',
-                    signature: ''
+                    signature: '',
+                    userType: 'student'
                   });
                 } else {
                   alert('⚠️ No active attendance session found. Please wait for a leader to open an attendance session.');
@@ -1498,7 +1499,8 @@ const LandingPage = () => {
                   course: '',
                   yearOfStudy: '',
                   phoneNumber: '',
-                  signature: ''
+                  signature: '',
+                  userType: 'student'
                 });
               }}
               style={{
