@@ -588,7 +588,7 @@ body{
 /* new code for updated modal */
 .modalOverlay {
   position: fixed;
-  z-index: 120;
+  z-index: 99999 !important;
   top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(0,0,0,0.6);
   display: flex;
@@ -605,6 +605,7 @@ body{
   max-width: 400px;
   margin: 32px auto;
   position: relative;
+  z-index: 100000 !important;
   padding-bottom: 2.5em;
   animation: fadeInCard 0.32s;
   display: flex;

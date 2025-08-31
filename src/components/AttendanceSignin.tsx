@@ -24,7 +24,7 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [sessionClosedAgo, setSessionClosedAgo] = useState('');
-    const [attendanceFormData, setAttendanceFormData] = useState({ name: '', regNo: '', course: '', year: '', phoneNumber: '', signature: '' });
+    const [attendanceFormData, setAttendanceFormData] = useState({ name: '', regNo: '', course: '', year: '', phoneNumber: '', signature: '', userType: 'student' });
     const [deviceAttendance, setDeviceAttendance] = useState<any[]>([]);
 
     useEffect(() => {
@@ -127,11 +127,20 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
     };
 
     const signAttendance = async () => {
-        // Validate form data
-        if (!attendanceFormData.name || !attendanceFormData.regNo || !attendanceFormData.course || !attendanceFormData.year || !attendanceFormData.phoneNumber || !attendanceFormData.signature) {
-            setError('Please fill in all fields including phone number and signature');
+        // Validate form data based on user type
+        if (!attendanceFormData.name || !attendanceFormData.phoneNumber || !attendanceFormData.signature) {
+            setError('Please fill in name, phone number, and signature');
             setTimeout(() => setError(''), 3000);
             return;
+        }
+        
+        // Student-specific validation
+        if (attendanceFormData.userType === 'student') {
+            if (!attendanceFormData.regNo || !attendanceFormData.course || !attendanceFormData.year) {
+                setError('Students must fill in registration number, course, and year');
+                setTimeout(() => setError(''), 3000);
+                return;
+            }
         }
         
         // Validate phone number (minimum 10 digits)
@@ -180,23 +189,33 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
             console.log('✅ Using latest active session:', latestSession._id);
             setSession(latestSession); // Update state with latest session
 
-            // Validate registration number format
-            const regNoPattern = /^[A-Z0-9\/\-]+$/i;
-            if (!regNoPattern.test(attendanceFormData.regNo.trim())) {
-                setError('Invalid registration number format');
-                setTimeout(() => setError(''), 3000);
-                setLoading(false);
-                return;
+            // Validate registration number format for students only
+            if (attendanceFormData.userType === 'student') {
+                const regNoPattern = /^[A-Z0-9\/\-]+$/i;
+                if (!regNoPattern.test(attendanceFormData.regNo.trim())) {
+                    setError('Invalid registration number format');
+                    setTimeout(() => setError(''), 3000);
+                    setLoading(false);
+                    return;
+                }
             }
+
+            // Generate unique visitor ID if user is a visitor
+            const generateVisitorId = () => {
+                const timestamp = Date.now().toString(36); // Convert timestamp to base36
+                const random = Math.random().toString(36).substr(2, 5); // 5 random chars
+                return `VISITOR-${timestamp}-${random}`.toUpperCase();
+            };
 
             // Sign attendance via backend API (anonymous) using the LATEST session
             const attendanceData = {
                 name: attendanceFormData.name.trim(),
-                regNo: attendanceFormData.regNo.trim().toUpperCase(),
-                course: attendanceFormData.course.trim(),
-                year: parseInt(attendanceFormData.year),
+                regNo: attendanceFormData.userType === 'student' ? attendanceFormData.regNo.trim().toUpperCase() : generateVisitorId(),
+                course: attendanceFormData.userType === 'student' ? attendanceFormData.course.trim() : 'N/A',
+                year: attendanceFormData.userType === 'student' ? parseInt(attendanceFormData.year) : 0,
                 phoneNumber: attendanceFormData.phoneNumber.trim(),
                 signature: attendanceFormData.signature.trim(),
+                userType: attendanceFormData.userType,
                 ministry: latestSession.ministry || 'General', // Use session ministry or default
                 sessionId: latestSession._id  // Use latest session, not cached one!
             };
@@ -225,7 +244,7 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
             });
             
             // Clear form after successful submission for next person
-            setAttendanceFormData({ name: '', regNo: '', course: '', year: '', phoneNumber: '', signature: '' });
+            setAttendanceFormData({ name: '', regNo: '', course: '', year: '', phoneNumber: '', signature: '', userType: 'student' });
             
             // Clear canvas signature
             const canvas = document.querySelector('canvas') as HTMLCanvasElement;
@@ -454,12 +473,33 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
                                     disabled={loading}
                                 />
                             </div>
+
+                            <div className={styles.formGroup}>
+                                <label className={styles.formLabel}>I am a *</label>
+                                <select
+                                    value={attendanceFormData.userType || 'student'}
+                                    onChange={(e) => {
+                                        setAttendanceFormData({...attendanceFormData, userType: e.target.value});
+                                        // Force re-render by changing a visible element
+                                        const regField = document.querySelector('[placeholder*="C025"]') as HTMLInputElement;
+                                        if (regField) {
+                                            regField.style.display = e.target.value === 'student' ? 'block' : 'none';
+                                        }
+                                    }}
+                                    className={styles.formSelect}
+                                    disabled={loading}
+                                    style={{backgroundColor: 'yellow', border: '3px solid red'}}
+                                >
+                                    <option value="student">Student</option>
+                                    <option value="visitor">Visitor</option>
+                                </select>
+                            </div>
                             
                             <div className={styles.formGroup}>
                                 <label className={styles.formLabel}>Registration Number *</label>
                                 <input
                                     type="text"
-                                    placeholder="e.g., IN16/00014/22"
+                                    placeholder="🚨 VISITOR SELECTOR ABOVE THIS FIELD! 🚨"
                                     value={attendanceFormData.regNo}
                                     onChange={(e) => setAttendanceFormData({...attendanceFormData, regNo: e.target.value.toUpperCase()})}
                                     className={styles.formInput}
@@ -467,35 +507,39 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
                                 />
                             </div>
 
-                            <div className={styles.formGroup}>
-                                <label className={styles.formLabel}>Course *</label>
-                                <input
-                                    type="text"
-                                    placeholder="e.g., Computer Science"
-                                    value={attendanceFormData.course}
-                                    onChange={(e) => setAttendanceFormData({...attendanceFormData, course: e.target.value})}
-                                    className={styles.formInput}
-                                    disabled={loading}
-                                />
-                            </div>
+                            {attendanceFormData.userType === 'student' && (
+                                <div className={styles.formGroup}>
+                                    <label className={styles.formLabel}>Course *</label>
+                                    <input
+                                        type="text"
+                                        placeholder="e.g., Computer Science"
+                                        value={attendanceFormData.course}
+                                        onChange={(e) => setAttendanceFormData({...attendanceFormData, course: e.target.value})}
+                                        className={styles.formInput}
+                                        disabled={loading}
+                                    />
+                                </div>
+                            )}
                             
-                            <div className={styles.formGroup}>
-                                <label className={styles.formLabel}>Year of Study *</label>
-                                <select
-                                    value={attendanceFormData.year}
-                                    onChange={(e) => setAttendanceFormData({...attendanceFormData, year: e.target.value})}
-                                    className={styles.formSelect}
-                                    disabled={loading}
-                                >
-                                    <option value="">Select Year</option>
-                                    <option value="1">Year 1</option>
-                                    <option value="2">Year 2</option>
-                                    <option value="3">Year 3</option>
-                                    <option value="4">Year 4</option>
-                                    <option value="5">Year 5</option>
-                                    <option value="6">Year 6</option>
-                                </select>
-                            </div>
+                            {attendanceFormData.userType === 'student' && (
+                                <div className={styles.formGroup}>
+                                    <label className={styles.formLabel}>Year of Study *</label>
+                                    <select
+                                        value={attendanceFormData.year}
+                                        onChange={(e) => setAttendanceFormData({...attendanceFormData, year: e.target.value})}
+                                        className={styles.formSelect}
+                                        disabled={loading}
+                                    >
+                                        <option value="">Select Year</option>
+                                        <option value="1">Year 1</option>
+                                        <option value="2">Year 2</option>
+                                        <option value="3">Year 3</option>
+                                        <option value="4">Year 4</option>
+                                        <option value="5">Year 5</option>
+                                        <option value="6">Year 6</option>
+                                    </select>
+                                </div>
+                            )}
                             
                             <div className={styles.formGroup}>
                                 <label className={styles.formLabel}>Phone Number *</label>

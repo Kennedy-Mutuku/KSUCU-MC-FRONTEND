@@ -21,10 +21,12 @@ interface AttendanceRecord {
     userName: string;
     regNo: string;
     year: number;
+    course?: string;
     phoneNumber: string;
     signedAt: string;
     signature: string;
     ministry: string;
+    userType?: string;
 }
 
 interface AttendanceSession {
@@ -431,6 +433,20 @@ const AttendanceSessionManagement: React.FC = () => {
             return;
         }
 
+        // Sort records: visitors first, then students, both in chronological order (first signed first)
+        const sortedRecords = [...attendanceRecords].sort((a, b) => {
+            // Normalize userType (handle undefined/null cases)
+            const aIsVisitor = a.userType === 'visitor' || (a.regNo && a.regNo.startsWith('VISITOR-'));
+            const bIsVisitor = b.userType === 'visitor' || (b.regNo && b.regNo.startsWith('VISITOR-'));
+            
+            // First sort by user type: visitors first
+            if (aIsVisitor !== bIsVisitor) {
+                return aIsVisitor ? -1 : 1;
+            }
+            // Then sort by sign time: earliest first within each group
+            return new Date(a.signedAt).getTime() - new Date(b.signedAt).getTime();
+        });
+
         const htmlContent = `
             <!DOCTYPE html>
             <html>
@@ -526,7 +542,8 @@ const AttendanceSessionManagement: React.FC = () => {
                         <strong>Leader:</strong> ${leadershipRole}
                     </div>
                     <div class="session-right">
-                        <strong>${attendanceRecords.length} Attendees</strong><br>
+                        <strong>${sortedRecords.length} Total Attendees</strong><br>
+                        <strong>Visitors:</strong> ${sortedRecords.filter(r => r.userType === 'visitor' || (r.regNo && r.regNo.startsWith('VISITOR-'))).length} | <strong>Students:</strong> ${sortedRecords.filter(r => !(r.userType === 'visitor' || (r.regNo && r.regNo.startsWith('VISITOR-')))).length}<br>
                         <strong>Date:</strong> ${attendanceSession ? formatDateTime(attendanceSession.startTime, { format: 'medium' }) : formatDateTime(new Date(), { format: 'medium' })}
                     </div>
                 </div>
@@ -534,22 +551,29 @@ const AttendanceSessionManagement: React.FC = () => {
                 <table class="attendance-table">
                     <thead>
                         <tr>
-                            <th style="width: 6%;">#</th>
-                            <th style="width: 28%;">NAME</th>
-                            <th style="width: 22%;">REGISTRATION NO.</th>
-                            <th style="width: 8%;">YEAR</th>
-                            <th style="width: 15%;">PHONE</th>
-                            <th style="width: 15%;">SIGN TIME</th>
-                            <th style="width: 6%;">SIGNATURE</th>
+                            <th style="width: 5%;">#</th>
+                            <th style="width: 22%;">NAME</th>
+                            <th style="width: 8%;">TYPE</th>
+                            <th style="width: 18%;">REGISTRATION NO.</th>
+                            <th style="width: 15%;">COURSE</th>
+                            <th style="width: 6%;">YEAR</th>
+                            <th style="width: 12%;">PHONE</th>
+                            <th style="width: 10%;">SIGN TIME</th>
+                            <th style="width: 4%;">SIGNATURE</th>
                         </tr>
                     </thead>
                     <tbody>
-                        ${attendanceRecords.map((record, index) => `
+                        ${sortedRecords.map((record, index) => {
+                            // Detect if this is a visitor record
+                            const isVisitor = record.userType === 'visitor' || (record.regNo && record.regNo.startsWith('VISITOR-'));
+                            return `
                             <tr>
                                 <td class="number-col">${index + 1}</td>
                                 <td class="name-col">${record.userName}</td>
-                                <td>${record.regNo}</td>
-                                <td>${record.year}</td>
+                                <td style="font-size: 10px; font-weight: bold; color: ${isVisitor ? '#ff6b35' : '#00C6FF'};">${isVisitor ? 'VISITOR' : 'STUDENT'}</td>
+                                <td>${isVisitor ? 'N/A' : record.regNo}</td>
+                                <td>${isVisitor ? 'N/A' : (record.course || record.ministry)}</td>
+                                <td>${isVisitor ? 'N/A' : record.year}</td>
                                 <td>${record.phoneNumber || 'N/A'}</td>
                                 <td>${formatDateTime(record.signedAt, { format: 'short', includeSeconds: false })}</td>
                                 <td style="height: 30px; border: 1px solid #ccc; padding: 2px; text-align: center;">
@@ -558,8 +582,8 @@ const AttendanceSessionManagement: React.FC = () => {
                                         '<span style="font-size: 10px; color: #999;">No signature</span>'
                                     }
                                 </td>
-                            </tr>
-                        `).join('')}
+                            </tr>`;
+                        }).join('')}
                     </tbody>
                 </table>
 
@@ -781,14 +805,25 @@ const AttendanceSessionManagement: React.FC = () => {
                                     <div key={`${record._id}-${index}`} className={styles.recordCard}>
                                         <div className={styles.recordNumber}>{index + 1}</div>
                                         <div className={styles.recordInfo}>
-                                            <p>
-                                                <strong>{record.userName}</strong> | 
-                                                <strong>Reg:</strong> {record.regNo} | 
-                                                <strong>Ministry:</strong> {record.ministry} | 
-                                                <strong>Year:</strong> {record.year} | 
-                                                <strong>Phone:</strong> {record.phoneNumber || 'Not provided'} | 
-                                                <strong>Signed:</strong> {formatDateTime(record.signedAt, { format: 'medium', includeSeconds: true })} ({getTimeAgo(record.signedAt)})
-                                            </p>
+                                            {(() => {
+                                                const isVisitor = record.userType === 'visitor' || (record.regNo && record.regNo.startsWith('VISITOR-'));
+                                                return isVisitor ? (
+                                                    <p>
+                                                        <strong>{record.userName}</strong> (Visitor) | 
+                                                        <strong>Phone:</strong> {record.phoneNumber || 'Not provided'} | 
+                                                        <strong>Signed:</strong> {formatDateTime(record.signedAt, { format: 'medium', includeSeconds: true })} ({getTimeAgo(record.signedAt)})
+                                                    </p>
+                                                ) : (
+                                                    <p>
+                                                        <strong>{record.userName}</strong> (Student) | 
+                                                        <strong>Reg:</strong> {record.regNo} | 
+                                                        <strong>Course:</strong> {record.course || record.ministry} | 
+                                                        <strong>Year:</strong> {record.year} | 
+                                                        <strong>Phone:</strong> {record.phoneNumber || 'Not provided'} | 
+                                                        <strong>Signed:</strong> {formatDateTime(record.signedAt, { format: 'medium', includeSeconds: true })} ({getTimeAgo(record.signedAt)})
+                                                    </p>
+                                                );
+                                            })()}
                                         </div>
                                     </div>
                                 );

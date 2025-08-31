@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
 import styles from '../styles/NewsAdmin.module.css';
@@ -20,6 +20,7 @@ import { getApiUrl } from '../config/environment';
 
 interface NewsFormData {
     title: string;
+    summary: string;
     body: string;
     imageUrl: string;
     eventDate: string;
@@ -38,6 +39,7 @@ const NewsAdmin: React.FC = () => {
     
     const [formData, setFormData] = useState<NewsFormData>({
         title: '',
+        summary: '',
         body: '',
         imageUrl: '',
         eventDate: '',
@@ -62,7 +64,7 @@ const NewsAdmin: React.FC = () => {
     // Fetch current news
     const fetchCurrentNews = async () => {
         try {
-            const response = await fetch(getApiUrl('news/news'), {
+            const response = await fetch(getApiUrl('news'), {
                 method: 'GET',
                 credentials: 'include'
             });
@@ -72,6 +74,7 @@ const NewsAdmin: React.FC = () => {
                 setCurrentNews(data);
                 setFormData({
                     title: data.title || '',
+                    summary: data.summary || '',
                     body: data.body || '',
                     imageUrl: data.imageUrl || '',
                     eventDate: data.eventDate ? new Date(data.eventDate).toISOString().split('T')[0] : '',
@@ -115,13 +118,14 @@ const NewsAdmin: React.FC = () => {
         try {
             const submitData = {
                 title: formData.title,
+                summary: formData.summary,
                 body: formData.body,
                 imageUrl: formData.imageUrl,
-                eventDate: formData.eventDate ? new Date(formData.eventDate) : null,
+                eventDate: formData.eventDate || null,
                 eventTime: formData.eventTime || null
             };
 
-            const response = await fetch(getApiUrl('adminnews/news'), {
+            const response = await fetch(getApiUrl('newsUpdate'), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -150,6 +154,7 @@ const NewsAdmin: React.FC = () => {
     const clearForm = () => {
         setFormData({
             title: '',
+            summary: '',
             body: '',
             imageUrl: '',
             eventDate: '',
@@ -257,6 +262,26 @@ const NewsAdmin: React.FC = () => {
                                 />
                             </div>
 
+                            {/* News Summary - Shows in modal */}
+                            <div className={styles.formGroup}>
+                                <label htmlFor="summary">
+                                    <FontAwesomeIcon icon={faEdit} />
+                                    News Summary * (Modal Preview)
+                                </label>
+                                <textarea
+                                    id="summary"
+                                    name="summary"
+                                    value={formData.summary}
+                                    onChange={handleInputChange}
+                                    required
+                                    placeholder="Brief summary for modal preview (max 120 characters recommended)"
+                                    className={styles.textArea}
+                                    rows={2}
+                                    maxLength={150}
+                                />
+                                <small>This text appears in the modal countdown page. Keep it brief!</small>
+                            </div>
+
                             {/* Event Date Input */}
                             <div className={styles.formRow}>
                                 <div className={styles.formGroup}>
@@ -293,11 +318,17 @@ const NewsAdmin: React.FC = () => {
                                 </div>
                             </div>
 
+                            {/* Full News Section */}
+                            <div className={styles.sectionDivider}>
+                                <h3>📰 Full News Content (Appears on /news page only)</h3>
+                                <p>This content will only be visible when users click "Read Full Communication"</p>
+                            </div>
+
                             {/* Image Upload */}
                             <div className={styles.formGroup}>
                                 <label>
                                     <FontAwesomeIcon icon={faImage} />
-                                    News Image (Optional)
+                                    News Image (For Full Page Only)
                                 </label>
                                 <div className={styles.imageUploadSection}>
                                     <input
@@ -331,13 +362,14 @@ const NewsAdmin: React.FC = () => {
                                         </button>
                                     </div>
                                 )}
+                                <small>Images will only appear on the full news page, not in the modal</small>
                             </div>
 
                             {/* News Body */}
                             <div className={styles.formGroup}>
                                 <label htmlFor="body">
                                     <FontAwesomeIcon icon={faEdit} />
-                                    News Content *
+                                    Full News Content *
                                 </label>
                                 <textarea
                                     id="body"
@@ -345,10 +377,11 @@ const NewsAdmin: React.FC = () => {
                                     value={formData.body}
                                     onChange={handleInputChange}
                                     required
-                                    placeholder="Enter the news content here. Use line breaks to separate paragraphs."
+                                    placeholder="Enter the complete news content here. This will only appear on the full news page. Use line breaks to separate paragraphs."
                                     className={styles.textArea}
                                     rows={8}
                                 />
+                                <small>This content appears only on the full news page when users click "Read Full Communication"</small>
                             </div>
 
                             {/* Form Actions */}

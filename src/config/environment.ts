@@ -2,6 +2,7 @@ interface ApiConfig {
   baseUrl: string;
   endpoints: {
     news: string;
+    newsUpdate: string;
     users: string;
     usersSignup: string;
     usersLogin: string;
@@ -44,7 +45,8 @@ const isDevelopment = import.meta.env.MODE === 'development' || window.location.
 const developmentConfig: ApiConfig = {
   baseUrl: 'http://localhost:3000',
   endpoints: {
-    news: '/adminnews/news',
+    news: '/news/news',
+    newsUpdate: '/adminnews/news',
     users: '/users/data',
     usersSignup: '/users/signup',
     usersLogin: '/users/login',
@@ -85,7 +87,8 @@ const developmentConfig: ApiConfig = {
 const productionConfig: ApiConfig = {
   baseUrl: 'https://ksucu-mc.co.ke',
   endpoints: {
-    news: '/adminnews/news',
+    news: '/news/news',
+    newsUpdate: '/adminnews/news',
     users: '/users/data',
     usersSignup: '/users/signup',
     usersLogin: '/users/login',

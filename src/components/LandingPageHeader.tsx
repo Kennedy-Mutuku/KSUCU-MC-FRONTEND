@@ -7,7 +7,6 @@ import loadingAnime from '../assets/Animation - 1716747954931.gif';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestion } from '@fortawesome/free-solid-svg-icons';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
-import { faGlobe } from '@fortawesome/free-solid-svg-icons';
 import visionImg from '../assets/gents.jpg'
 import missionImg from '../assets/ladies.jpg'
 import valuesImg from '../assets/amptheatre.jpg'
@@ -17,8 +16,18 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 
 interface NewsData {
   title: string;
+  summary: string;
   body: string;
   imageUrl: string;
+  eventDate?: string;
+  eventTime?: string;
+}
+
+interface CountdownTime {
+  days: number;
+  hours: number;
+  minutes: number;
+  seconds: number;
 }
 
 const LandingPageHeader = () => {
@@ -26,6 +35,8 @@ const LandingPageHeader = () => {
   const [openCommission, setOpenCommision] = useState(false);
   const [userData, setUserData] = useState<{ username: string; email: string; yos: number; phone: string; et: string; ministry: string } | null>(null);
   const [error, setError] = useState('');
+  const [countdown, setCountdown] = useState<CountdownTime | null>(null);
+  const [eventPassed, setEventPassed] = useState<boolean>(false);
   const [generalLoading, setgeneralLoading] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
@@ -53,14 +64,21 @@ const LandingPageHeader = () => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
     }, 10000);
 
+    // Auto-refresh news every 30 seconds to ensure all devices get updates
+    const newsRefreshInterval = setInterval(() => {
+      fetchNewsData();
+    }, 30000);
+
     const handleFocus = () => {
       fetchUserData();
+      fetchNewsData(); // Refresh news when user returns to the page
     };
 
     window.addEventListener('focus', handleFocus);
 
     return () => {
       clearInterval(interval);
+      clearInterval(newsRefreshInterval);
       window.removeEventListener('focus', handleFocus);
       // Cleanup: Remove body class when component unmounts
       document.body.classList.remove('quick-links-open');
@@ -169,6 +187,9 @@ const LandingPageHeader = () => {
         throw new Error('Failed to fetch news data');
       }
       const data = await response.json();
+      console.log('📰 LandingPage: News data received:', data);
+      console.log('📰 LandingPage: Summary field:', data.summary);
+      console.log('📰 LandingPage: Body field:', data.body);
       setNewsData(data);
     } catch (error: any) {
       console.log(error)
@@ -176,6 +197,102 @@ const LandingPageHeader = () => {
       setgeneralLoading(false)
     }
   };
+
+  // Calculate countdown timer
+  const calculateCountdown = (eventDate: string, eventTime: string): CountdownTime | null => {
+    try {
+      console.log('🕐 Calculating countdown for:', eventDate, eventTime);
+      
+      // Parse the date more robustly
+      let eventDateTime: Date;
+      
+      // Handle different date formats
+      if (eventTime && eventTime !== '') {
+        // Try different formats for combining date and time
+        if (eventDate.includes('T')) {
+          // ISO format
+          eventDateTime = new Date(`${eventDate.split('T')[0]}T${eventTime}`);
+        } else {
+          // Try standard format
+          eventDateTime = new Date(`${eventDate}T${eventTime}`);
+        }
+        
+        // If that fails, try parsing separately
+        if (isNaN(eventDateTime.getTime())) {
+          eventDateTime = new Date(eventDate);
+          const timeParts = eventTime.match(/(\d{1,2}):(\d{2})/);
+          if (timeParts) {
+            eventDateTime.setHours(parseInt(timeParts[1], 10), parseInt(timeParts[2], 10), 0, 0);
+          }
+        }
+      } else {
+        // If no time specified, use noon as default
+        eventDateTime = new Date(eventDate);
+        eventDateTime.setHours(12, 0, 0, 0);
+      }
+      
+      console.log('🕐 Parsed event date:', eventDateTime);
+      
+      // Validate the date
+      if (isNaN(eventDateTime.getTime())) {
+        console.error('❌ Invalid date/time format:', eventDate, eventTime);
+        return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+      }
+      
+      const now = new Date();
+      const difference = eventDateTime.getTime() - now.getTime();
+      
+      console.log('🕐 Time difference:', difference, 'ms');
+
+      if (difference <= 0) {
+        console.log('⚠️ Event has passed');
+        return null; // Event has passed
+      }
+
+      const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+      const result = { days, hours, minutes, seconds };
+      console.log('✅ Countdown result:', result);
+      
+      // Ensure no NaN values
+      if (isNaN(days) || isNaN(hours) || isNaN(minutes) || isNaN(seconds)) {
+        console.error('❌ NaN values detected in countdown');
+        return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+      }
+
+      return result;
+    } catch (error) {
+      console.error('❌ Error calculating countdown:', error);
+      return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+    }
+  };
+
+  // Update countdown every second
+  useEffect(() => {
+    if (!newsData?.eventDate) return;
+
+    const updateCountdown = () => {
+      const countdownData = calculateCountdown(newsData.eventDate!, newsData.eventTime || '12:00');
+      if (countdownData) {
+        setCountdown(countdownData);
+        setEventPassed(false);
+      } else {
+        setCountdown(null);
+        setEventPassed(true);
+      }
+    };
+
+    // Update immediately
+    updateCountdown();
+
+    // Update every second
+    const interval = setInterval(updateCountdown, 1000);
+
+    return () => clearInterval(interval);
+  }, [newsData]);
 
   const handleLogout = async () => {
     setgeneralLoading(true)
@@ -446,41 +563,162 @@ const LandingPageHeader = () => {
       </header>
 
       {openCommission &&
-        <div className={styles.modalOverlay}>
-          <div className={styles.modalCard}>
-            <div className={styles.modalHeader}>
-              Weekly Friday Prayers & Sunday Services
-            </div>
-            <div className={styles.modalBody}>
-              <p>
-                For those in session, <b>welcome to our <span className={styles.boldBlue}>Friday prayers</span> every week</b>
-                <span className={styles.venueNote}>(venue communicated weekly)</span> and <b className={styles.boldBlue}>Sunday services</b>.
-              </p>
-              <ul>
-                <li><b>Friday Prayers:</b> 6:30 PM – 7:00 PM</li>
-                <li><b>Sunday Services:</b> 8:00AM – 10:00 AM </li>
-                <li><b>Venues:</b> Communicated in advance</li>
-              </ul>
-              <p className={styles.stayBlessed}>
-                <i>Stay blessed, and see you there! <span role="img" aria-label="pray">🙏🏾</span></i>
-              </p>
-            </div>
+        <div className={styles.modalOverlay} onClick={handleCloseCommission}>
+          <div className={styles.modalCard} onClick={(e) => e.stopPropagation()}>
+            {newsData ? (
+              <>
+                <div className={styles.modalHeader} style={{ textAlign: 'center' }}>
+                  {newsData.title}
+                </div>
+                
+                {/* Event Information and Countdown */}
+                {newsData.eventDate && (
+                  <div className={styles.eventSection}>
+                    <div className={styles.eventInfo} style={{ textAlign: 'center' }}>
+                      <h4 style={{color: '#730051', margin: '0 0 10px 0', textAlign: 'center'}}>Upcoming Event</h4>
+                      <p style={{margin: '5px 0', color: '#666', fontWeight: '600', textAlign: 'center'}}>
+                        {new Date(newsData.eventDate).toLocaleDateString('en-US', {
+                          weekday: 'long',
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric'
+                        })}
+                        {newsData.eventTime ? ` at ${newsData.eventTime}` : ' at 12:00'}
+                      </p>
+                    </div>
+                    
+                    {countdown && !eventPassed && (
+                      <div className={styles.countdownTimer}>
+                        <h5 style={{color: '#730051', margin: '10px 0 5px 0', textAlign: 'center'}}>Time Remaining</h5>
+                        <div style={{
+                          display: 'grid',
+                          gridTemplateColumns: 'repeat(4, 1fr)',
+                          gap: '8px',
+                          marginTop: '10px'
+                        }}>
+                          <div style={{
+                            background: 'rgba(115, 0, 81, 0.1)',
+                            borderRadius: '6px',
+                            padding: '8px 4px',
+                            textAlign: 'center',
+                            border: '1px solid rgba(115, 0, 81, 0.2)'
+                          }}>
+                            <div style={{fontSize: '18px', fontWeight: 'bold', color: '#730051'}}>{String(countdown.days || 0).padStart(2, '0')}</div>
+                            <div style={{fontSize: '10px', color: '#730051', textTransform: 'uppercase'}}>Days</div>
+                          </div>
+                          <div style={{
+                            background: 'rgba(115, 0, 81, 0.1)',
+                            borderRadius: '6px',
+                            padding: '8px 4px',
+                            textAlign: 'center',
+                            border: '1px solid rgba(115, 0, 81, 0.2)'
+                          }}>
+                            <div style={{fontSize: '18px', fontWeight: 'bold', color: '#730051'}}>{String(countdown.hours || 0).padStart(2, '0')}</div>
+                            <div style={{fontSize: '10px', color: '#730051', textTransform: 'uppercase'}}>Hours</div>
+                          </div>
+                          <div style={{
+                            background: 'rgba(115, 0, 81, 0.1)',
+                            borderRadius: '6px',
+                            padding: '8px 4px',
+                            textAlign: 'center',
+                            border: '1px solid rgba(115, 0, 81, 0.2)'
+                          }}>
+                            <div style={{fontSize: '18px', fontWeight: 'bold', color: '#730051'}}>{String(countdown.minutes || 0).padStart(2, '0')}</div>
+                            <div style={{fontSize: '10px', color: '#730051', textTransform: 'uppercase'}}>Minutes</div>
+                          </div>
+                          <div style={{
+                            background: 'rgba(115, 0, 81, 0.1)',
+                            borderRadius: '6px',
+                            padding: '8px 4px',
+                            textAlign: 'center',
+                            border: '1px solid rgba(115, 0, 81, 0.2)'
+                          }}>
+                            <div style={{fontSize: '18px', fontWeight: 'bold', color: '#730051'}}>{String(countdown.seconds || 0).padStart(2, '0')}</div>
+                            <div style={{fontSize: '10px', color: '#730051', textTransform: 'uppercase'}}>Seconds</div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {eventPassed && (
+                      <div style={{
+                        background: 'rgba(34, 197, 94, 0.1)',
+                        border: '1px solid rgba(34, 197, 94, 0.3)',
+                        borderRadius: '8px',
+                        padding: '12px',
+                        marginTop: '10px',
+                        textAlign: 'center'
+                      }}>
+                        <h5 style={{color: '#10B981', margin: '0 0 5px 0', textAlign: 'center'}}>Event Has Started/Ended</h5>
+                        <p style={{margin: '0', fontSize: '14px', color: '#666', textAlign: 'center'}}>This event is no longer upcoming.</p>
+                      </div>
+                    )}
+                  </div>
+                )}
 
-            {/* NEWS SECTION */}
-            <div className={styles.newsInModal}>
-              <span className={styles.newsLabel}><FontAwesomeIcon icon={faGlobe} /> Latest News</span>
-              {newsData ? (
-                <div className={styles.newsModalFlex}>
-                  <img className={styles.newsModalImg} src={newsData.imageUrl} alt="news" />
-                  <div>
-                    <span className={styles.newsModalTitle}>{newsData.title}</span>
-                    <Link className={styles.newsModalLink} to="/news">...read more</Link>
+                <div className={styles.modalBody}>
+                  <div style={{lineHeight: '1.6', color: '#333', textAlign: 'center', marginBottom: '20px'}}>
+                    <p style={{margin: '8px 0', textAlign: 'center'}}>
+                      {newsData.summary || (newsData.body ? newsData.body.substring(0, 120) + '...' : '')}
+                    </p>
+                  </div>
+                  
+                  {/* Read More Button - Always show for full news */}
+                  <div style={{textAlign: 'center', marginTop: '20px', paddingTop: '15px', borderTop: '1px solid rgba(115, 0, 81, 0.1)'}}>
+                    <Link 
+                      to="/news" 
+                      style={{
+                        background: 'linear-gradient(135deg, #730051, #a0056e)',
+                        color: 'white',
+                        padding: '12px 24px',
+                        borderRadius: '25px',
+                        textDecoration: 'none',
+                        fontWeight: '600',
+                        fontSize: '14px',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        boxShadow: '0 4px 15px rgba(115, 0, 81, 0.3)',
+                        transition: 'all 0.3s ease',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'translateY(-2px)';
+                        e.currentTarget.style.boxShadow = '0 6px 20px rgba(115, 0, 81, 0.4)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'translateY(0)';
+                        e.currentTarget.style.boxShadow = '0 4px 15px rgba(115, 0, 81, 0.3)';
+                      }}
+                    >
+                      Read Full Communication
+                    </Link>
                   </div>
                 </div>
-              ) : (
-                <span className={styles.newsLoading}>Loading news...</span>
-              )}
-            </div>
+              </>
+            ) : (
+              <>
+                <div className={styles.modalHeader} style={{ textAlign: 'center' }}>
+                  Weekly Friday Prayers & Sunday Services
+                </div>
+                <div className={styles.modalBody} style={{ textAlign: 'center' }}>
+                  <p style={{ textAlign: 'center' }}>
+                    For those in session, <b>welcome to our <span className={styles.boldBlue}>Friday prayers</span> every week</b>
+                    <span className={styles.venueNote}>(venue communicated weekly)</span> and <b className={styles.boldBlue}>Sunday services</b>.
+                  </p>
+                  <ul style={{ textAlign: 'center', listStyle: 'none', padding: '0' }}>
+                    <li style={{ margin: '8px 0' }}><b>Friday Prayers:</b> 6:30 PM – 7:00 PM</li>
+                    <li style={{ margin: '8px 0' }}><b>Sunday Services:</b> 8:00AM – 10:00 AM </li>
+                    <li style={{ margin: '8px 0' }}><b>Venues:</b> Communicated in advance</li>
+                  </ul>
+                  <p className={styles.stayBlessed} style={{ textAlign: 'center' }}>
+                    <i>Stay blessed, and see you there! <span role="img" aria-label="pray">🙏🏾</span></i>
+                  </p>
+                </div>
+              </>
+            )}
+            
             <button className={styles.closeBtn} onClick={handleCloseCommission}>
               <FontAwesomeIcon icon={faXmark} />
             </button>

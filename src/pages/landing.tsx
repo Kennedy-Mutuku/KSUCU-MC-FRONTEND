@@ -55,7 +55,8 @@ const LandingPage = () => {
     course: '',
     yearOfStudy: '',
     phoneNumber: '',
-    signature: ''
+    signature: '',
+    userType: 'student'
   });
   const navigate = useNavigate();
 
@@ -221,10 +222,18 @@ const LandingPage = () => {
       return;
     }
 
-    if (!attendanceData.fullName || !attendanceData.registrationNumber || 
-        !attendanceData.course || !attendanceData.yearOfStudy || !attendanceData.phoneNumber || !attendanceData.signature) {
-      setAttendanceError('Please fill in all required fields including your signature');
+    // Validate based on user type
+    if (!attendanceData.fullName || !attendanceData.phoneNumber || !attendanceData.signature) {
+      setAttendanceError('Please fill in name, phone number, and signature');
       return;
+    }
+    
+    // Student-specific validation
+    if (attendanceData.userType === 'student') {
+      if (!attendanceData.registrationNumber || !attendanceData.course || !attendanceData.yearOfStudy) {
+        setAttendanceError('Students must fill in registration number, course, and year');
+        return;
+      }
     }
 
     setgeneralLoading(true);
@@ -244,14 +253,23 @@ const LandingPage = () => {
 
       console.log('✅ Using session ID:', latestSession._id);
 
+      // Generate unique visitor ID if user is a visitor
+      const generateVisitorId = () => {
+        const timestamp = Date.now().toString(36); // Convert timestamp to base36
+        const random = Math.random().toString(36).substr(2, 5); // 5 random chars
+        return `VISITOR-${timestamp}-${random}`.toUpperCase();
+      };
+
       // Prepare attendance data for backend API (matching the backend schema)
       const attendanceData_backend = {
         name: attendanceData.fullName.trim(),
-        regNo: attendanceData.registrationNumber.trim().toUpperCase(),
-        year: parseInt(attendanceData.yearOfStudy),
+        regNo: attendanceData.userType === 'student' ? attendanceData.registrationNumber.trim().toUpperCase() : generateVisitorId(),
+        year: attendanceData.userType === 'student' ? parseInt(attendanceData.yearOfStudy) : 0,
+        course: attendanceData.userType === 'student' ? attendanceData.course.trim() : 'N/A',
         phoneNumber: attendanceData.phoneNumber.trim(),
         signature: attendanceData.signature.trim(),
-        ministry: attendanceData.course.trim(), // Use course as ministry for general attendance
+        userType: attendanceData.userType,
+        ministry: 'General', // Set to General for all attendance
         sessionId: latestSession._id
       };
 
@@ -285,7 +303,8 @@ const LandingPage = () => {
         course: '',
         yearOfStudy: '',
         phoneNumber: '',
-        signature: ''
+        signature: '',
+        userType: 'student'
       });
       
       // Clear canvas signature
@@ -761,14 +780,14 @@ const LandingPage = () => {
             /* Attendance Form */
             <div style={{
               background: 'white',
-              padding: '30px',
-              margin: '20px auto',
-              borderRadius: '15px',
-              boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
-              maxWidth: '500px',
-              border: '3px solid #00c6ff'
+              padding: '12px',
+              margin: '10px auto',
+              borderRadius: '8px',
+              boxShadow: '0 4px 15px rgba(0,0,0,0.15)',
+              maxWidth: '400px',
+              border: '2px solid #00c6ff'
             }}>
-              <h3 style={{color: '#730051', textAlign: 'center', marginBottom: '20px'}}>
+              <h3 style={{color: '#730051', textAlign: 'center', marginBottom: '10px', fontSize: '1.1rem'}}>
                 Sign Your Attendance
               </h3>
               
@@ -804,10 +823,10 @@ const LandingPage = () => {
                 </div>
               )}
               
-            <form onSubmit={handleAttendanceSubmit} style={{display: 'flex', flexDirection: 'column', gap: '15px'}}>
+            <form onSubmit={handleAttendanceSubmit} style={{display: 'flex', flexDirection: 'column', gap: '6px'}}>
               
-              <div style={{display: 'flex', flexDirection: 'column', gap: '5px'}}>
-                <label style={{fontWeight: '600', color: '#333'}}>Full Name *</label>
+              <div style={{display: 'flex', flexDirection: 'column', gap: '2px'}}>
+                <label style={{fontWeight: '600', color: '#333', fontSize: '0.85rem'}}>Full Name *</label>
                 <input 
                   type="text"
                   placeholder="Enter your full name" 
@@ -816,65 +835,89 @@ const LandingPage = () => {
                   disabled={generalLoading}
                   required
                   style={{
-                    padding: '12px',
-                    border: '2px solid #ddd',
-                    borderRadius: '8px',
-                    fontSize: '16px',
-                    opacity: generalLoading ? 0.7 : 1
+                    padding: '6px 8px',
+                    border: '1px solid #ddd',
+                    borderRadius: '4px',
+                    fontSize: '14px',
+                    opacity: generalLoading ? 0.7 : 1,
+                    height: '32px'
                   }}
                 />
               </div>
               
-              <div style={{display: 'flex', flexDirection: 'column', gap: '5px'}}>
-                <label style={{fontWeight: '600', color: '#333'}}>Registration Number *</label>
+              <div style={{display: 'flex', flexDirection: 'column', gap: '2px'}}>
+                <label style={{fontWeight: '600', color: '#333', fontSize: '0.85rem'}}>I am a *</label>
+                <select 
+                  value={attendanceData.userType}
+                  onChange={(e) => setAttendanceData(prev => ({...prev, userType: e.target.value}))}
+                  required
+                  style={{
+                    padding: '6px 8px',
+                    border: '1px solid #ddd',
+                    borderRadius: '4px',
+                    fontSize: '14px',
+                    background: 'white',
+                    height: '32px'
+                  }}
+                >
+                  <option value="student">Student</option>
+                  <option value="visitor">Visitor</option>
+                </select>
+              </div>
+              
+              <div style={{display: attendanceData.userType === 'student' ? 'flex' : 'none', flexDirection: 'column', gap: '2px'}}>
+                <label style={{fontWeight: '600', color: '#333', fontSize: '0.85rem'}}>Registration Number *</label>
                 <input 
                   type="text"
-                  placeholder="e.g., C025-01-1234/2023" 
+                  placeholder="e.g., IN16/00014/22" 
                   value={attendanceData.registrationNumber}
                   onChange={(e) => setAttendanceData(prev => ({...prev, registrationNumber: e.target.value}))}
                   disabled={generalLoading}
-                  required
+                  required={attendanceData.userType === 'student'}
                   style={{
-                    padding: '12px',
-                    border: '2px solid #ddd',
-                    borderRadius: '8px',
-                    fontSize: '16px',
-                    opacity: generalLoading ? 0.7 : 1
+                    padding: '6px 8px',
+                    border: '1px solid #ddd',
+                    borderRadius: '4px',
+                    fontSize: '14px',
+                    opacity: generalLoading ? 0.7 : 1,
+                    height: '32px'
                   }}
                 />
               </div>
               
-              <div style={{display: 'flex', flexDirection: 'column', gap: '5px'}}>
-                <label style={{fontWeight: '600', color: '#333'}}>Course *</label>
+              <div style={{display: attendanceData.userType === 'student' ? 'flex' : 'none', flexDirection: 'column', gap: '2px'}}>
+                <label style={{fontWeight: '600', color: '#333', fontSize: '0.85rem'}}>Course *</label>
                 <input 
                   type="text"
                   placeholder="e.g., Computer Science" 
                   value={attendanceData.course}
                   onChange={(e) => setAttendanceData(prev => ({...prev, course: e.target.value}))}
                   disabled={generalLoading}
-                  required
+                  required={attendanceData.userType === 'student'}
                   style={{
-                    padding: '12px',
-                    border: '2px solid #ddd',
-                    borderRadius: '8px',
-                    fontSize: '16px',
-                    opacity: generalLoading ? 0.7 : 1
+                    padding: '6px 8px',
+                    border: '1px solid #ddd',
+                    borderRadius: '4px',
+                    fontSize: '14px',
+                    opacity: generalLoading ? 0.7 : 1,
+                    height: '32px'
                   }}
                 />
               </div>
               
-              <div style={{display: 'flex', flexDirection: 'column', gap: '5px'}}>
-                <label style={{fontWeight: '600', color: '#333'}}>Year of Study *</label>
+              <div style={{display: attendanceData.userType === 'student' ? 'flex' : 'none', flexDirection: 'column', gap: '2px'}}>
+                <label style={{fontWeight: '600', color: '#333', fontSize: '0.85rem'}}>Year of Study *</label>
                 <select 
                   value={attendanceData.yearOfStudy}
                   onChange={(e) => setAttendanceData(prev => ({...prev, yearOfStudy: e.target.value}))}
-                  required
+                  required={attendanceData.userType === 'student'}
                   style={{
-                    padding: '12px',
-                    border: '2px solid #ddd',
-                    borderRadius: '8px',
-                    fontSize: '16px',
-                    background: 'white'
+                    padding: '6px 8px',
+                    border: '1px solid #ddd',
+                    borderRadius: '4px',
+                    fontSize: '14px',
+                    background: 'white',
+                    height: '32px'
                   }}
                 >
                   <option value="">Select Year</option>
@@ -887,8 +930,8 @@ const LandingPage = () => {
                 </select>
               </div>
               
-              <div style={{display: 'flex', flexDirection: 'column', gap: '5px'}}>
-                <label style={{fontWeight: '600', color: '#333'}}>Phone Number *</label>
+              <div style={{display: 'flex', flexDirection: 'column', gap: '2px'}}>
+                <label style={{fontWeight: '600', color: '#333', fontSize: '0.85rem'}}>Phone Number *</label>
                 <input 
                   type="tel"
                   placeholder="e.g., +254712345678" 
@@ -896,20 +939,21 @@ const LandingPage = () => {
                   onChange={(e) => setAttendanceData(prev => ({...prev, phoneNumber: e.target.value}))}
                   required
                   style={{
-                    padding: '12px',
-                    border: '2px solid #ddd',
-                    borderRadius: '8px',
-                    fontSize: '16px'
+                    padding: '6px 8px',
+                    border: '1px solid #ddd',
+                    borderRadius: '4px',
+                    fontSize: '14px',
+                    height: '32px'
                   }}
                 />
               </div>
               
-              <div style={{display: 'flex', flexDirection: 'column', gap: '5px'}}>
-                <label style={{fontWeight: '600', color: '#333'}}>Digital Signature *</label>
+              <div style={{display: 'flex', flexDirection: 'column', gap: '2px'}}>
+                <label style={{fontWeight: '600', color: '#333', fontSize: '0.85rem'}}>Digital Signature *</label>
                 <div style={{
-                  border: '2px solid #ddd',
-                  borderRadius: '8px',
-                  padding: '10px',
+                  border: '1px solid #ddd',
+                  borderRadius: '4px',
+                  padding: '6px',
                   background: '#f9f9f9'
                 }}>
                   <canvas
@@ -969,11 +1013,11 @@ const LandingPage = () => {
                         canvas.addEventListener('touchend', stopDrawing);
                       }
                     }}
-                    width={400}
-                    height={150}
+                    width={350}
+                    height={80}
                     style={{
                       width: '100%',
-                      height: '150px',
+                      height: '80px',
                       border: '1px solid #ccc',
                       borderRadius: '4px',
                       background: 'white',
@@ -985,10 +1029,10 @@ const LandingPage = () => {
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    marginTop: '10px'
+                    marginTop: '4px'
                   }}>
-                    <small style={{color: '#666', fontSize: '14px'}}>
-                      ✍️ Draw your signature above
+                    <small style={{color: '#666', fontSize: '12px'}}>
+                      ✍️ Draw signature above
                     </small>
                     <button
                       type="button"
@@ -1004,53 +1048,55 @@ const LandingPage = () => {
                         setAttendanceData(prev => ({...prev, signature: ''}));
                       }}
                       style={{
-                        padding: '6px 12px',
+                        padding: '4px 8px',
                         background: '#ff4444',
                         color: 'white',
                         border: 'none',
-                        borderRadius: '4px',
-                        fontSize: '12px',
+                        borderRadius: '3px',
+                        fontSize: '11px',
                         cursor: 'pointer'
                       }}
                     >
-                      🔄 Clear Signature
+                      Clear
                     </button>
                   </div>
                 </div>
               </div>
               
-              <div style={{display: 'flex', gap: '10px', marginTop: '20px'}}>
+              <div style={{display: 'flex', gap: '6px', marginTop: '8px'}}>
                 <button 
                   type="submit"
                   disabled={generalLoading}
                   style={{
                     flex: '1',
-                    padding: '12px 20px',
+                    padding: '8px 12px',
                     background: generalLoading ? '#ccc' : '#00c6ff',
                     color: 'white',
                     border: 'none',
-                    borderRadius: '8px',
-                    fontSize: '16px',
+                    borderRadius: '4px',
+                    fontSize: '14px',
                     fontWeight: '600',
                     cursor: generalLoading ? 'not-allowed' : 'pointer',
-                    opacity: generalLoading ? 0.7 : 1
+                    opacity: generalLoading ? 0.7 : 1,
+                    height: '36px'
                   }}
                 >
-                  {generalLoading ? 'Submitting...' : 'Submit Attendance'}
+                  {generalLoading ? 'Submitting...' : 'Submit'}
                 </button>
                 <button 
                   type="button"
                   onClick={() => setShowAttendanceForm(false)}
                   style={{
                     flex: '1',
-                    padding: '12px 20px',
+                    padding: '8px 12px',
                     background: '#6c757d',
                     color: 'white',
                     border: 'none',
-                    borderRadius: '8px',
-                    fontSize: '16px',
+                    borderRadius: '4px',
+                    fontSize: '14px',
                     fontWeight: '600',
-                    cursor: 'pointer'
+                    cursor: 'pointer',
+                    height: '36px'
                   }}
                 >
                   Cancel
