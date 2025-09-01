@@ -31,6 +31,87 @@
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
     
+    <!-- Global Back Button -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        createBackButton();
+      });
+      
+      // Also create back button when navigation changes (for SPA routing)
+      let lastUrl = location.href;
+      new MutationObserver(() => {
+        const url = location.href;
+        if (url !== lastUrl) {
+          lastUrl = url;
+          setTimeout(createBackButton, 100); // Small delay for routing
+        }
+      }).observe(document, {subtree: true, childList: true});
+      
+      function createBackButton() {
+        // Remove existing back button
+        const existing = document.getElementById('global-back-button');
+        if (existing) {
+          existing.remove();
+        }
+        
+        // Don't show back button on landing page
+        if (window.location.pathname === '/' || window.location.pathname === '/Home') {
+          return;
+        }
+        
+        // Create back button
+        const backBtn = document.createElement('button');
+        backBtn.id = 'global-back-button';
+        backBtn.innerHTML = '← Back';
+        backBtn.style.cssText = `
+          position: fixed !important;
+          top: 80px !important;
+          left: 15px !important;
+          z-index: 2147483647 !important;
+          background: #730051 !important;
+          color: white !important;
+          border: 2px solid #ffffff !important;
+          padding: 10px 18px !important;
+          font-size: 14px !important;
+          font-weight: 600 !important;
+          border-radius: 20px !important;
+          cursor: pointer !important;
+          box-shadow: 0 3px 12px rgba(115, 0, 81, 0.4) !important;
+          font-family: Arial, sans-serif !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          gap: 6px !important;
+          min-width: 90px !important;
+          min-height: 36px !important;
+          transition: all 0.2s ease !important;
+          visibility: visible !important;
+          opacity: 1 !important;
+        `;
+        
+        // Add hover effects
+        backBtn.onmouseenter = function() {
+          this.style.background = '#00c6ff !important';
+          this.style.transform = 'scale(1.05) !important';
+          this.style.boxShadow = '0 6px 20px rgba(0, 198, 255, 0.4) !important';
+        };
+        
+        backBtn.onmouseleave = function() {
+          this.style.background = '#730051 !important';
+          this.style.transform = 'scale(1) !important';
+          this.style.boxShadow = '0 4px 15px rgba(115, 0, 81, 0.4) !important';
+        };
+        
+        // Add click handler
+        backBtn.onclick = function() {
+          window.history.back();
+        };
+        
+        // Add to body
+        document.body.appendChild(backBtn);
+      }
+    </script>
+    
     <!-- Service Worker Registration -->
     <script>
       if ('serviceWorker' in navigator) {

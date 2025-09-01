@@ -1,71 +1,55 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
 
-interface BackButtonProps {
-  to?: string;
-  className?: string;
-  style?: React.CSSProperties;
-}
-
-const BackButton: React.FC<BackButtonProps> = ({ 
-  to, 
-  className = '', 
-  style = {} 
-}) => {
+const BackButton: React.FC = () => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    if (to) {
-      navigate(to);
-    } else {
-      navigate(-1);
-    }
-  };
-
-  const defaultStyle: React.CSSProperties = {
-    position: 'fixed',
-    top: '20px',
-    left: '20px',
-    zIndex: 999999,
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-    padding: '12px 16px',
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-    border: '1px solid #e0e0e0',
-    borderRadius: '12px',
-    cursor: 'pointer',
-    fontSize: '14px',
-    fontWeight: '500',
-    color: '#333',
-    textDecoration: 'none',
-    transition: 'all 0.2s ease',
-    backdropFilter: 'blur(10px)',
-    boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)',
-    ...style
+    navigate(-1);
   };
 
   return (
-    <button
+    <button 
       onClick={handleClick}
-      className={className}
-      style={defaultStyle}
-      onMouseEnter={(e) => {
-        const target = e.target as HTMLElement;
-        target.style.backgroundColor = 'rgba(255, 255, 255, 1)';
-        target.style.transform = 'translateY(-1px)';
-        target.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.25)';
+      style={{
+        position: 'fixed',
+        top: '10px',
+        left: '10px',
+        zIndex: 2147483647,
+        background: '#730051',
+        color: 'white',
+        border: '2px solid #ffffff',
+        padding: '12px 20px',
+        fontSize: '16px',
+        fontWeight: '600',
+        borderRadius: '25px',
+        cursor: 'pointer',
+        boxShadow: '0 4px 15px rgba(115, 0, 81, 0.4)',
+        fontFamily: 'Arial, sans-serif',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '8px',
+        minWidth: '100px',
+        minHeight: '40px',
+        transition: 'all 0.2s ease',
+        visibility: 'visible',
+        opacity: 1,
       }}
-      onMouseLeave={(e) => {
-        const target = e.target as HTMLElement;
-        target.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
-        target.style.transform = 'translateY(0)';
-        target.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.2)';
+      onMouseOver={(e) => {
+        const target = e.target as HTMLButtonElement;
+        target.style.background = '#00c6ff';
+        target.style.transform = 'scale(1.05)';
+        target.style.boxShadow = '0 6px 20px rgba(0, 198, 255, 0.4)';
+      }}
+      onMouseOut={(e) => {
+        const target = e.target as HTMLButtonElement;
+        target.style.background = '#730051';
+        target.style.transform = 'scale(1)';
+        target.style.boxShadow = '0 4px 15px rgba(115, 0, 81, 0.4)';
       }}
     >
-      <ArrowLeft size={16} />
-      <span>Back</span>
+      ← Back
     </button>
   );
 };
