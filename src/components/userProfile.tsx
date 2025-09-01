@@ -2,7 +2,6 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from '../styles/signin.module.css';
 import cuLogo from '../assets/KSUCU logo updated document.png';
-import { getApiUrl } from '../config/environment';
 
 interface UserData {
     username: string;
