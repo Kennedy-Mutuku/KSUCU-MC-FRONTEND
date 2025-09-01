@@ -224,7 +224,7 @@ const ModernNewsDisplay: React.FC = () => {
         )}
 
         {/* Event Passed Notification */}
-        {newsData.eventDate && isEventPassed && (
+        {newsData?.eventDate && isEventPassed && (
           <div className={styles.eventPassedSection}>
             <h3>Event Has Started/Passed</h3>
             <p>This event took place on {new Date(newsData.eventDate).toLocaleDateString()}</p>
@@ -248,13 +248,15 @@ const ModernNewsDisplay: React.FC = () => {
           )}
           
           <div className={styles.textSection}>
-            <h2 className={styles.newsTitle}>{newsData.title}</h2>
+            <h2 className={styles.newsTitle}>{newsData.title || 'No title available'}</h2>
             <div className={styles.newsBody}>
-              {newsData.body.split('\n').map((paragraph, index) => (
+              {newsData.body ? newsData.body.split('\n').map((paragraph, index) => (
                 <p key={index} className={styles.newsParagraph}>
                   {paragraph}
                 </p>
-              ))}
+              )) : (
+                <p className={styles.newsParagraph}>No content available</p>
+              )}
             </div>
           </div>
         </div>
