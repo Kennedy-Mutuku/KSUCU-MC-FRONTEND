@@ -2249,6 +2249,24 @@ hr{
         transform: scale(0.95);
     }
 
+    /* Back to Top Button - Always visible with #00c6ff color */
+    .back-to-top {
+        background: linear-gradient(135deg, #00c6ff, #0099cc) !important;
+        box-shadow: 0 5px 20px rgba(0, 198, 255, 0.4) !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: scale(1) !important;
+    }
+
+    .back-to-top:hover {
+        background: linear-gradient(135deg, #0099cc, #0088bb) !important;
+        box-shadow: 0 8px 30px rgba(0, 198, 255, 0.6) !important;
+        transform: scale(1.05) !important;
+    }
+
+    .back-to-top:active {
+        transform: scale(0.95) !important;
+    }
 
     .commissionTitle{
         margin-top: 0;

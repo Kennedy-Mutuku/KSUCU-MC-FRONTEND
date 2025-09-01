@@ -186,6 +186,46 @@ const ChangeDetails: React.FC = () => {
     return regex.test(input);
   }
 
+  const handleLogout = async () => {
+    try {
+      setLoading(true);
+      
+      // Call logout API
+      const response = await axios.post(getApiUrl('usersLogout'), {}, {
+        withCredentials: true
+      });
+      
+      if (response.status === 200) {
+        // Clear cookies
+        document.cookie.split(";").forEach((c) => {
+          document.cookie = c
+            .replace(/^ +/, "")
+            .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+        });
+        
+        // Clear local storage
+        localStorage.clear();
+        sessionStorage.clear();
+        
+        // Navigate to sign in page
+        navigate('/signIn');
+      }
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Even if API fails, clear local data and redirect
+      document.cookie.split(";").forEach((c) => {
+        document.cookie = c
+          .replace(/^ +/, "")
+          .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+      });
+      localStorage.clear();
+      sessionStorage.clear();
+      navigate('/signIn');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSubmit = async () => {
     // Convert selected ministries array to a comma-separated string
     const ministriesString = selectedMinistries.join(', ');
@@ -443,6 +483,53 @@ const ChangeDetails: React.FC = () => {
           {loading ? <div className={styles['submitData']} >Updating</div> : 
           <div className={styles['submitData']} onClick={handleSubmit}>Update</div>
           }
+        </div>
+
+        {/* Logout Button Section */}
+        <div style={{ 
+          marginTop: '30px', 
+          paddingTop: '20px', 
+          borderTop: '2px solid #e0e0e0',
+          textAlign: 'center'
+        }}>
+          <p style={{ 
+            marginBottom: '15px', 
+            color: '#666', 
+            fontSize: '14px' 
+          }}>
+            Want to sign out from your account?
+          </p>
+          <button
+            onClick={handleLogout}
+            disabled={loading}
+            style={{
+              backgroundColor: '#dc3545',
+              color: 'white',
+              border: 'none',
+              padding: '12px 30px',
+              borderRadius: '25px',
+              fontSize: '14px',
+              fontWeight: '600',
+              cursor: loading ? 'not-allowed' : 'pointer',
+              opacity: loading ? 0.6 : 1,
+              transition: 'all 0.3s ease',
+              boxShadow: '0 2px 10px rgba(220, 53, 69, 0.3)',
+            }}
+            onMouseEnter={(e) => {
+              if (!loading) {
+                e.currentTarget.style.backgroundColor = '#c82333';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 4px 15px rgba(220, 53, 69, 0.4)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = '#dc3545';
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 2px 10px rgba(220, 53, 69, 0.3)';
+            }}
+          >
+            {loading ? 'Processing...' : 'Log Out'}
+          </button>
         </div>
 
         <div className={styles['form-footer']}>

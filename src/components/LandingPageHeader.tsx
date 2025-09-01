@@ -553,7 +553,6 @@ const LandingPageHeader = () => {
             <div onClick={handleAboutUsClick} className={styles['quick-item--link']} style={{gridColumn: '1 / -1', maxWidth: '200px', margin: '0 auto'}}>
               About Us
             </div>
-            { userData && <div onClick={handleLogout} className={styles['quick-item--link']} style={{borderTop: '1px solid rgba(255,255,255,0.12)', marginTop: '6px', paddingTop: '8px', cursor: 'pointer', gridColumn: '1 / -1'}}>Log out</div> }
               </div>
             </>
           )}

@@ -15,6 +15,11 @@
     margin-bottom: 2rem;
 }
 
+/* Requisitions Management Section */
+.requisitionsManagementSection {
+    margin-bottom: 2rem;
+}
+
 .newsManagementButton {
     width: 100%;
     background: linear-gradient(135deg, #ff6b35, #f7931e);
@@ -61,6 +66,30 @@
     background: linear-gradient(135deg, #5a3aa7, #4a328a);
     transform: translateY(-3px);
     box-shadow: 0 12px 35px rgba(111, 66, 193, 0.4);
+}
+
+.requisitionsManagementButton {
+    width: 100%;
+    background: linear-gradient(135deg, #28a745, #218838);
+    color: white;
+    border: none;
+    padding: 1.5rem 2rem;
+    border-radius: 15px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+}
+
+.requisitionsManagementButton:hover {
+    background: linear-gradient(135deg, #218838, #1e7e34);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(40, 167, 69, 0.4);
 }
 
 /* Login Section */

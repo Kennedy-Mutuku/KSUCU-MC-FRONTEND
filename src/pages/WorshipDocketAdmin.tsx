@@ -8,7 +8,8 @@ import {
     faUsers, 
     faCheckCircle,
     faArrowRight,
-    faNewspaper
+    faNewspaper,
+    faPackage
 } from '@fortawesome/free-solid-svg-icons';
 
 const WorshipDocketAdmin: React.FC = () => {
@@ -163,6 +164,26 @@ const WorshipDocketAdmin: React.FC = () => {
                             onClick={() => window.location.href = '/news-admin'}
                         >
                             News Admin
+                            <FontAwesomeIcon icon={faArrowRight} className={styles.arrowIcon} />
+                        </button>
+                    </div>
+                </div>
+
+                {/* Requisitions Management Section */}
+                <div className={styles.requisitionsManagementSection}>
+                    <div className={styles.selectionCard}>
+                        <h2>
+                            <FontAwesomeIcon icon={faPackage} />
+                            Requisitions Management
+                        </h2>
+                        <p className={styles.leadershipDescription}>
+                            View, approve, and manage equipment requisition requests from members
+                        </p>
+                        <button 
+                            className={styles.requisitionsManagementButton}
+                            onClick={() => window.location.href = '/requisitions-admin'}
+                        >
+                            Manage Requisitions
                             <FontAwesomeIcon icon={faArrowRight} className={styles.arrowIcon} />
                         </button>
                     </div>

@@ -43,6 +43,8 @@ import ContactUs from "./ContactUs";
 import MessagesAdmin from "./MessagesAdmin";
 import AttendanceSessionManagement from "./AttendanceSessionManagement";
 import NewsAdmin from "./NewsAdmin";
+import Requisitions from "./Requisitions";
+import RequisitionsAdmin from "./RequisitionsAdmin";
 
 export const router = createBrowserRouter([
     {
@@ -92,6 +94,8 @@ export const router = createBrowserRouter([
             {path: "/messages-admin", element: <MessagesAdmin />},
             {path: "/attendance-session-management", element: <AttendanceSessionManagement />},
             {path: "/news-admin", element: <NewsAdmin />},
+            {path: "/requisitions", element: <Requisitions />},
+            {path: "/requisitions-admin", element: <RequisitionsAdmin />},
             {path: "*", element: <NoPage />}
         ]
     }

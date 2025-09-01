@@ -17,7 +17,7 @@ import missionImg from '../assets/ladies.jpg'
 import valuesImg from '../assets/amptheatre.jpg'
 import prayerPNG from '../assets/RIVET.jpg'
 import { faUserLock } from '@fortawesome/free-solid-svg-icons';
-import { Heart, Camera, BookOpen, Library, DollarSign, GraduationCap } from "lucide-react";
+import { Heart, Camera, BookOpen, Library, DollarSign, GraduationCap, Package, ArrowUp } from "lucide-react";
 import LandingPageHeader from '../components/LandingPageHeader';
 import ModernNewsDisplay from '../components/ModernNewsDisplay';
 
@@ -1376,19 +1376,28 @@ const LandingPage = () => {
           >
             <GraduationCap className={styles.icon} />
           </div>
-
-          {userData && (
-            <div 
-              className={styles['quick-link-item']}
-              data-text="Log out"
-              onClick={(e) => handleQuickLinkClick(() => {
-                handleLogout();
-                navigate('/signIn');
-              }, e)}
-            >
-              <FontAwesomeIcon icon={faUserLock} className={styles.icon} />
-            </div>
-          )}
+          
+          <div 
+            className={styles['quick-link-item']}
+            data-text="Requisitions"
+            onClick={(e) => handleQuickLinkClick(() => navigate('/requisitions'), e)}
+          >
+            <Package className={styles.icon} />
+          </div>
+          
+          <div 
+            className={`${styles['quick-link-item']} ${styles['back-to-top']}`}
+            data-text="Back to Top"
+            onClick={(e) => {
+              e.preventDefault();
+              window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+              });
+            }}
+          >
+            <ArrowUp className={styles.icon} />
+          </div>
         </div>
 
         <div className={`${styles['footer']} ${styles['home-footer']}`} id='contacts'>
