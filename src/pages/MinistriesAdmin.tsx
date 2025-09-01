@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
+import BackButton from '../components/BackButton';
 import styles from '../styles/ministriesAdmin.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
@@ -936,6 +937,7 @@ const MinistriesAdmin: React.FC = () => {
 
     return (
         <div className={styles.container}>
+            <BackButton />
             <UniversalHeader />
             <div className={styles.adminContainer}>
                 <div className={styles.adminHeader}>

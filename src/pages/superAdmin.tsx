@@ -3,6 +3,7 @@ import axios from 'axios';
 import styles from '../styles/superAdmin.module.css';
 import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
+import BackButton from '../components/BackButton';
 import { getApiUrl } from '../config/environment';
 
 const SuperAdmin: React.FC = () => {
@@ -112,6 +113,7 @@ const SuperAdmin: React.FC = () => {
 
     return (
         <>
+            <BackButton />
             <UniversalHeader />
             <div className={styles.container}>
                 <h4>Total Students: {userCount}</h4>

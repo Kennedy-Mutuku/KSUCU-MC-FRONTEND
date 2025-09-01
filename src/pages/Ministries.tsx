@@ -3,6 +3,7 @@ import styles from '../styles/ministries.module.css';
 
 import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
+import BackButton from '../components/BackButton';
 import { useLocation } from 'react-router-dom';
 import PW from '../assets/praise-and-worship.jpg'
 import wananzambe from '../assets/wananzambe.jpg'
@@ -90,6 +91,7 @@ const MinistriesPage: React.FC = () => {
 
   return (
     <>
+      <BackButton />
 
       {/* {generalLoading && (
             <div className={styles['loading-screen']}>

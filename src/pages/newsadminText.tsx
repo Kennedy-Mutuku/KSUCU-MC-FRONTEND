@@ -5,6 +5,7 @@ import styles from '../styles/newsStudio.module.css'
 
 import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
+import BackButton from '../components/BackButton';
 
 import 'react-image-crop/dist/ReactCrop.css';
 
@@ -136,7 +137,7 @@ const PhotoUploadPage: React.FC = () => {
 
   return (
     <div className={styles.bodyNewsPage}>
-
+      <BackButton />
       <UniversalHeader />
 
       <div className={styles.containerNewsStudio}>

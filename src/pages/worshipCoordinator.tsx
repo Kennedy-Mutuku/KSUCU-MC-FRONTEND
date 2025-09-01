@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styles from '../styles/worshipCoordinator.module.css';
 import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
+import BackButton from '../components/BackButton';
 
 interface Member {
   id: string;
@@ -95,6 +96,7 @@ const WorshipCoordinator: React.FC = () => {
 
   return (
     <>
+      <BackButton />
       <UniversalHeader />
       <div className={styles.container}>
         <h1 className={styles.title}>Worship Coordinator Dashboard</h1>

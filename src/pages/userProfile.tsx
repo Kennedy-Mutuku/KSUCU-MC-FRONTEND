@@ -6,6 +6,7 @@ import loadingAnime from '../assets/Animation - 1716747954931.gif';
 import { getApiUrl } from '../config/environment';
 import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
+import BackButton from '../components/BackButton';
 
 interface UserData {
     username: string;
@@ -129,6 +130,7 @@ const UserProfilePage: React.FC = () => {
 
     return (
         <>
+            <BackButton />
             <UniversalHeader />
             <div className={styles.body} style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '10px', backgroundAttachment: 'fixed', backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}>
                 <div className={styles.container} style={{ margin: '10px auto', maxWidth: '90vw', maxHeight: '95vh', overflowY: 'auto' }}>

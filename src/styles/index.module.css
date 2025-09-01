@@ -1037,21 +1037,14 @@ div.boardsCategoryDiv:focus h3 {
     border-radius: 2px;
 }
 .containerAbout{
-    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
+    background: #000000;
     padding: 40px 0;
     position: relative;
     color: #ffffff;
 }
 
 .containerAbout::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, #00c6ff, transparent);
-    opacity: 0.6;
+    display: none;
 }
 .about{
     display: flex;
@@ -1062,47 +1055,68 @@ div.boardsCategoryDiv:focus h3 {
     text-align: left;
 }
 .aboutFlex{
-    display: grid;
-    grid-template-columns: 1fr;
+    display: flex !important;
+    flex-direction: column !important;
     gap: 20px;
     margin-top: 20px;
     padding: 0;
     background: transparent;
+    width: 100%;
+    align-items: stretch;
 }
 
 .aboutFlex h4{
-    color: #ffffff;
+    color: #ffffff !important;
     font-size: 1.4rem;
     font-weight: 600;
     text-transform: capitalize;
     letter-spacing: 0.5px;
-    margin: 0 0 8px 0;
+    margin: 0 0 5px 0;
     position: relative;
-    text-align: left;
+    text-align: center;
     background: transparent;
     padding: 0;
     border: none;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .aboutFlex p{
-    margin: 0 0 15px 0;
+    margin: 0 0 10px 0;
     color: #d5d5d5;
     font-size: 1rem;
-    line-height: 1.6;
+    line-height: 1.3;
     font-weight: 300;
-    text-align: left;
+    text-align: center;
     background: transparent;
     padding: 0;
     border: none;
+    width: 100%;
+    word-wrap: break-word;
+    hyphens: none;
 }
 /* objectivs */
 .aboutCol1Mission,
 .aboutCol1Vision {
     background: transparent !important;
     padding: 0;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     box-shadow: none !important;
     border: none !important;
+    width: 100%;
+    display: block;
+    float: none;
+    text-align: center;
+}
+
+.aboutCol1Mission {
+    order: 1;
+}
+
+.aboutCol1Vision {
+    order: 2;
 }
 
 .aboutCol {
@@ -1117,13 +1131,32 @@ div.boardsCategoryDiv:focus h3 {
     margin: 0 0 15px 0;
   }
   .objectivesTitle{
-    color: #00c6ff;
-    font-size: 1.3rem;
-    font-weight: 600;
+    color: #ffffff;
+    font-size: 1.4rem;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 1.2px;
-    margin-bottom: 12px;
+    letter-spacing: 2px;
+    margin: 25px 0 12px 0;
     text-decoration: none;
+    text-align: center;
+    width: 100%;
+    word-wrap: break-word;
+    hyphens: none;
+    position: relative;
+    padding: 10px 0;
+  }
+  
+  .objectivesTitle::before {
+    content: '';
+  }
+  
+  .objectivesTitle::after {
+    content: '';
+  }
+  
+  .objectivesTitle:hover {
+    opacity: 0.8;
+    transition: all 0.3s ease;
   }
   
   .objectivesList {
@@ -1139,15 +1172,18 @@ div.boardsCategoryDiv:focus h3 {
   .subList {
     list-style: none;
     padding-left: 0;
-    margin: 10px 0;
+    margin: 8px 0;
     color: #d0d0d0;
     font-size: 1.08rem;
-    line-height: 1.7;
+    line-height: 1.4;
     font-weight: 300;
     background: transparent;
-    text-align: left;
+    text-align: center;
     border: none;
     box-shadow: none;
+    width: 100%;
+    word-wrap: break-word;
+    hyphens: none;
   }
   
   .objectivesList li {
@@ -1618,44 +1654,58 @@ hr{
     }
 
     .containerAbout{
+        background: #000000;
         padding: 100px 0;
     }
 
     .containerAbout .container{
-        width: 85%;
-        max-width: 1400px;
+        width: 100%;
+        max-width: none;
+        padding: 0;
     }
 
     .aboutFlex{
-        display: grid;
-        grid-template-columns: 1fr 1fr 2fr;
-        gap: 40px;
-        margin-top: 40px;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 25px;
+        margin-top: 30px;
         padding: 0;
-        align-items: start;
         background: transparent;
+        width: 100%;
+        align-items: center;
+        justify-content: center;
     }
     
     .aboutCol1{
-        grid-column: span 2;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 40px;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 25px;
         background: transparent !important;
         padding: 0 !important;
         border: none !important;
         box-shadow: none !important;
         border-radius: 0 !important;
+        width: 100%;
+        max-width: 800px;
+        align-items: center;
+        justify-content: center;
+        order: 1;
     }
     
     .aboutCol2{
-        grid-column: 3;
-        grid-row: 1;
         background: transparent !important;
         padding: 0 !important;
         border: none !important;
         box-shadow: none !important;
         border-radius: 0 !important;
+        width: 100%;
+        max-width: 900px;
+        text-align: center;
+        order: 3;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
     }
 
     .weeklyActivities{
@@ -2204,7 +2254,8 @@ hr{
         margin-top: 0;
     }
     .about{
-        width: 70%;
+        width: 85%;
+        max-width: 900px;
     }
     .containerOthers{
         padding: 50px 0;
@@ -2267,24 +2318,40 @@ hr{
     }
 
     .aboutCol1{
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 25px;
         padding: 0;
         background: transparent !important;
         border: none !important;
         box-shadow: none !important;
         border-radius: 0 !important;
+        width: 100%;
+        max-width: 800px;
+        align-items: center;
+        justify-content: center;
+        order: 1;
     }
     
     .aboutCol1Mission,
     .aboutCol1Vision {
         background: transparent !important;
         padding: 0 !important;
-        margin: 0;
+        margin-bottom: 15px;
         border: none !important;
         box-shadow: none !important;
         border-radius: 0 !important;
+        width: 100% !important;
+        display: block !important;
+        text-align: center !important;
+    }
+    
+    .aboutCol1Mission {
+        order: 1 !important;
+    }
+    
+    .aboutCol1Vision {
+        order: 2 !important;
     }
     
     .aboutCol2{
@@ -2462,6 +2529,99 @@ hr{
     .flex-title .container {
         width: 75% !important; /* Prevent too wide on very large screens */
         max-width: 1400px;
+    }
+}
+
+/* About Us full-width single column centered layout for all screens */
+@media (min-width: 768px) {
+    .containerAbout .aboutFlex {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 25px !important;
+        width: 100% !important;
+        padding: 0 !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    
+    .containerAbout .aboutFlex .aboutCol1 {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 25px !important;
+        width: 100% !important;
+        max-width: 800px !important;
+        align-items: center !important;
+        justify-content: center !important;
+        order: 1 !important;
+    }
+    
+    .containerAbout .aboutFlex .aboutCol1Mission {
+        display: block !important;
+        width: 100% !important;
+        margin-bottom: 15px !important;
+        text-align: center !important;
+        order: 1 !important;
+    }
+    
+    .containerAbout .aboutFlex .aboutCol1Vision {
+        display: block !important;
+        width: 100% !important;
+        margin-bottom: 15px !important;
+        text-align: center !important;
+        order: 2 !important;
+    }
+    
+    .containerAbout .aboutFlex .aboutCol2 {
+        width: 100% !important;
+        max-width: 900px !important;
+        text-align: center !important;
+        order: 3 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    
+    .containerAbout .aboutFlex p {
+        word-wrap: break-word !important;
+        hyphens: none !important;
+        white-space: normal !important;
+    }
+    
+    .containerAbout .aboutFlex h4 {
+        white-space: normal !important;
+    }
+    
+    .containerAbout .objectivesTitle {
+        color: #ffffff !important;
+        font-size: 1.6rem !important;
+        letter-spacing: 2.5px !important;
+        margin: 30px auto 15px auto !important;
+        padding: 15px 0 !important;
+        text-align: center !important;
+        max-width: 600px !important;
+    }
+    
+    .containerAbout .objectivesTitle::before,
+    .containerAbout .objectivesTitle::after {
+        content: '' !important;
+    }
+    
+    .containerAbout .subList {
+        text-align: center !important;
+        max-width: 700px !important;
+        margin: 8px auto !important;
+    }
+    
+    .containerAbout .aboutFlex h4 {
+        color: #ffffff !important;
+        max-width: 600px !important;
+        margin: 0 auto 5px auto !important;
+    }
+    
+    .containerAbout .aboutFlex p {
+        max-width: 700px !important;
+        margin: 0 auto 10px auto !important;
     }
 }
 

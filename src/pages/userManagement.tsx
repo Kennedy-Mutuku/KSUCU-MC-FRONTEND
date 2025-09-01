@@ -7,6 +7,7 @@ import { getApiUrl } from '../config/environment';
 import { Search, RefreshCw, Phone, Mail, User, BookOpen } from 'lucide-react';
 import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
+import BackButton from '../components/BackButton';
 
 interface UserData {
   _id: string;
@@ -107,6 +108,7 @@ const UserManagement: React.FC = () => {
 
   return (
     <>
+      <BackButton />
       <UniversalHeader />
       <div className={styles.body}>
       <div className={styles.container}>

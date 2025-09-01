@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
+import BackButton from '../components/BackButton';
 import ModernNewsDisplay from '../components/ModernNewsDisplay';
 import styles from '../styles/worshipDocketAdmin.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -95,6 +96,7 @@ const WorshipDocketAdmin: React.FC = () => {
 
     return (
         <>
+            <BackButton />
             <UniversalHeader />
             <div className={styles.container}>
                 <div className={styles.adminHeader}>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styles from '../styles/e-library.module.css';
 import UniversalHeader from '../components/UniversalHeader';
+import BackButton from '../components/BackButton';
 import { FaYoutube, FaFacebook, FaTiktok } from 'react-icons/fa';
 
 interface Book {
@@ -47,7 +48,7 @@ const Library: React.FC = () => {
 
   return (
     <div className={styles.body}>
-        
+        <BackButton />
         <UniversalHeader />
         <div className={styles.libraryContainer}>
           <div className={styles.videoBg}>

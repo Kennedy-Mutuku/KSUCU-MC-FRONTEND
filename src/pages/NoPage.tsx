@@ -1,10 +1,12 @@
 import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
+import BackButton from '../components/BackButton';
 import { Link } from 'react-router-dom';
 
 export default function NoPage(){
     return(
         <>
+            <BackButton />
             <UniversalHeader />
             <div style={{
                 minHeight: '70vh',

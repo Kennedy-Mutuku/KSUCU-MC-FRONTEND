@@ -179,7 +179,6 @@ const ModernNewsDisplay: React.FC = () => {
         {(newsData || countdown) && !isEventPassed && (
           <div className={styles.countdownSection}>
             <div className={styles.countdownHeader}>
-              <h3>Upcoming Event</h3>
               <p>Time Remaining</p>
             </div>
             <div className={styles.countdownDisplay}>

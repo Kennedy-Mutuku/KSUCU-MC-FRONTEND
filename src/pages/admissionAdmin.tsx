@@ -7,6 +7,7 @@ import { ChevronDown } from 'lucide-react';
 import { getApiUrl } from '../config/environment';
 import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
+import BackButton from '../components/BackButton';
 
 type FormData = {
   username: string;
@@ -151,6 +152,7 @@ const AdmissionAdmin: React.FC = () => {
 
   return (
     <>
+      <BackButton />
       <UniversalHeader />
       <div className={styles.body}>
       <div className={styles['container']}>

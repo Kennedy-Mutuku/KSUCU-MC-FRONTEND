@@ -3,6 +3,7 @@ import styles from '../styles/financials.module.css';
 
 import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
+import BackButton from '../components/BackButton';
 
 const FinancialsPage: React.FC = () => {
   
@@ -19,6 +20,7 @@ const FinancialsPage: React.FC = () => {
 
   return (
     <>
+      <BackButton />
       <UniversalHeader />
 
       <main className={styles.main}>
