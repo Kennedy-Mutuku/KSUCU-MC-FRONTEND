@@ -189,38 +189,75 @@ const ChangeDetails: React.FC = () => {
   const handleLogout = async () => {
     try {
       setLoading(true);
+      console.log('Starting logout process...');
       
       // Call logout API
       const response = await axios.post(getApiUrl('usersLogout'), {}, {
-        withCredentials: true
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json'
+        }
       });
       
-      if (response.status === 200) {
-        // Clear cookies
-        document.cookie.split(";").forEach((c) => {
-          document.cookie = c
-            .replace(/^ +/, "")
-            .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
-        });
-        
-        // Clear local storage
-        localStorage.clear();
-        sessionStorage.clear();
-        
-        // Navigate to sign in page
-        navigate('/signIn');
-      }
-    } catch (error) {
-      console.error('Logout error:', error);
-      // Even if API fails, clear local data and redirect
-      document.cookie.split(";").forEach((c) => {
-        document.cookie = c
-          .replace(/^ +/, "")
-          .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+      console.log('Logout API response:', response);
+      
+      // Clear cookies more thoroughly
+      const cookiesToClear = ['loginToken', 'sessionToken', 'authToken', 'token'];
+      cookiesToClear.forEach(cookieName => {
+        Cookies.remove(cookieName);
+        Cookies.remove(cookieName, { path: '/' });
+        Cookies.remove(cookieName, { domain: window.location.hostname });
+        Cookies.remove(cookieName, { domain: `.${window.location.hostname}` });
       });
+      
+      // Clear all cookies fallback
+      document.cookie.split(";").forEach((cookie) => {
+        const eqPos = cookie.indexOf("=");
+        const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
+        document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
+        document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=${window.location.hostname}`;
+        document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.${window.location.hostname}`;
+      });
+      
+      // Clear local storage and session storage
       localStorage.clear();
       sessionStorage.clear();
-      navigate('/signIn');
+      
+      console.log('Logout successful, redirecting to login...');
+      
+      // Show success message briefly before redirecting
+      setSuccessMessage('Successfully logged out!');
+      setTimeout(() => {
+        navigate('/signIn', { replace: true });
+      }, 1000);
+      
+    } catch (error: any) {
+      console.error('Logout API error:', error);
+      
+      // Even if API fails, clear local data and redirect
+      const cookiesToClear = ['loginToken', 'sessionToken', 'authToken', 'token'];
+      cookiesToClear.forEach(cookieName => {
+        Cookies.remove(cookieName);
+        Cookies.remove(cookieName, { path: '/' });
+        Cookies.remove(cookieName, { domain: window.location.hostname });
+        Cookies.remove(cookieName, { domain: `.${window.location.hostname}` });
+      });
+      
+      document.cookie.split(";").forEach((cookie) => {
+        const eqPos = cookie.indexOf("=");
+        const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
+        document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
+        document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=${window.location.hostname}`;
+        document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.${window.location.hostname}`;
+      });
+      
+      localStorage.clear();
+      sessionStorage.clear();
+      
+      setError('Logged out successfully (with warning)');
+      setTimeout(() => {
+        navigate('/signIn', { replace: true });
+      }, 1000);
     } finally {
       setLoading(false);
     }

@@ -5,13 +5,11 @@ import Footer from '../components/footer';
 import styles from '../styles/Requisitions.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
-    faPackage, 
+    faBox, 
     faPlus, 
     faMinus, 
     faCalendarAlt, 
     faUser, 
-    faDollarSign,
-    faTimes,
     faCheck
 } from '@fortawesome/free-solid-svg-icons';
 import { getApiUrl } from '../config/environment';
@@ -199,7 +197,7 @@ const Requisitions: React.FC = () => {
             <div className={styles.container}>
                 <div className={styles.header}>
                     <h1>
-                        <FontAwesomeIcon icon={faPackage} />
+                        <FontAwesomeIcon icon={faBox} />
                         Equipment Requisition
                     </h1>
                     <p>Request equipment or items for your events and activities</p>
@@ -249,7 +247,7 @@ const Requisitions: React.FC = () => {
                     {/* Items Section */}
                     <div className={styles.section}>
                         <div className={styles.sectionHeader}>
-                            <h3><FontAwesomeIcon icon={faPackage} /> Items to Requisition</h3>
+                            <h3><FontAwesomeIcon icon={faBox} /> Items to Requisition</h3>
                             <button type="button" onClick={addItem} className={styles.addButton}>
                                 <FontAwesomeIcon icon={faPlus} />
                                 Add Item

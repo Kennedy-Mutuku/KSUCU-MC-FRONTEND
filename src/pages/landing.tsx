@@ -16,7 +16,6 @@ import visionImg from '../assets/gents.jpg'
 import missionImg from '../assets/ladies.jpg'
 import valuesImg from '../assets/amptheatre.jpg'
 import prayerPNG from '../assets/RIVET.jpg'
-import { faUserLock } from '@fortawesome/free-solid-svg-icons';
 import { Heart, Camera, BookOpen, Library, DollarSign, GraduationCap, Package, ArrowUp } from "lucide-react";
 import LandingPageHeader from '../components/LandingPageHeader';
 import ModernNewsDisplay from '../components/ModernNewsDisplay';
@@ -377,26 +376,6 @@ const LandingPage = () => {
   };
 
 
-  const handleLogout = async () => {
-    setgeneralLoading(true)
-      try {
-          const response = await fetch(getApiUrl('usersLogout'), {
-              method: 'POST',
-              credentials: 'include'
-          });
-
-          if (!response.ok) {
-              throw new Error('Logout failed');
-          }
-          setUserData(null);
-          navigate('/signIn');
-      } catch (error) {
-          console.error('Error during logout:');
-          setError('An error occurred during logout');
-      }finally{
-        setgeneralLoading(false)
-      }
-  };
 
 
   function handleCloseCommission(): void {
@@ -1398,6 +1377,19 @@ const LandingPage = () => {
           >
             <ArrowUp className={styles.icon} />
           </div>
+        </div>
+
+        {/* Universal Back to Top Button */}
+        <div 
+          className={styles['universal-back-to-top']}
+          onClick={() => {
+            window.scrollTo({
+              top: 0,
+              behavior: 'smooth'
+            });
+          }}
+        >
+          <ArrowUp size={20} />
         </div>
 
         <div className={`${styles['footer']} ${styles['home-footer']}`} id='contacts'>

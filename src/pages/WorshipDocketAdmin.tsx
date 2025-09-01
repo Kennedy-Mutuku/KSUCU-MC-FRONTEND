@@ -9,7 +9,7 @@ import {
     faCheckCircle,
     faArrowRight,
     faNewspaper,
-    faPackage
+    faBox
 } from '@fortawesome/free-solid-svg-icons';
 
 const WorshipDocketAdmin: React.FC = () => {
@@ -173,7 +173,7 @@ const WorshipDocketAdmin: React.FC = () => {
                 <div className={styles.requisitionsManagementSection}>
                     <div className={styles.selectionCard}>
                         <h2>
-                            <FontAwesomeIcon icon={faPackage} />
+                            <FontAwesomeIcon icon={faBox} />
                             Requisitions Management
                         </h2>
                         <p className={styles.leadershipDescription}>
