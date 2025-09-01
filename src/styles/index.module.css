@@ -242,19 +242,21 @@ body{
     color: #2c3e50;
     margin: 0;
     width: 100%;
-    padding: 6px 8px;
-    border-radius: 6px;
-    background: linear-gradient(135deg, #ffffff, #f8f9fa);
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 50%, #ffffff 100%);
     text-decoration: none;
-    font-weight: 600;
-    font-size: 0.7rem;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 2px 10px rgba(115, 0, 81, 0.06);
-    border: 1px solid rgba(115, 0, 81, 0.05);
+    font-weight: 700;
+    font-size: 0.75rem;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 0 4px 20px rgba(115, 0, 81, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(115, 0, 81, 0.08);
     position: relative;
     overflow: hidden;
     cursor: pointer;
-    min-height: 28px;
+    min-height: 44px;
+    letter-spacing: 0.3px;
+    animation: none;
 }
 
 /* Mobile view (anything up to 767px) */
@@ -275,10 +277,12 @@ body{
     .quick-item--link {
         width: 100%;
         margin: 0;
-        padding: 5px 8px;
-        font-size: 0.65rem;
-        min-height: 26px;
-        border-radius: 5px;
+        padding: 10px 12px;
+        font-size: 0.7rem;
+        min-height: 38px;
+        border-radius: 10px;
+        font-weight: 700;
+        letter-spacing: 0.2px;
     }
     
     .quick-access-header {
@@ -310,11 +314,13 @@ body{
     .quick-item--link {
         width: 100%;
         margin: 0;
-        padding: 8px 10px;
-        font-size: 0.72rem;
-        min-height: 30px;
-        border-radius: 6px;
+        padding: 12px 16px;
+        font-size: 0.75rem;
+        min-height: 44px;
+        border-radius: 12px;
         display: flex;
+        font-weight: 700;
+        letter-spacing: 0.3px;
     }
     
     .quick-access-header {
@@ -332,16 +338,18 @@ body{
 }
 
 .quick-item--link:hover{
-    background: linear-gradient(135deg, #730051, #8e1a6b);
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(115, 0, 81, 0.25);
+    background: linear-gradient(135deg, #730051 0%, #8e1a6b 50%, #a02477 100%);
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 12px 35px rgba(115, 0, 81, 0.3), 0 4px 15px rgba(115, 0, 81, 0.15);
     color: #ffffff;
-    border-color: rgba(0, 198, 255, 0.4);
+    border-color: rgba(115, 0, 81, 0.2);
+    animation: none;
 }
 
 .quick-item--link:active{
-    transform: translateY(-1px);
+    transform: translateY(-1px) scale(0.98);
     transition: all 0.1s ease;
+    box-shadow: 0 4px 15px rgba(115, 0, 81, 0.2);
 }
 
 .quick-item--link:last-child{
@@ -521,6 +529,26 @@ body{
     }
     100% {
         box-shadow: 0 10px 30px rgba(0, 198, 255, 0.4), 0 0 0 0 rgba(0, 198, 255, 0);
+    }
+}
+
+@keyframes buttonPulse {
+    0%, 100% {
+        box-shadow: 0 4px 20px rgba(115, 0, 81, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+    50% {
+        box-shadow: 0 6px 25px rgba(115, 0, 81, 0.12), 0 3px 12px rgba(0, 0, 0, 0.06);
+    }
+}
+
+@keyframes modalSlideIn {
+    0% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px) scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0) scale(1);
     }
 }
 

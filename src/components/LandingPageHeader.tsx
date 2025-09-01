@@ -483,41 +483,20 @@ const LandingPageHeader = () => {
               transform: 'translateX(-50%)',
               zIndex: 1000,
               backgroundColor: 'white',
-              borderRadius: '15px',
-              padding: '30px',
-              boxShadow: '0 10px 40px rgba(0, 0, 0, 0.2)',
-              minWidth: '350px',
-              maxWidth: '450px',
+              borderRadius: '20px',
+              padding: '25px',
+              boxShadow: '0 15px 50px rgba(0, 0, 0, 0.15), 0 5px 20px rgba(115, 0, 81, 0.08)',
+              minWidth: '360px',
+              maxWidth: '460px',
               maxHeight: '500px',
               overflow: 'visible',
               display: 'grid',
               gridTemplateColumns: '1fr 1fr',
-              gap: '10px'
+              gap: '12px',
+              animation: 'modalSlideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+              border: '1px solid rgba(115, 0, 81, 0.08)'
             }}>
             {error && <div className={styles.error} style={{ textAlign: 'center', position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 1001, backgroundColor: '#ff4444', color: 'white', padding: '15px 25px', borderRadius: '8px', boxShadow: '0 4px 20px rgba(0,0,0,0.3)' }}>{error}</div>}
-            <div className={styles['quick-access-header']} style={{
-              textAlign: 'center', 
-              marginBottom: '15px', 
-              padding: '0 10px',
-              borderBottom: '1px solid rgba(115, 0, 81, 0.08)',
-              paddingBottom: '10px',
-              width: '100%'
-            }}>
-              <h3 className={styles['quick-access-title']} style={{
-                margin: '0',
-                color: '#730051',
-                fontSize: '1rem',
-                fontWeight: '700',
-                letterSpacing: '0.4px',
-                textTransform: 'uppercase'
-              }}>Quick Access</h3>
-              <p className={styles['quick-access-subtitle']} style={{
-                margin: '2px 0 0 0',
-                color: '#666',
-                fontSize: '0.75rem',
-                fontWeight: '400'
-              }}>Services & resources</p>
-            </div>
             <a onClick={navigateMedia} className={styles['quick-item--link']}>
               Media
             </a>
@@ -540,7 +519,7 @@ const LandingPageHeader = () => {
             >
               Constitution
             </a>
-            <div onClick={handleAboutUsClick} className={styles['quick-item--link']}>
+            <div onClick={handleAboutUsClick} className={styles['quick-item--link']} style={{gridColumn: '1 / -1', maxWidth: '200px', margin: '0 auto'}}>
               About Us
             </div>
             { userData && <div onClick={handleLogout} className={styles['quick-item--link']} style={{borderTop: '1px solid rgba(255,255,255,0.12)', marginTop: '6px', paddingTop: '8px', cursor: 'pointer', gridColumn: '1 / -1'}}>Log out</div> }
@@ -657,43 +636,51 @@ const LandingPageHeader = () => {
                 )}
 
                 <div className={styles.modalBody}>
-                  <div style={{lineHeight: '1.6', color: '#333', textAlign: 'center', marginBottom: '20px'}}>
-                    <p style={{margin: '8px 0', textAlign: 'center'}}>
-                      {newsData.summary || (newsData.body ? newsData.body.substring(0, 120) + '...' : '')}
-                    </p>
+                  {/* Show news image if available */}
+                  {newsData.imageUrl && (
+                    <div style={{textAlign: 'center', marginBottom: '15px'}}>
+                      <img 
+                        src={newsData.imageUrl} 
+                        alt="News" 
+                        style={{
+                          maxWidth: '100%',
+                          height: 'auto',
+                          borderRadius: '8px',
+                          boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                        }}
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                        }}
+                      />
+                    </div>
+                  )}
+                  
+                  {/* Show full news content */}
+                  <div style={{lineHeight: '1.6', color: '#333', textAlign: 'left', marginBottom: '20px'}}>
+                    {newsData.body ? (
+                      newsData.body.split('\n').map((paragraph, index) => (
+                        <p key={index} style={{margin: '12px 0', textAlign: 'left'}}>
+                          {paragraph}
+                        </p>
+                      ))
+                    ) : (
+                      <p style={{margin: '8px 0', textAlign: 'center'}}>
+                        {newsData.summary || 'No content available'}
+                      </p>
+                    )}
                   </div>
                   
-                  {/* Read More Button - Always show for full news */}
-                  <div style={{textAlign: 'center', marginTop: '20px', paddingTop: '15px', borderTop: '1px solid rgba(115, 0, 81, 0.1)'}}>
-                    <Link 
-                      to="/news" 
-                      style={{
-                        background: 'linear-gradient(135deg, #730051, #a0056e)',
-                        color: 'white',
-                        padding: '12px 24px',
-                        borderRadius: '25px',
-                        textDecoration: 'none',
-                        fontWeight: '600',
-                        fontSize: '14px',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        boxShadow: '0 4px 15px rgba(115, 0, 81, 0.3)',
-                        transition: 'all 0.3s ease',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.5px'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.transform = 'translateY(-2px)';
-                        e.currentTarget.style.boxShadow = '0 6px 20px rgba(115, 0, 81, 0.4)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = 'translateY(0)';
-                        e.currentTarget.style.boxShadow = '0 4px 15px rgba(115, 0, 81, 0.3)';
-                      }}
-                    >
-                      Read Full Communication
-                    </Link>
+                  {/* Footer with timestamp */}
+                  <div style={{
+                    textAlign: 'center', 
+                    marginTop: '20px', 
+                    paddingTop: '15px', 
+                    borderTop: '1px solid rgba(115, 0, 81, 0.1)',
+                    fontSize: '12px',
+                    color: '#666'
+                  }}>
+                    Latest Update • KSUCU-MC Communication Board
                   </div>
                 </div>
               </>

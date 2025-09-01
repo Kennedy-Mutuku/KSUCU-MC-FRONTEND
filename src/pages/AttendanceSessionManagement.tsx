@@ -71,7 +71,7 @@ const AttendanceSessionManagement: React.FC = () => {
         try {
             // Check backend for active session status (with cache-busting)
             const timestamp = Date.now();
-            const response = await fetch(`${getApiUrl('attendanceSessionStatus')}?t=${timestamp}`, {
+            const response = await fetch(`${getApiUrl('attendanceSessionStatus')}?t=${timestamp}&role=${encodeURIComponent(role)}`, {
                 method: 'GET',
                 credentials: 'include',
                 headers: {
@@ -91,9 +91,10 @@ const AttendanceSessionManagement: React.FC = () => {
                         sessionId: data.session._id
                     });
                     
-                    // Check if this admin owns the current session
-                    console.log(`Session ownership check: "${data.session.leadershipRole}" === "${role}" ?`, data.session.leadershipRole === role);
-                    if (data.session.leadershipRole === role) {
+                    // Check if this admin owns the current session using backend response
+                    const ownsSession = data.session.isOwnedByRequester === true;
+                    console.log(`Session ownership check: isOwnedByRequester = ${data.session.isOwnedByRequester}`, ownsSession);
+                    if (ownsSession) {
                         console.log(`${role} owns the current session - loading records`);
                         // This admin owns the session - load their records
                         setAttendanceSession(data.session);
@@ -101,7 +102,7 @@ const AttendanceSessionManagement: React.FC = () => {
                         if (data.session._id) {
                             try {
                                 // Force fresh data by adding timestamp and no-cache headers
-                                const recordsUrl = `${getApiUrl('attendanceRecords')}/${data.session._id}?t=${timestamp}&refresh=${Math.random()}`;
+                                const recordsUrl = `${getApiUrl('attendanceRecords')}/${data.session._id}?t=${timestamp}&refresh=${Math.random()}&role=${encodeURIComponent(role)}`;
                                 console.log(`Fetching attendance records from: ${recordsUrl}`);
                                 
                                 const recordsResponse = await fetch(recordsUrl, {
@@ -169,7 +170,7 @@ const AttendanceSessionManagement: React.FC = () => {
                         // Another admin owns the session
                         setAttendanceSession(null);
                         setAttendanceRecords([]);
-                        setMessage(`${data.session.leadershipRole} currently has an active session. You must wait for them to close it, or force close it to start your own session.`);
+                        setMessage(`${data.session.leadershipRole} currently has an active session. You cannot see their attendance list. You must wait for them to close it, or force close it to start your own session.`);
                     }
                 } else {
                     console.log('No active session - admin can start new session');

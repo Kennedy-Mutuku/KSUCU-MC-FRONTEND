@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
+import ModernNewsDisplay from '../components/ModernNewsDisplay';
 import styles from '../styles/worshipDocketAdmin.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
     faUsers, 
     faCheckCircle,
-    faArrowRight
+    faArrowRight,
+    faNewspaper,
+    faClock
 } from '@fortawesome/free-solid-svg-icons';
 
 const WorshipDocketAdmin: React.FC = () => {
@@ -109,6 +112,22 @@ const WorshipDocketAdmin: React.FC = () => {
                         {message}
                     </div>
                 )}
+
+                {/* News and Countdown Display Section */}
+                <div className={styles.newsDisplaySection}>
+                    <div className={styles.newsDisplayCard}>
+                        <h2>
+                            <FontAwesomeIcon icon={faNewspaper} />
+                            Latest News & Upcoming Events
+                        </h2>
+                        <p className={styles.newsDescription}>
+                            Current news updates and countdown to upcoming events
+                        </p>
+                        <div className={styles.newsDisplayContainer}>
+                            <ModernNewsDisplay />
+                        </div>
+                    </div>
+                </div>
 
                 {/* Media Management Section */}
                 <div className={styles.mediaManagementSection}>
