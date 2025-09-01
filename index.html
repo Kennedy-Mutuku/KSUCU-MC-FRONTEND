@@ -200,32 +200,31 @@
         // Check device type for responsive sizing
         const isMobile = window.innerWidth <= 768;
         
-        backToTopBtn.style.cssText = `
-          position: fixed !important;
-          bottom: 30px !important;
-          right: ${isMobile ? '15px' : '20px'} !important;
-          z-index: 2147483647 !important;
-          background: #730051 !important;
-          color: white !important;
-          border: 2px solid #ffffff !important;
-          padding: ${isMobile ? '10px 14px' : '12px 16px'} !important;
-          font-size: ${isMobile ? '12px' : '14px'} !important;
-          font-weight: 600 !important;
-          border-radius: ${isMobile ? '25px' : '30px'} !important;
-          cursor: pointer !important;
-          box-shadow: 0 4px 15px rgba(115, 0, 81, 0.5) !important;
-          font-family: Arial, sans-serif !important;
-          display: none !important;
-          align-items: center !important;
-          justify-content: center !important;
-          gap: ${isMobile ? '4px' : '6px'} !important;
-          min-width: ${isMobile ? '65px' : '75px'} !important;
-          min-height: ${isMobile ? '35px' : '40px'} !important;
-          transition: all 0.3s ease !important;
-          visibility: hidden !important;
-          opacity: 0 !important;
-          transform: translateY(20px) !important;
-        `;
+        // Set individual style properties to ensure they work
+        backToTopBtn.style.setProperty('position', 'fixed', 'important');
+        backToTopBtn.style.setProperty('bottom', '30px', 'important');
+        backToTopBtn.style.setProperty('right', isMobile ? '15px' : '20px', 'important');
+        backToTopBtn.style.setProperty('z-index', '2147483647', 'important');
+        backToTopBtn.style.setProperty('background', '#FF0000', 'important'); // Bright red for testing
+        backToTopBtn.style.setProperty('color', 'white', 'important');
+        backToTopBtn.style.setProperty('border', '2px solid #ffffff', 'important');
+        backToTopBtn.style.setProperty('padding', isMobile ? '10px 14px' : '12px 16px', 'important');
+        backToTopBtn.style.setProperty('font-size', isMobile ? '12px' : '14px', 'important');
+        backToTopBtn.style.setProperty('font-weight', '600', 'important');
+        backToTopBtn.style.setProperty('border-radius', isMobile ? '25px' : '30px', 'important');
+        backToTopBtn.style.setProperty('cursor', 'pointer', 'important');
+        backToTopBtn.style.setProperty('box-shadow', '0 4px 15px rgba(255, 0, 0, 0.8)', 'important');
+        backToTopBtn.style.setProperty('font-family', 'Arial, sans-serif', 'important');
+        backToTopBtn.style.setProperty('display', 'flex', 'important');
+        backToTopBtn.style.setProperty('align-items', 'center', 'important');
+        backToTopBtn.style.setProperty('justify-content', 'center', 'important');
+        backToTopBtn.style.setProperty('gap', isMobile ? '4px' : '6px', 'important');
+        backToTopBtn.style.setProperty('min-width', isMobile ? '65px' : '75px', 'important');
+        backToTopBtn.style.setProperty('min-height', isMobile ? '35px' : '40px', 'important');
+        backToTopBtn.style.setProperty('transition', 'all 0.3s ease', 'important');
+        backToTopBtn.style.setProperty('visibility', 'visible', 'important');
+        backToTopBtn.style.setProperty('opacity', '1', 'important');
+        backToTopBtn.style.setProperty('transform', 'translateY(0)', 'important');
         
         // Add hover effects
         backToTopBtn.onmouseenter = function() {
@@ -236,7 +235,11 @@
         
         backToTopBtn.onmouseleave = function() {
           this.style.background = '#730051 !important';
-          this.style.transform = window.pageYOffset > 300 ? 'translateY(0) scale(1)' : 'translateY(20px) scale(1)' + ' !important';
+          if (window.pageYOffset > 300) {
+            this.style.transform = 'translateY(0) scale(1) !important';
+          } else {
+            this.style.transform = 'translateY(20px) scale(1) !important';
+          }
           this.style.boxShadow = '0 4px 15px rgba(115, 0, 81, 0.5) !important';
         };
         
@@ -255,23 +258,23 @@
         function toggleBackToTopButton() {
           const backToTopBtn = document.getElementById('back-to-top-button');
           if (backToTopBtn) {
-            if (window.pageYOffset > 300) {
-              backToTopBtn.style.display = 'flex !important';
-              backToTopBtn.style.visibility = 'visible !important';
-              backToTopBtn.style.opacity = '1 !important';
-              backToTopBtn.style.transform = 'translateY(0) !important';
+            const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+            if (scrollY > 200) {
+              // Show button
+              backToTopBtn.style.setProperty('display', 'flex', 'important');
+              backToTopBtn.style.setProperty('visibility', 'visible', 'important');
+              backToTopBtn.style.setProperty('opacity', '1', 'important');
+              backToTopBtn.style.setProperty('transform', 'translateY(0)', 'important');
             } else {
-              backToTopBtn.style.opacity = '0 !important';
-              backToTopBtn.style.transform = 'translateY(20px) !important';
-              setTimeout(() => {
-                if (window.pageYOffset <= 300) {
-                  backToTopBtn.style.display = 'none !important';
-                  backToTopBtn.style.visibility = 'hidden !important';
-                }
-              }, 300);
+              // Hide button
+              backToTopBtn.style.setProperty('opacity', '0', 'important');
+              backToTopBtn.style.setProperty('transform', 'translateY(20px)', 'important');
             }
           }
         }
+        
+        // Initial check for scroll position
+        setTimeout(toggleBackToTopButton, 500);
         
         // Listen for scroll events
         window.addEventListener('scroll', toggleBackToTopButton);

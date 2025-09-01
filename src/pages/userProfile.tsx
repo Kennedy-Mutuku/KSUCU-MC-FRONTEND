@@ -67,36 +67,6 @@ const UserProfilePage: React.FC = () => {
         navigate('/');
     };
 
-    const handleLogout = async () => {
-        console.log('Logout button clicked');
-        try {
-            const logoutUrl = getApiUrl('usersLogout');
-            console.log('Attempting logout to:', logoutUrl);
-            
-            const response = await fetch(logoutUrl, {
-                method: 'POST',
-                credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            console.log('Logout response status:', response.status);
-            
-            if (response.ok) {
-                console.log('Logout successful, navigating to home');
-                navigate('/');
-            } else {
-                console.log('Logout failed with status:', response.status);
-                // Still navigate away even if logout fails
-                navigate('/');
-            }
-        } catch (error) {
-            console.error('Logout failed:', error);
-            // Still navigate away even if logout fails
-            navigate('/');
-        }
-    };
 
     if (loading) {
         return (
@@ -222,7 +192,7 @@ const UserProfilePage: React.FC = () => {
                     </div>
                 </div>
 
-                {/* Edit Details and Log Out buttons on the same row */}
+                {/* Edit Details button */}
                 <div style={{ 
                     display: 'flex', 
                     gap: '10px', 
@@ -261,34 +231,6 @@ const UserProfilePage: React.FC = () => {
                     >
                         Edit Details
                     </Link>
-                    <button 
-                        onClick={handleLogout}
-                        style={{
-                            backgroundColor: '#dc3545',
-                            color: 'white',
-                            border: 'none',
-                            padding: '8px 16px',
-                            borderRadius: '20px',
-                            fontSize: '13px',
-                            fontWeight: '500',
-                            cursor: 'pointer',
-                            boxShadow: '0 2px 4px rgba(220,53,69,0.3)',
-                            transition: 'all 0.3s ease',
-                            minWidth: '100px'
-                        }}
-                        onMouseOver={(e) => {
-                            e.currentTarget.style.backgroundColor = '#c82333';
-                            e.currentTarget.style.transform = 'translateY(-1px)';
-                            e.currentTarget.style.boxShadow = '0 3px 6px rgba(220,53,69,0.4)';
-                        }}
-                        onMouseOut={(e) => {
-                            e.currentTarget.style.backgroundColor = '#dc3545';
-                            e.currentTarget.style.transform = 'translateY(0)';
-                            e.currentTarget.style.boxShadow = '0 2px 4px rgba(220,53,69,0.3)';
-                        }}
-                    >
-                        Log Out
-                    </button>
                 </div>
             </div>
         </div>

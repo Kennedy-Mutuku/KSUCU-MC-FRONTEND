@@ -67,7 +67,7 @@ const PhotoUploadPage: React.FC = () => {
 
       if (response.ok) {
         setSuccessMessage('Form submitted successfully!')
-        handleLogout()
+        navigate('/news')
       } else {
         setError('Something went wrong. Please try again.')
       }
@@ -79,22 +79,6 @@ const PhotoUploadPage: React.FC = () => {
 
   };
 
-  const handleLogout = async () => {
-      try {
-          const response = await fetch('https://ksucu-mc.co.ke/adminnews/logout', {
-              method: 'POST',
-              credentials: 'include'
-          });
-
-          if (!response.ok) {
-              throw new Error('Logout failed');
-          }
-          navigate('/news')
-      } catch (error) {
-          console.error('Error during logout:');
-          setError('An error occurred during logout');
-      }
-  };
 
   const onCropComplete = async (crop: PixelCrop) => {
     if (imageRef && crop.width && crop.height) {

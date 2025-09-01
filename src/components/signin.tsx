@@ -61,10 +61,6 @@ const SignIn: React.FC = () => {
         }
     };
 
-    const handleLogoutFromProfile = () => {
-        setUserData(null);
-        navigate('/');
-    };
 
     const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -184,7 +180,7 @@ const SignIn: React.FC = () => {
     
     // Show user profile if authenticated
     if (userData) {
-        return <UserProfile userData={userData} onLogout={handleLogoutFromProfile} isLoading={generalLoading} />;
+        return <UserProfile userData={userData} isLoading={generalLoading} />;
     }
 
     // Show loading while checking authentication

@@ -93,41 +93,6 @@ const UniversalHeader: React.FC = () => {
     }
   };
 
-  const handleLogout = async () => {
-    setgeneralLoading(true)
-      try {
-          const logoutUrl = getApiUrl('usersLogout');
-          console.log('Header: Attempting logout to:', logoutUrl);
-          
-          const response = await fetch(logoutUrl, {
-              method: 'POST',
-              credentials: 'include',
-              headers: {
-                  'Content-Type': 'application/json'
-              }
-          });
-
-          console.log('Header: Logout response status:', response.status);
-
-          if (response.ok) {
-              console.log('Header: Logout successful');
-              setUserData(null);
-              navigate('/signIn');
-          } else {
-              console.log('Header: Logout failed with status:', response.status);
-              // Still clear user data and navigate even if server logout fails
-              setUserData(null);
-              navigate('/signIn');
-          }
-      } catch (error) {
-          console.error('Header: Error during logout:', error);
-          // Still clear user data and navigate even if logout request fails
-          setUserData(null);
-          navigate('/signIn');
-      }finally{
-        setgeneralLoading(false)
-      }
-  };
 
   function handleRedirectToUserInfo() {
     console.log('👤 Header: User icon clicked, userData:', userData);
@@ -206,10 +171,7 @@ const UniversalHeader: React.FC = () => {
                 <Link to="/profile" className={styles['signUp-btn']}>{userData.username}</Link>
                 : <Link to="/signUp" className={styles['signUp-btn']}>Sign up</Link>
               }
-              {userData ?
-                <Link to="/signIn" className={styles['Login-btn']} onClick={handleLogout} >Log out</Link> :
-                <Link to="/signIn" className={styles['Login-btn']}>Log in</Link>
-              }
+              <Link to="/signIn" className={styles['Login-btn']}>Log in</Link>
               <div className={styles['About-btn']}>
                 <Link to="/#about" className={styles['nav-link']}>
                   About us
@@ -222,7 +184,6 @@ const UniversalHeader: React.FC = () => {
           <div className={styles['main-quick--links']}>
             {error && <div className={styles.error}>{error}</div>}
             
-            { userData && <div onClick={handleLogout} className={styles['quick-item--link']} style={{borderTop: '1px solid rgba(255,255,255,0.12)', marginTop: '6px', paddingTop: '8px', cursor: 'pointer', gridColumn: '1 / -1'}}>Log out</div> }
           </div>
         </div>
 

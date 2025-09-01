@@ -425,6 +425,33 @@
     font-weight: 600;
 }
 
+.modalHeaderActions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.refreshBtn {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.refreshBtn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: rotate(180deg);
+}
+
 .closeBtn {
     background: rgba(255, 255, 255, 0.2);
     border: none;

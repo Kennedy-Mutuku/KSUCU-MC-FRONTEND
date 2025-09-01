@@ -60,6 +60,11 @@ const MediaAdmin: React.FC = () => {
     const saveMediaItems = (items: MediaItem[]) => {
         setMediaItems(items);
         localStorage.setItem('ksucu-media-items', JSON.stringify(items));
+        
+        // Dispatch custom event for same-tab synchronization
+        window.dispatchEvent(new CustomEvent('mediaItemsUpdated', { 
+            detail: items 
+        }));
     };
 
     const handleAddNew = () => {

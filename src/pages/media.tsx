@@ -4,7 +4,7 @@ import styles from '../styles/Media.module.css';
 import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
 import loadingAnime from '../assets/Animation - 1716747954931.gif';
-import { FaYoutube, FaFacebook, FaTiktok, FaTwitter, FaImage, FaNewspaper, FaBook, FaTimes } from 'react-icons/fa';
+import { FaYoutube, FaFacebook, FaTiktok, FaTwitter, FaImage, FaNewspaper, FaBook, FaTimes, FaSync } from 'react-icons/fa';
 import { getApiUrl } from '../config/environment';
 
 interface MediaItem {
@@ -52,10 +52,32 @@ const Media: React.FC = () => {
       loadMediaItems();
     };
     
+    // Listen for localStorage changes (when admin updates items in another tab)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'ksucu-media-items' && e.newValue) {
+        try {
+          const updatedItems = JSON.parse(e.newValue);
+          setEvents(updatedItems);
+        } catch (error) {
+          console.error('Error parsing updated media items:', error);
+          loadMediaItems(); // Fallback to reload
+        }
+      }
+    };
+    
+    // Listen for custom media items update event (same-tab synchronization)
+    const handleMediaItemsUpdated = (e: CustomEvent) => {
+      setEvents(e.detail);
+    };
+    
     window.addEventListener('focus', handleFocus);
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('mediaItemsUpdated', handleMediaItemsUpdated as EventListener);
     
     return () => {
       window.removeEventListener('focus', handleFocus);
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('mediaItemsUpdated', handleMediaItemsUpdated as EventListener);
     };
   }, []);
 
@@ -284,9 +306,14 @@ const Media: React.FC = () => {
             <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
               <div className={styles.modalHeader}>
                 <h3>Photo Gallery - All Events</h3>
-                <button className={styles.closeBtn} onClick={() => setShowMediaEvents(false)}>
-                  <FaTimes />
-                </button>
+                <div className={styles.modalHeaderActions}>
+                  <button className={styles.refreshBtn} onClick={loadMediaItems} title="Refresh gallery">
+                    <FaSync />
+                  </button>
+                  <button className={styles.closeBtn} onClick={() => setShowMediaEvents(false)}>
+                    <FaTimes />
+                  </button>
+                </div>
               </div>
               <div className={styles.modalBody}>
                 <div className={styles.galleryGrid}>
