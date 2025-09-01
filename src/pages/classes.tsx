@@ -3,7 +3,6 @@ import styles from '../styles/classes.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
-import BackButton from '../components/BackButton';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebook, faTiktok, faXTwitter, faYoutube } from '@fortawesome/free-brands-svg-icons'; 
 import betPImg from '../assets/Best-p.png'
@@ -62,8 +61,7 @@ const classData: ClassInfo[] = [
 const ClassesSection: React.FC = () => {
   return (
     <section id="Classes" className="">
-        <BackButton />
-        <UniversalHeader />
+          <UniversalHeader />
       <div className={styles.container}>
 
         <div className={styles.title}>

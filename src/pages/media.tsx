@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import styles from '../styles/Media.module.css';
 import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
-import BackButton from '../components/BackButton';
 import loadingAnime from '../assets/Animation - 1716747954931.gif';
 import { FaYoutube, FaFacebook, FaTiktok, FaTwitter, FaImage, FaNewspaper, FaBook, FaTimes } from 'react-icons/fa';
 import { getApiUrl } from '../config/environment';
@@ -153,7 +152,6 @@ const Media: React.FC = () => {
   
   return (
     <>
-      <BackButton />
       <UniversalHeader />
       
       {generalLoading && (

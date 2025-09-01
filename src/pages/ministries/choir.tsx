@@ -2,7 +2,6 @@ import React from 'react';
 import styles from '../../styles/ministryPage.module.css';
 import UniversalHeader from '../../components/UniversalHeader';
 import Footer from '../../components/footer';
-import BackButton from '../../components/BackButton';
 import AttendanceSignin from '../../components/AttendanceSignin';
 import { Link } from 'react-router-dom';
 import choirImg from '../../assets/choir.jpg';
@@ -11,7 +10,6 @@ const ChoirPage: React.FC = () => {
 
   return (
     <>
-      <BackButton />
       <UniversalHeader />
       <div className={styles.container}>
         <div className={styles.heroSection}>

@@ -2,7 +2,6 @@ import React from 'react';
 import styles from '../../styles/ministryPage.module.css';
 import UniversalHeader from '../../components/UniversalHeader';
 import Footer from '../../components/footer';
-import BackButton from '../../components/BackButton';
 import { Link } from 'react-router-dom';
 import compassionImg from '../../assets/compassion.jpg';
 
@@ -10,7 +9,6 @@ const CompassionPage: React.FC = () => {
 
   return (
     <>
-      <BackButton />
       <UniversalHeader />
       <div className={styles.container}>
         <div className={styles.heroSection}>

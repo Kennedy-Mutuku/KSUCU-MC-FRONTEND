@@ -2,7 +2,6 @@ import React from 'react';
 import styles from '../../styles/ministryPage.module.css';
 import UniversalHeader from '../../components/UniversalHeader';
 import Footer from '../../components/footer';
-import BackButton from '../../components/BackButton';
 import AttendanceSignin from '../../components/AttendanceSignin';
 import { Link } from 'react-router-dom';
 import usheringImg from '../../assets/ushering.jpg';
@@ -11,7 +10,6 @@ const UsheringPage: React.FC = () => {
 
   return (
     <>
-      <BackButton />
       <UniversalHeader />
       <div className={styles.container}>
         <div className={styles.heroSection}>

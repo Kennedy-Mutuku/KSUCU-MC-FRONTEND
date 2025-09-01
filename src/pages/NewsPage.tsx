@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import styles from '../styles/NewsPage.module.css';
 import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
-import BackButton from '../components/BackButton';
 
 interface NewsData {
   title: string;
@@ -178,7 +177,6 @@ const NewsPage: React.FC = () => {
 
   return (
     <>
-      <BackButton />
       <UniversalHeader />
       <div className={styles.newsPageContainer}>
         <h2 className={styles.title}>Communication Board</h2>

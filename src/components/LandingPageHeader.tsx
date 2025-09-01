@@ -7,6 +7,7 @@ import loadingAnime from '../assets/Animation - 1716747954931.gif';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestion } from '@fortawesome/free-solid-svg-icons';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faDownload } from '@fortawesome/free-solid-svg-icons';
 import visionImg from '../assets/gents.jpg'
 import missionImg from '../assets/ladies.jpg'
 import valuesImg from '../assets/amptheatre.jpg'
@@ -537,6 +538,7 @@ const LandingPageHeader = () => {
               download="constitution.pdf" 
               className={styles['quick-item--link']}
             >
+              <FontAwesomeIcon icon={faDownload} style={{ marginRight: '8px' }} />
               Constitution
             </a>
             <div onClick={handleAboutUsClick} className={styles['quick-item--link']} style={{gridColumn: '1 / -1', maxWidth: '200px', margin: '0 auto'}}>

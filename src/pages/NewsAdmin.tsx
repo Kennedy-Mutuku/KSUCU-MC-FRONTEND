@@ -1,7 +1,6 @@
 import React, { useState, useRef } from 'react';
 import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
-import BackButton from '../components/BackButton';
 import styles from '../styles/NewsAdmin.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
@@ -209,8 +208,7 @@ const NewsAdmin: React.FC = () => {
 
     return (
         <>
-            <BackButton />
-            <UniversalHeader />
+                  <UniversalHeader />
             <div className={styles.container}>
                 <div className={styles.adminHeader}>
                     <h1>

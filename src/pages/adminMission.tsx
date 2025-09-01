@@ -3,7 +3,6 @@ import axios from 'axios';
 import styles from '../styles/savedSoulsList.module.css'; 
 import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
-import BackButton from '../components/BackButton';
 
 const SavedSoulsList: React.FC = () => {
   const [souls, setSouls] = useState<Array<{ name: string, phone: string, region: string, village: string }>>([]);
@@ -38,8 +37,7 @@ const SavedSoulsList: React.FC = () => {
 
   return (
     <> 
-        <BackButton />
-        <UniversalHeader />
+          <UniversalHeader />
         <div className={styles.container}>
         <h4>Saved Souls List</h4>
         {souls.length === 0 ? (

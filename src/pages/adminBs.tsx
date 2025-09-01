@@ -5,7 +5,6 @@ import 'jspdf-autotable';
 import styles from '../styles/savedSoulsList.module.css'; 
 import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
-import BackButton from '../components/BackButton';
 import letterhead from '../assets/letterhead.png'; 
 
 declare module 'jspdf' {
@@ -182,7 +181,6 @@ const handleExportPdf = () => {
 
   return (
     <> 
-      <BackButton />
       <UniversalHeader />
       <div className={styles.container}>
         <h4>Saved Souls List</h4>
