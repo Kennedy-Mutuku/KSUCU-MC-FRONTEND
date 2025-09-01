@@ -201,7 +201,7 @@ const ChoirCommitment: React.FC = () => {
 
         {/* Reason for Joining */}
         <div className={styles.section}>
-          <h4 className={styles.sectionTitle}>📝 Why Do You Want to Join?</h4>
+          <h4 className={styles.sectionTitle}>Why Do You Want to Join?</h4>
           {errors.reasonForJoining && <div className={styles.error}>{errors.reasonForJoining}</div>}
           <textarea 
             className={styles.formControl} 

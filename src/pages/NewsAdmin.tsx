@@ -135,7 +135,7 @@ const NewsAdmin: React.FC = () => {
             });
 
             if (response.ok) {
-                setMessage('✅ News updated successfully!');
+                setMessage('News updated successfully!');
                 setCurrentNews(formData);
                 setTimeout(() => setMessage(''), 5000);
             } else {
@@ -143,7 +143,7 @@ const NewsAdmin: React.FC = () => {
                 throw new Error(errorData.message || 'Failed to update news');
             }
         } catch (error: any) {
-            setMessage(`❌ Error: ${error.message}`);
+            setMessage(`Error: ${error.message}`);
             setTimeout(() => setMessage(''), 5000);
         } finally {
             setLoading(false);
@@ -219,7 +219,7 @@ const NewsAdmin: React.FC = () => {
                 </div>
 
                 {message && (
-                    <div className={`${styles.message} ${message.includes('❌') ? styles.errorMessage : styles.successMessage}`}>
+                    <div className={`${styles.message} ${message.includes('Error') ? styles.errorMessage : styles.successMessage}`}>
                         {message}
                     </div>
                 )}
@@ -320,7 +320,7 @@ const NewsAdmin: React.FC = () => {
 
                             {/* Full News Section */}
                             <div className={styles.sectionDivider}>
-                                <h3>📰 Full News Content (Appears on /news page only)</h3>
+                                <h3>Full News Content (Appears on /news page only)</h3>
                                 <p>This content will only be visible when users click "Read Full Communication"</p>
                             </div>
 
@@ -412,7 +412,7 @@ const NewsAdmin: React.FC = () => {
                             <div className={styles.newsPreview}>
                                 {formData.eventDate && (
                                     <div className={styles.previewEventInfo}>
-                                        <h4>🎉 Event Information</h4>
+                                        <h4>Event Information</h4>
                                         <p>Date: {new Date(formData.eventDate).toLocaleDateString()}</p>
                                         {formData.eventTime && <p>Time: {formData.eventTime}</p>}
                                     </div>
@@ -449,7 +449,7 @@ const NewsAdmin: React.FC = () => {
                             <p>{currentNews.body.substring(0, 100)}...</p>
                             {currentNews.eventDate && (
                                 <div className={styles.currentEventInfo}>
-                                    📅 Event: {new Date(currentNews.eventDate).toLocaleDateString()}
+                                    Event: {new Date(currentNews.eventDate).toLocaleDateString()}
                                     {currentNews.eventTime && ` at ${currentNews.eventTime}`}
                                 </div>
                             )}

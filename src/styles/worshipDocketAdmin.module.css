@@ -75,6 +75,10 @@
     margin: 50px auto;
     position: relative;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .loginCard::before {
@@ -88,11 +92,6 @@
     animation: shimmer 2s infinite;
 }
 
-.lockIcon {
-    font-size: 3rem;
-    color: #ff6b35;
-    margin-bottom: 20px;
-}
 
 .loginCard h2 {
     font-size: 2rem;
@@ -106,11 +105,13 @@
     font-size: 1.1rem;
 }
 
-.loginForm {
+.loginForm,
+.inputGroup {
     display: flex;
     flex-direction: column;
     gap: 20px;
     align-items: center;
+    width: 100%;
 }
 
 .passwordInput {

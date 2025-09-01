@@ -49,10 +49,10 @@ const SignIn: React.FC = () => {
                 console.log('✅ SignIn: User authenticated, data:', data);
                 setUserData(data);
             } else {
-                console.log('❌ SignIn: User not authenticated, response not ok');
+                console.log('SignIn: User not authenticated, response not ok');
             }
         } catch (error) {
-            console.log('❌ SignIn: Authentication check failed:', error);
+            console.log('SignIn: Authentication check failed:', error);
         } finally {
             console.log('🔍 SignIn: Authentication check completed, setting checkingAuth to false');
             setCheckingAuth(false);
@@ -161,8 +161,8 @@ const SignIn: React.FC = () => {
             navigate(route);
     
         } catch (error: any) {
-            console.error('❌ SignIn: Login error:', error);
-            console.error('❌ SignIn: Error response:', error.response);
+            console.error('SignIn: Login error:', error);
+            console.error('SignIn: Error response:', error.response);
     
             if (error.response && error.response.status === 401) {
                 setError('Invalid credentials. Please check your email and password.');

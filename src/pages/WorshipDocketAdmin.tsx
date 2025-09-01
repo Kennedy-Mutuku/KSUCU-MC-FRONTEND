@@ -60,7 +60,6 @@ const WorshipDocketAdmin: React.FC = () => {
                 <UniversalHeader />
                 <div className={styles.container}>
                     <div className={styles.loginCard}>
-                        <FontAwesomeIcon icon={faLock} className={styles.lockIcon} />
                         <h2>Leadership Admin</h2>
                         <p>Enter admin password to access leadership attendance management</p>
                         
@@ -85,7 +84,6 @@ const WorshipDocketAdmin: React.FC = () => {
                             className={styles.loginButton}
                             onClick={handleLogin}
                         >
-                            <FontAwesomeIcon icon={faUnlock} />
                             Access Admin Panel
                         </button>
                     </div>

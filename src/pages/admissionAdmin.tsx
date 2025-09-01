@@ -139,11 +139,11 @@ const AdmissionAdmin: React.FC = () => {
       }
     } catch (error: any) {
       if (error.response?.status === 400) {
-        setError('Email/Reg/Phone already exist 😖');
+        setError('Email/Reg/Phone already exist.');
       } else if (error.response?.status === 401) {
-        setError('Unauthorized. Please check your admin credentials 🔒');
+        setError('Unauthorized. Please check your admin credentials.');
       } else {
-        setError('Unexpected error occurred 💔');
+        setError('Unexpected error occurred.');
       }
       setLoading(false);
     }

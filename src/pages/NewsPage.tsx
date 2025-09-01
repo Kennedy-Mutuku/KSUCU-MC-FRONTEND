@@ -70,7 +70,7 @@ const NewsPage: React.FC = () => {
   // Calculate countdown timer
   const calculateCountdown = (eventDate: string, eventTime: string): CountdownTime | null => {
     try {
-      console.log('🕐 NewsPage: Calculating countdown for:', eventDate, eventTime);
+      console.log('NewsPage: Calculating countdown for:', eventDate, eventTime);
       
       // Parse the date more robustly
       let eventDateTime: Date;
@@ -100,21 +100,21 @@ const NewsPage: React.FC = () => {
         eventDateTime.setHours(12, 0, 0, 0);
       }
       
-      console.log('🕐 NewsPage: Parsed event date:', eventDateTime);
+      console.log('NewsPage: Parsed event date:', eventDateTime);
       
       // Validate the date
       if (isNaN(eventDateTime.getTime())) {
-        console.error('❌ NewsPage: Invalid date/time format:', eventDate, eventTime);
+        console.error('NewsPage: Invalid date/time format:', eventDate, eventTime);
         return { days: 0, hours: 0, minutes: 0, seconds: 0 };
       }
       
       const now = new Date();
       const difference = eventDateTime.getTime() - now.getTime();
       
-      console.log('🕐 NewsPage: Time difference:', difference, 'ms');
+      console.log('NewsPage: Time difference:', difference, 'ms');
 
       if (difference <= 0) {
-        console.log('⚠️ NewsPage: Event has passed');
+        console.log('NewsPage: Event has passed');
         return null; // Event has passed
       }
 
@@ -124,17 +124,17 @@ const NewsPage: React.FC = () => {
       const seconds = Math.floor((difference % (1000 * 60)) / 1000);
 
       const result = { days, hours, minutes, seconds };
-      console.log('✅ NewsPage: Countdown result:', result);
+      console.log('NewsPage: Countdown result:', result);
       
       // Ensure no NaN values
       if (isNaN(days) || isNaN(hours) || isNaN(minutes) || isNaN(seconds)) {
-        console.error('❌ NewsPage: NaN values detected in countdown');
+        console.error('NewsPage: NaN values detected in countdown');
         return { days: 0, hours: 0, minutes: 0, seconds: 0 };
       }
 
       return result;
     } catch (error) {
-      console.error('❌ NewsPage: Error calculating countdown:', error);
+      console.error('NewsPage: Error calculating countdown:', error);
       return { days: 0, hours: 0, minutes: 0, seconds: 0 };
     }
   };
@@ -185,9 +185,9 @@ const NewsPage: React.FC = () => {
         {newsData.eventDate && (
           <div className={styles.eventSection}>
             <div className={styles.eventInfo}>
-              <h3 className={styles.eventTitle}>🎉 Upcoming Event</h3>
+              <h3 className={styles.eventTitle}>Upcoming Event</h3>
               <p className={styles.eventDateTime}>
-                📅 {new Date(newsData.eventDate).toLocaleDateString('en-US', {
+                {new Date(newsData.eventDate).toLocaleDateString('en-US', {
                   weekday: 'long',
                   year: 'numeric',
                   month: 'long',
@@ -199,7 +199,7 @@ const NewsPage: React.FC = () => {
             
             {countdown && !eventPassed && (
               <div className={styles.countdownTimer}>
-                <h4 className={styles.countdownTitle}>⏰ Time Remaining</h4>
+                <h4 className={styles.countdownTitle}>Time Remaining</h4>
                 <div className={styles.countdownGrid}>
                   <div className={styles.timeUnit}>
                     <span className={styles.timeNumber}>{String(countdown.days || 0).padStart(2, '0')}</span>
@@ -223,7 +223,7 @@ const NewsPage: React.FC = () => {
             
             {eventPassed && (
               <div className={styles.eventPassed}>
-                <h4 className={styles.eventPassedTitle}>✅ Event Has Started/Ended</h4>
+                <h4 className={styles.eventPassedTitle}>Event Has Started/Ended</h4>
                 <p>This event is no longer upcoming.</p>
               </div>
             )}

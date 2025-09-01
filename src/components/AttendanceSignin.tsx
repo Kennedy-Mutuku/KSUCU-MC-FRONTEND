@@ -109,12 +109,12 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
                     setDeviceAttendance([]);
                 }
             } else {
-                console.log('❌ No active session found');
+                console.log('No active session found');
                 setSession(null);
                 setDeviceAttendance([]);
             }
         } catch (error: any) {
-            console.error('❌ Error checking session:', error.message);
+            console.error('Error checking session:', error.message);
             setSession(null);
             setDeviceAttendance([]);
             if (error.code === 'ECONNREFUSED' || error.code === 'ERR_NETWORK') {
@@ -239,7 +239,7 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
             // Add to local device attendance list
             setDeviceAttendance(prev => {
                 const updated = [...prev, newRecord];
-                console.log(`📝 Device attendance updated: ${updated.length} total records`);
+                console.log(`Device attendance updated: ${updated.length} total records`);
                 return updated;
             });
             
@@ -266,7 +266,7 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
             }, 4000);
 
         } catch (error: any) {
-            console.error('❌ Error during attendance signing:', error);
+            console.error('Error during attendance signing:', error);
             
             let errorMessage = 'Error signing attendance. Please try again.';
             

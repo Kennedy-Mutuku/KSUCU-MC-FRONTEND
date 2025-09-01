@@ -26,11 +26,15 @@ const Header = () => {
         }
     };
 
+    const handleLogoClick = () => {
+        navigate('/');
+    };
+
     return (
         <header className={styles['header']}>
             <div className={styles['flex-title-phone']}>
                 <div className={styles.container}>
-                    <div className={styles['logo-section']}>
+                    <div className={styles['logo-section']} onClick={handleLogoClick} style={{ cursor: 'pointer' }}>
                         <img src={cuLogo} alt="KSUCU Logo" className={styles['logo-image']} />
                     </div>
                     <div className={styles['title-section']}>

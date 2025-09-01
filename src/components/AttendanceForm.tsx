@@ -79,7 +79,7 @@ const AttendanceForm: React.FC<AttendanceFormProps> = ({ ministry, onSubmit }) =
       setDeviceAttendance(prev => [...prev, submission]);
 
       onSubmit(submission);
-      setMessage(`✅ Attendance signed successfully for ${submission.name}!`);
+      setMessage(`Attendance signed successfully for ${submission.name}!`);
       setFormData({ name: '', regNo: '', year: '' });
       
       // Keep form open for more users, just show success message
@@ -88,7 +88,7 @@ const AttendanceForm: React.FC<AttendanceFormProps> = ({ ministry, onSubmit }) =
       }, 3000);
 
     } catch (error) {
-      setMessage('❌ Error signing attendance. Please try again.');
+      setMessage('Error signing attendance. Please try again.');
       console.error('Attendance submission error:', error);
     }
 
@@ -123,7 +123,7 @@ const AttendanceForm: React.FC<AttendanceFormProps> = ({ ministry, onSubmit }) =
           className={styles.toggleButton}
           onClick={() => setShowForm(true)}
         >
-          📝 Sign Attendance for {ministry}
+          Sign Attendance for {ministry}
         </button>
       </div>
     );
@@ -133,7 +133,7 @@ const AttendanceForm: React.FC<AttendanceFormProps> = ({ ministry, onSubmit }) =
     <div className={styles.attendanceContainer}>
       <div className={styles.formHeader}>
         <h3 className={styles.formTitle}>
-          📝 {ministry} Attendance
+          {ministry} Attendance
         </h3>
         <button 
           className={styles.closeButton}
@@ -200,7 +200,7 @@ const AttendanceForm: React.FC<AttendanceFormProps> = ({ ministry, onSubmit }) =
         </div>
 
         {message && (
-          <div className={`${styles.message} ${message.includes('✅') ? styles.success : styles.error}`}>
+          <div className={`${styles.message} ${message.includes('successfully') ? styles.success : styles.error}`}>
             {message}
           </div>
         )}
@@ -222,14 +222,14 @@ const AttendanceForm: React.FC<AttendanceFormProps> = ({ ministry, onSubmit }) =
             className={styles.submitButton}
             disabled={isSubmitting}
           >
-            {isSubmitting ? '📝 Signing...' : '✅ Sign Attendance'}
+            {isSubmitting ? 'Signing...' : 'Sign Attendance'}
           </button>
         </div>
       </form>
 
       {deviceAttendance.length > 0 && (
         <div className={styles.deviceAttendance}>
-          <h4>✅ Users signed from this device ({deviceAttendance.length}):</h4>
+          <h4>Users signed from this device ({deviceAttendance.length}):</h4>
           <div className={styles.signedUsersList}>
             {deviceAttendance.map((record) => (
               <div key={record.id} className={styles.signedUserItem}>

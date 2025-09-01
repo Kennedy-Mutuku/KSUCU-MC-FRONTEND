@@ -268,11 +268,11 @@ const MinistriesAdmin: React.FC = () => {
                 timestamp: Date.now()
             }));
             
-            setMessage('✅ Attendance session opened - Users can now sign attendance');
+            setMessage('Attendance session opened - Users can now sign attendance');
             setTimeout(() => setMessage(''), 5000);
         } catch (error) {
             console.error('Error starting session:', error);
-            setMessage('❌ Error opening attendance session');
+            setMessage('Error opening attendance session');
             setTimeout(() => setMessage(''), 3000);
         } finally {
             setLoading(false);
@@ -308,11 +308,11 @@ const MinistriesAdmin: React.FC = () => {
                 timestamp: Date.now()
             }));
             
-            setMessage('🔒 Attendance session closed - Users can no longer sign attendance');
+            setMessage('Attendance session closed - Users can no longer sign attendance');
             setTimeout(() => setMessage(''), 5000);
         } catch (error) {
             console.error('Error ending session:', error);
-            setMessage('❌ Error closing attendance session');
+            setMessage('Error closing attendance session');
             setTimeout(() => setMessage(''), 3000);
         } finally {
             setLoading(false);
@@ -363,7 +363,7 @@ const MinistriesAdmin: React.FC = () => {
                 timestamp: Date.now()
             }));
             
-            setMessage('🔄 Attendance has been reset - All previous records cleared, users can sign again');
+            setMessage('Attendance has been reset - All previous records cleared, users can sign again');
             setTimeout(() => setMessage(''), 5000);
         } catch (error: any) {
             console.error('Error resetting attendance:', error);

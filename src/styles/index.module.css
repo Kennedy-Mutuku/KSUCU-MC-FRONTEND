@@ -977,12 +977,12 @@ div.boardsCategoryDiv:focus h3 {
 }
 
 .aboutTitle{
-    font-size: 3rem;
+    font-size: 2.5rem;
     font-weight: 700;
     color: #ffffff;
     text-transform: uppercase;
     letter-spacing: 2px;
-    margin-bottom: 60px;
+    margin-bottom: 30px;
     position: relative;
     text-decoration: none;
     text-align: center;
@@ -1001,7 +1001,7 @@ div.boardsCategoryDiv:focus h3 {
 }
 .containerAbout{
     background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
-    padding: 80px 0;
+    padding: 40px 0;
     position: relative;
     color: #ffffff;
 }
@@ -1027,8 +1027,8 @@ div.boardsCategoryDiv:focus h3 {
 .aboutFlex{
     display: grid;
     grid-template-columns: 1fr;
-    gap: 35px;
-    margin-top: 40px;
+    gap: 20px;
+    margin-top: 20px;
     padding: 0;
     background: transparent;
 }
@@ -1039,7 +1039,7 @@ div.boardsCategoryDiv:focus h3 {
     font-weight: 600;
     text-transform: capitalize;
     letter-spacing: 0.5px;
-    margin: 0 0 15px 0;
+    margin: 0 0 8px 0;
     position: relative;
     text-align: left;
     background: transparent;
@@ -1048,7 +1048,7 @@ div.boardsCategoryDiv:focus h3 {
 }
 
 .aboutFlex p{
-    margin: 0 0 25px 0;
+    margin: 0 0 15px 0;
     color: #d5d5d5;
     font-size: 1rem;
     line-height: 1.6;
@@ -1063,7 +1063,7 @@ div.boardsCategoryDiv:focus h3 {
 .aboutCol1Vision {
     background: transparent !important;
     padding: 0;
-    margin-bottom: 40px;
+    margin-bottom: 10px;
     box-shadow: none !important;
     border: none !important;
 }
@@ -1077,15 +1077,15 @@ div.boardsCategoryDiv:focus h3 {
     transition: none;
     position: relative;
     overflow: visible;
-    margin: 0 0 30px 0;
+    margin: 0 0 15px 0;
   }
   .objectivesTitle{
     color: #00c6ff;
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1.2px;
-    margin-bottom: 25px;
+    margin-bottom: 12px;
     text-decoration: none;
   }
   
@@ -1093,26 +1093,38 @@ div.boardsCategoryDiv:focus h3 {
     list-style: none;
     padding-left: 0;
     margin-top: 20px;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    text-align: left;
   }
   
   .subList {
     list-style: none;
     padding-left: 0;
-    margin: 20px 0;
+    margin: 10px 0;
     color: #d0d0d0;
     font-size: 1.08rem;
     line-height: 1.7;
     font-weight: 300;
+    background: transparent;
+    text-align: left;
+    border: none;
+    box-shadow: none;
   }
   
   .objectivesList li {
-    margin-bottom: 18px;
+    margin-bottom: 10px;
     font-size: 1.08rem;
     font-weight: 300;
     color: #d0d0d0;
     line-height: 1.7;
     position: relative;
     padding-left: 25px;
+    text-align: left;
+    background: transparent;
+    border: none;
+    box-shadow: none;
   }
 
   .objectivesList li::before {
@@ -1127,7 +1139,13 @@ div.boardsCategoryDiv:focus h3 {
   .subList, .subList li {
     font-size: 0.95rem;
     font-weight: normal;
-    color: #555;
+    color: #d0d0d0;
+    background: transparent;
+    text-align: left;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    margin-left: 0;
   }
   
 .containerOthers{
@@ -2214,7 +2232,7 @@ hr{
     .aboutCol1{
         display: flex;
         flex-direction: column;
-        gap: 35px;
+        gap: 5px;
         padding: 0;
         background: transparent !important;
         border: none !important;
@@ -2626,6 +2644,37 @@ hr{
     
     .title {
         margin: 0 6px;
+    }
+}
+
+/* Hide quick-links-sidebar on mobile devices */
+@media (max-width: 768px) {
+    .quick-links-sidebar {
+        display: none !important;
+    }
+    
+    /* Balance spacing around carousel in mobile */
+    .video-intro {
+        margin: 0 auto 15px auto !important;
+    }
+    
+    .intro-video--header {
+        padding: 0 0 15px 0 !important;
+    }
+    
+    .main {
+        margin-top: 15px !important;
+        padding: 15px !important;
+    }
+    
+    .call-to-action-text {
+        margin: -35px auto 0 auto !important;
+        padding: 10px 20px !important;
+    }
+    
+    /* Remove extra spacing from main sections */
+    .main-flex {
+        margin: 10px auto !important;
     }
 }
 

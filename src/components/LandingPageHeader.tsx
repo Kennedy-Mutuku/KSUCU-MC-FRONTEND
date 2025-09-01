@@ -115,10 +115,10 @@ const LandingPageHeader = () => {
   }, [isDropdownOpen]);
 
   const fetchUserData = async () => {
-    console.log('🏠 Header: Fetching user data...');
+    console.log('Header: Fetching user data...');
     
     if (!navigator.onLine) {
-        console.log('❌ Header: User offline');
+        console.log('Header: User offline');
         setError('check your internet and try again...')
         return;
     }
@@ -133,15 +133,15 @@ const LandingPageHeader = () => {
         document.body.style.overflow = 'hidden';            
 
         const apiUrl = getApiUrl('users');
-        console.log('🏠 Header: Fetching from:', apiUrl);
+        console.log('Header: Fetching from:', apiUrl);
 
         const response = await fetch(apiUrl, {
             credentials: 'include'
         });
 
-        console.log('🏠 Header: Response status:', response.status);
+        console.log('Header: Response status:', response.status);
         const data = await response.json();
-        console.log('🏠 Header: Response data:', data);
+        console.log('Header: Response data:', data);
         
         if (!response.ok) {
             throw new Error(data.message || 'Failed to fetch user data');
@@ -159,14 +159,14 @@ const LandingPageHeader = () => {
             ...data,
             username: firstName
         };
-        console.log('✅ Header: Setting user data:', finalUserData);
+        console.log('Header: Setting user data:', finalUserData);
         setUserData(finalUserData);
         
     } catch (error) {
         if (error instanceof Error && error.message === 'Authentication failed: jwt expired') {
             navigate('/');
         } else {
-            console.error('❌ Header: Error fetching user data:', error);
+            console.error('Header: Error fetching user data:', error);
         }
         
     }finally{    
@@ -187,9 +187,9 @@ const LandingPageHeader = () => {
         throw new Error('Failed to fetch news data');
       }
       const data = await response.json();
-      console.log('📰 LandingPage: News data received:', data);
-      console.log('📰 LandingPage: Summary field:', data.summary);
-      console.log('📰 LandingPage: Body field:', data.body);
+      console.log('LandingPage: News data received:', data);
+      console.log('LandingPage: Summary field:', data.summary);
+      console.log('LandingPage: Body field:', data.body);
       setNewsData(data);
     } catch (error: any) {
       console.log(error)
@@ -201,7 +201,7 @@ const LandingPageHeader = () => {
   // Calculate countdown timer
   const calculateCountdown = (eventDate: string, eventTime: string): CountdownTime | null => {
     try {
-      console.log('🕐 Calculating countdown for:', eventDate, eventTime);
+      console.log('Calculating countdown for:', eventDate, eventTime);
       
       // Parse the date more robustly
       let eventDateTime: Date;
@@ -231,21 +231,21 @@ const LandingPageHeader = () => {
         eventDateTime.setHours(12, 0, 0, 0);
       }
       
-      console.log('🕐 Parsed event date:', eventDateTime);
+      console.log('Parsed event date:', eventDateTime);
       
       // Validate the date
       if (isNaN(eventDateTime.getTime())) {
-        console.error('❌ Invalid date/time format:', eventDate, eventTime);
+        console.error('Invalid date/time format:', eventDate, eventTime);
         return { days: 0, hours: 0, minutes: 0, seconds: 0 };
       }
       
       const now = new Date();
       const difference = eventDateTime.getTime() - now.getTime();
       
-      console.log('🕐 Time difference:', difference, 'ms');
+      console.log('Time difference:', difference, 'ms');
 
       if (difference <= 0) {
-        console.log('⚠️ Event has passed');
+        console.log('Event has passed');
         return null; // Event has passed
       }
 
@@ -255,17 +255,17 @@ const LandingPageHeader = () => {
       const seconds = Math.floor((difference % (1000 * 60)) / 1000);
 
       const result = { days, hours, minutes, seconds };
-      console.log('✅ Countdown result:', result);
+      console.log('Countdown result:', result);
       
       // Ensure no NaN values
       if (isNaN(days) || isNaN(hours) || isNaN(minutes) || isNaN(seconds)) {
-        console.error('❌ NaN values detected in countdown');
+        console.error('NaN values detected in countdown');
         return { days: 0, hours: 0, minutes: 0, seconds: 0 };
       }
 
       return result;
     } catch (error) {
-      console.error('❌ Error calculating countdown:', error);
+      console.error('Error calculating countdown:', error);
       return { days: 0, hours: 0, minutes: 0, seconds: 0 };
     }
   };
@@ -341,8 +341,8 @@ const LandingPageHeader = () => {
   }
 
   function handleRedirectToUserInfo() {
-    console.log('👤 Header: User icon clicked, userData:', userData);
-    console.log('👤 Header: Navigating to /profile');
+    console.log('Header: User icon clicked, userData:', userData);
+    console.log('Header: Navigating to /profile');
     navigate('/profile')
   }
   function handleRedirectToLogin() {
@@ -353,7 +353,7 @@ const LandingPageHeader = () => {
     if(userData){
       navigate('/media')
     }else{
-      setError('Please log in to access Media 😔');
+      setError('Please log in to access Media');
       setTimeout(() => {
         setError('')
         navigate('/signIn');
@@ -366,7 +366,7 @@ const LandingPageHeader = () => {
     if(userData){
       navigate(path);
     }else{
-      setError(`Please log in to access ${linkName} 😔`);
+      setError(`Please log in to access ${linkName}`);
       setTimeout(() => {
         setError('')
         navigate('/signIn');
@@ -394,7 +394,7 @@ const LandingPageHeader = () => {
     <>
       {generalLoading && (
         <div className={styles['loading-screen']}>
-          <p className={styles['loading-text']}>Please wait...🤗</p>
+          <p className={styles['loading-text']}>Please wait...</p>
           <img src={loadingAnime} alt="animation gif" />
         </div>
       )}
@@ -713,7 +713,7 @@ const LandingPageHeader = () => {
                     <li style={{ margin: '8px 0' }}><b>Venues:</b> Communicated in advance</li>
                   </ul>
                   <p className={styles.stayBlessed} style={{ textAlign: 'center' }}>
-                    <i>Stay blessed, and see you there! <span role="img" aria-label="pray">🙏🏾</span></i>
+                    <i>Stay blessed, and see you there!</i>
                   </p>
                 </div>
               </>

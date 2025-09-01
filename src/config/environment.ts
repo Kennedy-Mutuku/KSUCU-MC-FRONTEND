@@ -40,7 +40,7 @@ interface ApiConfig {
   };
 }
 
-const isDevelopment = import.meta.env.MODE === 'development' || window.location.hostname === 'localhost';
+const isDevelopment = import.meta.env.MODE === 'development' || (window.location.hostname === 'localhost' && window.location.port === '5173');
 
 const developmentConfig: ApiConfig = {
   baseUrl: 'http://localhost:3000',

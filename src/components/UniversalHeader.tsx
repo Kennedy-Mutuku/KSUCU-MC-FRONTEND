@@ -35,7 +35,7 @@ const UniversalHeader: React.FC = () => {
     console.log('🏠 Header: Fetching user data...');
     
     if (!navigator.onLine) {
-        console.log('❌ Header: User offline');
+        console.log('Header: User offline');
         setError('check your internet and try again...')
         return;
     }
@@ -76,14 +76,14 @@ const UniversalHeader: React.FC = () => {
             ...data,
             username: firstName
         };
-        console.log('✅ Header: Setting user data:', finalUserData);
+        console.log('Header: Setting user data:', finalUserData);
         setUserData(finalUserData);
         
     } catch (error) {
         if (error instanceof Error && error.message === 'Authentication failed: jwt expired') {
             navigate('/');
         } else {
-            console.error('❌ Header: Error fetching user data:', error);
+            console.error('Header: Error fetching user data:', error);
         }
         
     }finally{    
@@ -141,15 +141,6 @@ const UniversalHeader: React.FC = () => {
           <div className={styles.container}>
             <div className={styles.logo} onClick={handleHomeClick} style={{ cursor: 'pointer', textAlign: 'center' }}>
               <img src={cuLogo} alt="Cu-logo" className={styles['logo-image']} />
-              <div style={{ 
-                color: '#ffffff', 
-                fontSize: '0.8rem', 
-                fontWeight: '600', 
-                marginTop: '2px',
-                textShadow: '0 1px 3px rgba(0,0,0,0.5)'
-              }}>
-                Home
-              </div>
             </div>
 
             <div className={styles.title}>

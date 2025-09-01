@@ -136,7 +136,7 @@ const LandingPage = () => {
   useEffect(() => {
     if (showAttendanceForm && (!activeSession || !activeSession.isActive)) {
       setShowAttendanceForm(false);
-      alert('⚠️ Attendance session has been closed. The form has been closed.');
+      alert('Attendance session has been closed. The form has been closed.');
     }
   }, [activeSession, showAttendanceForm]);
 
@@ -291,7 +291,7 @@ const LandingPage = () => {
       // Show success message with name and timestamp
       const now = new Date();
       const timeString = now.toLocaleString();
-      setAttendanceSuccess(`✅ Attendance submitted successfully for ${attendanceData.fullName}! Submitted at: ${timeString}. You can now register another person with a different registration number.`);
+      setAttendanceSuccess(`Attendance submitted successfully for ${attendanceData.fullName}! Submitted at: ${timeString}. You can now register another person with a different registration number.`);
       
       // Auto-clear success message after 5 seconds
       setTimeout(() => setAttendanceSuccess(''), 5000);
@@ -342,7 +342,7 @@ const LandingPage = () => {
               errorMessage.toLowerCase().includes('duplicate') ||
               errorMessage.toLowerCase().includes('already used') ||
               errorMessage.includes(attendanceData.registrationNumber.trim().toUpperCase())) {
-            setAttendanceError(`❌ Registration Number Already Used! This registration number has already been used for attendance in this session. Please use a different registration number or check if this person has already signed attendance.`);
+            setAttendanceError(`Registration Number Already Used! This registration number has already been used for attendance in this session. Please use a different registration number or check if this person has already signed attendance.`);
             
             // Clear only the registration number field to allow correction
             setAttendanceData(prev => ({
@@ -367,7 +367,7 @@ const LandingPage = () => {
         errorMessage = error.message || 'Unexpected error occurred.';
       }
       
-      setAttendanceError(`❌ ${errorMessage}`);
+      setAttendanceError(`${errorMessage}`);
       
       // Auto-clear error message after 6 seconds
       setTimeout(() => setAttendanceError(''), 6000);
@@ -468,7 +468,7 @@ const LandingPage = () => {
 
       // navigate('/media')
 
-      setError('Please log in to access Media 😔');
+      setError('Please log in to access Media');
 
       setTimeout(() => {
         setError('')
@@ -497,7 +497,7 @@ const LandingPage = () => {
               <li><b>Venues:</b> Communicated in advance</li>
             </ul>
             <p className={styles.stayBlessed}>
-              <i>Stay blessed, and see you there! <span role="img" aria-label="pray">🙏🏾</span></i>
+              <i>Stay blessed, and see you there!</i>
             </p>
           </div>
 
@@ -694,12 +694,12 @@ const LandingPage = () => {
 
         {/* Centralized Attendance Section */}
         <div className={styles.attendanceSection}>
-          <h2 className={styles.attendanceSectionTitle}>Attendance System</h2>
+          <h2 className={styles.attendanceSectionTitle}>Sign Attendance</h2>
           
           {/* Unified Session Status Display */}
           {activeSession && activeSession.isActive ? (
             <div className={`${styles.sessionStatus} ${styles.open}`}>
-              <span className={styles.sessionStatusIcon}>✅</span>
+              <span className={styles.sessionStatusIcon}></span>
               <div className={styles.sessionStatusContent}>
                 <div className={styles.sessionStatusText}>Session Active</div>
                 <div className={styles.sessionLeadershipRole}>
@@ -714,7 +714,7 @@ const LandingPage = () => {
             <div className={`${styles.sessionStatus} ${styles.closed}`} style={{maxWidth: '400px', margin: '0 auto'}}>
               <div className={styles.sessionStatusContent}>
                 <div className={styles.sessionStatusText}>
-                  🔒 No Session Open
+                  No Session Open
                 </div>
                 <div className={styles.sessionStatusDescription}>
                   Currently, no attendance session is open for signing. 
@@ -768,7 +768,7 @@ const LandingPage = () => {
                     userType: 'student'
                   });
                 } else {
-                  alert('⚠️ No active attendance session found. Please wait for a leader to open an attendance session.');
+                  alert('No active attendance session found. Please wait for a leader to open an attendance session.');
                 }
               }}
             >
@@ -1033,7 +1033,7 @@ const LandingPage = () => {
                     marginTop: '4px'
                   }}>
                     <small style={{color: '#666', fontSize: '12px'}}>
-                      ✍️ Draw signature above
+                      Draw signature above
                     </small>
                     <button
                       type="button"
@@ -1271,16 +1271,6 @@ const LandingPage = () => {
                   </div>
           </div>
 
-          {/* Ministries Admin Section */}
-        <div className={styles.worshipAdminSection}>
-          <div className={styles.worshipAdminCard}>
-            <h3>Ministries Administration</h3>
-            <p>Manage ministries</p>
-            <Link to="/worship-docket-admin" className={styles.worshipAdminButton}>
-              MINISTRIES ADMIN
-            </Link>
-          </div>
-        </div>
 
         <div className={styles.containerAbout}>
 
@@ -1320,7 +1310,8 @@ const LandingPage = () => {
             
             
                               <p className={styles.objectivesTitle}>Leadership Development</p>
-                              <p className={styles.subList} >To identify and develop Christian leaders through training and experience.</p>
+                              <p className={styles.subList} >To identify and develop Christian leaders through training and experience. <span ><Link className={styles.registerSpan} to={"/worship-docket-admin"}>administer</Link> </span></p>
+            
             
                         </div>
                 </div>
@@ -1449,7 +1440,7 @@ const LandingPage = () => {
           <div style={{
             fontSize: '48px',
             marginBottom: '20px'
-          }}>✅</div>
+          }}>✓</div>
           
           <h2 style={{
             color: '#730051',

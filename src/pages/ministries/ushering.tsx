@@ -60,12 +60,12 @@ const UsheringPage: React.FC = () => {
             
             <h3>Service Areas</h3>
             <div className={styles.instrumentsGrid}>
-              <div className={styles.instrument}>👋 Greeting Team</div>
-              <div className={styles.instrument}>🦾 Seating Assistance</div>
-              <div className={styles.instrument}>💼 Information Desk</div>
-              <div className={styles.instrument}>🎁 Offering Team</div>
-              <div className={styles.instrument}>📝 Program Distribution</div>
-              <div className={styles.instrument}>🚑 Special Needs</div>
+              <div className={styles.instrument}>Greeting Team</div>
+              <div className={styles.instrument}>Seating Assistance</div>
+              <div className={styles.instrument}>Information Desk</div>
+              <div className={styles.instrument}>Offering Team</div>
+              <div className={styles.instrument}>Program Distribution</div>
+              <div className={styles.instrument}>Special Needs</div>
             </div>
           </div>
 
