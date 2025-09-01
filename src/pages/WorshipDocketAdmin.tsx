@@ -5,8 +5,6 @@ import styles from '../styles/worshipDocketAdmin.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
     faUsers, 
-    faLock, 
-    faUnlock,
     faCheckCircle,
     faArrowRight
 } from '@fortawesome/free-solid-svg-icons';
