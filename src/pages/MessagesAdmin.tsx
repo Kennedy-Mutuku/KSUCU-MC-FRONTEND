@@ -439,8 +439,12 @@ const MessagesAdmin = () => {
                           <span className={styles.subject}>{message.subject}</span>
                         </div>
                         <p className={styles.messagePreview}>
-                          {message.message.substring(0, 100)}
-                          {message.message.length > 100 ? '...' : ''}
+                          {message.message ? (
+                            <>
+                              {message.message.substring(0, 100)}
+                              {message.message.length > 100 ? '...' : ''}
+                            </>
+                          ) : 'No message content'}
                         </p>
                       </div>
                     </div>

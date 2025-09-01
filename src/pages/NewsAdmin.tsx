@@ -427,9 +427,9 @@ const NewsAdmin: React.FC = () => {
                                 <div className={styles.previewContent}>
                                     <h2>{formData.title || 'News Title'}</h2>
                                     <div className={styles.previewBody}>
-                                        {formData.body.split('\n').map((paragraph, index) => (
+                                        {formData.body ? formData.body.split('\n').map((paragraph, index) => (
                                             <p key={index}>{paragraph}</p>
-                                        ))}
+                                        )) : <p>No content available</p>}
                                     </div>
                                 </div>
                             </div>
@@ -445,8 +445,8 @@ const NewsAdmin: React.FC = () => {
                             Currently Published News
                         </h3>
                         <div className={styles.currentNewsContent}>
-                            <h4>{currentNews.title}</h4>
-                            <p>{currentNews.body.substring(0, 100)}...</p>
+                            <h4>{currentNews.title || 'No title available'}</h4>
+                            <p>{currentNews.body ? currentNews.body.substring(0, 100) + '...' : 'No content available'}</p>
                             {currentNews.eventDate && (
                                 <div className={styles.currentEventInfo}>
                                     Event: {new Date(currentNews.eventDate).toLocaleDateString()}
