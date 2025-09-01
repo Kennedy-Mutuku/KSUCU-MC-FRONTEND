@@ -35,7 +35,10 @@ const UserProfilePage: React.FC = () => {
             console.log('📋 Profile: Fetching from:', apiUrl);
             
             const response = await fetch(apiUrl, {
-                credentials: 'include'
+                credentials: 'include', // This ensures cookies are sent with the request
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             });
 
             console.log('📋 Profile: Response status:', response.status);
@@ -65,13 +68,27 @@ const UserProfilePage: React.FC = () => {
     };
 
     const handleLogout = async () => {
+        console.log('Logout button clicked');
         try {
-            const response = await fetch(getApiUrl('usersLogout'), {
+            const logoutUrl = getApiUrl('usersLogout');
+            console.log('Attempting logout to:', logoutUrl);
+            
+            const response = await fetch(logoutUrl, {
                 method: 'POST',
-                credentials: 'include'
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             });
 
+            console.log('Logout response status:', response.status);
+            
             if (response.ok) {
+                console.log('Logout successful, navigating to home');
+                navigate('/');
+            } else {
+                console.log('Logout failed with status:', response.status);
+                // Still navigate away even if logout fails
                 navigate('/');
             }
         } catch (error) {
@@ -113,7 +130,7 @@ const UserProfilePage: React.FC = () => {
     return (
         <>
             <UniversalHeader />
-            <div className={styles.body} style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '10px' }}>
+            <div className={styles.body} style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '10px', backgroundAttachment: 'fixed', backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}>
                 <div className={styles.container} style={{ margin: '10px auto', maxWidth: '90vw', maxHeight: '95vh', overflowY: 'auto' }}>
                 <Link to={"/"} className={styles.logo_div} style={{ marginTop: '10px' }}>
                     <div className={styles['logo_signUp']} style={{ width: '80px', height: '80px' }}>

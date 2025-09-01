@@ -34,11 +34,12 @@ const UniversalHeader: React.FC = () => {
   const fetchUserData = async () => {
     console.log('🏠 Header: Fetching user data...');
     
-    if (!navigator.onLine) {
-        console.log('Header: User offline');
-        setError('check your internet and try again...')
-        return;
-    }
+    // Offline check disabled - always try to fetch
+    // if (!navigator.onLine) {
+    //     console.log('Header: User offline');
+    //     setError('check your internet and try again...')
+    //     return;
+    // }
 
     window.scrollTo({
         top: 0,

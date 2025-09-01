@@ -48,6 +48,8 @@ const SignIn: React.FC = () => {
                 const data = await response.json();
                 console.log('✅ SignIn: User authenticated, data:', data);
                 setUserData(data);
+                // Automatically redirect to profile page if user is already logged in
+                navigate('/profile');
             } else {
                 console.log('SignIn: User not authenticated, response not ok');
             }
@@ -110,11 +112,11 @@ const SignIn: React.FC = () => {
             { domain: '@ksucumcadmissionadmin.co.ke', endpoint: getApiUrl('admissionAdmin'), route: '/admission' },
         ];
     
-        // Check if the user is online
-        if (!navigator.onLine) {
-            setError('Check your internet and try again...');
-            return;
-        }
+        // Offline check disabled - always try to login
+        // if (!navigator.onLine) {
+        //     setError('Check your internet and try again...');
+        //     return;
+        // }
     
         window.scrollTo({
             top: 0,

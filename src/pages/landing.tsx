@@ -143,12 +143,12 @@ const LandingPage = () => {
   const fetchUserData = async () => {
     console.log('🏠 Landing: Fetching user data...');
     
-    // check if the user in online
-    if (!navigator.onLine) {
-        console.log('❌ Landing: User offline');
-        setError('check your internet and try again...')
-        return;
-    }
+    // Offline check disabled - always try to fetch
+    // if (!navigator.onLine) {
+    //     console.log('❌ Landing: User offline');
+    //     setError('check your internet and try again...')
+    //     return;
+    // }
 
     window.scrollTo({
         top: 0,

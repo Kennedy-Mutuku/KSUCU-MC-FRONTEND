@@ -1,19 +1,20 @@
 import React, { ReactNode } from 'react';
-import { useOffline } from '../hooks/useOffline';
-import '../styles/OfflineWrapper.css';
+// import { useOffline } from '../hooks/useOffline';
+// import '../styles/OfflineWrapper.css';
 
 interface OfflineWrapperProps {
   children: ReactNode;
 }
 
 export const OfflineWrapper: React.FC<OfflineWrapperProps> = ({ children }) => {
-  const { isOnline, wasOffline, retryConnection } = useOffline();
+  // const { isOnline, wasOffline, retryConnection } = useOffline();
 
   return (
     <>
       {children}
       
-      {!isOnline && (
+      {/* Offline detection disabled - always show the app */}
+      {/* {!isOnline && (
         <div className="offline-banner">
           <div className="offline-content">
             <span className="offline-icon">📡</span>
@@ -27,16 +28,16 @@ export const OfflineWrapper: React.FC<OfflineWrapperProps> = ({ children }) => {
             </button>
           </div>
         </div>
-      )}
+      )} */}
       
-      {isOnline && wasOffline && (
+      {/* {isOnline && wasOffline && (
         <div className="online-banner">
           <div className="online-content">
             <span className="online-icon">✅</span>
             <span className="online-text">Back online</span>
           </div>
         </div>
-      )}
+      )} */}
     </>
   );
 };

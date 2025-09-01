@@ -75,10 +75,11 @@ const Media: React.FC = () => {
   };
 
   const fetchUserData = async () => {
-    if (!navigator.onLine) {
-      setError('Check your internet and try again...');
-      return;
-    }
+    // Offline check disabled - always try to fetch
+    // if (!navigator.onLine) {
+    //   setError('Check your internet and try again...');
+    //   return;
+    // }
 
     window.scrollTo({
       top: 0,
