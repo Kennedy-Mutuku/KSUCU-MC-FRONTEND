@@ -731,14 +731,14 @@ const LandingPage = () => {
                 display: 'inline-block',
                 background: '#00c6ff',
                 color: 'white',
-                padding: '18px 40px',
-                borderRadius: '50px',
-                fontSize: '1.2rem',
+                padding: '12px 24px',
+                borderRadius: '25px',
+                fontSize: '0.95rem',
                 fontWeight: '600',
                 textTransform: 'uppercase',
-                letterSpacing: '1px',
+                letterSpacing: '0.5px',
                 cursor: 'pointer',
-                boxShadow: '0 8px 25px rgba(0, 198, 255, 0.4)',
+                boxShadow: '0 4px 15px rgba(0, 198, 255, 0.3)',
                 border: 'none',
                 position: 'relative',
                 zIndex: 99999,
@@ -747,7 +747,7 @@ const LandingPage = () => {
               onMouseEnter={(e) => {
                 const target = e.target as HTMLElement;
                 target.style.background = '#0099cc';
-                target.style.transform = 'translateY(-3px)';
+                target.style.transform = 'translateY(-2px)';
               }}
               onMouseLeave={(e) => {
                 const target = e.target as HTMLElement;

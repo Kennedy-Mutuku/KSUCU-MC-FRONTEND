@@ -476,26 +476,45 @@ const LandingPageHeader = () => {
           </div>
 
           {(isDropdownOpen || isMobileNavOpen) && (
-            <div className={styles['main-quick--links']} style={{
-              position: 'fixed',
-              top: '80px',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              zIndex: 1000,
-              backgroundColor: 'white',
-              borderRadius: '20px',
-              padding: '25px',
-              boxShadow: '0 15px 50px rgba(0, 0, 0, 0.15), 0 5px 20px rgba(115, 0, 81, 0.08)',
-              minWidth: '360px',
-              maxWidth: '460px',
-              maxHeight: '500px',
-              overflow: 'visible',
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr',
-              gap: '12px',
-              animation: 'modalSlideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-              border: '1px solid rgba(115, 0, 81, 0.08)'
-            }}>
+            <>
+              <div 
+                style={{
+                  position: 'fixed',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                  zIndex: 999,
+                  animation: 'fadeIn 0.3s ease'
+                }}
+                onClick={() => {
+                  setIsDropdownOpen(false);
+                  setIsMobileNavOpen(false);
+                  document.body.classList.remove('quick-links-open');
+                  document.body.classList.remove(styles['nav-open']);
+                }}
+              />
+              <div className={styles['main-quick--links']} style={{
+                position: 'fixed',
+                top: '80px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                zIndex: 1000,
+                backgroundColor: 'white',
+                borderRadius: '20px',
+                padding: '25px',
+                boxShadow: '0 15px 50px rgba(0, 0, 0, 0.15), 0 5px 20px rgba(115, 0, 81, 0.08)',
+                minWidth: '360px',
+                maxWidth: '460px',
+                maxHeight: '500px',
+                overflow: 'visible',
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr',
+                gap: '12px',
+                animation: 'modalSlideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+                border: '1px solid rgba(115, 0, 81, 0.08)'
+              }}>
             {error && <div className={styles.error} style={{ textAlign: 'center', position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 1001, backgroundColor: '#ff4444', color: 'white', padding: '15px 25px', borderRadius: '8px', boxShadow: '0 4px 20px rgba(0,0,0,0.3)' }}>{error}</div>}
             <a onClick={navigateMedia} className={styles['quick-item--link']}>
               Media
@@ -523,7 +542,8 @@ const LandingPageHeader = () => {
               About Us
             </div>
             { userData && <div onClick={handleLogout} className={styles['quick-item--link']} style={{borderTop: '1px solid rgba(255,255,255,0.12)', marginTop: '6px', paddingTop: '8px', cursor: 'pointer', gridColumn: '1 / -1'}}>Log out</div> }
-            </div>
+              </div>
+            </>
           )}
         </div>
 

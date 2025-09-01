@@ -552,6 +552,15 @@ body{
     }
 }
 
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
 .commission-claimer:hover{
     cursor: pointer;
     transform: translate(50%, 50%) scale(1.1);
@@ -908,18 +917,18 @@ body{
 
 /* Enhanced category title styling */
 .category-title {
-    color: #730051;
+    color: #ffffff;
     font-weight: 700;
     font-size: 1.1rem;
     margin: 0;
     text-transform: uppercase;
     letter-spacing: 1px;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: color 0.3s ease;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    transition: none;
 }
 
 .boardsCategoryDiv:hover .category-title {
-    color: #8b0061;
+    color: #ffffff;
 }
 
 .boardsCategoryDiv:active {
@@ -2703,6 +2712,36 @@ hr{
     /* Remove extra spacing from main sections */
     .main-flex {
         margin: 10px auto !important;
+    }
+    
+    /* Mobile styles for collapsible category bars */
+    .boardsCategoryDiv {
+        margin-bottom: 8px !important;
+        padding: 10px 15px !important;
+        border-radius: 8px !important;
+        min-height: 45px;
+    }
+    
+    .boardsCategoryDiv .category-title {
+        color: #ffffff !important;
+        font-size: 0.9rem !important;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) !important;
+    }
+    
+    /* Ensure text stays white on all interactions */
+    .boardsCategoryDiv:hover .category-title,
+    .boardsCategoryDiv:active .category-title,
+    .boardsCategoryDiv:focus .category-title,
+    .boardsCategoryDiv:touch .category-title {
+        color: #ffffff !important;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5) !important;
+    }
+    
+    /* Prevent color changes on touch devices */
+    .boardsCategoryDiv:hover,
+    .boardsCategoryDiv:active,
+    .boardsCategoryDiv:focus {
+        background: rgba(255, 255, 255, 0.15) !important;
     }
 }
 

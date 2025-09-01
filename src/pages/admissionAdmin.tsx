@@ -237,14 +237,14 @@ const AdmissionAdmin: React.FC = () => {
             </div>
 
             <div className={styles['info-note']} style={{ 
-              padding: '15px', 
+              padding: '12px', 
               backgroundColor: '#e8f4fd', 
               border: '1px solid #bee5eb', 
               borderRadius: '5px', 
-              marginBottom: '20px',
+              marginBottom: '15px',
               textAlign: 'center'
             }}>
-              <p style={{ margin: 0, color: '#0c5460', fontSize: '14px' }}>
+              <p style={{ margin: 0, color: '#0c5460', fontSize: '13px' }}>
                 📱 <strong>Note:</strong> The user's phone number will be set as their default password.
                 <br />
                 They can change it later from their profile settings.

@@ -113,93 +113,93 @@ const UserProfilePage: React.FC = () => {
     return (
         <>
             <UniversalHeader />
-            <div className={styles.body} style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px 0' }}>
-                <div className={styles.container} style={{ margin: '20px auto', maxHeight: '90vh', overflowY: 'auto' }}>
-                <Link to={"/"} className={styles.logo_div} style={{ marginTop: '20px' }}>
-                    <div className={styles['logo_signUp']}>
-                        <img src={cuLogo} alt="CU logo" />
+            <div className={styles.body} style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '10px' }}>
+                <div className={styles.container} style={{ margin: '10px auto', maxWidth: '90vw', maxHeight: '95vh', overflowY: 'auto' }}>
+                <Link to={"/"} className={styles.logo_div} style={{ marginTop: '10px' }}>
+                    <div className={styles['logo_signUp']} style={{ width: '80px', height: '80px' }}>
+                        <img src={cuLogo} alt="CU logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                     </div>
                 </Link>
 
-                <h2 className={styles.text} style={{ marginTop: '20px', marginBottom: '20px' }}>Welcome back, {userData.username}!</h2>
+                <h2 className={styles.text} style={{ marginTop: '10px', marginBottom: '15px', fontSize: '1.3rem' }}>Welcome back, {userData.username}!</h2>
                 
                 {/* Continue to KSUCUMC Button */}
-                <div style={{ textAlign: 'center', margin: '30px 0' }}>
+                <div style={{ textAlign: 'center', margin: '15px 0' }}>
                     <button 
                         onClick={handleContinueToKSUCUMC}
                         style={{
                             backgroundColor: '#007bff',
                             color: 'white',
                             border: 'none',
-                            padding: '15px 40px',
-                            borderRadius: '50px',
-                            fontSize: '18px',
+                            padding: '12px 30px',
+                            borderRadius: '25px',
+                            fontSize: '14px',
                             fontWeight: '600',
                             cursor: 'pointer',
-                            boxShadow: '0 4px 8px rgba(0,123,255,0.3)',
+                            boxShadow: '0 3px 6px rgba(0,123,255,0.3)',
                             transition: 'all 0.3s ease',
-                            minWidth: '250px'
+                            minWidth: '200px'
                         }}
                         onMouseOver={(e) => {
                             e.currentTarget.style.backgroundColor = '#0056b3';
-                            e.currentTarget.style.transform = 'translateY(-2px)';
-                            e.currentTarget.style.boxShadow = '0 6px 12px rgba(0,123,255,0.4)';
+                            e.currentTarget.style.transform = 'translateY(-1px)';
+                            e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,123,255,0.4)';
                         }}
                         onMouseOut={(e) => {
                             e.currentTarget.style.backgroundColor = '#007bff';
                             e.currentTarget.style.transform = 'translateY(0)';
-                            e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,123,255,0.3)';
+                            e.currentTarget.style.boxShadow = '0 3px 6px rgba(0,123,255,0.3)';
                         }}
                     >
                         Continue to KSUCUMC
                     </button>
                 </div>
                 
-                <div className={styles.form} style={{ marginBottom: '20px' }}>
-                    <div className={styles['user-details']} style={{ padding: '10px' }}>
-                        <h3 style={{ marginBottom: '20px', color: '#2c3e50', textAlign: 'center' }}>Your Profile</h3>
+                <div className={styles.form} style={{ marginBottom: '15px' }}>
+                    <div className={styles['user-details']} style={{ padding: '8px' }}>
+                        <h3 style={{ marginBottom: '15px', color: '#2c3e50', textAlign: 'center', fontSize: '1.1rem' }}>Your Profile</h3>
                         
-                        <div style={{ marginBottom: '15px', padding: '12px', backgroundColor: '#f8f9fa', borderRadius: '8px', border: '1px solid #dee2e6' }}>
-                            <strong style={{ color: '#495057' }}>Name:</strong>
-                            <div style={{ marginTop: '5px', fontSize: '16px' }}>{userData.username}</div>
+                        <div style={{ marginBottom: '10px', padding: '8px', backgroundColor: '#f8f9fa', borderRadius: '6px', border: '1px solid #dee2e6' }}>
+                            <strong style={{ color: '#495057', fontSize: '13px' }}>Name:</strong>
+                            <div style={{ marginTop: '3px', fontSize: '14px' }}>{userData.username}</div>
                         </div>
                         
-                        <div style={{ marginBottom: '15px', padding: '12px', backgroundColor: '#f8f9fa', borderRadius: '8px', border: '1px solid #dee2e6' }}>
-                            <strong style={{ color: '#495057' }}>Email:</strong>
-                            <div style={{ marginTop: '5px', fontSize: '16px' }}>{userData.email}</div>
+                        <div style={{ marginBottom: '10px', padding: '8px', backgroundColor: '#f8f9fa', borderRadius: '6px', border: '1px solid #dee2e6' }}>
+                            <strong style={{ color: '#495057', fontSize: '13px' }}>Email:</strong>
+                            <div style={{ marginTop: '3px', fontSize: '14px' }}>{userData.email}</div>
                         </div>
                         
-                        <div style={{ marginBottom: '15px', padding: '12px', backgroundColor: '#f8f9fa', borderRadius: '8px', border: '1px solid #dee2e6' }}>
-                            <strong style={{ color: '#495057' }}>Phone:</strong>
-                            <div style={{ marginTop: '5px', fontSize: '16px' }}>{userData.phone}</div>
+                        <div style={{ marginBottom: '10px', padding: '8px', backgroundColor: '#f8f9fa', borderRadius: '6px', border: '1px solid #dee2e6' }}>
+                            <strong style={{ color: '#495057', fontSize: '13px' }}>Phone:</strong>
+                            <div style={{ marginTop: '3px', fontSize: '14px' }}>{userData.phone}</div>
                         </div>
                         
-                        <div style={{ marginBottom: '15px', padding: '12px', backgroundColor: '#f8f9fa', borderRadius: '8px', border: '1px solid #dee2e6' }}>
-                            <strong style={{ color: '#495057' }}>Year of Study:</strong>
-                            <div style={{ marginTop: '5px', fontSize: '16px' }}>Year {userData.yos}</div>
+                        <div style={{ marginBottom: '10px', padding: '8px', backgroundColor: '#f8f9fa', borderRadius: '6px', border: '1px solid #dee2e6' }}>
+                            <strong style={{ color: '#495057', fontSize: '13px' }}>Year of Study:</strong>
+                            <div style={{ marginTop: '3px', fontSize: '14px' }}>Year {userData.yos}</div>
                         </div>
                         
-                        <div style={{ marginBottom: '15px', padding: '12px', backgroundColor: '#f8f9fa', borderRadius: '8px', border: '1px solid #dee2e6' }}>
-                            <strong style={{ color: '#495057' }}>Evangelistic Team:</strong>
-                            <div style={{ marginTop: '5px', fontSize: '16px' }}>{userData.et}</div>
+                        <div style={{ marginBottom: '10px', padding: '8px', backgroundColor: '#f8f9fa', borderRadius: '6px', border: '1px solid #dee2e6' }}>
+                            <strong style={{ color: '#495057', fontSize: '13px' }}>Evangelistic Team:</strong>
+                            <div style={{ marginTop: '3px', fontSize: '14px' }}>{userData.et}</div>
                         </div>
                         
-                        <div style={{ marginBottom: '15px', padding: '12px', backgroundColor: '#f8f9fa', borderRadius: '8px', border: '1px solid #dee2e6' }}>
-                            <strong style={{ color: '#495057' }}>Ministry:</strong>
-                            <div style={{ marginTop: '5px', fontSize: '16px' }}>{userData.ministry}</div>
+                        <div style={{ marginBottom: '10px', padding: '8px', backgroundColor: '#f8f9fa', borderRadius: '6px', border: '1px solid #dee2e6' }}>
+                            <strong style={{ color: '#495057', fontSize: '13px' }}>Ministry:</strong>
+                            <div style={{ marginTop: '3px', fontSize: '14px' }}>{userData.ministry}</div>
                         </div>
 
                         {userData.course && (
-                            <div style={{ marginBottom: '15px', padding: '12px', backgroundColor: '#f8f9fa', borderRadius: '8px', border: '1px solid #dee2e6' }}>
-                                <strong style={{ color: '#495057' }}>Course:</strong>
-                                <div style={{ marginTop: '5px', fontSize: '16px' }}>{userData.course}</div>
+                            <div style={{ marginBottom: '10px', padding: '8px', backgroundColor: '#f8f9fa', borderRadius: '6px', border: '1px solid #dee2e6' }}>
+                                <strong style={{ color: '#495057', fontSize: '13px' }}>Course:</strong>
+                                <div style={{ marginTop: '3px', fontSize: '14px' }}>{userData.course}</div>
                             </div>
                         )}
 
                         {userData.reg && (
-                            <div style={{ marginBottom: '15px', padding: '12px', backgroundColor: '#f8f9fa', borderRadius: '8px', border: '1px solid #dee2e6' }}>
-                                <strong style={{ color: '#495057' }}>Registration:</strong>
-                                <div style={{ marginTop: '5px', fontSize: '16px' }}>{userData.reg}</div>
+                            <div style={{ marginBottom: '10px', padding: '8px', backgroundColor: '#f8f9fa', borderRadius: '6px', border: '1px solid #dee2e6' }}>
+                                <strong style={{ color: '#495057', fontSize: '13px' }}>Registration:</strong>
+                                <div style={{ marginTop: '3px', fontSize: '14px' }}>{userData.reg}</div>
                             </div>
                         )}
                     </div>
@@ -208,10 +208,10 @@ const UserProfilePage: React.FC = () => {
                 {/* Edit Details and Log Out buttons on the same row */}
                 <div style={{ 
                     display: 'flex', 
-                    gap: '15px', 
+                    gap: '10px', 
                     justifyContent: 'center', 
-                    marginTop: '30px',
-                    marginBottom: '20px',
+                    marginTop: '15px',
+                    marginBottom: '15px',
                     flexWrap: 'wrap'
                 }}>
                     <Link 
@@ -220,26 +220,26 @@ const UserProfilePage: React.FC = () => {
                             backgroundColor: '#28a745',
                             color: 'white',
                             textDecoration: 'none',
-                            padding: '12px 25px',
-                            borderRadius: '25px',
-                            fontSize: '16px',
+                            padding: '8px 16px',
+                            borderRadius: '20px',
+                            fontSize: '13px',
                             fontWeight: '500',
                             cursor: 'pointer',
-                            boxShadow: '0 3px 6px rgba(40,167,69,0.3)',
+                            boxShadow: '0 2px 4px rgba(40,167,69,0.3)',
                             transition: 'all 0.3s ease',
-                            minWidth: '140px',
+                            minWidth: '100px',
                             textAlign: 'center',
                             display: 'inline-block'
                         }}
                         onMouseOver={(e) => {
                             e.currentTarget.style.backgroundColor = '#218838';
                             e.currentTarget.style.transform = 'translateY(-1px)';
-                            e.currentTarget.style.boxShadow = '0 4px 8px rgba(40,167,69,0.4)';
+                            e.currentTarget.style.boxShadow = '0 3px 6px rgba(40,167,69,0.4)';
                         }}
                         onMouseOut={(e) => {
                             e.currentTarget.style.backgroundColor = '#28a745';
                             e.currentTarget.style.transform = 'translateY(0)';
-                            e.currentTarget.style.boxShadow = '0 3px 6px rgba(40,167,69,0.3)';
+                            e.currentTarget.style.boxShadow = '0 2px 4px rgba(40,167,69,0.3)';
                         }}
                     >
                         Edit Details
@@ -250,24 +250,24 @@ const UserProfilePage: React.FC = () => {
                             backgroundColor: '#dc3545',
                             color: 'white',
                             border: 'none',
-                            padding: '12px 25px',
-                            borderRadius: '25px',
-                            fontSize: '16px',
+                            padding: '8px 16px',
+                            borderRadius: '20px',
+                            fontSize: '13px',
                             fontWeight: '500',
                             cursor: 'pointer',
-                            boxShadow: '0 3px 6px rgba(220,53,69,0.3)',
+                            boxShadow: '0 2px 4px rgba(220,53,69,0.3)',
                             transition: 'all 0.3s ease',
-                            minWidth: '140px'
+                            minWidth: '100px'
                         }}
                         onMouseOver={(e) => {
                             e.currentTarget.style.backgroundColor = '#c82333';
                             e.currentTarget.style.transform = 'translateY(-1px)';
-                            e.currentTarget.style.boxShadow = '0 4px 8px rgba(220,53,69,0.4)';
+                            e.currentTarget.style.boxShadow = '0 3px 6px rgba(220,53,69,0.4)';
                         }}
                         onMouseOut={(e) => {
                             e.currentTarget.style.backgroundColor = '#dc3545';
                             e.currentTarget.style.transform = 'translateY(0)';
-                            e.currentTarget.style.boxShadow = '0 3px 6px rgba(220,53,69,0.3)';
+                            e.currentTarget.style.boxShadow = '0 2px 4px rgba(220,53,69,0.3)';
                         }}
                     >
                         Log Out
