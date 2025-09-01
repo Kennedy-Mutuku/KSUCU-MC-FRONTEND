@@ -41,6 +41,7 @@ const LandingPageHeader = () => {
   const [generalLoading, setgeneralLoading] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+  const [isMobileView, setIsMobileView] = useState(false);
   // const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
   const navigate = useNavigate();
 
@@ -75,11 +76,19 @@ const LandingPageHeader = () => {
       fetchNewsData(); // Refresh news when user returns to the page
     };
 
+    // Check if mobile view
+    const checkMobileView = () => {
+      setIsMobileView(window.innerWidth <= 767);
+    };
+    
+    checkMobileView(); // Initial check
+    window.addEventListener('resize', checkMobileView);
     window.addEventListener('focus', handleFocus);
 
     return () => {
       clearInterval(interval);
       clearInterval(newsRefreshInterval);
+      window.removeEventListener('resize', checkMobileView);
       window.removeEventListener('focus', handleFocus);
       // Cleanup: Remove body class when component unmounts
       document.body.classList.remove('quick-links-open');
@@ -499,21 +508,21 @@ const LandingPageHeader = () => {
               />
               <div className={styles['main-quick--links']} style={{
                 position: 'fixed',
-                top: '80px',
+                top: isMobileView ? '70px' : '80px',
                 left: '50%',
                 transform: 'translateX(-50%)',
                 zIndex: 1000,
                 backgroundColor: 'white',
-                borderRadius: '20px',
-                padding: '25px',
-                boxShadow: '0 15px 50px rgba(0, 0, 0, 0.15), 0 5px 20px rgba(115, 0, 81, 0.08)',
-                minWidth: '360px',
-                maxWidth: '460px',
-                maxHeight: '500px',
+                borderRadius: isMobileView ? '12px' : '20px',
+                padding: isMobileView ? '12px' : '25px',
+                boxShadow: isMobileView ? '0 8px 25px rgba(0, 0, 0, 0.1), 0 3px 12px rgba(115, 0, 81, 0.05)' : '0 15px 50px rgba(0, 0, 0, 0.15), 0 5px 20px rgba(115, 0, 81, 0.08)',
+                minWidth: isMobileView ? '260px' : '360px',
+                maxWidth: isMobileView ? '300px' : '460px',
+                maxHeight: isMobileView ? '350px' : '500px',
                 overflow: 'visible',
                 display: 'grid',
                 gridTemplateColumns: '1fr 1fr',
-                gap: '12px',
+                gap: isMobileView ? '6px' : '12px',
                 animation: 'modalSlideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
                 border: '1px solid rgba(115, 0, 81, 0.08)'
               }}>

@@ -277,12 +277,12 @@ body{
     .quick-item--link {
         width: 100%;
         margin: 0;
-        padding: 10px 12px;
-        font-size: 0.7rem;
-        min-height: 38px;
-        border-radius: 10px;
-        font-weight: 700;
-        letter-spacing: 0.2px;
+        padding: 8px 10px;
+        font-size: 0.65rem;
+        min-height: 32px;
+        border-radius: 8px;
+        font-weight: 600;
+        letter-spacing: 0.1px;
     }
     
     .quick-access-header {

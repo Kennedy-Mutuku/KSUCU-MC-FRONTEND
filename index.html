@@ -111,30 +111,36 @@
         const backBtn = document.createElement('button');
         backBtn.id = 'global-back-button';
         backBtn.innerHTML = '← Back';
+        // Check device type for responsive sizing
+        const isMobile = window.innerWidth <= 768;
+        const isTablet = window.innerWidth > 768 && window.innerWidth <= 1024;
+        
         backBtn.style.cssText = `
           position: fixed !important;
-          top: 80px !important;
-          left: 15px !important;
+          top: ${isMobile ? '110px' : (isTablet ? '90px' : '80px')} !important;
+          left: 0px !important;
           z-index: 2147483647 !important;
           background: #730051 !important;
           color: white !important;
           border: 2px solid #ffffff !important;
-          padding: 10px 18px !important;
-          font-size: 14px !important;
+          border-left: none !important;
+          padding: ${isMobile ? '8px 12px' : '10px 18px'} !important;
+          font-size: ${isMobile ? '12px' : '14px'} !important;
           font-weight: 600 !important;
-          border-radius: 20px !important;
+          border-radius: 0 ${isMobile ? '15px' : '20px'} ${isMobile ? '15px' : '20px'} 0 !important;
           cursor: pointer !important;
-          box-shadow: 0 3px 12px rgba(115, 0, 81, 0.4) !important;
+          box-shadow: 2px 3px 12px rgba(115, 0, 81, 0.4) !important;
           font-family: Arial, sans-serif !important;
           display: flex !important;
           align-items: center !important;
           justify-content: center !important;
-          gap: 6px !important;
-          min-width: 90px !important;
-          min-height: 36px !important;
+          gap: ${isMobile ? '4px' : '6px'} !important;
+          min-width: ${isMobile ? '70px' : '90px'} !important;
+          min-height: ${isMobile ? '30px' : '36px'} !important;
           transition: all 0.2s ease !important;
           visibility: visible !important;
           opacity: 1 !important;
+          margin: 0 !important;
         `;
         
         // Add hover effects
@@ -157,6 +163,25 @@
         
         // Add to body
         document.body.appendChild(backBtn);
+        
+        // Update button styling on resize
+        window.addEventListener('resize', function() {
+          const existing = document.getElementById('global-back-button');
+          if (existing) {
+            const isMobile = window.innerWidth <= 768;
+            const isTablet = window.innerWidth > 768 && window.innerWidth <= 1024;
+            existing.style.top = isMobile ? '110px' : (isTablet ? '90px' : '80px');
+            existing.style.left = '0px';
+            existing.style.borderLeft = 'none';
+            existing.style.padding = isMobile ? '8px 12px' : '10px 18px';
+            existing.style.fontSize = isMobile ? '12px' : '14px';
+            existing.style.borderRadius = `0 ${isMobile ? '15px' : '20px'} ${isMobile ? '15px' : '20px'} 0`;
+            existing.style.gap = isMobile ? '4px' : '6px';
+            existing.style.minWidth = isMobile ? '70px' : '90px';
+            existing.style.minHeight = isMobile ? '30px' : '36px';
+            existing.style.boxShadow = '2px 3px 12px rgba(115, 0, 81, 0.4)';
+          }
+        });
       }
     </script>
     
