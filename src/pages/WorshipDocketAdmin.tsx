@@ -8,8 +8,7 @@ import {
     faUsers, 
     faCheckCircle,
     faArrowRight,
-    faNewspaper,
-    faClock
+    faNewspaper
 } from '@fortawesome/free-solid-svg-icons';
 
 const WorshipDocketAdmin: React.FC = () => {
