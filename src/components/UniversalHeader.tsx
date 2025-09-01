@@ -96,19 +96,34 @@ const UniversalHeader: React.FC = () => {
   const handleLogout = async () => {
     setgeneralLoading(true)
       try {
-          const response = await fetch(getApiUrl('usersLogout'), {
+          const logoutUrl = getApiUrl('usersLogout');
+          console.log('Header: Attempting logout to:', logoutUrl);
+          
+          const response = await fetch(logoutUrl, {
               method: 'POST',
-              credentials: 'include'
+              credentials: 'include',
+              headers: {
+                  'Content-Type': 'application/json'
+              }
           });
 
-          if (!response.ok) {
-              throw new Error('Logout failed');
+          console.log('Header: Logout response status:', response.status);
+
+          if (response.ok) {
+              console.log('Header: Logout successful');
+              setUserData(null);
+              navigate('/signIn');
+          } else {
+              console.log('Header: Logout failed with status:', response.status);
+              // Still clear user data and navigate even if server logout fails
+              setUserData(null);
+              navigate('/signIn');
           }
+      } catch (error) {
+          console.error('Header: Error during logout:', error);
+          // Still clear user data and navigate even if logout request fails
           setUserData(null);
           navigate('/signIn');
-      } catch (error) {
-          console.error('Error during logout:');
-          setError('An error occurred during logout');
       }finally{
         setgeneralLoading(false)
       }
