@@ -73,6 +73,7 @@
     border-radius: 15px;
     overflow: hidden;
     box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    text-align: center;
 }
 
 .section {
@@ -89,15 +90,16 @@
     font-size: 1.5rem;
     font-weight: 600;
     margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    display: block;
+    text-align: center;
 }
 
 .sectionHeader {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
+    flex-direction: column;
+    gap: 15px;
     margin-bottom: 20px;
 }
 
@@ -207,6 +209,86 @@
 .removeButton:hover {
     background: #c82333;
     transform: scale(1.1);
+}
+
+/* Terms and Conditions */
+.termsContainer {
+    text-align: left;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.termsContent {
+    background: #f8f9fa;
+    padding: 25px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    border-left: 4px solid #730051;
+}
+
+.termsContent h4 {
+    color: #730051;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    margin-top: 25px;
+}
+
+.termsContent h4:first-child {
+    margin-top: 0;
+}
+
+.termsContent ul {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 20px;
+}
+
+.termsContent li {
+    background: white;
+    padding: 12px 15px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    border-left: 3px solid #00c6ff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    line-height: 1.5;
+}
+
+.termsContent strong {
+    color: #730051;
+}
+
+.agreementSection {
+    background: #fff3cd;
+    border: 2px solid #ffc107;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+}
+
+.agreementLabel {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    font-weight: 500;
+    color: #333;
+    cursor: pointer;
+    line-height: 1.6;
+    text-align: left;
+}
+
+.agreementCheckbox {
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    cursor: pointer;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.checkmark {
+    display: block;
+    flex: 1;
 }
 
 /* Submit Section */
@@ -369,5 +451,23 @@
 
     .modalActions {
         flex-direction: column;
+    }
+
+    .termsContent {
+        padding: 20px 15px;
+    }
+
+    .termsContent li {
+        padding: 10px 12px;
+        font-size: 0.9rem;
+    }
+
+    .agreementSection {
+        padding: 15px;
+    }
+
+    .agreementLabel {
+        font-size: 0.9rem;
+        gap: 10px;
     }
 }

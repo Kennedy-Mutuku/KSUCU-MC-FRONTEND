@@ -401,7 +401,8 @@ body{
 .ET-title,
 .ministries-title,
 .comm-title,
-.boards-title{
+.boards-title,
+.requisitions-title{
     margin:10px 30px;
 }
 
@@ -2273,23 +2274,28 @@ hr{
 
     /* Universal Back to Top Button - Always visible on all devices */
     .universal-back-to-top {
-        position: fixed;
-        right: 20px;
-        bottom: 20px;
-        width: 50px;
-        height: 50px;
-        background: linear-gradient(135deg, #00c6ff, #0099cc);
-        color: white;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        z-index: 1001;
-        box-shadow: 0 5px 20px rgba(0, 198, 255, 0.4);
-        transition: all 0.3s ease;
-        opacity: 1;
-        visibility: visible;
+        position: fixed !important;
+        right: 20px !important;
+        bottom: 100px !important;
+        width: 45px !important;
+        height: 45px !important;
+        background: #00c6ff !important;
+        color: white !important;
+        border-radius: 50% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        cursor: pointer !important;
+        z-index: 99999 !important;
+        box-shadow: 0 5px 20px rgba(0, 198, 255, 0.6) !important;
+        transition: all 0.3s ease !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        border: 2px solid white !important;
+        min-width: 45px !important;
+        min-height: 45px !important;
+        pointer-events: auto !important;
+        font-size: 14px !important;
     }
 
     /* Hide the original back-to-top in sidebar since we have universal one */
@@ -2300,13 +2306,13 @@ hr{
     }
 
     .universal-back-to-top:hover {
-        background: linear-gradient(135deg, #0099cc, #0088bb);
-        box-shadow: 0 8px 30px rgba(0, 198, 255, 0.6);
-        transform: scale(1.05);
+        background: linear-gradient(135deg, #0099cc, #0088bb) !important;
+        box-shadow: 0 6px 25px rgba(0, 198, 255, 0.8) !important;
+        transform: scale(1.1) !important;
     }
 
     .universal-back-to-top:active {
-        transform: scale(0.95);
+        transform: scale(0.95) !important;
     }
 
     .commissionTitle{

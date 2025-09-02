@@ -1,18 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
 import styles from '../styles/Requisitions.module.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-    faBox, 
-    faPlus, 
-    faMinus, 
-    faCalendarAlt, 
-    faUser, 
-    faCheck
-} from '@fortawesome/free-solid-svg-icons';
-import { getApiUrl } from '../config/environment';
 
 interface RequisitionItem {
     id: string;
@@ -57,34 +46,11 @@ const Requisitions: React.FC = () => {
     const [success, setSuccess] = useState('');
     const [showConfirmation, setShowConfirmation] = useState(false);
 
-    const navigate = useNavigate();
 
     useEffect(() => {
-        checkAuthentication();
+        // No authentication required - allow public access
+        setIsAuthenticated(true);
     }, []);
-
-    const checkAuthentication = async () => {
-        try {
-            const response = await fetch(getApiUrl('users'), {
-                credentials: 'include'
-            });
-
-            if (response.ok) {
-                setIsAuthenticated(true);
-            } else {
-                setError('Please login to access requisitions');
-                setTimeout(() => {
-                    navigate('/signIn');
-                }, 2000);
-            }
-        } catch (error) {
-            console.error('Auth check failed:', error);
-            setError('Please login to access requisitions');
-            setTimeout(() => {
-                navigate('/signIn');
-            }, 2000);
-        }
-    };
 
     const addItem = () => {
         setFormData(prev => ({
@@ -196,10 +162,7 @@ const Requisitions: React.FC = () => {
             <UniversalHeader />
             <div className={styles.container}>
                 <div className={styles.header}>
-                    <h1>
-                        <FontAwesomeIcon icon={faBox} />
-                        Equipment Requisition
-                    </h1>
+                    <h1>Equipment Requisition</h1>
                     <p>Request equipment or items for your events and activities</p>
                 </div>
 
@@ -211,7 +174,6 @@ const Requisitions: React.FC = () => {
 
                 {success && (
                     <div className={styles.successAlert}>
-                        <FontAwesomeIcon icon={faCheck} />
                         {success}
                     </div>
                 )}
@@ -219,7 +181,7 @@ const Requisitions: React.FC = () => {
                 <form onSubmit={handleSubmit} className={styles.requisitionForm}>
                     {/* Recipient Information */}
                     <div className={styles.section}>
-                        <h3><FontAwesomeIcon icon={faUser} /> Recipient Information</h3>
+                        <h3>Recipient Information</h3>
                         <div className={styles.formRow}>
                             <div className={styles.formGroup}>
                                 <label>Full Name *</label>
@@ -247,10 +209,9 @@ const Requisitions: React.FC = () => {
                     {/* Items Section */}
                     <div className={styles.section}>
                         <div className={styles.sectionHeader}>
-                            <h3><FontAwesomeIcon icon={faBox} /> Items to Requisition</h3>
+                            <h3>Items to Requisition</h3>
                             <button type="button" onClick={addItem} className={styles.addButton}>
-                                <FontAwesomeIcon icon={faPlus} />
-                                Add Item
+                                + Add Item
                             </button>
                         </div>
 
@@ -292,7 +253,7 @@ const Requisitions: React.FC = () => {
                                         onClick={() => removeItem(item.id)}
                                         className={styles.removeButton}
                                     >
-                                        <FontAwesomeIcon icon={faMinus} />
+                                        ×
                                     </button>
                                 )}
                             </div>
@@ -301,7 +262,7 @@ const Requisitions: React.FC = () => {
 
                     {/* Time and Cost Section */}
                     <div className={styles.section}>
-                        <h3><FontAwesomeIcon icon={faCalendarAlt} /> Schedule & Cost</h3>
+                        <h3>Schedule & Cost</h3>
                         <div className={styles.formRow}>
                             <div className={styles.formGroup}>
                                 <label>Time to Receive *</label>
@@ -343,6 +304,54 @@ const Requisitions: React.FC = () => {
                                     placeholder="e.g., Sunday Service, Bible Study, Conference"
                                     required
                                 />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Terms and Conditions Section */}
+                    <div className={styles.section}>
+                        <h3>Terms and Conditions</h3>
+                        <div className={styles.termsContainer}>
+                            <div className={styles.termsContent}>
+                                <h4>Equipment Care & Responsibility</h4>
+                                <ul>
+                                    <li><strong>Damage Liability:</strong> Any damage to equipment must be reported immediately and costs for repair/replacement will be charged to the requisitioner on or before the return date.</li>
+                                    <li><strong>Loss Policy:</strong> Full replacement cost will be charged for any lost equipment.</li>
+                                    <li><strong>Condition Check:</strong> Equipment will be inspected upon return. Any damage beyond normal wear will incur charges.</li>
+                                </ul>
+
+                                <h4>Payment & Return Policy</h4>
+                                <ul>
+                                    <li><strong>Payment Due:</strong> All fees must be settled on or before the equipment return date.</li>
+                                    <li><strong>Late Return Penalty:</strong> Late returns will incur additional daily charges of KES 200 per item per day.</li>
+                                    <li><strong>Extended Use:</strong> Equipment needed beyond the agreed return time requires prior approval and additional fees.</li>
+                                </ul>
+
+                                <h4>Usage Guidelines</h4>
+                                <ul>
+                                    <li><strong>Authorized Use Only:</strong> Equipment is strictly for the stated purpose and may not be loaned to third parties.</li>
+                                    <li><strong>Proper Handling:</strong> Equipment must be handled with care according to manufacturer guidelines.</li>
+                                    <li><strong>Return Condition:</strong> All items must be returned clean and in proper working condition.</li>
+                                </ul>
+
+                                <h4>Compliance & Restrictions</h4>
+                                <ul>
+                                    <li><strong>Agreement Binding:</strong> By submitting this form, you agree to all terms and accept full responsibility.</li>
+                                    <li><strong>Future Access:</strong> Failure to comply may result in restricted access to future equipment requisitions.</li>
+                                    <li><strong>KSUCU Rights:</strong> KSUCU reserves the right to refuse equipment requests or modify terms as necessary.</li>
+                                </ul>
+                            </div>
+                            
+                            <div className={styles.agreementSection}>
+                                <label className={styles.agreementLabel}>
+                                    <input 
+                                        type="checkbox" 
+                                        required
+                                        className={styles.agreementCheckbox}
+                                    />
+                                    <span className={styles.checkmark}></span>
+                                    I have read, understood, and agree to abide by all the terms and conditions stated above. I accept full responsibility for any damage, loss, or late return penalties.
+                                </label>
                             </div>
                         </div>
                     </div>

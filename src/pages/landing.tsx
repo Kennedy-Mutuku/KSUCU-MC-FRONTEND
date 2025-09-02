@@ -665,6 +665,7 @@ const LandingPage = () => {
                     </ol>
                     </div>
                   </div>
+
                 </div>
                 
               </div>
@@ -1342,6 +1343,14 @@ const LandingPage = () => {
           
           <div 
             className={styles['quick-link-item']}
+            data-text="Requisitions"
+            onClick={(e) => handleQuickLinkClick(() => navigate('/requisitions'), e)}
+          >
+            <Package className={styles.icon} />
+          </div>
+          
+          <div 
+            className={styles['quick-link-item']}
             data-text="Financials"
             onClick={(e) => handleQuickLinkClick(() => navigate('/financial'), e)}
           >
@@ -1357,14 +1366,6 @@ const LandingPage = () => {
           </div>
           
           <div 
-            className={styles['quick-link-item']}
-            data-text="Requisitions"
-            onClick={(e) => handleQuickLinkClick(() => navigate('/requisitions'), e)}
-          >
-            <Package className={styles.icon} />
-          </div>
-          
-          <div 
             className={`${styles['quick-link-item']} ${styles['back-to-top']}`}
             data-text="Back to Top"
             onClick={(e) => {
@@ -1377,19 +1378,6 @@ const LandingPage = () => {
           >
             <ArrowUp className={styles.icon} />
           </div>
-        </div>
-
-        {/* Universal Back to Top Button */}
-        <div 
-          className={styles['universal-back-to-top']}
-          onClick={() => {
-            window.scrollTo({
-              top: 0,
-              behavior: 'smooth'
-            });
-          }}
-        >
-          <ArrowUp size={20} />
         </div>
 
         <div className={`${styles['footer']} ${styles['home-footer']}`} id='contacts'>
