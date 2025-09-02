@@ -6,6 +6,8 @@ import loadingAnime from '../assets/Animation - 1716747954931.gif';
 import { getApiUrl } from '../config/environment';
 import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
+import axios from 'axios';
+import Cookies from 'js-cookie';
 
 interface UserData {
     username: string;
@@ -23,6 +25,8 @@ const UserProfilePage: React.FC = () => {
     const [userData, setUserData] = useState<UserData | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [loggingOut, setLoggingOut] = useState(false);
+    const [successMessage, setSuccessMessage] = useState('');
 
     useEffect(() => {
         fetchUserData();
@@ -67,6 +71,83 @@ const UserProfilePage: React.FC = () => {
         navigate('/');
     };
 
+    const handleLogout = async () => {
+        try {
+            setLoggingOut(true);
+            console.log('Starting logout process...');
+            
+            // Call logout API
+            const response = await axios.post(getApiUrl('usersLogout'), {}, {
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            console.log('Logout API response:', response);
+            
+            // Clear cookies more thoroughly
+            const cookiesToClear = ['loginToken', 'sessionToken', 'authToken', 'token'];
+            cookiesToClear.forEach(cookieName => {
+                Cookies.remove(cookieName);
+                Cookies.remove(cookieName, { path: '/' });
+                Cookies.remove(cookieName, { domain: window.location.hostname });
+                Cookies.remove(cookieName, { domain: `.${window.location.hostname}` });
+            });
+            
+            // Clear all cookies fallback
+            document.cookie.split(";").forEach((cookie) => {
+                const eqPos = cookie.indexOf("=");
+                const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
+                document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
+                document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=${window.location.hostname}`;
+                document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.${window.location.hostname}`;
+            });
+            
+            // Clear local storage and session storage
+            localStorage.clear();
+            sessionStorage.clear();
+            
+            console.log('Logout successful, redirecting to login...');
+            
+            // Show success message briefly before redirecting
+            setSuccessMessage('Successfully logged out!');
+            setTimeout(() => {
+                navigate('/signIn', { replace: true });
+            }, 1000);
+            
+        } catch (error: any) {
+            console.error('Logout API error:', error);
+            
+            // Even if API fails, clear local data and redirect
+            const cookiesToClear = ['loginToken', 'sessionToken', 'authToken', 'token'];
+            cookiesToClear.forEach(cookieName => {
+                Cookies.remove(cookieName);
+                Cookies.remove(cookieName, { path: '/' });
+                Cookies.remove(cookieName, { domain: window.location.hostname });
+                Cookies.remove(cookieName, { domain: `.${window.location.hostname}` });
+            });
+            
+            document.cookie.split(";").forEach((cookie) => {
+                const eqPos = cookie.indexOf("=");
+                const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
+                document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
+                document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=${window.location.hostname}`;
+                document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.${window.location.hostname}`;
+            });
+            
+            localStorage.clear();
+            sessionStorage.clear();
+            
+            setSuccessMessage('Logged out successfully!');
+            setTimeout(() => {
+                navigate('/signIn', { replace: true });
+            }, 1000);
+        } finally {
+            setLoggingOut(false);
+        }
+    };
+
 
     if (loading) {
         return (
@@ -109,6 +190,35 @@ const UserProfilePage: React.FC = () => {
                 </Link>
 
                 <h2 className={styles.text} style={{ marginTop: '10px', marginBottom: '15px', fontSize: '1.3rem' }}>Welcome back, {userData.username}!</h2>
+                
+                {/* Success/Error Messages */}
+                {successMessage && (
+                    <div style={{ 
+                        backgroundColor: '#d4edda',
+                        color: '#155724',
+                        border: '1px solid #c3e6cb',
+                        padding: '10px',
+                        borderRadius: '5px',
+                        marginBottom: '15px',
+                        textAlign: 'center'
+                    }}>
+                        {successMessage}
+                    </div>
+                )}
+                
+                {error && (
+                    <div style={{ 
+                        backgroundColor: '#f8d7da',
+                        color: '#721c24',
+                        border: '1px solid #f5c6cb',
+                        padding: '10px',
+                        borderRadius: '5px',
+                        marginBottom: '15px',
+                        textAlign: 'center'
+                    }}>
+                        {error}
+                    </div>
+                )}
                 
                 {/* Continue to KSUCUMC Button */}
                 <div style={{ textAlign: 'center', margin: '15px 0' }}>
@@ -192,7 +302,7 @@ const UserProfilePage: React.FC = () => {
                     </div>
                 </div>
 
-                {/* Edit Details button */}
+                {/* Edit Details and Logout buttons */}
                 <div style={{ 
                     display: 'flex', 
                     gap: '10px', 
@@ -231,6 +341,39 @@ const UserProfilePage: React.FC = () => {
                     >
                         Edit Details
                     </Link>
+                    
+                    <button
+                        onClick={handleLogout}
+                        disabled={loggingOut}
+                        style={{
+                            backgroundColor: '#dc3545',
+                            color: 'white',
+                            border: 'none',
+                            padding: '8px 16px',
+                            borderRadius: '20px',
+                            fontSize: '13px',
+                            fontWeight: '500',
+                            cursor: loggingOut ? 'not-allowed' : 'pointer',
+                            opacity: loggingOut ? 0.6 : 1,
+                            transition: 'all 0.3s ease',
+                            boxShadow: '0 2px 4px rgba(220, 53, 69, 0.3)',
+                            minWidth: '100px'
+                        }}
+                        onMouseOver={(e) => {
+                            if (!loggingOut) {
+                                e.currentTarget.style.backgroundColor = '#c82333';
+                                e.currentTarget.style.transform = 'translateY(-1px)';
+                                e.currentTarget.style.boxShadow = '0 3px 6px rgba(220, 53, 69, 0.4)';
+                            }
+                        }}
+                        onMouseOut={(e) => {
+                            e.currentTarget.style.backgroundColor = '#dc3545';
+                            e.currentTarget.style.transform = 'translateY(0)';
+                            e.currentTarget.style.boxShadow = '0 2px 4px rgba(220, 53, 69, 0.3)';
+                        }}
+                    >
+                        {loggingOut ? 'Logging Out...' : 'Log Out'}
+                    </button>
                 </div>
             </div>
         </div>

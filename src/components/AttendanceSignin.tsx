@@ -655,7 +655,7 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
                                             }}
                                             style={{
                                                 padding: '4px 8px',
-                                                background: '#ff4444',
+                                                background: '#6c757d',
                                                 color: 'white',
                                                 border: 'none',
                                                 borderRadius: '4px',

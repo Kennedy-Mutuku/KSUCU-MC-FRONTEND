@@ -1,7 +1,20 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowUp } from 'lucide-react';
 
 const BackToTopButton: React.FC = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   const scrollToTop = () => {
     // Multiple scroll methods to ensure it works
     document.documentElement.scrollTop = 0;
@@ -15,10 +28,10 @@ const BackToTopButton: React.FC = () => {
 
   const buttonStyle: React.CSSProperties = {
     position: 'fixed',
-    right: '20px',
-    bottom: '100px',
-    width: '45px',
-    height: '45px',
+    right: isMobile ? '15px' : '20px',
+    bottom: isMobile ? '80px' : '100px',
+    width: isMobile ? '35px' : '45px',
+    height: isMobile ? '35px' : '45px',
     backgroundColor: '#00c6ff',
     color: 'white',
     borderRadius: '50%',
@@ -27,8 +40,8 @@ const BackToTopButton: React.FC = () => {
     justifyContent: 'center',
     cursor: 'pointer',
     zIndex: 99999,
-    boxShadow: '0 5px 20px rgba(0, 198, 255, 0.6)',
-    border: '2px solid white',
+    boxShadow: isMobile ? '0 3px 15px rgba(0, 198, 255, 0.5)' : '0 5px 20px rgba(0, 198, 255, 0.6)',
+    border: isMobile ? '1px solid white' : '2px solid white',
     transition: 'all 0.3s ease',
     opacity: 1,
     visibility: 'visible'
@@ -36,14 +49,14 @@ const BackToTopButton: React.FC = () => {
 
   const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
     e.currentTarget.style.backgroundColor = '#0099cc';
-    e.currentTarget.style.transform = 'scale(1.1)';
-    e.currentTarget.style.boxShadow = '0 6px 25px rgba(0, 198, 255, 0.8)';
+    e.currentTarget.style.transform = isMobile ? 'scale(1.05)' : 'scale(1.1)';
+    e.currentTarget.style.boxShadow = isMobile ? '0 4px 20px rgba(0, 198, 255, 0.7)' : '0 6px 25px rgba(0, 198, 255, 0.8)';
   };
 
   const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
     e.currentTarget.style.backgroundColor = '#00c6ff';
     e.currentTarget.style.transform = 'scale(1)';
-    e.currentTarget.style.boxShadow = '0 5px 20px rgba(0, 198, 255, 0.6)';
+    e.currentTarget.style.boxShadow = isMobile ? '0 3px 15px rgba(0, 198, 255, 0.5)' : '0 5px 20px rgba(0, 198, 255, 0.6)';
   };
 
   return (
@@ -54,7 +67,7 @@ const BackToTopButton: React.FC = () => {
       title="Back to Top"
       style={buttonStyle}
     >
-      <ArrowUp size={18} />
+      <ArrowUp size={isMobile ? 14 : 18} />
     </div>
   );
 };

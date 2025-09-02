@@ -526,7 +526,6 @@ const LandingPageHeader = () => {
                 animation: 'modalSlideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
                 border: '1px solid rgba(115, 0, 81, 0.08)'
               }}>
-            {error && <div className={styles.error} style={{ textAlign: 'center', position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 1001, backgroundColor: '#ff4444', color: 'white', padding: '15px 25px', borderRadius: '8px', boxShadow: '0 4px 20px rgba(0,0,0,0.3)' }}>{error}</div>}
             <a onClick={navigateMedia} className={styles['quick-item--link']}>
               Media
             </a>
@@ -550,7 +549,10 @@ const LandingPageHeader = () => {
               <FontAwesomeIcon icon={faDownload} style={{ marginRight: '8px' }} />
               Constitution
             </a>
-            <div onClick={handleAboutUsClick} className={styles['quick-item--link']} style={{gridColumn: '1 / -1', maxWidth: '200px', margin: '0 auto'}}>
+            <div onClick={() => handlePublicLink('/requisitions')} className={styles['quick-item--link']}>
+              Requisitions
+            </div>
+            <div onClick={handleAboutUsClick} className={styles['quick-item--link']}>
               About Us
             </div>
               </div>
@@ -558,7 +560,6 @@ const LandingPageHeader = () => {
           )}
         </div>
 
-        {error && <div className={styles.error} style={{ textAlign: 'center', position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 1001, backgroundColor: '#ff4444', color: 'white', padding: '15px 25px', borderRadius: '8px', boxShadow: '0 4px 20px rgba(0,0,0,0.3)' }}>{error}</div>}
         
         <div className={`${styles['']} ${styles['container-vidTitle']}`}>
           <div className={styles['intro-video--header']}>

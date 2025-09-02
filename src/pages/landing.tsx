@@ -1030,7 +1030,7 @@ const LandingPage = () => {
                       }}
                       style={{
                         padding: '4px 8px',
-                        background: '#ff4444',
+                        background: '#6c757d',
                         color: 'white',
                         border: 'none',
                         borderRadius: '3px',
@@ -1502,23 +1502,6 @@ const LandingPage = () => {
     )}
 
     {/* Error Display */}
-    {error && (
-      <div style={{ 
-        position: 'fixed', 
-        top: '50%', 
-        left: '50%', 
-        transform: 'translate(-50%, -50%)', 
-        zIndex: 1001, 
-        backgroundColor: '#ff4444', 
-        color: 'white', 
-        padding: '15px 25px', 
-        borderRadius: '8px', 
-        boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
-        textAlign: 'center' 
-      }}>
-        {error}
-      </div>
-    )}
   </React.Fragment>
   );
 };
