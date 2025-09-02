@@ -35,7 +35,6 @@ const LandingPageHeader = () => {
   const [newsData, setNewsData] = useState<NewsData | null>(null);
   const [openCommission, setOpenCommision] = useState(false);
   const [userData, setUserData] = useState<{ username: string; email: string; yos: number; phone: string; et: string; ministry: string } | null>(null);
-  const [error, setError] = useState('');
   const [countdown, setCountdown] = useState<CountdownTime | null>(null);
   const [eventPassed, setEventPassed] = useState<boolean>(false);
   const [generalLoading, setgeneralLoading] = useState(false);
@@ -159,7 +158,7 @@ const LandingPageHeader = () => {
         }  
 
         if (!data.phone || !data.reg || !data.yos) {
-            setError('...navigating to update details')
+            console.log('...navigating to update details')
             navigate('/changeDetails');
             return;
         }
@@ -320,7 +319,7 @@ const LandingPageHeader = () => {
           navigate('/signIn');
       } catch (error) {
           console.error('Error during logout:');
-          setError('An error occurred during logout');
+          console.log('An error occurred during logout');
       }finally{
         setgeneralLoading(false)
       }
@@ -364,9 +363,8 @@ const LandingPageHeader = () => {
     if(userData){
       navigate('/media')
     }else{
-      setError('Please log in to access Media');
+      console.log('Please log in to access Media');
       setTimeout(() => {
-        setError('')
         navigate('/signIn');
       }, 2000);
     }
@@ -377,9 +375,8 @@ const LandingPageHeader = () => {
     if(userData){
       navigate(path);
     }else{
-      setError(`Please log in to access ${linkName}`);
+      console.log(`Please log in to access ${linkName}`);
       setTimeout(() => {
-        setError('')
         navigate('/signIn');
       }, 2000);
     }
