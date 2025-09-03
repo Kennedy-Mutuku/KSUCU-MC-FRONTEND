@@ -1,41 +1,365 @@
 @import url(global.css);
-@import url(../styles/signup.module.css);
 
-.bsTitle{
-    margin: 20px auto 0px auto;
-    width: 80%;
+.bsTitle {
+    margin: 40px auto 20px auto;
+    width: 90%;
+    max-width: 800px;
     text-align: center;
-    font-size: 22px;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #730051;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
 }
-.form{
+
+.bsTitle::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(135deg, #730051, #00c6ff);
+    border-radius: 2px;
+}
+
+.container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 40px;
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+    position: relative;
+    overflow: hidden;
+}
+
+.container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(135deg, #730051, #00c6ff);
+}
+
+.text {
+    margin-bottom: 30px;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2c3e50;
+    text-align: center;
+}
+
+.form {
     overflow: auto;
-}
-.form div{
-    margin-bottom: 30px;
-}
-
-.submisions{
-    padding-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
 }
 
-.form input{
+.form > div {
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 5px;
+}
+
+.form input[type="text"],
+.form input[type="number"],
+.form select {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: #f8fafc;
+    box-sizing: border-box;
+}
+
+.form input[type="text"]:focus,
+.form input[type="number"]:focus,
+.form select:focus {
+    outline: none;
+    border-color: #730051;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(115, 0, 81, 0.1);
+    transform: translateY(-2px);
+}
+
+.form select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23730051' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    padding-right: 45px;
+}
+
+.inputs {
+    width: 100%;
+}
+
+.payment-option {
+    padding: 10px;
+    font-size: 1rem;
+}
+
+/* Gender selection styling */
+.form > div:has(input[type="radio"]) {
+    gap: 15px;
+}
+
+.form > div:has(input[type="radio"]) > div {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px;
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.form > div:has(input[type="radio"]) > div:hover {
+    background: #ffffff;
+    border-color: #730051;
+    transform: translateY(-2px);
+}
+
+.form input[type="radio"] {
+    width: 20px;
+    height: 20px;
+    accent-color: #730051;
+    cursor: pointer;
+}
+
+.form input[type="radio"] + label {
     margin: 0;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    flex: 1;
 }
 
-.container{
-    padding: 20px 0 50px 0;
-    margin: 20px auto;
+.submisions {
+    display: flex;
+    gap: 20px;
+    margin-top: 30px;
+    justify-content: center;
+    align-items: center;
 }
 
-.text{
-    margin-bottom: 30px;
-    font-size: 16px;
+.clearForm {
+    background: transparent;
+    color: #e53e3e;
+    border: 2px solid #e53e3e;
+    padding: 15px 30px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    min-width: 120px;
+    text-align: center;
 }
 
-.submitDataButton{
+.clearForm:hover {
+    background: #e53e3e;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(229, 62, 62, 0.3);
+}
+
+.submitData {
+    background: linear-gradient(135deg, #730051, #00c6ff);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(115, 0, 81, 0.3);
+    min-width: 160px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.submitData:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(115, 0, 81, 0.4);
+}
+
+.submitDataButton {
     background: transparent;
     border: none;
-    font-size: 1.1em;
-    font-weight: 400;
+    font-size: 1rem;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
+.submitDataButton:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.form-footer {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.form-footer p {
+    margin: 0;
+    font-size: 1rem;
+    color: #4a5568;
+}
+
+.form-footer a {
+    color: #730051;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.form-footer a:hover {
+    color: #00c6ff;
+    text-decoration: underline;
+}
+
+.error {
+    margin: 20px auto;
+    max-width: 600px;
+    padding: 15px 20px;
+    border-radius: 12px;
+    text-align: center;
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+.success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    animation: slideDown 0.3s ease-out;
+}
+
+.errorMsg {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f1b1b3;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 8px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        margin: 20px;
+        padding: 30px 20px;
+        border-radius: 15px;
+    }
+
+    .bsTitle {
+        font-size: 2rem;
+        margin: 30px auto 20px auto;
+    }
+
+    .form {
+        gap: 20px;
+    }
+
+    .submisions {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .clearForm,
+    .submitData {
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .form input[type="text"],
+    .form input[type="number"],
+    .form select {
+        padding: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        margin: 10px;
+        padding: 20px 15px;
+    }
+
+    .bsTitle {
+        font-size: 1.8rem;
+    }
+
+    .text {
+        font-size: 1.3rem;
+    }
+
+    .form input[type="text"],
+    .form input[type="number"],
+    .form select {
+        padding: 10px;
+        font-size: 0.95rem;
+    }
+
+    .clearForm,
+    .submitData {
+        padding: 12px 25px;
+        font-size: 0.95rem;
+    }
+}

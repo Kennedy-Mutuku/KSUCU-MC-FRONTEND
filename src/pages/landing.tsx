@@ -1365,19 +1365,6 @@ const LandingPage = () => {
             <GraduationCap className={styles.icon} />
           </div>
           
-          <div 
-            className={`${styles['quick-link-item']} ${styles['back-to-top']}`}
-            data-text="Back to Top"
-            onClick={(e) => {
-              e.preventDefault();
-              window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-              });
-            }}
-          >
-            <ArrowUp className={styles.icon} />
-          </div>
         </div>
 
         <div className={`${styles['footer']} ${styles['home-footer']}`} id='contacts'>

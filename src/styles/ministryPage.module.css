@@ -36,14 +36,14 @@
 }
 
 .title {
-  font-size: 3rem;
+  font-size: 2.5rem;
   font-weight: 700;
   margin: 0 0 15px 0;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .subtitle {
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   margin: 0;
   opacity: 0.9;
   font-weight: 300;
@@ -70,22 +70,22 @@
 
 .description h2 {
   color: #730051;
-  font-size: 2.2rem;
+  font-size: 1.8rem;
   margin-bottom: 20px;
   font-weight: 700;
 }
 
 .description h3 {
   color: #2c3e50;
-  font-size: 1.6rem;
+  font-size: 1.3rem;
   margin: 30px 0 15px 0;
   font-weight: 600;
 }
 
 .description p {
   color: #4a5568;
-  font-size: 1.1rem;
-  line-height: 1.8;
+  font-size: 0.95rem;
+  line-height: 1.6;
   margin-bottom: 20px;
   text-align: justify;
 }
@@ -126,7 +126,7 @@
   text-align: center;
   border-radius: 10px;
   font-weight: 600;
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   box-shadow: 0 4px 15px rgba(115, 0, 81, 0.3);
   transition: all 0.3s ease;
 }
@@ -146,14 +146,14 @@
 
 .joinSection h2 {
   color: #730051;
-  font-size: 2rem;
+  font-size: 1.6rem;
   margin-bottom: 15px;
 }
 
 .joinSection p {
   color: #4a5568;
-  font-size: 1.1rem;
-  line-height: 1.7;
+  font-size: 0.95rem;
+  line-height: 1.6;
   margin-bottom: 25px;
 }
 
@@ -163,7 +163,7 @@
 
 .requirements h3 {
   color: #2c3e50;
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   margin-bottom: 15px;
 }
 
@@ -207,7 +207,7 @@
 
 .schedule h3 {
   color: #2c3e50;
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   margin-bottom: 20px;
 }
 
@@ -233,7 +233,7 @@
 
 .scheduleItem strong {
   color: #730051;
-  font-size: 1.2rem;
+  font-size: 1rem;
   display: block;
   margin-bottom: 10px;
 }
@@ -241,7 +241,7 @@
 .scheduleItem p {
   color: #4a5568;
   margin: 0;
-  font-size: 1rem;
+  font-size: 0.9rem;
 }
 
 .actionButtons {
@@ -258,7 +258,7 @@
   border-radius: 50px;
   text-decoration: none;
   font-weight: 600;
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(115, 0, 81, 0.3);
   border: none;
@@ -279,7 +279,7 @@
   border-radius: 50px;
   text-decoration: none;
   font-weight: 600;
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   transition: all 0.3s ease;
 }
 
@@ -297,7 +297,7 @@
 
 .testimonialsSection h2 {
   text-align: center;
-  font-size: 2.5rem;
+  font-size: 2rem;
   margin-bottom: 40px;
   color: white;
 }
@@ -326,8 +326,8 @@
 }
 
 .testimonial p {
-  font-size: 1.1rem;
-  line-height: 1.6;
+  font-size: 0.95rem;
+  line-height: 1.5;
   margin-bottom: 20px;
   font-style: italic;
 }
@@ -335,7 +335,7 @@
 .testimonial span {
   color: #00c6ff;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 0.9rem;
 }
 
 /* Responsive Design */

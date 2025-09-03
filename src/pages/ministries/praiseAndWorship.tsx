@@ -2,7 +2,6 @@ import React from 'react';
 import styles from '../../styles/ministryPage.module.css';
 import UniversalHeader from '../../components/UniversalHeader';
 import Footer from '../../components/footer';
-import AttendanceSignin from '../../components/AttendanceSignin';
 import { Link } from 'react-router-dom';
 import pwImg from '../../assets/praise-and-worship.jpg';
 
@@ -151,10 +150,6 @@ const PraiseAndWorshipPage: React.FC = () => {
         </div>
       </div>
       
-      {/* Attendance Section */}
-      <div className={styles.attendanceSection}>
-        <AttendanceSignin ministry="Praise and Worship" />
-      </div>
       <Footer />
     </>
   );
