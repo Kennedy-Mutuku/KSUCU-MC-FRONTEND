@@ -16,7 +16,7 @@ import visionImg from '../assets/gents.jpg'
 import missionImg from '../assets/ladies.jpg'
 import valuesImg from '../assets/amptheatre.jpg'
 import prayerPNG from '../assets/RIVET.jpg'
-import { Heart, Camera, BookOpen, Library, DollarSign, GraduationCap, Package, ArrowUp } from "lucide-react";
+import { Heart, Camera, BookOpen, Library, DollarSign, GraduationCap, Package } from "lucide-react";
 import LandingPageHeader from '../components/LandingPageHeader';
 import ModernNewsDisplay from '../components/ModernNewsDisplay';
 

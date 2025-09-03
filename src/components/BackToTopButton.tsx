@@ -3,8 +3,6 @@ import { ArrowUp } from 'lucide-react';
 
 const BackToTopButton: React.FC = () => {
   const [isMobile, setIsMobile] = useState(false);
-  // ALWAYS show the button - no more conditional visibility
-  const showButton = true;
 
   useEffect(() => {
     const checkMobile = () => {
