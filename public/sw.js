@@ -1,5 +1,5 @@
-// Minimal service worker - no caching for dynamic content
-const CACHE_NAME = 'ksucu-v2';
+// Safe service worker - minimal interference with API calls
+const CACHE_NAME = 'ksucu-v3';
 
 // Install event - skip waiting immediately
 self.addEventListener('install', (event) => {
@@ -7,52 +7,55 @@ self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
 
-// Activate event - claim clients immediately
+// Activate event - claim clients immediately and clear old caches
 self.addEventListener('activate', (event) => {
   console.log('Service Worker activating...');
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
-          console.log('Deleting cache:', cacheName);
-          return caches.delete(cacheName);
+          if (cacheName !== CACHE_NAME) {
+            console.log('Deleting old cache:', cacheName);
+            return caches.delete(cacheName);
+          }
         })
       );
+    }).then(() => {
+      self.clients.claim();
     })
   );
-  self.clients.claim();
 });
 
-// Fetch event - NO CACHING, always fetch from network
+// Fetch event - minimal intervention, let browser handle everything
 self.addEventListener('fetch', (event) => {
   const { request } = event;
+  const url = new URL(request.url);
   
-  // For API calls, always fetch from network
-  if (request.url.includes('/api/') || 
+  // Skip service worker for API calls entirely - let browser handle them
+  if (request.url.includes('/users/') || 
+      request.url.includes('/attendance/') || 
+      request.url.includes('/api/') ||
       request.url.includes('localhost:3000') || 
       request.url.includes('localhost:5000') ||
-      request.url.includes('ksucu-mc.co.ke')) {
-    event.respondWith(
-      fetch(request, {
-        cache: 'no-store',
-        headers: {
-          ...request.headers,
-          'Cache-Control': 'no-cache, no-store, must-revalidate',
-          'Pragma': 'no-cache',
-          'Expires': '0'
-        }
-      }).catch(() => {
-        return new Response('Network error', {
-          status: 503,
-          statusText: 'Service Unavailable'
-        });
-      })
-    );
+      (url.hostname === 'ksucu-mc.co.ke' && (
+        url.pathname.includes('/users/') ||
+        url.pathname.includes('/attendance/') ||
+        url.pathname.includes('/api/')
+      ))) {
+    // Don't intercept API calls at all
     return;
   }
   
-  // For other resources, just fetch normally
-  event.respondWith(fetch(request));
+  // For static resources only, use network-first approach
+  event.respondWith(
+    fetch(request).catch(() => {
+      // If network fails, return a simple error
+      return new Response('Offline', {
+        status: 503,
+        statusText: 'Service Unavailable'
+      });
+    })
+  );
 });
 
 // Handle background sync - disabled for now

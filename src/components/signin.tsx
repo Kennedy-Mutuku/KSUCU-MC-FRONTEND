@@ -7,6 +7,7 @@ import loadingAnime from '../assets/Animation - 1716747954931.gif';
 import {Eye, EyeOff} from 'lucide-react'
 import { getApiUrl, isDevMode } from '../config/environment';
 import UserProfile from './userProfile';
+import ErrorBoundary from './ErrorBoundary';
 
 
 const SignIn: React.FC = () => {
@@ -32,14 +33,19 @@ const SignIn: React.FC = () => {
         checkUserAuthentication();
     }, []);
 
-    const checkUserAuthentication = async () => {
+    const checkUserAuthentication = async (retryCount = 0) => {
         console.log('🔍 SignIn: Checking user authentication...');
         try {
             const apiUrl = getApiUrl('users');
             console.log('🔍 SignIn: Fetching user data from:', apiUrl);
             
-            const response = await fetch(apiUrl, {
-                credentials: 'include'
+            // Add cache-busting and better headers for cross-device compatibility
+            const response = await fetch(`${apiUrl}?t=${Date.now()}`, {
+                credentials: 'include',
+                headers: {
+                    'Cache-Control': 'no-cache, no-store, must-revalidate',
+                    'Pragma': 'no-cache'
+                }
             });
 
             console.log('🔍 SignIn: Response status:', response.status);
@@ -55,6 +61,14 @@ const SignIn: React.FC = () => {
             }
         } catch (error) {
             console.log('SignIn: Authentication check failed:', error);
+            
+            // Retry logic for production connection issues
+            if (retryCount < 2) {
+                console.log(`🔄 Retrying authentication check (attempt ${retryCount + 1}/3)...`);
+                setTimeout(() => checkUserAuthentication(retryCount + 1), 2000);
+                return;
+            }
+            
         } finally {
             console.log('🔍 SignIn: Authentication check completed, setting checkingAuth to false');
             setCheckingAuth(false);
@@ -147,8 +161,11 @@ const SignIn: React.FC = () => {
 
             const response = await axios.post(endpoint, loginData, {
                 withCredentials: true, // Include cookies in the request
+                timeout: 30000, // 30 second timeout
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Cache-Control': 'no-cache',
+                    'User-Agent': navigator.userAgent // Help backend identify device
                 }
             });
     
@@ -161,6 +178,12 @@ const SignIn: React.FC = () => {
         } catch (error: any) {
             console.error('SignIn: Login error:', error);
             console.error('SignIn: Error response:', error.response);
+            console.error('SignIn: Error code:', error.code);
+            console.error('SignIn: Device info:', {
+                userAgent: navigator.userAgent,
+                platform: navigator.platform,
+                onLine: navigator.onLine
+            });
     
             if (error.response && error.response.status === 401) {
                 setError('Invalid credentials. Please check your email and password.');
@@ -168,9 +191,18 @@ const SignIn: React.FC = () => {
                 setError('Login endpoint not found. Please check your email format.');
             } else if (error.response) {
                 setError(error.response.data?.message || 'Login failed. Please try again.');
+            } else if (error.code === 'ECONNABORTED' || error.code === 'ETIMEDOUT') {
+                setError('Connection timeout. Please check your internet connection and try again.');
+            } else if (error.code === 'ERR_NETWORK' || !navigator.onLine) {
+                setError('Network error. Please check your internet connection and try again.');
             } else {
-                // Handle network or other errors
-                setError('Network error. Please check your connection and try again.');
+                // Handle other device-specific errors - ensure we only pass strings
+                const errorMessage = typeof error === 'object' && error.message 
+                    ? error.message 
+                    : typeof error === 'string' 
+                    ? error 
+                    : 'Unknown connection error';
+                setError(`Connection error. Please try again or contact support. (${errorMessage})`);
             }
         } finally {
             setgeneralLoading(false);
@@ -190,12 +222,17 @@ const SignIn: React.FC = () => {
                 <div style={{ textAlign: 'center', padding: '50px' }}>
                     <img src={loadingAnime} alt="Loading..." className={styles['loading-gif']} />
                     <p>Checking authentication...</p>
+                    {/* Fallback text for devices that might not load images */}
+                    <noscript>
+                        <p>Loading... Please ensure JavaScript is enabled.</p>
+                    </noscript>
                 </div>
             </div>
         );
     }
 
     return (
+        <ErrorBoundary>
         <div className={styles.body}>
             {generalLoading && (
                 <div className={styles['loading-screen']}>
@@ -281,6 +318,7 @@ const SignIn: React.FC = () => {
             </div>
 
         </div>
+        </ErrorBoundary>
     );
 };
 

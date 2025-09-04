@@ -71,14 +71,17 @@ const LandingPage = () => {
   
 
   // Check for active attendance session
-  const checkActiveSession = async () => {
+  const checkActiveSession = async (retryCount = 0) => {
     try {
       console.log('🔄 Checking active session from backend...');
-      const response = await fetch(getApiUrl('attendanceSessionStatus'), {
+      const timestamp = Date.now();
+      const response = await fetch(`${getApiUrl('attendanceSessionStatus')}?t=${timestamp}&r=${Math.random()}`, {
         method: 'GET',
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache'
         },
       });
 
@@ -105,6 +108,14 @@ const LandingPage = () => {
     } catch (error) {
       console.error('❌ Error checking active session:', error);
       console.log('🚫 Backend required for cross-device sessions');
+      
+      // Retry logic for production connection issues
+      if (retryCount < 2) {
+        console.log(`🔄 Retrying session check (attempt ${retryCount + 1}/3)...`);
+        setTimeout(() => checkActiveSession(retryCount + 1), 2000);
+        return;
+      }
+      
       setActiveSession(null);
     }
   };
