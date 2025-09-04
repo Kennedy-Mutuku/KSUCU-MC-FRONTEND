@@ -1,46 +1,21 @@
-const CACHE_NAME = 'ksucu-v1';
-const STATIC_CACHE_NAME = 'ksucu-static-v1';
-const DYNAMIC_CACHE_NAME = 'ksucu-dynamic-v1';
+// Minimal service worker - no caching for dynamic content
+const CACHE_NAME = 'ksucu-v2';
 
-// Assets to cache immediately
-const STATIC_ASSETS = [
-  '/',
-  '/index.html',
-  '/src/main.tsx',
-  '/offline.html',
-  // Add commonly used assets
-  '/src/assets/cuLogoUAR.png'
-];
-
-// Install event - cache static assets
+// Install event - skip waiting immediately
 self.addEventListener('install', (event) => {
   console.log('Service Worker installing...');
-  event.waitUntil(
-    caches.open(STATIC_CACHE_NAME)
-      .then((cache) => {
-        console.log('Caching static assets');
-        return cache.addAll(STATIC_ASSETS.map(url => {
-          return new Request(url, { cache: 'reload' });
-        }));
-      })
-      .catch((error) => {
-        console.error('Failed to cache static assets:', error);
-      })
-  );
   self.skipWaiting();
 });
 
-// Activate event - clean up old caches
+// Activate event - claim clients immediately
 self.addEventListener('activate', (event) => {
   console.log('Service Worker activating...');
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
-          if (cacheName !== STATIC_CACHE_NAME && cacheName !== DYNAMIC_CACHE_NAME) {
-            console.log('Deleting old cache:', cacheName);
-            return caches.delete(cacheName);
-          }
+          console.log('Deleting cache:', cacheName);
+          return caches.delete(cacheName);
         })
       );
     })
@@ -48,95 +23,44 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Fetch event - serve from cache, fallback to network
+// Fetch event - NO CACHING, always fetch from network
 self.addEventListener('fetch', (event) => {
   const { request } = event;
-  const url = new URL(request.url);
-
-  // Skip non-GET requests
-  if (request.method !== 'GET') {
-    return;
-  }
-
-  // Skip external requests (different origin)
-  if (url.origin !== location.origin) {
-    return;
-  }
-
-  event.respondWith(
-    caches.match(request)
-      .then((cachedResponse) => {
-        if (cachedResponse) {
-          console.log('Serving from cache:', request.url);
-          return cachedResponse;
+  
+  // For API calls, always fetch from network
+  if (request.url.includes('/api/') || 
+      request.url.includes('localhost:3000') || 
+      request.url.includes('localhost:5000') ||
+      request.url.includes('ksucu-mc.co.ke')) {
+    event.respondWith(
+      fetch(request, {
+        cache: 'no-store',
+        headers: {
+          ...request.headers,
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
         }
-
-        // Not in cache, fetch from network
-        return fetch(request)
-          .then((networkResponse) => {
-            // Don't cache failed responses
-            if (!networkResponse || networkResponse.status !== 200) {
-              return networkResponse;
-            }
-
-            // Clone the response for caching
-            const responseClone = networkResponse.clone();
-
-            // Cache dynamic content
-            caches.open(DYNAMIC_CACHE_NAME)
-              .then((cache) => {
-                cache.put(request, responseClone);
-              });
-
-            return networkResponse;
-          })
-          .catch(() => {
-            console.log('Network failed, showing offline page');
-            // Return offline page for navigation requests
-            if (request.mode === 'navigate') {
-              return caches.match('/offline.html');
-            }
-            // Return a simple offline response for other requests
-            return new Response('Offline', {
-              status: 200,
-              statusText: 'Offline'
-            });
-          });
+      }).catch(() => {
+        return new Response('Network error', {
+          status: 503,
+          statusText: 'Service Unavailable'
+        });
       })
-  );
+    );
+    return;
+  }
+  
+  // For other resources, just fetch normally
+  event.respondWith(fetch(request));
 });
 
-// Handle background sync for form submissions when back online
+// Handle background sync - disabled for now
 self.addEventListener('sync', (event) => {
-  console.log('Background sync triggered:', event.tag);
-  if (event.tag === 'attendance-sync') {
-    event.waitUntil(syncAttendanceData());
-  }
+  console.log('Background sync disabled');
 });
 
-// Sync attendance data when back online
-async function syncAttendanceData() {
-  try {
-    const cache = await caches.open(DYNAMIC_CACHE_NAME);
-    const requests = await cache.keys();
-    
-    // Process any pending attendance submissions
-    for (const request of requests) {
-      if (request.url.includes('/attendance/') && request.method === 'POST') {
-        try {
-          await fetch(request);
-          await cache.delete(request);
-        } catch (error) {
-          console.error('Failed to sync attendance data:', error);
-        }
-      }
-    }
-  } catch (error) {
-    console.error('Background sync failed:', error);
-  }
-}
-
-// Handle push notifications (future enhancement)
+// Handle push notifications
 self.addEventListener('push', (event) => {
   if (event.data) {
     const data = event.data.json();

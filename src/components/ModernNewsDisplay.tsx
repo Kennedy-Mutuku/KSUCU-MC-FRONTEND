@@ -43,7 +43,7 @@ const ModernNewsDisplay: React.FC = () => {
         }
         
         const data = await response.json();
-        console.log('📰 News data received:', data);
+        console.log('News data received:', data);
         setNewsData(data);
         setLoading(false);
       } catch (error: any) {

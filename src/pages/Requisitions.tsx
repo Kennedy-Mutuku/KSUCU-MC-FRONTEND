@@ -19,7 +19,7 @@ interface RequisitionForm {
     timeToReturn: string;
     totalAmount: number;
     purpose: string;
-    status: 'pending' | 'approved' | 'released' | 'returned';
+    status: 'pending' | 'approved' | 'released' | 'returned' | 'rejected';
     submittedAt: string;
     releasedBy?: string;
     releasedAt?: string;
@@ -31,7 +31,9 @@ const Requisitions: React.FC = () => {
     const [formData, setFormData] = useState<RequisitionForm>({
         recipientName: '',
         recipientPhone: '',
-        items: [{ id: Date.now().toString(), itemName: '', quantity: 1 }],
+        items: [
+            { id: Date.now().toString() + '-1', itemName: '', quantity: 0 }
+        ],
         timeReceived: '',
         timeToReturn: '',
         totalAmount: 0,
@@ -45,12 +47,40 @@ const Requisitions: React.FC = () => {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [showConfirmation, setShowConfirmation] = useState(false);
+    const [adminContactPhone, setAdminContactPhone] = useState<string>('');
+    const [userRequisitions, setUserRequisitions] = useState<RequisitionForm[]>([]);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [currentUserName, setCurrentUserName] = useState('');
 
 
     useEffect(() => {
         // No authentication required - allow public access
         setIsAuthenticated(true);
+        // Load admin contact phone
+        const savedPhone = localStorage.getItem('admin-contact-phone') || '';
+        setAdminContactPhone(savedPhone);
+        
+        // Check if user is logged in and load their requisitions
+        const userData = localStorage.getItem('user-data');
+        if (userData) {
+            try {
+                const user = JSON.parse(userData);
+                setIsLoggedIn(true);
+                setCurrentUserName(user.name || user.username || '');
+                loadUserRequisitions(user.name || user.username || '');
+            } catch (error) {
+                console.log('No user data found');
+            }
+        }
     }, []);
+
+    const loadUserRequisitions = (userName: string) => {
+        const allRequisitions = JSON.parse(localStorage.getItem('ksucu-requisitions') || '[]');
+        const userReqs = allRequisitions.filter((req: RequisitionForm) => 
+            req.recipientName.toLowerCase() === userName.toLowerCase()
+        );
+        setUserRequisitions(userReqs);
+    };
 
     const addItem = () => {
         setFormData(prev => ({
@@ -58,7 +88,7 @@ const Requisitions: React.FC = () => {
             items: [...prev.items, { 
                 id: Date.now().toString(), 
                 itemName: '', 
-                quantity: 1 
+                quantity: 0 
             }]
         }));
     };
@@ -90,8 +120,16 @@ const Requisitions: React.FC = () => {
             return;
         }
 
-        if (formData.items.some(item => !item.itemName || item.quantity <= 0)) {
-            setError('Please fill in all item details with valid quantities');
+        // Filter out empty items and validate only filled items
+        const filledItems = formData.items.filter(item => item.itemName.trim() !== '');
+        
+        if (filledItems.length === 0) {
+            setError('Please add at least one item to your requisition');
+            return;
+        }
+
+        if (filledItems.some(item => item.quantity <= 0)) {
+            setError('Please enter valid quantities for all items');
             return;
         }
 
@@ -106,8 +144,11 @@ const Requisitions: React.FC = () => {
     const confirmSubmission = () => {
         setLoading(true);
         
+        // Only save filled items
+        const filledItems = formData.items.filter(item => item.itemName.trim() !== '');
         const requisition: RequisitionForm = {
             ...formData,
+            items: filledItems,
             id: Date.now().toString(),
             submittedAt: new Date().toISOString(),
             status: 'pending'
@@ -123,6 +164,11 @@ const Requisitions: React.FC = () => {
             detail: existingRequisitions 
         }));
 
+        // Update user's requisition list if logged in
+        if (isLoggedIn) {
+            loadUserRequisitions(currentUserName);
+        }
+
         setLoading(false);
         setShowConfirmation(false);
         setSuccess('Requisition submitted successfully! You will be notified when it\'s processed.');
@@ -131,7 +177,9 @@ const Requisitions: React.FC = () => {
         setFormData({
             recipientName: '',
             recipientPhone: '',
-            items: [{ id: Date.now().toString(), itemName: '', quantity: 1 }],
+            items: [
+                { id: Date.now().toString() + '-1', itemName: '', quantity: 0 }
+            ],
             timeReceived: '',
             timeToReturn: '',
             totalAmount: 0,
@@ -164,7 +212,52 @@ const Requisitions: React.FC = () => {
                 <div className={styles.header}>
                     <h1>Equipment Requisition</h1>
                     <p>Request equipment or items for your events and activities</p>
+                    {adminContactPhone && (
+                        <div className={styles.contactInfo}>
+                            <p><strong>For more information, contact:</strong> <a href={`tel:${adminContactPhone}`}>{adminContactPhone}</a></p>
+                        </div>
+                    )}
                 </div>
+
+                {/* User Requisition Status */}
+                {isLoggedIn && (
+                    <div className={styles.userStatusSection}>
+                        <h3>Your Requisition Status</h3>
+                        {userRequisitions.length === 0 ? (
+                            <p className={styles.noRequisitions}>No requisitions found for {currentUserName}</p>
+                        ) : (
+                            <div className={styles.statusGrid}>
+                                <div className={styles.statusColumn}>
+                                    <h4>Pending</h4>
+                                    {userRequisitions.filter(req => req.status === 'pending').map((req) => (
+                                        <div key={req.id} className={styles.statusItem}>
+                                            <strong>{req.items.map(item => item.itemName).join(', ')}</strong>
+                                            <span>Submitted: {new Date(req.submittedAt).toLocaleDateString()}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className={styles.statusColumn}>
+                                    <h4>Approved</h4>
+                                    {userRequisitions.filter(req => req.status === 'approved').map((req) => (
+                                        <div key={req.id} className={styles.statusItem}>
+                                            <strong>{req.items.map(item => item.itemName).join(', ')}</strong>
+                                            <span>Submitted: {new Date(req.submittedAt).toLocaleDateString()}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className={styles.statusColumn}>
+                                    <h4>Rejected</h4>
+                                    {userRequisitions.filter(req => req.status === 'rejected').map((req) => (
+                                        <div key={req.id} className={styles.statusItem}>
+                                            <strong>{req.items.map(item => item.itemName).join(', ')}</strong>
+                                            <span>Submitted: {new Date(req.submittedAt).toLocaleDateString()}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
 
                 {error && (
                     <div className={styles.errorAlert}>
@@ -184,23 +277,27 @@ const Requisitions: React.FC = () => {
                         <h3>Recipient Information</h3>
                         <div className={styles.formRow}>
                             <div className={styles.formGroup}>
-                                <label>Full Name *</label>
+                                <label htmlFor="recipientName">Full Name *</label>
                                 <input
+                                    id="recipientName"
                                     type="text"
                                     value={formData.recipientName}
                                     onChange={(e) => setFormData(prev => ({...prev, recipientName: e.target.value}))}
                                     placeholder="Enter recipient's full name"
                                     required
+                                    autoComplete="name"
                                 />
                             </div>
                             <div className={styles.formGroup}>
-                                <label>Phone Number *</label>
+                                <label htmlFor="recipientPhone">Phone Number *</label>
                                 <input
+                                    id="recipientPhone"
                                     type="tel"
                                     value={formData.recipientPhone}
                                     onChange={(e) => setFormData(prev => ({...prev, recipientPhone: e.target.value}))}
                                     placeholder="Enter phone number"
                                     required
+                                    autoComplete="tel"
                                 />
                             </div>
                         </div>
@@ -210,54 +307,79 @@ const Requisitions: React.FC = () => {
                     <div className={styles.section}>
                         <div className={styles.sectionHeader}>
                             <h3>Items to Requisition</h3>
-                            <button type="button" onClick={addItem} className={styles.addButton}>
-                                + Add Item
-                            </button>
                         </div>
 
-                        {formData.items.map((item, index) => (
-                            <div key={item.id} className={styles.itemRow}>
-                                <div className={styles.itemNumber}>{index + 1}</div>
-                                <div className={styles.formGroup}>
-                                    <label>Item Name *</label>
-                                    <input
-                                        type="text"
-                                        value={item.itemName}
-                                        onChange={(e) => updateItem(item.id, 'itemName', e.target.value)}
-                                        placeholder="e.g., Projector, Microphone, Chairs"
-                                        required
-                                    />
-                                </div>
-                                <div className={styles.formGroup}>
-                                    <label>Quantity *</label>
-                                    <input
-                                        type="number"
-                                        min="1"
-                                        value={item.quantity}
-                                        onChange={(e) => updateItem(item.id, 'quantity', parseInt(e.target.value) || 1)}
-                                        required
-                                    />
-                                </div>
-                                <div className={styles.formGroup}>
-                                    <label>Description</label>
-                                    <input
-                                        type="text"
-                                        value={item.description || ''}
-                                        onChange={(e) => updateItem(item.id, 'description', e.target.value)}
-                                        placeholder="Optional details"
-                                    />
-                                </div>
-                                {formData.items.length > 1 && (
-                                    <button 
-                                        type="button" 
-                                        onClick={() => removeItem(item.id)}
-                                        className={styles.removeButton}
-                                    >
-                                        ×
-                                    </button>
-                                )}
+                        <div className={styles.itemsGrid}>
+                            {/* Grid Header */}
+                            <div className={styles.gridHeader}>
+                                <div className={styles.gridHeaderCell}>#</div>
+                                <div className={styles.gridHeaderCell}>Commodity Name *</div>
+                                <div className={styles.gridHeaderCell}>Quantity *</div>
+                                <div className={styles.gridHeaderCell}>Description</div>
+                                <div className={styles.gridHeaderCell}>Action</div>
                             </div>
-                        ))}
+
+                            {/* Grid Items */}
+                            {formData.items.map((item, index) => (
+                                <div key={item.id} className={styles.gridRow}>
+                                    <div className={styles.gridCell}>
+                                        <div className={styles.itemNumber}>{index + 1}</div>
+                                    </div>
+                                    <div className={styles.gridCell} data-label="Commodity Name *">
+                                        <input
+                                            id={`itemName-${item.id}`}
+                                            type="text"
+                                            value={item.itemName}
+                                            onChange={(e) => updateItem(item.id, 'itemName', e.target.value)}
+                                            placeholder="e.g., Projector, Microphone, Chairs"
+                                            autoComplete="off"
+                                            className={styles.gridInput}
+                                        />
+                                    </div>
+                                    <div className={styles.gridCell} data-label="Quantity *">
+                                        <input
+                                            id={`quantity-${item.id}`}
+                                            type="number"
+                                            min="1"
+                                            value={item.quantity || ''}
+                                            onChange={(e) => updateItem(item.id, 'quantity', parseInt(e.target.value) || 0)}
+                                            placeholder="0"
+                                            autoComplete="off"
+                                            className={styles.gridInput}
+                                        />
+                                    </div>
+                                    <div className={styles.gridCell} data-label="Description">
+                                        <input
+                                            id={`description-${item.id}`}
+                                            type="text"
+                                            value={item.description || ''}
+                                            onChange={(e) => updateItem(item.id, 'description', e.target.value)}
+                                            placeholder="Optional details"
+                                            autoComplete="off"
+                                            className={styles.gridInput}
+                                        />
+                                    </div>
+                                    <div className={styles.gridCell}>
+                                        {formData.items.length > 1 && (
+                                            <button 
+                                                type="button" 
+                                                onClick={() => removeItem(item.id)}
+                                                className={styles.removeButton}
+                                                aria-label={`Remove item ${index + 1}`}
+                                            >
+                                                ×
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className={styles.addButtonContainer}>
+                            <button type="button" onClick={addItem} className={styles.addButton}>
+                                + Add More Items
+                            </button>
+                        </div>
                     </div>
 
                     {/* Time and Cost Section */}
@@ -265,44 +387,52 @@ const Requisitions: React.FC = () => {
                         <h3>Schedule & Cost</h3>
                         <div className={styles.formRow}>
                             <div className={styles.formGroup}>
-                                <label>Time to Receive *</label>
+                                <label htmlFor="timeReceived">Time to Receive *</label>
                                 <input
+                                    id="timeReceived"
                                     type="datetime-local"
                                     value={formData.timeReceived}
                                     onChange={(e) => setFormData(prev => ({...prev, timeReceived: e.target.value}))}
                                     required
+                                    autoComplete="off"
                                 />
                             </div>
                             <div className={styles.formGroup}>
-                                <label>Time to Return *</label>
+                                <label htmlFor="timeToReturn">Time to Return *</label>
                                 <input
+                                    id="timeToReturn"
                                     type="datetime-local"
                                     value={formData.timeToReturn}
                                     onChange={(e) => setFormData(prev => ({...prev, timeToReturn: e.target.value}))}
                                     required
+                                    autoComplete="off"
                                 />
                             </div>
                         </div>
                         <div className={styles.formRow}>
                             <div className={styles.formGroup}>
-                                <label>Expected Amount (KES)</label>
+                                <label htmlFor="totalAmount">Expected Amount (KES)</label>
                                 <input
+                                    id="totalAmount"
                                     type="number"
                                     min="0"
                                     step="0.01"
                                     value={formData.totalAmount}
                                     onChange={(e) => setFormData(prev => ({...prev, totalAmount: parseFloat(e.target.value) || 0}))}
                                     placeholder="0.00"
+                                    autoComplete="off"
                                 />
                             </div>
                             <div className={styles.formGroup}>
-                                <label>Purpose/Event *</label>
+                                <label htmlFor="purpose">Purpose/Event *</label>
                                 <input
+                                    id="purpose"
                                     type="text"
                                     value={formData.purpose}
                                     onChange={(e) => setFormData(prev => ({...prev, purpose: e.target.value}))}
                                     placeholder="e.g., Sunday Service, Bible Study, Conference"
                                     required
+                                    autoComplete="off"
                                 />
                             </div>
                         </div>

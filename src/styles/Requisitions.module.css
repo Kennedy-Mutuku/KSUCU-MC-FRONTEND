@@ -34,6 +34,100 @@
     margin: 0;
 }
 
+.contactInfo {
+    margin-top: 15px;
+    padding: 10px 15px;
+    background: #e8f5e8;
+    border-radius: 8px;
+    border-left: 4px solid #28a745;
+}
+
+.contactInfo p {
+    color: #333;
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+.contactInfo a {
+    color: #28a745;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.contactInfo a:hover {
+    text-decoration: underline;
+}
+
+/* User Status Section */
+.userStatusSection {
+    max-width: 800px;
+    margin: 0 auto 40px;
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    border-left: 4px solid #00c6ff;
+}
+
+.userStatusSection h3 {
+    color: #730051;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.noRequisitions {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+}
+
+.statusGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+}
+
+.statusGrid .statusColumn {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 15px;
+    border-top: 3px solid #730051;
+}
+
+.statusGrid .statusColumn h4 {
+    color: #730051;
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.statusItem {
+    background: white;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    border-left: 3px solid #00c6ff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.statusItem:last-child {
+    margin-bottom: 0;
+}
+
+.statusItem strong {
+    display: block;
+    color: #730051;
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+}
+
+.statusItem span {
+    color: #666;
+    font-size: 0.8rem;
+}
+
 /* Alerts */
 .errorAlert, .successAlert {
     max-width: 800px;
@@ -146,37 +240,73 @@
     border-color: #dc3545;
 }
 
-/* Item Management */
-.addButton {
-    background: #00c6ff;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.3s ease;
-}
-
-.addButton:hover {
-    background: #0099cc;
-    transform: translateY(-1px);
-}
-
-.itemRow {
-    display: grid;
-    grid-template-columns: 30px 2fr 120px 2fr 40px;
-    gap: 15px;
-    align-items: end;
-    padding: 20px;
-    background: #f8f9fa;
+/* Items Grid Layout */
+.itemsGrid {
+    background: white;
+    border: 1px solid #e9ecef;
     border-radius: 10px;
-    margin-bottom: 15px;
-    position: relative;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.gridHeader {
+    display: grid;
+    grid-template-columns: 50px 2fr 120px 2fr 80px;
+    background: #730051;
+    color: white;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.gridHeaderCell {
+    padding: 15px 10px;
+    text-align: center;
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.gridHeaderCell:last-child {
+    border-right: none;
+}
+
+.gridRow {
+    display: grid;
+    grid-template-columns: 50px 2fr 120px 2fr 80px;
+    border-bottom: 1px solid #e9ecef;
+    align-items: center;
+}
+
+.gridRow:last-child {
+    border-bottom: none;
+}
+
+.gridRow:nth-child(even) {
+    background: #f8f9fa;
+}
+
+.gridCell {
+    padding: 12px 10px;
+    text-align: center;
+    border-right: 1px solid #e9ecef;
+}
+
+.gridCell:last-child {
+    border-right: none;
+}
+
+.gridInput {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.gridInput:focus {
+    outline: none;
+    border-color: #00c6ff;
+    box-shadow: 0 0 0 2px rgba(0, 198, 255, 0.1);
 }
 
 .itemNumber {
@@ -190,6 +320,33 @@
     justify-content: center;
     font-weight: 600;
     font-size: 0.85rem;
+    margin: 0 auto;
+}
+
+/* Add Button Container */
+.addButtonContainer {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.addButton {
+    background: #00c6ff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.addButton:hover {
+    background: #0099cc;
+    transform: translateY(-1px);
 }
 
 .removeButton {
@@ -204,6 +361,7 @@
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
+    font-size: 1.2rem;
 }
 
 .removeButton:hover {
@@ -412,62 +570,373 @@
 /* Responsive Design */
 @media (max-width: 768px) {
     .container {
-        padding: 80px 10px 20px;
+        padding: 70px 10px 20px;
+        min-height: auto;
     }
 
-    .header h1 {
-        font-size: 2rem;
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .formRow {
-        grid-template-columns: 1fr;
-        gap: 15px;
-    }
-
-    .itemRow {
-        grid-template-columns: 1fr;
-        gap: 10px;
-    }
-
-    .itemNumber {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-    }
-
-    .removeButton {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-    }
-
-    .sectionHeader {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 15px;
-    }
-
-    .modalActions {
-        flex-direction: column;
-    }
-
-    .termsContent {
+    .header {
+        margin-bottom: 20px;
         padding: 20px 15px;
     }
 
-    .termsContent li {
+    .header h1 {
+        font-size: 1.8rem;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .header p {
+        font-size: 0.95rem;
+    }
+
+    .requisitionForm {
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+
+    .section {
+        padding: 20px 15px;
+    }
+
+    .section h3 {
+        font-size: 1.2rem;
+        margin-bottom: 15px;
+    }
+
+    .formRow {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .formGroup {
+        width: 100%;
+    }
+
+    .formGroup label {
+        font-size: 0.85rem;
+        margin-bottom: 5px;
+    }
+
+    .formGroup input {
         padding: 10px 12px;
+        font-size: 0.95rem;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* Items Grid Mobile Layout */
+    .itemsGrid {
+        margin-bottom: 15px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .gridHeader {
+        display: grid;
+        grid-template-columns: 35px 2fr 70px 1.5fr 50px;
+        background: #730051;
+        color: white;
+        font-weight: 600;
+        font-size: 0.75rem;
+        min-width: 320px;
+    }
+
+    .gridHeaderCell {
+        padding: 10px 6px;
+        text-align: center;
+        border-right: 1px solid rgba(255, 255, 255, 0.2);
+        word-break: break-word;
+        line-height: 1.2;
+    }
+
+    .gridRow {
+        display: grid;
+        grid-template-columns: 35px 2fr 70px 1.5fr 50px;
+        border-bottom: 1px solid #e9ecef;
+        align-items: center;
+        min-width: 320px;
+    }
+
+    .gridRow:nth-child(even) {
+        background: #f8f9fa;
+    }
+
+    .gridCell {
+        padding: 8px 5px;
+        text-align: center;
+        border-right: 1px solid #e9ecef;
+    }
+
+    .gridCell:last-child {
+        border-right: none;
+    }
+
+    .gridInput {
+        width: 100%;
+        padding: 5px 6px;
+        font-size: 0.8rem;
+        box-sizing: border-box;
+        border: 1px solid #e9ecef;
+        border-radius: 3px;
+    }
+
+    .gridInput:focus {
+        border-color: #00c6ff;
+        box-shadow: 0 0 0 1px rgba(0, 198, 255, 0.1);
+    }
+
+    .itemNumber {
+        width: 20px;
+        height: 20px;
+        font-size: 0.7rem;
+    }
+
+    .removeButton {
+        width: 26px;
+        height: 26px;
         font-size: 0.9rem;
     }
 
-    .agreementSection {
+    /* Section Header Mobile */
+    .sectionHeader {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .addButton {
+        width: 100%;
+        justify-content: center;
+        padding: 12px 20px;
+    }
+
+    /* Modal Actions */
+    .modalActions {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .modalActions button {
+        width: 100%;
+    }
+
+    /* Terms Content Mobile */
+    .termsContent {
         padding: 15px;
+        border-left-width: 3px;
+    }
+
+    .termsContent h4 {
+        font-size: 1rem;
+        margin-bottom: 10px;
+        margin-top: 20px;
+    }
+
+    .termsContent li {
+        padding: 8px 10px;
+        font-size: 0.85rem;
+        line-height: 1.4;
+        margin-bottom: 5px;
+    }
+
+    /* Agreement Section Mobile */
+    .agreementSection {
+        padding: 12px;
     }
 
     .agreementLabel {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         gap: 10px;
+        line-height: 1.4;
+    }
+
+    .agreementCheckbox {
+        width: 18px;
+        height: 18px;
+    }
+
+    /* Submit Section Mobile */
+    .submitSection {
+        padding: 20px 15px;
+        position: sticky;
+        bottom: 0;
+        background: white;
+        border-top: 1px solid #e9ecef;
+        box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
+        z-index: 10;
+    }
+
+    .submitButton {
+        width: 100%;
+        padding: 12px 30px;
+        font-size: 1rem;
+    }
+
+    /* Alerts Mobile */
+    .errorAlert, .successAlert {
+        font-size: 0.9rem;
+        padding: 12px 15px;
+    }
+
+    /* Confirmation Modal Mobile */
+    .confirmationModal {
+        width: 95%;
+        padding: 20px;
+        max-height: 90vh;
+    }
+
+    .confirmationModal h3 {
+        font-size: 1.3rem;
+    }
+
+    .confirmationDetails {
+        padding: 15px;
+        font-size: 0.9rem;
+    }
+
+    .confirmationDetails p {
+        margin: 6px 0;
+    }
+
+    /* User Status Section Mobile */
+    .userStatusSection {
+        padding: 20px 15px;
+        margin-bottom: 20px;
+    }
+
+    .userStatusSection h3 {
+        font-size: 1.3rem;
+    }
+
+    .statusGrid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .statusGrid .statusColumn {
+        padding: 12px;
+    }
+
+    .statusItem {
+        padding: 10px;
+    }
+
+    .statusItem strong {
+        font-size: 0.85rem;
+    }
+
+    .statusItem span {
+        font-size: 0.75rem;
+    }
+}
+
+/* Extra small screens - Mobile Portrait */
+@media (max-width: 480px) {
+    .container {
+        padding: 60px 5px 20px;
+    }
+
+    .header {
+        padding: 15px 10px;
+        margin: 0 auto 15px;
+    }
+
+    .header h1 {
+        font-size: 1.5rem;
+    }
+
+    .section {
+        padding: 15px 10px;
+    }
+
+    .itemsGrid {
+        font-size: 0.8rem;
+    }
+
+    .gridHeader {
+        grid-template-columns: 30px 1.8fr 60px 1.2fr 45px;
+        font-size: 0.7rem;
+        min-width: 280px;
+    }
+
+    .gridHeaderCell {
+        padding: 8px 4px;
+        font-size: 0.65rem;
+        line-height: 1.1;
+    }
+
+    .gridRow {
+        grid-template-columns: 30px 1.8fr 60px 1.2fr 45px;
+        min-width: 280px;
+    }
+
+    .gridCell {
+        padding: 6px 4px;
+    }
+
+    .gridInput {
+        padding: 4px 5px;
+        font-size: 0.75rem;
+    }
+
+    .gridInput:focus {
+        box-shadow: 0 0 0 1px rgba(0, 198, 255, 0.2);
+    }
+
+    .itemNumber {
+        width: 20px;
+        height: 20px;
+        font-size: 0.7rem;
+    }
+
+    .removeButton {
+        width: 26px;
+        height: 26px;
+        font-size: 0.9rem;
+    }
+
+    .addButtonContainer {
+        margin-top: 10px;
+    }
+
+    .formGroup input {
+        padding: 8px 10px;
+        font-size: 0.9rem;
+    }
+
+    .termsContent {
+        padding: 10px;
+    }
+
+    .termsContent li {
+        font-size: 0.8rem;
+        padding: 6px 8px;
+    }
+
+    .agreementLabel {
+        font-size: 0.8rem;
+    }
+
+    .submitButton {
+        padding: 10px 25px;
+        font-size: 0.95rem;
+    }
+
+    /* User Status Section Extra Small */
+    .userStatusSection {
+        padding: 15px 10px;
+    }
+
+    .userStatusSection h3 {
+        font-size: 1.2rem;
+    }
+
+    .statusGrid .statusColumn h4 {
+        font-size: 1rem;
+    }
+
+    .statusItem {
+        padding: 8px;
     }
 }

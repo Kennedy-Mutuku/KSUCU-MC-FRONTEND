@@ -3,6 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image" href="./src/assets/cuLogoUAR.png" />
+    
+    <!-- Prevent caching for immediate updates -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
 
     <!-- PWA Manifest -->
     <link rel="manifest" href="/manifest.json" />
@@ -321,10 +326,22 @@
             .then((registration) => {
               console.log("SW registered: ", registration);
 
-              // Check for updates periodically
+              // Check for updates more frequently for immediate changes
               setInterval(() => {
                 registration.update();
-              }, 60000); // Check every minute
+              }, 5000); // Check every 5 seconds
+              
+              // Force immediate activation of new service worker
+              registration.addEventListener('updatefound', () => {
+                const newWorker = registration.installing;
+                newWorker.addEventListener('statechange', () => {
+                  if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                    // Skip waiting and activate immediately
+                    newWorker.postMessage({ type: 'SKIP_WAITING' });
+                    window.location.reload();
+                  }
+                });
+              });
 
               // Listen for updates
               registration.addEventListener("updatefound", () => {

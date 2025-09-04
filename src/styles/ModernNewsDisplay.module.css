@@ -118,6 +118,7 @@
 /* News Content */
 .newsContent {
   padding: 30px;
+  text-align: center !important;
 }
 
 .imageSection {
@@ -141,6 +142,7 @@
 
 .textSection {
   padding-top: 10px;
+  text-align: center !important;
 }
 
 .newsTitle {
@@ -150,16 +152,25 @@
   margin: 0 0 20px 0;
   line-height: 1.3;
   letter-spacing: -0.5px;
+  text-align: center;
 }
 
 .newsBody {
   color: #555;
   line-height: 1.8;
   font-size: 1.1rem;
+  text-align: center !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .newsParagraph {
   margin: 0 0 15px 0;
+  text-align: center !important;
+  width: 100%;
+  display: block;
 }
 
 .newsParagraph:last-child {

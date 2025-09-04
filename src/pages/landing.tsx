@@ -251,6 +251,12 @@ const LandingPage = () => {
       }
 
       console.log('✅ Using session ID:', latestSession._id);
+      
+      // Validate session ID exists
+      if (!latestSession._id) {
+        alert('Invalid session ID. Please try again.');
+        return;
+      }
 
       // Generate unique visitor ID if user is a visitor
       const generateVisitorId = () => {
@@ -272,10 +278,23 @@ const LandingPage = () => {
         sessionId: latestSession._id
       };
 
+      // Additional validation before sending
+      if (!attendanceData_backend.sessionId) {
+        setAttendanceError('❌ Session ID is missing. Please refresh the page and try again.');
+        return;
+      }
+      
+      if (!attendanceData_backend.name) {
+        setAttendanceError('❌ Name is required. Please enter your full name.');
+        return;
+      }
+
       console.log('📝 Submitting attendance to backend API...', {
         name: attendanceData_backend.name,
         regNo: attendanceData_backend.regNo,
-        ministry: attendanceData_backend.ministry
+        ministry: attendanceData_backend.ministry,
+        sessionId: attendanceData_backend.sessionId,
+        userType: attendanceData_backend.userType
       });
 
       // Submit to backend API

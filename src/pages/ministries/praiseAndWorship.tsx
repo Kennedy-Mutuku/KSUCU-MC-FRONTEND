@@ -56,12 +56,12 @@ const PraiseAndWorshipPage: React.FC = () => {
             
             <h3>Worship Elements</h3>
             <div className={styles.instrumentsGrid}>
-              <div className={styles.instrument}>🎤 Lead Vocals</div>
-              <div className={styles.instrument}>🎵 Harmony Vocals</div>
-              <div className={styles.instrument}>🎸 Acoustic Guitar</div>
-              <div className={styles.instrument}>🎹 Keyboard</div>
-              <div className={styles.instrument}>🥁 Percussion</div>
-              <div className={styles.instrument}>🙏 Prayer Leadership</div>
+              <div className={styles.instrument}>Lead Vocals</div>
+              <div className={styles.instrument}>Harmony Vocals</div>
+              <div className={styles.instrument}>Acoustic Guitar</div>
+              <div className={styles.instrument}>Keyboard</div>
+              <div className={styles.instrument}>Percussion</div>
+              <div className={styles.instrument}>Prayer Leadership</div>
             </div>
           </div>
 

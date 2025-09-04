@@ -34,6 +34,66 @@
     margin: 0;
 }
 
+/* Admin Settings */
+.adminSettings {
+    max-width: 1200px;
+    margin: 0 auto 20px;
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    border-left: 4px solid #730051;
+}
+
+.phoneSettingRow {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.phoneSettingRow label {
+    font-weight: 600;
+    color: #730051;
+    font-size: 1rem;
+}
+
+.phoneInputGroup {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.phoneInput {
+    flex: 1;
+    padding: 10px 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.phoneInput:focus {
+    outline: none;
+    border-color: #00c6ff;
+    box-shadow: 0 0 0 3px rgba(0, 198, 255, 0.1);
+}
+
+.savePhoneButton {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.savePhoneButton:hover {
+    background: #218838;
+    transform: translateY(-1px);
+}
+
 /* Filters Section */
 .filtersSection {
     max-width: 1200px;
@@ -87,8 +147,8 @@
     cursor: pointer;
 }
 
-/* Requisitions List */
-.requisitionsList {
+/* Requisitions Table */
+.requisitionsTable {
     max-width: 1200px;
     margin: 0 auto;
 }
@@ -119,11 +179,112 @@
     color: #730051;
 }
 
-/* Requisitions Grid */
+/* Table Container */
+.tableContainer {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+/* Requisitions Grid Table */
 .requisitionsGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 20px;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.requisitionsGrid th {
+    background: #730051;
+    color: white;
+    padding: 15px 20px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 1.1rem;
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.requisitionsGrid th:last-child {
+    border-right: none;
+}
+
+.statusColumn {
+    vertical-align: top;
+    padding: 20px;
+    width: 33.33%;
+    border-right: 1px solid #e9ecef;
+    background: #f8f9fa;
+}
+
+.statusColumn:last-child {
+    border-right: none;
+}
+
+.requisitionItem {
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-left: 4px solid #730051;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.requisitionItem:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+
+.itemHeader {
+    margin-bottom: 12px;
+    border-bottom: 2px solid #730051;
+    padding-bottom: 8px;
+}
+
+.commodityTitle {
+    font-size: 1.1rem;
+    color: #730051;
+    font-weight: 700;
+    line-height: 1.3;
+    text-transform: capitalize;
+    background: linear-gradient(135deg, #730051 0%, #00c6ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.itemMeta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 10px;
+}
+
+.itemMeta span {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.itemActions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.actionButton {
+    background: #00c6ff;
+    color: white;
+    border: none;
+    padding: 6px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.85rem;
+}
+
+.actionButton:hover {
+    background: #0099cc;
+    transform: scale(1.1);
 }
 
 .requisitionCard {
@@ -420,6 +581,62 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    .adminSettings {
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+
+    .phoneInputGroup {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .savePhoneButton {
+        margin-top: 10px;
+    }
+
+    /* Table Mobile Layout - Keep columns visible */
+    .tableContainer {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .requisitionsGrid {
+        min-width: 600px;
+    }
+
+    .requisitionsGrid th {
+        padding: 12px 15px;
+        font-size: 0.9rem;
+    }
+
+    .statusColumn {
+        padding: 15px;
+        min-width: 200px;
+    }
+
+    .requisitionItem {
+        padding: 12px;
+        margin-bottom: 12px;
+    }
+
+    .itemHeader {
+        margin-bottom: 10px;
+        padding-bottom: 6px;
+    }
+
+    .commodityTitle {
+        font-size: 1rem;
+    }
+
+    .itemMeta span {
+        font-size: 0.8rem;
+    }
+
+    .actionButton {
+        padding: 5px 6px;
+        font-size: 0.8rem;
+    }
     .container {
         padding: 80px 10px 20px;
     }

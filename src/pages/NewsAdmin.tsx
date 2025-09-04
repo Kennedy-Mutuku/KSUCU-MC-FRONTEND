@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
 import styles from '../styles/NewsAdmin.module.css';
@@ -7,7 +7,6 @@ import {
     faLock, 
     faUnlock,
     faNewspaper,
-    faImage,
     faCalendarAlt,
     faClock,
     faEdit,
@@ -20,9 +19,7 @@ import { getApiUrl } from '../config/environment';
 
 interface NewsFormData {
     title: string;
-    summary: string;
     body: string;
-    imageUrl: string;
     eventDate: string;
     eventTime: string;
 }
@@ -35,13 +32,20 @@ const NewsAdmin: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [currentNews, setCurrentNews] = useState<NewsFormData | null>(null);
     const [previewMode, setPreviewMode] = useState(false);
-    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    // Check for existing authentication on mount
+    React.useEffect(() => {
+        const adminAuth = sessionStorage.getItem('adminAuth');
+        if (adminAuth === 'Overseer') {
+            setAuthenticated(true);
+            setMessage('Already authenticated from admin dashboard');
+            setTimeout(() => setMessage(''), 3000);
+        }
+    }, []);
     
     const [formData, setFormData] = useState<NewsFormData>({
         title: '',
-        summary: '',
         body: '',
-        imageUrl: '',
         eventDate: '',
         eventTime: ''
     });
@@ -74,9 +78,7 @@ const NewsAdmin: React.FC = () => {
                 setCurrentNews(data);
                 setFormData({
                     title: data.title || '',
-                    summary: data.summary || '',
                     body: data.body || '',
-                    imageUrl: data.imageUrl || '',
                     eventDate: data.eventDate ? new Date(data.eventDate).toISOString().split('T')[0] : '',
                     eventTime: data.eventTime || ''
                 });
@@ -89,41 +91,92 @@ const NewsAdmin: React.FC = () => {
     // Handle input changes
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
+        console.log(`Form field changed: ${name} = "${value}"`);
+        console.log('Target element:', e.target);
+        console.log('Current formData before change:', formData);
+        
+        setFormData(prev => {
+            const newData = {
+                ...prev,
+                [name]: value
+            };
+            console.log('Setting new form data:', newData);
+            console.log('Previous form data was:', prev);
+            return newData;
+        });
+        
+        // Force a re-render after a short delay to ensure state is updated
+        setTimeout(() => {
+            console.log('FormData after timeout:', formData);
+        }, 100);
     };
 
-    // Handle image upload
-    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setFormData(prev => ({
-                    ...prev,
-                    imageUrl: reader.result as string
-                }));
-            };
-            reader.readAsDataURL(file);
-        }
-    };
 
     // Handle form submission
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        
+        // Get form data using multiple methods as fallback
+        const form = e.target as HTMLFormElement;
+        const formDataObj = new FormData(form);
+        
+        // Try multiple approaches to get the data
+        let title = formData.title?.trim() || '';
+        let body = formData.body?.trim() || '';
+        
+        // Fallback to FormData if state is empty
+        if (!title) {
+            title = (formDataObj.get('title') as string || '').trim();
+        }
+        if (!body) {
+            body = (formDataObj.get('body') as string || '').trim();
+        }
+        
+        const eventDate = formData.eventDate?.trim() || '';
+        const eventTime = formData.eventTime?.trim() || '';
+        
+        console.log('=== FORM SUBMISSION DEBUG ===');
+        console.log('Current formData state:', formData);
+        console.log('Title from processing:', JSON.stringify(title));
+        console.log('Body from processing:', JSON.stringify(body));
+        console.log('Title length:', title.length);
+        console.log('Body length:', body.length);
+        console.log('Title from FormData:', JSON.stringify(formDataObj.get('title')));
+        console.log('Body from FormData:', JSON.stringify(formDataObj.get('body')));
+        
+        // Validation with better error messages
+        if (!title || title.length === 0) {
+            setMessage('Error: Title is required - Please enter a news title');
+            setTimeout(() => setMessage(''), 5000);
+            return;
+        }
+        
+        if (!body || body.length === 0) {
+            setMessage('Error: Body text is required - Please enter news content');
+            setTimeout(() => setMessage(''), 5000);
+            return;
+        }
+
+        // Check word count for body (max 15 words)
+        const wordCount = body.split(/\s+/).filter(word => word.length > 0).length;
+        if (wordCount > 15) {
+            setMessage(`Error: Body text must be 15 words or less. Currently ${wordCount} words.`);
+            setTimeout(() => setMessage(''), 5000);
+            return;
+        }
+        
         setLoading(true);
         
         try {
             const submitData = {
-                title: formData.title,
-                summary: formData.summary,
-                body: formData.body,
-                imageUrl: formData.imageUrl,
-                eventDate: formData.eventDate || null,
-                eventTime: formData.eventTime || null
+                title: title,
+                body: body,
+                eventDate: eventDate || null,
+                eventTime: eventTime || null
             };
+
+            console.log('=== FINAL SUBMIT DATA ===');
+            console.log('Sending to backend:', submitData);
 
             const response = await fetch(getApiUrl('newsUpdate'), {
                 method: 'POST',
@@ -154,15 +207,10 @@ const NewsAdmin: React.FC = () => {
     const clearForm = () => {
         setFormData({
             title: '',
-            summary: '',
             body: '',
-            imageUrl: '',
             eventDate: '',
             eventTime: ''
         });
-        if (fileInputRef.current) {
-            fileInputRef.current.value = '';
-        }
     };
 
     if (!authenticated) {
@@ -215,7 +263,7 @@ const NewsAdmin: React.FC = () => {
                         <FontAwesomeIcon icon={faNewspaper} />
                         News Administration Panel
                     </h1>
-                    <p>Update news, manage events with countdown timers, and add photos</p>
+                    <p>Update news and manage events with countdown timers</p>
                 </div>
 
                 {message && (
@@ -262,25 +310,6 @@ const NewsAdmin: React.FC = () => {
                                 />
                             </div>
 
-                            {/* News Summary - Shows in modal */}
-                            <div className={styles.formGroup}>
-                                <label htmlFor="summary">
-                                    <FontAwesomeIcon icon={faEdit} />
-                                    News Summary * (Modal Preview)
-                                </label>
-                                <textarea
-                                    id="summary"
-                                    name="summary"
-                                    value={formData.summary}
-                                    onChange={handleInputChange}
-                                    required
-                                    placeholder="Brief summary for modal preview (max 120 characters recommended)"
-                                    className={styles.textArea}
-                                    rows={2}
-                                    maxLength={150}
-                                />
-                                <small>This text appears in the modal countdown page. Keep it brief!</small>
-                            </div>
 
                             {/* Event Date Input */}
                             <div className={styles.formRow}>
@@ -318,58 +347,18 @@ const NewsAdmin: React.FC = () => {
                                 </div>
                             </div>
 
-                            {/* Full News Section */}
+                            {/* News Summary Section */}
                             <div className={styles.sectionDivider}>
-                                <h3>Full News Content (Appears on /news page only)</h3>
-                                <p>This content will only be visible when users click "Read Full Communication"</p>
+                                <h3>News Summary (Appears on main page)</h3>
+                                <p>This brief summary will be visible on the main page as a teaser</p>
                             </div>
 
-                            {/* Image Upload */}
-                            <div className={styles.formGroup}>
-                                <label>
-                                    <FontAwesomeIcon icon={faImage} />
-                                    News Image (For Full Page Only)
-                                </label>
-                                <div className={styles.imageUploadSection}>
-                                    <input
-                                        type="file"
-                                        ref={fileInputRef}
-                                        onChange={handleImageUpload}
-                                        accept="image/*"
-                                        className={styles.fileInput}
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={() => fileInputRef.current?.click()}
-                                        className={styles.uploadButton}
-                                    >
-                                        <FontAwesomeIcon icon={faImage} />
-                                        Choose Image
-                                    </button>
-                                </div>
-                                {formData.imageUrl && (
-                                    <div className={styles.imagePreview}>
-                                        <img src={formData.imageUrl} alt="Preview" />
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-                                                setFormData(prev => ({ ...prev, imageUrl: '' }));
-                                                if (fileInputRef.current) fileInputRef.current.value = '';
-                                            }}
-                                            className={styles.removeImageButton}
-                                        >
-                                            <FontAwesomeIcon icon={faTrash} />
-                                        </button>
-                                    </div>
-                                )}
-                                <small>Images will only appear on the full news page, not in the modal</small>
-                            </div>
 
                             {/* News Body */}
                             <div className={styles.formGroup}>
                                 <label htmlFor="body">
                                     <FontAwesomeIcon icon={faEdit} />
-                                    Full News Content *
+                                    Brief News Summary * (Max 15 words for display)
                                 </label>
                                 <textarea
                                     id="body"
@@ -377,11 +366,24 @@ const NewsAdmin: React.FC = () => {
                                     value={formData.body}
                                     onChange={handleInputChange}
                                     required
-                                    placeholder="Enter the complete news content here. This will only appear on the full news page. Use line breaks to separate paragraphs."
+                                    placeholder="Enter a brief summary (max 15 words). This appears as a teaser on the main page."
                                     className={styles.textArea}
-                                    rows={8}
+                                    rows={3}
+                                    maxLength={100}
                                 />
-                                <small>This content appears only on the full news page when users click "Read Full Communication"</small>
+                                <div>
+                                    <small>This appears as a preview on the main page. Keep it concise!</small>
+                                    <div 
+                                        className={`${styles.wordCounter} ${
+                                            formData.body.trim().split(/\s+/).filter(word => word.length > 0).length > 15 
+                                                ? styles.wordCounterError 
+                                                : ''
+                                        }`}
+                                    >
+                                        {formData.body.trim().split(/\s+/).filter(word => word.length > 0).length}/15 words used
+                                        {formData.body.trim().split(/\s+/).filter(word => word.length > 0).length > 15 && ' - Too many words!'}
+                                    </div>
+                                </div>
                             </div>
 
                             {/* Form Actions */}
@@ -418,11 +420,6 @@ const NewsAdmin: React.FC = () => {
                                     </div>
                                 )}
                                 
-                                {formData.imageUrl && (
-                                    <div className={styles.previewImage}>
-                                        <img src={formData.imageUrl} alt="News" />
-                                    </div>
-                                )}
                                 
                                 <div className={styles.previewContent}>
                                     <h2>{formData.title || 'News Title'}</h2>
@@ -446,7 +443,7 @@ const NewsAdmin: React.FC = () => {
                         </h3>
                         <div className={styles.currentNewsContent}>
                             <h4>{currentNews.title || 'No title available'}</h4>
-                            <p>{currentNews.body ? currentNews.body.substring(0, 100) + '...' : 'No content available'}</p>
+                            <p>{currentNews.body || 'No content available'}</p>
                             {currentNews.eventDate && (
                                 <div className={styles.currentEventInfo}>
                                     Event: {new Date(currentNews.eventDate).toLocaleDateString()}

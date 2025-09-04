@@ -46,7 +46,7 @@ const developmentConfig: ApiConfig = {
   baseUrl: 'http://localhost:3000',
   endpoints: {
     news: '/news/news',
-    newsUpdate: '/adminnews/news',
+    newsUpdate: '/news/news',
     users: '/users/data',
     usersSignup: '/users/signup',
     usersLogin: '/users/login',
@@ -88,7 +88,7 @@ const productionConfig: ApiConfig = {
   baseUrl: 'https://ksucu-mc.co.ke',
   endpoints: {
     news: '/news/news',
-    newsUpdate: '/adminnews/news',
+    newsUpdate: '/news/news',
     users: '/users/data',
     usersSignup: '/users/signup',
     usersLogin: '/users/login',

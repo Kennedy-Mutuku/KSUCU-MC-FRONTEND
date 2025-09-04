@@ -50,6 +50,9 @@ const WorshipDocketAdmin: React.FC = () => {
         setSelectedRole(role);
         setMessage(`Selected: ${role} - Redirecting to attendance management...`);
         setTimeout(() => {
+            // Store authentication state
+            sessionStorage.setItem('adminAuth', 'Overseer');
+            sessionStorage.setItem('leadershipRole', role);
             // This will redirect to the session management page
             window.location.href = `/attendance-session-management?role=${encodeURIComponent(role)}`;
         }, 1500);
@@ -113,7 +116,112 @@ const WorshipDocketAdmin: React.FC = () => {
                     </div>
                 )}
 
-                {/* News and Countdown Display Section */}
+                {/* Admin Dashboard Overview */}
+                <div className={styles.dashboardOverview}>
+                    <h2>Password Overseer Dashboard</h2>
+                    <p>Welcome! Here are all available administrative functions organized for easy access:</p>
+                </div>
+
+                {/* Main Admin Functions Grid */}
+                <div className={styles.adminFunctionsGrid}>
+                    
+                    {/* 1. News Administration */}
+                    <div className={styles.functionCard}>
+                        <div className={styles.functionNumber}>1</div>
+                        <div className={styles.functionContent}>
+                            <h3>
+                                <FontAwesomeIcon icon={faNewspaper} />
+                                News Administration
+                            </h3>
+                            <p>Update news, manage events with countdown timers, and add photos</p>
+                            <button 
+                                className={styles.functionButton}
+                                onClick={() => {
+                                    // Store authentication state
+                                    sessionStorage.setItem('adminAuth', 'Overseer');
+                                    window.location.href = '/news-admin';
+                                }}
+                            >
+                                News Admin
+                                <FontAwesomeIcon icon={faArrowRight} className={styles.arrowIcon} />
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* 2. Media Management */}
+                    <div className={styles.functionCard}>
+                        <div className={styles.functionNumber}>2</div>
+                        <div className={styles.functionContent}>
+                            <h3>
+                                <FontAwesomeIcon icon={faUsers} />
+                                Media Management
+                            </h3>
+                            <p>Manage photos and media for the KSUCU website gallery</p>
+                            <button 
+                                className={styles.functionButton}
+                                onClick={() => {
+                                    // Store authentication state  
+                                    sessionStorage.setItem('adminAuth', 'Overseer');
+                                    window.location.href = '/media-admin';
+                                }}
+                            >
+                                Manage Media Gallery
+                                <FontAwesomeIcon icon={faArrowRight} className={styles.arrowIcon} />
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* 3. Requisitions Management */}
+                    <div className={styles.functionCard}>
+                        <div className={styles.functionNumber}>3</div>
+                        <div className={styles.functionContent}>
+                            <h3>
+                                <FontAwesomeIcon icon={faBox} />
+                                Requisitions Management
+                            </h3>
+                            <p>View, approve, and manage equipment requisition requests from members</p>
+                            <button 
+                                className={styles.functionButton}
+                                onClick={() => {
+                                    // Store authentication state
+                                    sessionStorage.setItem('adminAuth', 'Overseer');
+                                    window.location.href = '/requisitions-admin';
+                                }}
+                            >
+                                Manage Requisitions
+                                <FontAwesomeIcon icon={faArrowRight} className={styles.arrowIcon} />
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* 4. Leadership Attendance Management */}
+                    <div className={styles.functionCard}>
+                        <div className={styles.functionNumber}>4</div>
+                        <div className={styles.functionContent}>
+                            <h3>
+                                <FontAwesomeIcon icon={faUsers} />
+                                Leadership Attendance Management
+                            </h3>
+                            <p>Select your leadership role to access centralized attendance management</p>
+                            <div className={styles.leadershipRoleGrid}>
+                                {leadershipRoles.map((role) => (
+                                    <button 
+                                        key={role}
+                                        className={styles.leadershipRoleButton}
+                                        onClick={() => handleRoleSelection(role)}
+                                        disabled={selectedRole !== ''}
+                                    >
+                                        {role}
+                                        <FontAwesomeIcon icon={faArrowRight} className={styles.arrowIcon} />
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                {/* News Display Section - Moved to bottom */}
                 <div className={styles.newsDisplaySection}>
                     <div className={styles.newsDisplayCard}>
                         <h2>
@@ -125,92 +233,6 @@ const WorshipDocketAdmin: React.FC = () => {
                         </p>
                         <div className={styles.newsDisplayContainer}>
                             <ModernNewsDisplay />
-                        </div>
-                    </div>
-                </div>
-
-                {/* Media Management Section */}
-                <div className={styles.mediaManagementSection}>
-                    <div className={styles.selectionCard}>
-                        <h2>
-                            <FontAwesomeIcon icon={faUsers} />
-                            Media Management
-                        </h2>
-                        <p className={styles.leadershipDescription}>
-                            Manage photos and media for the KSUCU website gallery
-                        </p>
-                        <button 
-                            className={styles.mediaManagementButton}
-                            onClick={() => window.location.href = '/media-admin'}
-                        >
-                            Manage Media Gallery
-                            <FontAwesomeIcon icon={faArrowRight} className={styles.arrowIcon} />
-                        </button>
-                    </div>
-                </div>
-
-                {/* News Management Section */}
-                <div className={styles.newsManagementSection}>
-                    <div className={styles.selectionCard}>
-                        <h2>
-                            <FontAwesomeIcon icon={faUsers} />
-                            News Administration
-                        </h2>
-                        <p className={styles.leadershipDescription}>
-                            Update news, manage events with countdown timers, and add photos
-                        </p>
-                        <button 
-                            className={styles.newsManagementButton}
-                            onClick={() => window.location.href = '/news-admin'}
-                        >
-                            News Admin
-                            <FontAwesomeIcon icon={faArrowRight} className={styles.arrowIcon} />
-                        </button>
-                    </div>
-                </div>
-
-                {/* Requisitions Management Section */}
-                <div className={styles.requisitionsManagementSection}>
-                    <div className={styles.selectionCard}>
-                        <h2>
-                            <FontAwesomeIcon icon={faBox} />
-                            Requisitions Management
-                        </h2>
-                        <p className={styles.leadershipDescription}>
-                            View, approve, and manage equipment requisition requests from members
-                        </p>
-                        <button 
-                            className={styles.requisitionsManagementButton}
-                            onClick={() => window.location.href = '/requisitions-admin'}
-                        >
-                            Manage Requisitions
-                            <FontAwesomeIcon icon={faArrowRight} className={styles.arrowIcon} />
-                        </button>
-                    </div>
-                </div>
-
-                {/* Leadership Role Selection Section */}
-                <div className={styles.leadershipSelection}>
-                    <div className={styles.selectionCard}>
-                        <h2>
-                            <FontAwesomeIcon icon={faUsers} />
-                            Select Your Leadership Role
-                        </h2>
-                        <p className={styles.leadershipDescription}>
-                            Choose your position to access centralized attendance management for all KSUCU members
-                        </p>
-                        <div className={styles.leadershipRoleGrid}>
-                            {leadershipRoles.map((role) => (
-                                <button 
-                                    key={role}
-                                    className={styles.leadershipRoleButton}
-                                    onClick={() => handleRoleSelection(role)}
-                                    disabled={selectedRole !== ''}
-                                >
-                                    {role}
-                                    <FontAwesomeIcon icon={faArrowRight} className={styles.arrowIcon} />
-                                </button>
-                            ))}
                         </div>
                     </div>
                 </div>

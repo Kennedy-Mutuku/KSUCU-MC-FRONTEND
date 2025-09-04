@@ -50,18 +50,40 @@ const AttendanceSessionManagement: React.FC = () => {
         // Get role from URL params
         const urlParams = new URLSearchParams(window.location.search);
         const role = urlParams.get('role');
-        if (role) {
-            setLeadershipRole(decodeURIComponent(role));
-            loadSessionData(role);
-            
-            // Set up periodic refresh for attendance records every 2 seconds for real-time updates
-            const refreshInterval = setInterval(() => {
-                console.log('Auto-refreshing session data...');
-                loadSessionData(role);
-            }, 2000); // Reduced to 2 seconds for faster updates
-            
-            return () => clearInterval(refreshInterval);
+        
+        if (!role) {
+            setMessage('No leadership role provided in URL. Please access through admin dashboard.');
+            return;
         }
+
+        const decodedRole = decodeURIComponent(role);
+        console.log('Role from URL:', role);
+        console.log('Decoded role:', decodedRole);
+        
+        // For now, allow ANY non-empty role to access - we'll validate on the backend
+        if (!decodedRole || decodedRole.trim() === '') {
+            setMessage('Empty leadership role provided. Please access through admin dashboard.');
+            return;
+        }
+        
+        // Set the leadership role and initialize
+        setLeadershipRole(decodedRole);
+        
+        // Clear any existing messages immediately
+        setMessage('');
+        
+        console.log('✅ Successfully initialized with role:', decodedRole);
+        console.log('✅ Loading session data...');
+        
+        loadSessionData(decodedRole);
+        
+        // Set up periodic refresh for attendance records every 2 seconds for real-time updates
+        const refreshInterval = setInterval(() => {
+            console.log('Auto-refreshing session data...');
+            loadSessionData(decodedRole);
+        }, 2000); // Reduced to 2 seconds for faster updates
+        
+        return () => clearInterval(refreshInterval);
     }, []);
 
     const loadSessionData = async (role: string) => {
@@ -656,6 +678,15 @@ const AttendanceSessionManagement: React.FC = () => {
                         {message}
                     </div>
                 )}
+
+                {/* Debug Info - Remove in production */}
+                <div style={{ background: '#f0f0f0', padding: '10px', margin: '10px 0', fontSize: '12px', fontFamily: 'monospace' }}>
+                    <strong>🔧 DEBUG INFO:</strong><br/>
+                    <strong>Current Role:</strong> {leadershipRole}<br/>
+                    <strong>Global Active Session:</strong> {globalActiveSession ? `${globalActiveSession.leadershipRole} (${globalActiveSession.isActive ? 'active' : 'inactive'})` : 'None'}<br/>
+                    <strong>Should Show Force Close:</strong> {!!(globalActiveSession && globalActiveSession.leadershipRole !== leadershipRole) ? 'YES' : 'NO'}<br/>
+                    <strong>Comparison:</strong> "{globalActiveSession?.leadershipRole}" !== "{leadershipRole}" = {globalActiveSession?.leadershipRole !== leadershipRole ? 'TRUE' : 'FALSE'}
+                </div>
 
                 {/* Session Controls */}
                 <div className={styles.sessionControls}>

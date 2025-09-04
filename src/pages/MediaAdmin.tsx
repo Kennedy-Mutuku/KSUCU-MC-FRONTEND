@@ -26,6 +26,7 @@ const MediaAdmin: React.FC = () => {
     const [mediaItems, setMediaItems] = useState<MediaItem[]>([]);
     const [isAddingNew, setIsAddingNew] = useState(false);
     const [editingItem, setEditingItem] = useState<string | null>(null);
+    const [authenticated, setAuthenticated] = useState(false);
     const [newItem, setNewItem] = useState<MediaItem>({
         id: '',
         event: '',
@@ -35,8 +36,16 @@ const MediaAdmin: React.FC = () => {
     });
 
     useEffect(() => {
+        // Check for authentication first
+        const adminAuth = sessionStorage.getItem('adminAuth');
+        if (adminAuth === 'Overseer') {
+            setAuthenticated(true);
+        }
+        
         // Load existing media items from localStorage or API
-        loadMediaItems();
+        if (adminAuth === 'Overseer') {
+            loadMediaItems();
+        }
     }, []);
 
     const loadMediaItems = () => {
@@ -119,6 +128,34 @@ const MediaAdmin: React.FC = () => {
             reader.readAsDataURL(file);
         }
     };
+
+    if (!authenticated) {
+        return (
+            <>
+                <UniversalHeader />
+                <div className={styles.container}>
+                    <div className={styles.header}>
+                        <h1>Media Admin - Authentication Required</h1>
+                        <p>Please access this page through the Password Overseer dashboard.</p>
+                        <button 
+                            onClick={() => window.location.href = '/worship-docket-admin'}
+                            style={{
+                                padding: '10px 20px',
+                                background: '#730051',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '5px',
+                                cursor: 'pointer'
+                            }}
+                        >
+                            Go to Admin Dashboard
+                        </button>
+                    </div>
+                </div>
+                <Footer />
+            </>
+        );
+    }
 
     return (
         <>

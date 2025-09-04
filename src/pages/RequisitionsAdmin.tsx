@@ -5,17 +5,13 @@ import styles from '../styles/RequisitionsAdmin.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
     faBox, 
-    faEye, 
     faEdit, 
-    faTrash, 
     faCheck, 
     faTimes,
     faDownload,
-    faCalendarAlt,
     faUser,
     faClock,
-    faFileAlt,
-    faFilter
+    faFileAlt
 } from '@fortawesome/free-solid-svg-icons';
 
 interface RequisitionItem {
@@ -48,7 +44,19 @@ const RequisitionsAdmin: React.FC = () => {
     const [selectedRequisition, setSelectedRequisition] = useState<RequisitionForm | null>(null);
     const [showDetails, setShowDetails] = useState(false);
     const [editingRequisition, setEditingRequisition] = useState<RequisitionForm | null>(null);
-    const [filterStatus, setFilterStatus] = useState<string>('all');
+    const [authenticated, setAuthenticated] = useState(false);
+    const [adminPhone, setAdminPhone] = useState<string>('');
+
+    React.useEffect(() => {
+        const adminAuth = sessionStorage.getItem('adminAuth');
+        if (adminAuth === 'Overseer') {
+            setAuthenticated(true);
+        }
+        // Load admin phone number
+        const savedPhone = localStorage.getItem('admin-contact-phone') || '';
+        setAdminPhone(savedPhone);
+    }, []);
+    const [filterStatus] = useState<string>('all');
     const [searchTerm, setSearchTerm] = useState('');
     const [releasedBy, setReleasedBy] = useState('');
     const [comments, setComments] = useState('');
@@ -147,14 +155,9 @@ const RequisitionsAdmin: React.FC = () => {
         setEditingRequisition(null);
     };
 
-    const deleteRequisition = (id: string) => {
-        if (window.confirm('Are you sure you want to delete this requisition?')) {
-            const updatedRequisitions = requisitions.filter(req => req.id !== id);
-            setRequisitions(updatedRequisitions);
-            localStorage.setItem('ksucu-requisitions', JSON.stringify(updatedRequisitions));
-            filterRequisitions(updatedRequisitions, filterStatus, searchTerm);
-            setShowDetails(false);
-        }
+    const saveAdminPhone = () => {
+        localStorage.setItem('admin-contact-phone', adminPhone);
+        alert('Contact phone number saved successfully!');
     };
 
     const downloadPDF = (requisition: RequisitionForm) => {
@@ -282,6 +285,34 @@ Version: 1.0
         }
     };
 
+    if (!authenticated) {
+        return (
+            <>
+                <UniversalHeader />
+                <div className={styles.container}>
+                    <div className={styles.header}>
+                        <h1>Requisitions Admin - Authentication Required</h1>
+                        <p>Please access this page through the Password Overseer dashboard.</p>
+                        <button 
+                            onClick={() => window.location.href = '/worship-docket-admin'}
+                            style={{
+                                padding: '10px 20px',
+                                background: '#730051',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '5px',
+                                cursor: 'pointer'
+                            }}
+                        >
+                            Go to Admin Dashboard
+                        </button>
+                    </div>
+                </div>
+                <Footer />
+            </>
+        );
+    }
+
     return (
         <>
             <UniversalHeader />
@@ -294,115 +325,191 @@ Version: 1.0
                     <p>Manage equipment and item requisition requests</p>
                 </div>
 
-                {/* Filters and Search */}
-                <div className={styles.filtersSection}>
-                    <div className={styles.filterRow}>
-                        <div className={styles.searchGroup}>
+                {/* Admin Phone Setting */}
+                <div className={styles.adminSettings}>
+                    <div className={styles.phoneSettingRow}>
+                        <label>Contact Phone Number (for requisition inquiries):</label>
+                        <div className={styles.phoneInputGroup}>
                             <input
-                                type="text"
-                                placeholder="Search by name, purpose, or item..."
-                                value={searchTerm}
-                                onChange={(e) => {
-                                    setSearchTerm(e.target.value);
-                                    filterRequisitions(requisitions, filterStatus, e.target.value);
-                                }}
-                                className={styles.searchInput}
+                                type="tel"
+                                placeholder="Enter admin contact phone"
+                                value={adminPhone}
+                                onChange={(e) => setAdminPhone(e.target.value)}
+                                className={styles.phoneInput}
                             />
-                        </div>
-                        <div className={styles.filterGroup}>
-                            <FontAwesomeIcon icon={faFilter} />
-                            <select
-                                value={filterStatus}
-                                onChange={(e) => {
-                                    setFilterStatus(e.target.value);
-                                    filterRequisitions(requisitions, e.target.value, searchTerm);
-                                }}
-                                className={styles.filterSelect}
-                            >
-                                <option value="all">All Status</option>
-                                <option value="pending">Pending</option>
-                                <option value="approved">Approved</option>
-                                <option value="released">Released</option>
-                                <option value="returned">Returned</option>
-                                <option value="rejected">Rejected</option>
-                            </select>
+                            <button onClick={saveAdminPhone} className={styles.savePhoneButton}>
+                                Save
+                            </button>
                         </div>
                     </div>
                 </div>
 
-                {/* Requisitions List */}
-                <div className={styles.requisitionsList}>
+                {/* Search */}
+                <div className={styles.filtersSection}>
+                    <div className={styles.searchGroup}>
+                        <input
+                            type="text"
+                            placeholder="Search by name, purpose, or item..."
+                            value={searchTerm}
+                            onChange={(e) => {
+                                setSearchTerm(e.target.value);
+                                filterRequisitions(requisitions, filterStatus, e.target.value);
+                            }}
+                            className={styles.searchInput}
+                        />
+                    </div>
+                </div>
+
+                {/* Requisitions Table */}
+                <div className={styles.requisitionsTable}>
                     <div className={styles.statsBar}>
-                        <span>Total Requisitions: {filteredRequisitions.length}</span>
+                        <span>Total: {filteredRequisitions.length}</span>
                         <span>Pending: {filteredRequisitions.filter(r => r.status === 'pending').length}</span>
-                        <span>Released: {filteredRequisitions.filter(r => r.status === 'released').length}</span>
+                        <span>Approved: {filteredRequisitions.filter(r => r.status === 'approved').length}</span>
+                        <span>Rejected: {filteredRequisitions.filter(r => r.status === 'rejected').length}</span>
                     </div>
 
                     {filteredRequisitions.length === 0 ? (
                         <div className={styles.emptyState}>
                             <FontAwesomeIcon icon={faBox} size="3x" />
                             <h3>No Requisitions Found</h3>
-                            <p>No requisitions match your current filters</p>
+                            <p>No requisitions match your current search</p>
                         </div>
                     ) : (
-                        <div className={styles.requisitionsGrid}>
-                            {filteredRequisitions.map((requisition) => (
-                                <div key={requisition.id} className={styles.requisitionCard}>
-                                    <div className={styles.cardHeader}>
-                                        <div className={styles.cardTitle}>
-                                            <h4>{requisition.recipientName}</h4>
-                                            <span 
-                                                className={styles.statusBadge}
-                                                style={{ backgroundColor: getStatusColor(requisition.status) }}
-                                            >
-                                                {requisition.status}
-                                            </span>
-                                        </div>
-                                        <div className={styles.cardMeta}>
-                                            <span><FontAwesomeIcon icon={faCalendarAlt} /> {new Date(requisition.submittedAt).toLocaleDateString()}</span>
-                                        </div>
-                                    </div>
-
-                                    <div className={styles.cardBody}>
-                                        <p><strong>Purpose:</strong> {requisition.purpose}</p>
-                                        <p><strong>Items:</strong> {requisition.items.length} item(s)</p>
-                                        <p><strong>Pick-up:</strong> {new Date(requisition.timeReceived).toLocaleDateString()}</p>
-                                        {requisition.totalAmount > 0 && (
-                                            <p><strong>Amount:</strong> KES {requisition.totalAmount.toFixed(2)}</p>
-                                        )}
-                                    </div>
-
-                                    <div className={styles.cardActions}>
-                                        <button
-                                            onClick={() => {
-                                                setSelectedRequisition(requisition);
-                                                setShowDetails(true);
-                                            }}
-                                            className={styles.viewButton}
-                                        >
-                                            <FontAwesomeIcon icon={faEye} />
-                                        </button>
-                                        <button
-                                            onClick={() => setEditingRequisition(requisition)}
-                                            className={styles.editButton}
-                                        >
-                                            <FontAwesomeIcon icon={faEdit} />
-                                        </button>
-                                        <button
-                                            onClick={() => downloadPDF(requisition)}
-                                            className={styles.downloadButton}
-                                        >
-                                            <FontAwesomeIcon icon={faDownload} />
-                                        </button>
-                                        <button
-                                            onClick={() => deleteRequisition(requisition.id)}
-                                            className={styles.deleteButton}
-                                        >
-                                            <FontAwesomeIcon icon={faTrash} />
-                                        </button>
-                                    </div>
-                                </div>
-                            ))}
+                        <div className={styles.tableContainer}>
+                            <table className={styles.requisitionsGrid}>
+                                <thead>
+                                    <tr>
+                                        <th>Pending</th>
+                                        <th>Approved</th>
+                                        <th>Rejected</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td className={styles.statusColumn}>
+                                            {filteredRequisitions.filter(r => r.status === 'pending').map((requisition) => (
+                                                <div 
+                                                    key={requisition.id} 
+                                                    className={styles.requisitionItem}
+                                                    onClick={() => {
+                                                        setSelectedRequisition(requisition);
+                                                        setShowDetails(true);
+                                                    }}
+                                                >
+                                                    <div className={styles.itemHeader}>
+                                                        <div className={styles.commodityTitle}>
+                                                            {requisition.items.map(item => item.itemName).join(', ')}
+                                                        </div>
+                                                    </div>
+                                                    <div className={styles.itemMeta}>
+                                                        <span>By: {requisition.recipientName}</span>
+                                                        <span>Submitted: {new Date(requisition.submittedAt).toLocaleDateString()}</span>
+                                                        <span>Time: {new Date(requisition.submittedAt).toLocaleTimeString()}</span>
+                                                    </div>
+                                                    <div className={styles.itemActions}>
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                setEditingRequisition(requisition);
+                                                            }}
+                                                            className={styles.actionButton}
+                                                        >
+                                                            <FontAwesomeIcon icon={faEdit} />
+                                                        </button>
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                downloadPDF(requisition);
+                                                            }}
+                                                            className={styles.actionButton}
+                                                        >
+                                                            <FontAwesomeIcon icon={faDownload} />
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </td>
+                                        <td className={styles.statusColumn}>
+                                            {filteredRequisitions.filter(r => r.status === 'approved').map((requisition) => (
+                                                <div 
+                                                    key={requisition.id} 
+                                                    className={styles.requisitionItem}
+                                                    onClick={() => {
+                                                        setSelectedRequisition(requisition);
+                                                        setShowDetails(true);
+                                                    }}
+                                                >
+                                                    <div className={styles.itemHeader}>
+                                                        <div className={styles.commodityTitle}>
+                                                            {requisition.items.map(item => item.itemName).join(', ')}
+                                                        </div>
+                                                    </div>
+                                                    <div className={styles.itemMeta}>
+                                                        <span>By: {requisition.recipientName}</span>
+                                                        <span>Submitted: {new Date(requisition.submittedAt).toLocaleDateString()}</span>
+                                                        <span>Time: {new Date(requisition.submittedAt).toLocaleTimeString()}</span>
+                                                    </div>
+                                                    <div className={styles.itemActions}>
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                setEditingRequisition(requisition);
+                                                            }}
+                                                            className={styles.actionButton}
+                                                        >
+                                                            <FontAwesomeIcon icon={faEdit} />
+                                                        </button>
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                downloadPDF(requisition);
+                                                            }}
+                                                            className={styles.actionButton}
+                                                        >
+                                                            <FontAwesomeIcon icon={faDownload} />
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </td>
+                                        <td className={styles.statusColumn}>
+                                            {filteredRequisitions.filter(r => r.status === 'rejected').map((requisition) => (
+                                                <div 
+                                                    key={requisition.id} 
+                                                    className={styles.requisitionItem}
+                                                    onClick={() => {
+                                                        setSelectedRequisition(requisition);
+                                                        setShowDetails(true);
+                                                    }}
+                                                >
+                                                    <div className={styles.itemHeader}>
+                                                        <div className={styles.commodityTitle}>
+                                                            {requisition.items.map(item => item.itemName).join(', ')}
+                                                        </div>
+                                                    </div>
+                                                    <div className={styles.itemMeta}>
+                                                        <span>By: {requisition.recipientName}</span>
+                                                        <span>Submitted: {new Date(requisition.submittedAt).toLocaleDateString()}</span>
+                                                        <span>Time: {new Date(requisition.submittedAt).toLocaleTimeString()}</span>
+                                                    </div>
+                                                    <div className={styles.itemActions}>
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                downloadPDF(requisition);
+                                                            }}
+                                                            className={styles.actionButton}
+                                                        >
+                                                            <FontAwesomeIcon icon={faDownload} />
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     )}
                 </div>

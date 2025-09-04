@@ -211,6 +211,30 @@
     gap: 25px;
 }
 
+/* Section Divider */
+.sectionDivider {
+    margin: 30px 0 20px 0;
+    padding: 20px;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 12px;
+    border-left: 4px solid #ff6b35;
+    text-align: center;
+}
+
+.sectionDivider h3 {
+    color: #ff6b35;
+    font-size: 1.3rem;
+    margin: 0 0 8px 0;
+    font-weight: 600;
+}
+
+.sectionDivider p {
+    color: #6c757d;
+    margin: 0;
+    font-size: 0.95rem;
+    font-style: italic;
+}
+
 .formGroup {
     display: flex;
     flex-direction: column;
@@ -236,6 +260,32 @@
     color: #666;
     font-size: 0.85rem;
     font-style: italic;
+}
+
+/* Word Counter */
+.wordCounter {
+    color: #ff6b35;
+    font-weight: 600;
+    font-size: 0.9rem;
+    background: rgba(255, 107, 53, 0.1);
+    padding: 5px 10px;
+    border-radius: 15px;
+    display: inline-block;
+    margin-top: 5px;
+    transition: all 0.3s ease;
+}
+
+.wordCounterError {
+    color: #dc3545;
+    background: rgba(220, 53, 69, 0.1);
+    border: 1px solid rgba(220, 53, 69, 0.3);
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
 }
 
 .textInput,
@@ -545,7 +595,7 @@
     }
     
     .formActions {
-        flex-direction: column;
+        flex-direction: column-reverse;
     }
     
     .newsFormCard {
