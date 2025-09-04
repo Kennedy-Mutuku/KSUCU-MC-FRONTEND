@@ -30,7 +30,7 @@ class ErrorBoundary extends React.Component<Props, State> {
         });
         
         // Send error to backend for logging in production
-        if (process.env.NODE_ENV === 'production') {
+        if (import.meta.env.PROD) {
             try {
                 fetch('/api/log-error', {
                     method: 'POST',
