@@ -7,7 +7,7 @@ class SocketService {
   private reconnectAttempts = 0;
   private maxReconnectAttempts = 5;
 
-  connect(): Promise<Socket> {
+  connect(guestName?: string): Promise<Socket> {
     return new Promise((resolve, reject) => {
       if (this.socket?.connected) {
         resolve(this.socket);
@@ -19,10 +19,11 @@ class SocketService {
       
       const serverUrl = getBaseUrl();
       
-      // Connect with or without token
+      // Connect with token, guest name, or default guest
       this.socket = io(serverUrl, {
         auth: {
-          token: token || 'guest' // Use 'guest' if no token
+          token: token || 'guest', // Use 'guest' if no token
+          guestName: guestName || null // Pass guest name if provided
         },
         transports: ['websocket', 'polling'],
         upgrade: true,

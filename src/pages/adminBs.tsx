@@ -57,9 +57,12 @@ const BsMembersList: React.FC = () => {
       const adminAuth = sessionStorage.getItem('adminAuth');
       if (adminAuth === 'Overseer') {
         setShowLoginForm(true);
+        setLoading(false); // Stop loading to show login form
       } else {
-        setError('Access restricted. Please access via Worship Docket Admin.');
-        setLoading(false);
+        // Allow access but show login form for authentication
+        setShowLoginForm(true);
+        setLoading(false); // Stop loading to show login form
+        setError('Please login to access Bible Study Administration.');
       }
     }
   }, []);
@@ -571,7 +574,7 @@ const handleExportPdf = () => {
     return <p>Loading saved souls...</p>;
   }
 
-  if (error) {
+  if (error && !showLoginForm && !isAuthenticated) {
     return <p>{error}</p>;
   }
 

@@ -517,3 +517,91 @@
   background: #fef2f2;
   color: #991b1b;
 }
+
+/* Name Dialog */
+.nameDialog {
+  padding: 30px;
+  text-align: center;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: white;
+}
+
+.nameDialog h3 {
+  margin: 0 0 10px 0;
+  color: #1f2937;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.nameDialog p {
+  margin: 0 0 20px 0;
+  color: #6b7280;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.nameInput {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 16px;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+.nameInput:focus {
+  outline: none;
+  border-color: #00c6ff;
+  box-shadow: 0 0 0 3px rgba(0, 198, 255, 0.1);
+}
+
+.nameDialogButtons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.cancelButton {
+  padding: 10px 20px;
+  border: 2px solid #d1d5db;
+  background: white;
+  color: #6b7280;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.cancelButton:hover {
+  border-color: #9ca3af;
+  color: #374151;
+}
+
+.joinButton {
+  padding: 10px 20px;
+  border: 2px solid #00c6ff;
+  background: #00c6ff;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.joinButton:hover:not(:disabled) {
+  background: #0099cc;
+  border-color: #0099cc;
+}
+
+.joinButton:disabled {
+  background: #d1d5db;
+  border-color: #d1d5db;
+  cursor: not-allowed;
+}

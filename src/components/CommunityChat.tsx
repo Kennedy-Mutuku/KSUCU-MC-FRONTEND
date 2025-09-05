@@ -51,6 +51,8 @@ const CommunityChat: React.FC = () => {
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
   const [currentUser, setCurrentUser] = useState<{ username: string; userId: string } | null>(null);
+  const [showNameDialog, setShowNameDialog] = useState(false);
+  const [tempName, setTempName] = useState('');
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatWindowRef = useRef<HTMLDivElement>(null);
@@ -103,16 +105,31 @@ const CommunityChat: React.FC = () => {
     }
   };
 
-  const connectSocket = async () => {
+  const connectSocket = async (guestName?: string) => {
     try {
       setIsLoading(true);
       setError(''); // Clear any previous errors
       
       // Try to fetch current user (but don't require login)
-      await fetchCurrentUser();
+      const isAuthenticated = await fetchCurrentUser();
+
+      // If not authenticated and no guest name provided, show name dialog
+      if (!isAuthenticated && !guestName) {
+        setShowNameDialog(true);
+        setIsLoading(false);
+        return;
+      }
+
+      // Set guest name if provided
+      if (!isAuthenticated && guestName) {
+        setCurrentUser({
+          username: guestName,
+          userId: 'guest'
+        });
+      }
 
       // Try to connect to socket regardless of auth status
-      await socketService.connect();
+      await socketService.connect(guestName);
       setIsConnected(true);
       setupSocketListeners();
       loadMessages();
@@ -371,8 +388,15 @@ const CommunityChat: React.FC = () => {
     );
   };
 
+  const handleNameSubmit = () => {
+    if (tempName.trim()) {
+      setShowNameDialog(false);
+      connectSocket(tempName.trim());
+    }
+  };
+
   useEffect(() => {
-    if (isOpen && !isConnected) {
+    if (isOpen && !isConnected && !showNameDialog) {
       connectSocket();
     }
     
@@ -406,6 +430,57 @@ const CommunityChat: React.FC = () => {
             {onlineUsers.length}
           </div>
         )}
+      </div>
+    );
+  }
+
+  // Show name dialog for guest users
+  if (showNameDialog) {
+    return (
+      <div className={styles.chatWindow}>
+        <div className={styles.chatHeader}>
+          <div className={styles.headerLeft}>
+            <MessageCircle size={20} />
+            <span>Community Chat</span>
+          </div>
+          <div className={styles.headerRight}>
+            <button onClick={() => setIsOpen(false)}>
+              <X size={20} />
+            </button>
+          </div>
+        </div>
+        
+        <div className={styles.nameDialog}>
+          <h3>Enter your name</h3>
+          <p>Please enter your name to join the community chat:</p>
+          <input
+            type="text"
+            value={tempName}
+            onChange={(e) => setTempName(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && tempName.trim()) {
+                handleNameSubmit();
+              }
+            }}
+            placeholder="e.g., Kennedy Mutuku"
+            className={styles.nameInput}
+          />
+          <div className={styles.nameDialogButtons}>
+            <button 
+              onClick={() => setIsOpen(false)}
+              className={styles.cancelButton}
+            >
+              Cancel
+            </button>
+            <button 
+              onClick={handleNameSubmit}
+              disabled={!tempName.trim()}
+              className={styles.joinButton}
+            >
+              Join Chat
+            </button>
+          </div>
+        </div>
       </div>
     );
   }
