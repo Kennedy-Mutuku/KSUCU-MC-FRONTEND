@@ -69,18 +69,25 @@ const CommunityChat: React.FC = () => {
       const response = await axios.get(getApiUrl('users'), {
         withCredentials: true
       });
-      if (response.data && response.data.username) {
+      
+      console.log('User fetch response:', response.data); // Debug log
+      
+      // The API returns user data directly (not wrapped in success object)
+      if (response.data && response.data.username && response.data._id) {
         setCurrentUser({
           username: response.data.username,
-          userId: response.data._id || response.data.id
+          userId: response.data._id
         });
+        console.log('User authenticated successfully:', response.data.username);
         return true; // User is logged in
       } else {
+        console.log('No user data found in response');
         setCurrentUser(null);
         return false; // User is not logged in
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to fetch current user:', error);
+      console.log('Error response:', error.response?.data);
       setCurrentUser(null);
       return false; // Failed to authenticate
     }
@@ -354,6 +361,17 @@ const CommunityChat: React.FC = () => {
     if (isOpen && !isConnected) {
       connectSocket();
     }
+    
+    // Trigger AI chatbot visibility update when chat opens/closes
+    setTimeout(() => {
+      const chatbaseFrame = document.querySelector('iframe[src*="chatbase.co"]') as HTMLIFrameElement;
+      if (chatbaseFrame) {
+        const currentPath = window.location.pathname;
+        const isHomePage = currentPath === '/' || currentPath === '/Home' || currentPath === '/home';
+        const shouldShow = isHomePage && !isOpen;
+        chatbaseFrame.style.display = shouldShow ? 'block' : 'none';
+      }
+    }, 100);
   }, [isOpen]);
 
   useEffect(() => {

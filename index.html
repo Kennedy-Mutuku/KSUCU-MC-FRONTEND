@@ -47,6 +47,23 @@
 
     <script>
       (function () {
+        // Function to check if we should show AI chatbot
+        function shouldShowAIChatbot() {
+          const currentPath = window.location.pathname;
+          const isHomePage = currentPath === '/' || currentPath === '/Home' || currentPath === '/home';
+          return isHomePage;
+        }
+
+        // Function to hide/show AI chatbot based on community chat state
+        function toggleAIChatbot() {
+          const chatbaseFrame = document.querySelector('iframe[src*="chatbase.co"]');
+          if (chatbaseFrame) {
+            const communityChatOpen = document.querySelector('.chatWindow') !== null;
+            const shouldShow = shouldShowAIChatbot() && !communityChatOpen;
+            chatbaseFrame.style.display = shouldShow ? 'block' : 'none';
+          }
+        }
+
         if (!window.chatbase || window.chatbase("getState") !== "initialized") {
           window.chatbase = (...arguments) => {
             if (!window.chatbase.q) {
@@ -63,13 +80,43 @@
             },
           });
         }
+        
         const onLoad = function () {
-          const script = document.createElement("script");
-          script.src = "https://www.chatbase.co/embed.min.js";
-          script.id = "C2GqpaVJjashQf31cBuzF";
-          script.domain = "www.chatbase.co";
-          document.body.appendChild(script);
+          // Only load chatbase on homepage
+          if (shouldShowAIChatbot()) {
+            const script = document.createElement("script");
+            script.src = "https://www.chatbase.co/embed.min.js";
+            script.id = "C2GqpaVJjashQf31cBuzF";
+            script.domain = "www.chatbase.co";
+            document.body.appendChild(script);
+            
+            // Monitor for changes in community chat state
+            const observer = new MutationObserver(function(mutations) {
+              mutations.forEach(function(mutation) {
+                if (mutation.type === 'childList') {
+                  setTimeout(toggleAIChatbot, 100);
+                }
+              });
+            });
+            
+            // Start observing
+            observer.observe(document.body, {
+              childList: true,
+              subtree: true
+            });
+            
+            // Also check on navigation changes
+            let lastUrl = location.href;
+            new MutationObserver(() => {
+              const url = location.href;
+              if (url !== lastUrl) {
+                lastUrl = url;
+                setTimeout(toggleAIChatbot, 100);
+              }
+            }).observe(document, {subtree: true, childList: true});
+          }
         };
+        
         if (document.readyState === "complete") {
           onLoad();
         } else {
@@ -384,37 +431,5 @@
       }
     </script>
 
-    <script>
-      (function () {
-        if (!window.chatbase || window.chatbase("getState") !== "initialized") {
-          window.chatbase = (...arguments) => {
-            if (!window.chatbase.q) {
-              window.chatbase.q = [];
-            }
-            window.chatbase.q.push(arguments);
-          };
-          window.chatbase = new Proxy(window.chatbase, {
-            get(target, prop) {
-              if (prop === "q") {
-                return target.q;
-              }
-              return (...args) => target(prop, ...args);
-            },
-          });
-        }
-        const onLoad = function () {
-          const script = document.createElement("script");
-          script.src = "https://www.chatbase.co/embed.min.js";
-          script.id = "C2GqpaVJjashQf31cBuzF";
-          script.domain = "www.chatbase.co";
-          document.body.appendChild(script);
-        };
-        if (document.readyState === "complete") {
-          onLoad();
-        } else {
-          window.addEventListener("load", onLoad);
-        }
-      })();
-    </script>
   </body>
 </html>
