@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MessageCircle, Send, X, Users, Image, Mic, Video, FileText, Edit, Trash2, Reply, Check, CheckCheck } from 'lucide-react';
+import { MessageCircle, Send, X, Users, Image, Mic, Video, Edit, Trash2, Reply, Check, CheckCheck } from 'lucide-react';
 import socketService from '../services/socketService';
 import { getApiUrl, getBaseUrl } from '../config/environment';
 import styles from '../styles/CommunityChat.module.css';
@@ -69,6 +69,13 @@ const CommunityChat: React.FC = () => {
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
   const [recordingTime, setRecordingTime] = useState(0);
   const [recordingTimer, setRecordingTimer] = useState<ReturnType<typeof setInterval> | null>(null);
+  
+  // Swipe to reply states
+  const [swipeStartX, setSwipeStartX] = useState(0);
+  const [swipeStartY, setSwipeStartY] = useState(0);
+  const [swipeDistance, setSwipeDistance] = useState(0);
+  const [swipingMessage, setSwipingMessage] = useState<string | null>(null);
+  const [isSwipeActive, setIsSwipeActive] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatWindowRef = useRef<HTMLDivElement>(null);
@@ -603,6 +610,65 @@ const CommunityChat: React.FC = () => {
     }
   };
 
+  // Swipe to reply handlers (separate from long press)
+  const handleSwipeStart = (e: React.TouchEvent, message: Message) => {
+    const touch = e.touches[0];
+    setSwipeStartX(touch.clientX);
+    setSwipeStartY(touch.clientY);
+    setSwipingMessage(message._id);
+    setIsSwipeActive(true);
+    setSwipeDistance(0);
+    
+    // Cancel any ongoing long press when starting swipe
+    if (pressTimer) {
+      clearTimeout(pressTimer);
+      setPressTimer(null);
+    }
+  };
+
+  const handleSwipeMove = (e: React.TouchEvent, message: Message) => {
+    if (!isSwipeActive || swipingMessage !== message._id) return;
+    
+    const touch = e.touches[0];
+    const deltaX = touch.clientX - swipeStartX;
+    const deltaY = Math.abs(touch.clientY - swipeStartY);
+    
+    // If user is swiping horizontally, cancel long press
+    if (Math.abs(deltaX) > 10) {
+      if (pressTimer) {
+        clearTimeout(pressTimer);
+        setPressTimer(null);
+      }
+    }
+    
+    // Only allow horizontal swipes (prevent vertical scrolling interference)
+    if (deltaY > 30) {
+      handleSwipeEnd();
+      return;
+    }
+    
+    // Only track rightward swipes (positive deltaX)
+    if (deltaX > 0 && deltaX <= 80) {
+      setSwipeDistance(deltaX);
+      e.preventDefault(); // Prevent scrolling when swiping
+    }
+  };
+
+  const handleSwipeEnd = () => {
+    if (swipeDistance > 40 && swipingMessage) {
+      // Trigger reply if swipe distance is sufficient
+      const messageToReply = messages.find(msg => msg._id === swipingMessage);
+      if (messageToReply) {
+        setReplyToMessage(messageToReply);
+      }
+    }
+    
+    // Reset swipe state
+    setIsSwipeActive(false);
+    setSwipingMessage(null);
+    setSwipeDistance(0);
+  };
+
   const renderMessage = (message: Message) => {
     // Enhanced ownership detection with debugging
     let isOwn = false;
@@ -624,15 +690,15 @@ const CommunityChat: React.FC = () => {
       console.log('Message ownership check:', {
         messageId: message._id,
         messageSenderId: message.senderId,
-        messageSenderName: message.senderName,
+        messageSenderName: `"${message.senderName}"`,
         currentUserId: currentUser?.userId,
-        currentUsername: currentUser?.username,
+        currentUsername: `"${currentUser?.username}"`,
         userIdMatch,
         usernameMatch,
         trimmedUsernameMatch,
         caseInsensitiveUsernameMatch,
         trimmedCaseInsensitiveMatch,
-        isOwn: isOwn
+        finalResult: isOwn
       });
     }
     
@@ -651,13 +717,47 @@ const CommunityChat: React.FC = () => {
 
     return (
       <div key={message._id} className={`${styles.messageWrapper} ${isOwn ? styles.ownMessageWrapper : styles.otherMessageWrapper}`}>
+        {/* Reply icon that appears when swiping */}
+        {swipingMessage === message._id && swipeDistance > 20 && (
+          <div className={styles.replyIndicator} style={{
+            opacity: Math.min(swipeDistance / 60, 1),
+            transform: `translateX(${Math.min(swipeDistance - 40, 20)}px)`
+          }}>
+            <Reply size={20} />
+          </div>
+        )}
         <div 
-          className={`${styles.message} ${isOwn ? styles.ownMessage : styles.otherMessage}`}
+          className={`${styles.message} ${isOwn ? styles.ownMessage : styles.otherMessage} ${swipingMessage === message._id ? styles.swipeActive : ''}`}
+          style={{
+            transform: swipingMessage === message._id ? `translateX(${swipeDistance}px)` : 'translateX(0px)',
+            transition: isSwipeActive && swipingMessage === message._id ? 'none' : 'transform 0.2s ease-out'
+          }}
           onMouseDown={() => !message.deleted && handleLongPressStart(message)}
           onMouseUp={handleLongPressEnd}
           onMouseLeave={handleLongPressEnd}
-          onTouchStart={() => !message.deleted && handleLongPressStart(message)}
-          onTouchEnd={handleLongPressEnd}
+          onTouchStart={(e) => {
+            if (!message.deleted) {
+              handleSwipeStart(e, message);
+              // Start long press timer separately
+              const timer = setTimeout(() => {
+                // Only trigger long press if no swipe is active
+                if (!isSwipeActive) {
+                  setLongPressMessage(message);
+                  setShowDeleteOptions(true);
+                }
+              }, 800); // Longer delay to allow swipe gestures
+              setPressTimer(timer);
+            }
+          }}
+          onTouchMove={(e) => !message.deleted && handleSwipeMove(e, message)}
+          onTouchEnd={() => {
+            handleSwipeEnd();
+            // Clear long press timer on touch end
+            if (pressTimer) {
+              clearTimeout(pressTimer);
+              setPressTimer(null);
+            }
+          }}
         >
           {message.replyTo && (
             <div className={styles.replyTo}>
@@ -675,56 +775,58 @@ const CommunityChat: React.FC = () => {
               <p className={styles.deletedMessage}>
                 <i>This message was deleted</i>
               </p>
-            ) : message.messageType === 'text' ? (
-              <p>{message.message}</p>
-            ) : null}
-            
-            {!message.deleted && message.messageType === 'image' && (
+            ) : message.messageType === 'image' ? (
               <div>
                 <img 
                   src={`${getBaseUrl()}${message.mediaUrl}`} 
                   alt={message.mediaFileName}
                   className={styles.messageImage}
+                  onError={(e) => {
+                    console.error('Failed to load image:', message.mediaUrl);
+                    e.currentTarget.style.display = 'none';
+                  }}
                 />
                 {message.message && <p>{message.message}</p>}
               </div>
-            )}
-
-            {!message.deleted && message.messageType === 'video' && (
+            ) : message.messageType === 'video' ? (
               <div>
                 <video 
                   src={`${getBaseUrl()}${message.mediaUrl}`} 
                   controls
                   className={styles.messageVideo}
+                  onError={() => {
+                    console.error('Failed to load video:', message.mediaUrl);
+                  }}
                 />
                 {message.message && <p>{message.message}</p>}
               </div>
-            )}
-
-            {!message.deleted && message.messageType === 'audio' && (
+            ) : message.messageType === 'audio' ? (
               <div>
                 <audio 
                   src={`${getBaseUrl()}${message.mediaUrl}`} 
                   controls
                   className={styles.messageAudio}
+                  onError={() => {
+                    console.error('Failed to load audio:', message.mediaUrl);
+                  }}
                 />
                 {message.message && <p>{message.message}</p>}
               </div>
-            )}
-
-            {!message.deleted && message.messageType === 'file' && (
-              <div>
+            ) : message.messageType === 'file' ? (
+              <div className={styles.fileMessage}>
                 <a 
-                  href={`${getBaseUrl()}${message.mediaUrl}`}
-                  target="_blank"
+                  href={`${getBaseUrl()}${message.mediaUrl}`} 
+                  target="_blank" 
                   rel="noopener noreferrer"
                   className={styles.fileLink}
                 >
-                  <FileText size={16} />
-                  {message.mediaFileName}
+                  📎 {message.mediaFileName || 'Download File'}
                 </a>
                 {message.message && <p>{message.message}</p>}
               </div>
+            ) : (
+              // Default to text message if messageType is missing or unrecognized
+              <p>{message.message}</p>
             )}
           </div>
           
@@ -822,7 +924,7 @@ const CommunityChat: React.FC = () => {
         <div className={styles.chatHeader}>
           <div className={styles.headerLeft}>
             <MessageCircle size={20} />
-            <span>Community Chat</span>
+            <span>KSUCU-MC Community Chat</span>
           </div>
           <div className={styles.headerRight}>
             <button onClick={() => setIsOpen(false)}>
@@ -867,7 +969,7 @@ const CommunityChat: React.FC = () => {
       <div className={styles.chatHeader}>
         <div className={styles.headerLeft}>
           <MessageCircle size={20} />
-          <span>Community Chat</span>
+          <span>KSUCU-MC Community Chat</span>
         </div>
         <div className={styles.headerRight}>
           <div className={styles.onlineUsers}>
@@ -991,6 +1093,14 @@ const CommunityChat: React.FC = () => {
         />
 
         <button 
+          onMouseDown={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          }}
+          onTouchStart={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          }}
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -1001,11 +1111,34 @@ const CommunityChat: React.FC = () => {
               isLoading, 
               disabled: !newMessage.trim() || !isConnected || isLoading 
             });
-            handleSendMessage();
+            if (newMessage.trim() && isConnected && !isLoading) {
+              handleSendMessage();
+            }
+          }}
+          onTouchEnd={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Send button touch end!', { 
+              newMessage, 
+              trimmed: newMessage.trim(), 
+              isConnected, 
+              isLoading 
+            });
+            if (newMessage.trim() && isConnected && !isLoading) {
+              handleSendMessage();
+            }
           }}
           disabled={!newMessage.trim() || !isConnected || isLoading}
           className={`${styles.sendButton} ${(!newMessage.trim() || !isConnected || isLoading) ? styles.disabledSendButton : ''}`}
-          style={{ pointerEvents: 'auto', zIndex: 2147483647 }}
+          style={{ 
+            pointerEvents: 'auto', 
+            zIndex: 2147483647,
+            touchAction: 'manipulation',
+            WebkitTouchCallout: 'none',
+            WebkitUserSelect: 'none',
+            userSelect: 'none',
+            outline: 'none'
+          }}
           type="button"
           title={`Send message - ${(!newMessage.trim() || !isConnected || isLoading) ? 'Disabled' : 'Ready'}`}
         >

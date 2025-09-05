@@ -76,12 +76,21 @@
     z-index: 2147483647; /* Ensure maximum z-index on mobile */
   }
   
-  /* Ensure send button is always visible on mobile */
+  /* Ensure send button is always visible and clickable on mobile */
   .sendButton {
-    min-width: 40px;
-    min-height: 40px;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    width: 44px !important;
+    height: 44px !important;
     position: relative;
-    z-index: 2147483646;
+    z-index: 2147483647 !important; /* Maximum z-index */
+    pointer-events: auto !important;
+    touch-action: manipulation;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent; /* Remove tap delay */
+    cursor: pointer;
   }
   
   /* Make sure input container doesn't get covered */
@@ -110,6 +119,32 @@
   align-items: center;
   gap: 8px;
   font-weight: 600;
+  font-size: 16px;
+}
+
+.headerLeft svg {
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+  color: #ffffff;
+}
+
+.headerLeft span {
+  color: #ffffff;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  letter-spacing: 0.3px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  position: relative;
+}
+
+.headerLeft span::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.2));
+  border-radius: 4px;
+  z-index: -1;
+  padding: 2px 6px;
+  margin: -2px -6px;
 }
 
 .headerRight {
@@ -245,14 +280,44 @@
   width: 100%;
   display: flex;
   margin-bottom: 8px;
+  position: relative;
 }
 
 .ownMessageWrapper {
-  justify-content: flex-end;
+  justify-content: flex-end !important;
+  text-align: right !important;
+  align-items: flex-end !important;
 }
 
 .otherMessageWrapper {
-  justify-content: flex-start;
+  justify-content: flex-start !important;
+  text-align: left !important;
+  align-items: flex-start !important;
+}
+
+/* Swipe to Reply */
+.replyIndicator {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #730051;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: rgba(115, 0, 81, 0.1);
+  border-radius: 50%;
+  z-index: 1;
+  pointer-events: none;
+  transition: all 0.2s ease;
+}
+
+.swipeActive {
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
 }
 
 .message {
@@ -266,17 +331,22 @@
 }
 
 .ownMessage {
-  background: #dcf8c6;
-  color: #1f2937;
-  border-bottom-right-radius: 4px;
-  margin-left: auto;
+  background: #dcf8c6 !important;
+  color: #1f2937 !important;
+  border-bottom-right-radius: 4px !important;
+  margin-left: auto !important;
+  margin-right: 0 !important;
+  align-self: flex-end !important;
 }
 
 .otherMessage {
-  background: white;
-  color: #1f2937;
-  border-bottom-left-radius: 4px;
-  border: 1px solid #e5e7eb;
+  background: white !important;
+  color: #1f2937 !important;
+  border-bottom-left-radius: 4px !important;
+  border: 1px solid #e5e7eb !important;
+  margin-left: 0 !important;
+  margin-right: auto !important;
+  align-self: flex-start !important;
 }
 
 .senderName {
@@ -614,17 +684,28 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s;
+  transition: transform 0.1s; /* Faster transition for immediate feedback */
   position: relative;
-  z-index: 2147483645;
+  z-index: 2147483647 !important; /* Maximum z-index */
   flex-shrink: 0;
-  pointer-events: auto; /* Ensure button can receive click events */
+  pointer-events: auto !important; /* Ensure button can receive click events */
   user-select: none; /* Prevent text selection */
+  -webkit-touch-callout: none; /* Prevent callout on iOS */
+  -webkit-user-select: none; /* Prevent selection on webkit */
+  touch-action: manipulation; /* Improve touch response */
+  -webkit-tap-highlight-color: transparent; /* Remove tap delay and highlight */
+  outline: none; /* Remove focus outline */
 }
 
 .sendButton:hover:not(:disabled) {
   transform: scale(1.05);
   box-shadow: 0 2px 8px rgba(115, 0, 81, 0.3);
+}
+
+.sendButton:active:not(:disabled) {
+  transform: scale(0.95);
+  background: linear-gradient(135deg, #5d0041, #73154d);
+  transition: transform 0.05s; /* Very fast feedback on touch */
 }
 
 .sendButton:disabled {

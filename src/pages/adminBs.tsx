@@ -42,6 +42,10 @@ const BsMembersList = () => {
   const [newResidenceDescription, setNewResidenceDescription] = useState('');
   const [editingResidence, setEditingResidence] = useState<{_id: string, name: string, description: string} | null>(null);
   const [residenceLoading, setResidenceLoading] = useState(false);
+  
+  // Reshuffling states
+  const [isReshuffling, setIsReshuffling] = useState(false);
+  const [reshuffleCount, setReshuffleCount] = useState(0);
 
   const backEndURL = getBaseUrl();
 
@@ -403,17 +407,26 @@ const BsMembersList = () => {
   const shuffleAndGroupUsers = (size: number) => {
     if (users.length === 0) return;
     
-    // Separate all pastors and regular users globally
+    console.log('🔍 Starting group formation with', users.length, 'users, target size:', size);
+    
+    // Separate pastors and regular users
     const allPastors = users.filter(user => user.isPastor);
     const allRegularUsers = users.filter(user => !user.isPastor);
     
-    // Calculate optimal number of groups
+    console.log('📊 Found', allPastors.length, 'pastors and', allRegularUsers.length, 'regular users');
+    
+    // Calculate exact number of groups needed
     const totalUsers = users.length;
-    const minGroups = Math.max(allPastors.length, Math.ceil(totalUsers / size));
+    const totalGroups = Math.max(
+      Math.ceil(totalUsers / size), // Minimum groups for all users
+      allPastors.length // Minimum groups for pastors (each gets own group)
+    );
+    
+    console.log('🎯 Creating', totalGroups, 'groups with target size', size);
     
     // Create empty groups
     const allGroups: Array<Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }>> = [];
-    for (let i = 0; i < minGroups; i++) {
+    for (let i = 0; i < totalGroups; i++) {
       allGroups.push([]);
     }
     
@@ -421,139 +434,167 @@ const BsMembersList = () => {
     allPastors.forEach((pastor, index) => {
       if (index < allGroups.length) {
         allGroups[index].push(pastor);
+        console.log('✝️ Placed pastor', pastor.name, 'in Group', index + 1);
       }
     });
     
-    // Step 2: Group regular users by residence first (try to keep same residence together)
+    // Step 2: Group users by residence and organize for balanced distribution
     const usersByResidence: { [key: string]: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> } = {};
     
-    allRegularUsers.forEach(user => {
+    // Shuffle for randomization in reshuffles
+    const shuffledRegularUsers = [...allRegularUsers].sort(() => Math.random() - 0.5);
+    
+    shuffledRegularUsers.forEach(user => {
       if (!usersByResidence[user.residence]) {
         usersByResidence[user.residence] = [];
       }
       usersByResidence[user.residence].push(user);
     });
     
-    // Helper function to find the best group for a user
-    const findBestGroup = (user: { name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }) => {
-      let bestGroupIndex = 0;
-      let minCount = Infinity;
-      let preferSameResidence = false;
-      
-      // First, try to find a group with same residence that isn't full
-      for (let i = 0; i < allGroups.length; i++) {
-        const group = allGroups[i];
-        const hasSpace = group.length < size;
-        const sameResidenceMembers = group.filter(u => u.residence === user.residence).length;
-        
-        if (hasSpace && sameResidenceMembers > 0) {
-          // Prioritize groups with same residence
-          if (group.length < minCount) {
-            minCount = group.length;
-            bestGroupIndex = i;
-            preferSameResidence = true;
-          }
-        }
-      }
-      
-      // If no same residence group has space, find any group with space
-      if (!preferSameResidence) {
-        for (let i = 0; i < allGroups.length; i++) {
-          const group = allGroups[i];
-          if (group.length < size && group.length < minCount) {
-            minCount = group.length;
-            bestGroupIndex = i;
-          }
-        }
-      }
-      
-      return bestGroupIndex;
-    };
+    const residenceNames = Object.keys(usersByResidence);
+    console.log('🏠 Residences found:', residenceNames);
     
-    // Step 3: Distribute users residence by residence
-    Object.keys(usersByResidence).forEach(residence => {
+    // Step 3: Create a balanced distribution queue
+    const userQueue: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> = [];
+    
+    // Process residences and create balanced queue
+    residenceNames.forEach(residence => {
       const residenceUsers = usersByResidence[residence];
       
       // Separate by gender and year for balanced distribution
-      const maleUsers = residenceUsers.filter(user => user.gender === 'M');
-      const femaleUsers = residenceUsers.filter(user => user.gender === 'F');
+      const malesByYear: { [key: string]: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> } = {
+        '1': [], '2': [], '3': [], '4': []
+      };
+      const femalesByYear: { [key: string]: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> } = {
+        '1': [], '2': [], '3': [], '4': []
+      };
       
-      // Distribute males by year
-      ['1', '2', '3', '4'].forEach(year => {
-        const malesInYear = maleUsers.filter(user => user.yos === year);
-        malesInYear.forEach(user => {
-          const bestGroupIndex = findBestGroup(user);
-          if (allGroups[bestGroupIndex].length < size) {
-            allGroups[bestGroupIndex].push(user);
-          }
-        });
+      residenceUsers.forEach(user => {
+        if (user.gender === 'M') {
+          malesByYear[user.yos].push(user);
+        } else {
+          femalesByYear[user.yos].push(user);
+        }
       });
       
-      // Distribute females by year
-      ['1', '2', '3', '4'].forEach(year => {
-        const femalesInYear = femaleUsers.filter(user => user.yos === year);
-        femalesInYear.forEach(user => {
-          const bestGroupIndex = findBestGroup(user);
-          if (allGroups[bestGroupIndex].length < size) {
-            allGroups[bestGroupIndex].push(user);
-          }
-        });
-      });
-    });
-    
-    // Step 4: Handle any remaining users that couldn't be placed (mix residences)
-    const unplacedUsers: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> = [];
-    allRegularUsers.forEach(user => {
-      const isPlaced = allGroups.some(group => group.includes(user));
-      if (!isPlaced) {
-        unplacedUsers.push(user);
+      // Add users to queue in a balanced pattern (alternate gender and years)
+      let maleIndex = 0, femaleIndex = 0;
+      const years = ['1', '2', '3', '4'];
+      let currentYear = 0;
+      
+      while (maleIndex < residenceUsers.filter(u => u.gender === 'M').length || 
+             femaleIndex < residenceUsers.filter(u => u.gender === 'F').length) {
+        
+        // Try to add a male from current year
+        if (malesByYear[years[currentYear]].length > 0) {
+          userQueue.push(malesByYear[years[currentYear]].shift()!);
+        }
+        
+        // Try to add a female from current year
+        if (femalesByYear[years[currentYear]].length > 0) {
+          userQueue.push(femalesByYear[years[currentYear]].shift()!);
+        }
+        
+        // Move to next year
+        currentYear = (currentYear + 1) % 4;
       }
     });
     
-    // Place unplaced users in any available spots
-    unplacedUsers.forEach(user => {
+    console.log('📝 Created balanced queue with', userQueue.length, 'users');
+    
+    // Step 4: Fill groups exactly to target size
+    userQueue.forEach((user) => {
+      // Find the best group that's not full
+      let bestGroupIndex = -1;
+      let bestScore = -1;
+      
+      // First priority: groups that aren't full and have same residence members
       for (let i = 0; i < allGroups.length; i++) {
-        if (allGroups[i].length < size) {
-          allGroups[i].push(user);
-          break;
+        if (allGroups[i].length >= size) continue; // Skip full groups
+        
+        const group = allGroups[i];
+        const sameResidenceCount = group.filter(u => u.residence === user.residence).length;
+        const currentMales = group.filter(u => u.gender === 'M' && !u.isPastor).length;
+        const currentFemales = group.filter(u => u.gender === 'F' && !u.isPastor).length;
+        const sameYearCount = group.filter(u => u.yos === user.yos && !u.isPastor).length;
+        
+        let score = 0;
+        
+        // Prefer same residence (highest priority)
+        score += sameResidenceCount > 0 ? 100 : 0;
+        
+        // Balance gender (medium priority)
+        if (user.gender === 'M') {
+          score += currentMales <= currentFemales ? 10 : -5;
+        } else {
+          score += currentFemales <= currentMales ? 10 : -5;
+        }
+        
+        // Avoid year clustering (lower priority)
+        score -= sameYearCount * 3;
+        
+        // Prefer filling groups in order (lowest priority)
+        score += (allGroups.length - i);
+        
+        if (score > bestScore) {
+          bestScore = score;
+          bestGroupIndex = i;
         }
       }
+      
+      // If no good group found, find the first non-full group
+      if (bestGroupIndex === -1) {
+        for (let i = 0; i < allGroups.length; i++) {
+          if (allGroups[i].length < size) {
+            bestGroupIndex = i;
+            break;
+          }
+        }
+      }
+      
+      // Place user in the best group found
+      if (bestGroupIndex !== -1) {
+        allGroups[bestGroupIndex].push(user);
+      }
     });
     
-    // Step 5: Redistribute members from overly small groups to maintain proper group sizes
-    const minGroupSize = Math.floor(size * 0.6); // Groups should be at least 60% of target size
+    // Step 5: Handle overflow users (should be minimal with exact sizing)
+    const placedUsers = new Set();
+    allGroups.forEach(group => {
+      group.forEach(user => placedUsers.add(user));
+    });
     
-    for (let i = allGroups.length - 1; i >= 0; i--) {
-      const group = allGroups[i];
-      const nonPastorMembers = group.filter(u => !u.isPastor);
-      
-      // If a group has a pastor, keep it regardless of size
-      // If a group has no pastor and is too small, redistribute members
-      if (!group.some(u => u.isPastor) && group.length < minGroupSize && nonPastorMembers.length > 0) {
-        // Find other groups with space to absorb these members
-        nonPastorMembers.forEach(user => {
-          for (let j = 0; j < allGroups.length; j++) {
-            if (j !== i && allGroups[j].length < size) {
-              allGroups[j].push(user);
-              break;
-            }
-          }
-        });
-        // Remove the small group
-        allGroups.splice(i, 1);
+    const unplacedUsers = allRegularUsers.filter(user => !placedUsers.has(user));
+    if (unplacedUsers.length > 0) {
+      console.log('⚠️ Placing', unplacedUsers.length, 'overflow users in last group');
+      // Add overflow users to the last group (which may exceed target size)
+      if (allGroups.length > 0) {
+        allGroups[allGroups.length - 1].push(...unplacedUsers);
       }
     }
     
     // Step 6: Ensure pastors are always first in their groups
-    allGroups.forEach(group => {
+    allGroups.forEach((group, index) => {
       group.sort((a, b) => {
         if (a.isPastor && !b.isPastor) return -1;
         if (!a.isPastor && b.isPastor) return 1;
         return 0;
       });
+      
+      // Log group composition for debugging
+      const males = group.filter(u => u.gender === 'M' && !u.isPastor).length;
+      const females = group.filter(u => u.gender === 'F' && !u.isPastor).length;
+      const pastorName = group.find(u => u.isPastor)?.name || 'None';
+      const residences = [...new Set(group.map(u => u.residence))];
+      const years = group.reduce((acc, u) => {
+        if (!u.isPastor) acc[u.yos] = (acc[u.yos] || 0) + 1;
+        return acc;
+      }, {} as {[key: string]: number});
+      
+      console.log(`📋 Group ${index + 1}: ${group.length}/${size} members | Pastor: ${pastorName} | M:${males} F:${females} | Years: ${JSON.stringify(years)} | Residences: ${residences.join(', ')}`);
     });
     
-    // Step 7: Sort groups - those with pastors first
+    // Step 7: Sort groups - those with pastors first, then by residence
     allGroups.sort((a, b) => {
       const hasPastorA = a.some(u => u.isPastor);
       const hasPastorB = b.some(u => u.isPastor);
@@ -561,14 +602,17 @@ const BsMembersList = () => {
       if (hasPastorA && !hasPastorB) return -1;
       if (!hasPastorA && hasPastorB) return 1;
       
-      // If both have or don't have pastors, sort by primary residence
+      // Sort by primary residence
       const residenceA = a[0]?.residence || '';
       const residenceB = b[0]?.residence || '';
       return residenceA.localeCompare(residenceB);
     });
     
-    // Filter out any empty groups
+    // Remove empty groups and set final result
     const finalGroups = allGroups.filter(group => group.length > 0);
+    
+    console.log('✅ Final result:', finalGroups.length, 'groups created');
+    console.log('📊 Group sizes:', finalGroups.map((group, i) => `Group ${i + 1}: ${group.length} members`));
     
     setGroups(finalGroups);
   };
@@ -576,6 +620,32 @@ const BsMembersList = () => {
 
   const handleShuffleClick = () => {
     shuffleAndGroupUsers(groupSize);
+    setReshuffleCount(0);
+  };
+
+  const handleReshuffleClick = () => {
+    if (groups.length === 0) return;
+    
+    setIsReshuffling(true);
+    setError('🔄 Reshuffling groups with different arrangement...');
+    
+    // Add a small delay for better UX
+    setTimeout(() => {
+      shuffleAndGroupUsers(groupSize);
+      setReshuffleCount(prev => prev + 1);
+      setIsReshuffling(false);
+      setError(`✅ Groups reshuffled! (Attempt #${reshuffleCount + 1})`);
+      setTimeout(() => setError(''), 3000);
+    }, 500);
+  };
+
+  const resetGroups = () => {
+    if (confirm('Are you sure you want to clear all current groups? This action cannot be undone.')) {
+      setGroups([]);
+      setReshuffleCount(0);
+      setError('🗑️ Groups cleared. Click "Create Balanced Groups" to generate new ones.');
+      setTimeout(() => setError(''), 3000);
+    }
   };
 
 
@@ -629,19 +699,22 @@ const handleExportPdf = () => {
       // Filter out empty user slots for cleaner PDF
       const actualUsers = group.filter(user => user.name.trim() !== "");
       
-      const tableData = actualUsers.map(user => [
-        user.isPastor ? `${user.name} ✝` : user.name,
+      // Number the members
+      const tableData = actualUsers.map((user, i) => [
+        (i + 1).toString(), // Row number
+        user.isPastor ? `${user.name} (Pastor)` : user.name,
         user.phone,
         user.residence,
         user.yos,
-        user.gender === 'M' ? 'Male' : 'Female',
-        user.isPastor ? 'PASTOR' : ''
+        user.gender === 'M' ? 'Male' : 'Female'
       ]);
 
-      // Check if adding this table would exceed the page height
-      const groupTitleHeight = 12;
-      const rowHeight = 8;
-      const estimatedTableHeight = (tableData.length + 1) * rowHeight + groupTitleHeight + 10;
+      // Check if adding this table would exceed the page height - optimized for ~20 rows
+      const groupTitleHeight = 15;
+      const statsHeight = 10;
+      const rowHeight = 6; // Compact row height
+      const headerHeight = 8;
+      const estimatedTableHeight = (tableData.length * rowHeight) + headerHeight + groupTitleHeight + statsHeight + 15;
       
       if (yOffset + estimatedTableHeight > pageHeight - 20) {
         doc.addPage();
@@ -654,14 +727,14 @@ const handleExportPdf = () => {
       const hasPastor = actualUsers.some(u => u.isPastor === true);
       const pastorName = actualUsers.find(u => u.isPastor === true)?.name || '';
       
-      doc.setTextColor(hasPastor ? 128 : 150, hasPastor ? 0 : 150, hasPastor ? 128 : 150); // Purple for groups with pastors, gray for those without
+      doc.setTextColor(128, 0, 128); // Purple color
       doc.setFontSize(14);
       doc.setFont('helvetica', 'bold');
-      const groupTitle = `Group ${index + 1} (${actualUsers.length} members)${hasPastor ? ` ✓ Pastor: ${pastorName}` : ' ⚠ No Pastor'}`;
+      const groupTitle = `Group ${index + 1} (${actualUsers.length} members)${hasPastor ? ` - Pastor: ${pastorName}` : ' - No Pastor'}`;
       doc.text(groupTitle, 15, yOffset);
       yOffset += groupTitleHeight;
 
-      // Group statistics
+      // Group statistics in a compact format
       const maleCount = actualUsers.filter(u => u.gender === 'M').length;
       const femaleCount = actualUsers.filter(u => u.gender === 'F').length;
       const year1 = actualUsers.filter(u => u.yos === '1').length;
@@ -672,58 +745,56 @@ const handleExportPdf = () => {
       doc.setFontSize(9);
       doc.setTextColor(100, 100, 100);
       doc.setFont('helvetica', 'normal');
-      const groupStats = `Male: ${maleCount}, Female: ${femaleCount} | Y1: ${year1}, Y2: ${year2}, Y3: ${year3}, Y4: ${year4} | ${hasPastor ? '✓ Has Pastor' : '⚠ No Pastor'}`;
+      const groupStats = `M:${maleCount} F:${femaleCount} | Y1:${year1} Y2:${year2} Y3:${year3} Y4:${year4}`;
       doc.text(groupStats, 15, yOffset);
-      yOffset += 8;
+      yOffset += statsHeight;
 
-      // Define table options with improved styling
+      // Define compact table options optimized for ~20 names per page
       const tableOptions = {
-        head: [['Name', 'Phone', 'Residence', 'Year', 'Gender', 'Role']],
+        head: [['#', 'Name', 'Phone', 'Residence', 'Year', 'Gender']],
         body: tableData,
         startY: yOffset,
-        theme: 'striped',
+        theme: 'grid',
         headStyles: {
-          fillColor: [128, 0, 128], // Purple header to match KSUCU branding
+          fillColor: [128, 0, 128], // Purple header
           textColor: [255, 255, 255],
-          fontSize: 11,
-          fontStyle: 'bold'
+          fontSize: 9,
+          fontStyle: 'bold',
+          cellPadding: 2
         },
         styles: {
-          fontSize: 9,
-          cellPadding: 3
+          fontSize: 8, // Smaller font for more rows
+          cellPadding: 1.5, // Compact padding
+          lineWidth: 0.1,
+          lineColor: [200, 200, 200]
         },
         alternateRowStyles: {
           fillColor: [248, 249, 250]
         },
         didParseCell: function(data: any) {
           // Highlight pastor rows
-          const user = actualUsers[data.row.index];
+          const userIndex = data.row.index;
+          const user = actualUsers[userIndex];
           if (user && user.isPastor) {
             data.cell.styles.fillColor = [255, 248, 220]; // Light gold background for pastor
             data.cell.styles.textColor = [128, 0, 128]; // Purple text for pastor
             data.cell.styles.fontStyle = 'bold';
           }
-          // Make Role column stand out for pastors
-          if (data.column.index === 5 && user && user.isPastor) {
-            data.cell.styles.fillColor = [128, 0, 128]; // Purple background for PASTOR role
-            data.cell.styles.textColor = [255, 255, 255]; // White text
-            data.cell.styles.fontStyle = 'bold';
-          }
         },
         columnStyles: {
-          0: { cellWidth: 40 }, // Name column
-          1: { cellWidth: 28 }, // Phone column  
-          2: { cellWidth: 30 }, // Residence column
-          3: { cellWidth: 12, halign: 'center' }, // Year column
-          4: { cellWidth: 18, halign: 'center' }, // Gender column
-          5: { cellWidth: 17, halign: 'center' }  // Role column
+          0: { cellWidth: 12, halign: 'center' }, // # column
+          1: { cellWidth: 45 }, // Name column
+          2: { cellWidth: 30 }, // Phone column  
+          3: { cellWidth: 35 }, // Residence column
+          4: { cellWidth: 15, halign: 'center' }, // Year column
+          5: { cellWidth: 20, halign: 'center' } // Gender column
         },
         margin: { left: 15, right: 15 }
       };
 
       // Add table to PDF and update yOffset
       const { finalY } = doc.autoTable(tableOptions) || {};
-      yOffset = finalY ? finalY + 15 : yOffset + estimatedTableHeight + 15;
+      yOffset = finalY ? finalY + 10 : yOffset + estimatedTableHeight;
     });
 
     // Add footer with generation info
@@ -875,6 +946,166 @@ const handleExportPdf = () => {
             </div>
           </div>
 
+          {/* Group Formation */}
+          <div className={styles.groupingSection}>
+            <h5>
+              <FontAwesomeIcon icon={faShuffle} style={{ marginRight: '8px' }} />
+              Group Formation
+            </h5>
+            <div className={styles.groupingControls}>
+              <label>Students per Group: </label>
+              <input 
+                type="number" 
+                value={groupSize} 
+                onChange={(e) => setGroupSize(Number(e.target.value))}
+                min={1}
+                max={50}
+              />
+              <button onClick={handleShuffleClick} className={styles.shuffleButton}>
+                <FontAwesomeIcon icon={faShuffle} /> Create Balanced Groups
+              </button>
+              {groups.length > 0 && (
+                <>
+                  <button 
+                    onClick={handleReshuffleClick} 
+                    disabled={isReshuffling}
+                    className={styles.reshuffleButton}
+                    style={{
+                      backgroundColor: isReshuffling ? '#ccc' : '#ff8c00',
+                      color: 'white',
+                      border: 'none',
+                      padding: '8px 16px',
+                      borderRadius: '6px',
+                      cursor: isReshuffling ? 'not-allowed' : 'pointer',
+                      marginLeft: '10px',
+                      fontSize: '14px',
+                      fontWeight: '600'
+                    }}
+                  >
+                    {isReshuffling ? (
+                      <>🔄 Reshuffling...</>
+                    ) : (
+                      <>🎲 Reshuffle Groups</>
+                    )}
+                  </button>
+                  <button 
+                    onClick={resetGroups} 
+                    className={styles.resetButton}
+                    style={{
+                      backgroundColor: '#dc3545',
+                      color: 'white',
+                      border: 'none',
+                      padding: '8px 16px',
+                      borderRadius: '6px',
+                      cursor: 'pointer',
+                      marginLeft: '10px',
+                      fontSize: '14px',
+                      fontWeight: '600'
+                    }}
+                  >
+                    🗑️ Clear Groups
+                  </button>
+                  <button onClick={handleExportPdf} className={styles.exportButton}>
+                    Download Groups PDF
+                  </button>
+                </>
+              )}
+            </div>
+            <p className={styles.groupingInfo}>
+              Each Bible Study Pastor gets their own group within their residence location. Groups are organized by residence with balanced gender and year distribution. Pastors appear as the first member in their groups with special highlighting in the PDF. Groups with pastors are prioritized and listed first, with pastor names prominently displayed in group titles.
+            </p>
+            {groups.length > 0 && (
+              <div className={styles.reshuffleInfo} style={{ 
+                backgroundColor: '#f8f9fa', 
+                border: '1px solid #dee2e6', 
+                borderRadius: '8px', 
+                padding: '12px', 
+                marginTop: '15px',
+                fontSize: '14px'
+              }}>
+                <h6 style={{ margin: '0 0 8px 0', color: '#495057' }}>
+                  🎯 Group Management Options:
+                </h6>
+                <ul style={{ margin: '0', paddingLeft: '20px', color: '#6c757d' }}>
+                  <li><strong>🎲 Reshuffle Groups:</strong> Keep the same group size but create new random arrangements while maintaining balance</li>
+                  <li><strong>🗑️ Clear Groups:</strong> Remove all current groups to start fresh</li>
+                  <li><strong>📊 Download PDF:</strong> Export current groups to a formatted PDF document</li>
+                </ul>
+                {reshuffleCount > 0 && (
+                  <p style={{ 
+                    margin: '8px 0 0 0', 
+                    color: '#28a745', 
+                    fontWeight: '600',
+                    fontSize: '13px'
+                  }}>
+                    ✨ Groups have been reshuffled {reshuffleCount} time{reshuffleCount > 1 ? 's' : ''}
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Groups Display */}
+          {groups.length > 0 ? (
+            <div className={styles.groups}>
+              {groups.map((group, index) => (
+                <div key={index} className={styles.group}>
+                  <h5>
+                    Group {index + 1}
+                    {group.some(u => u.isPastor) && (
+                      <span style={{ color: '#800080', marginLeft: '10px', fontSize: '14px' }}>
+                        ✝️ Pastor: {group.find(u => u.isPastor)?.name}
+                      </span>
+                    )}
+                    {!group.some(u => u.isPastor) && (
+                      <span style={{ color: '#ff6b6b', marginLeft: '10px', fontSize: '12px' }}>
+                        ⚠️ No Pastor
+                      </span>
+                    )}
+                  </h5>
+                  <div style={{ overflowX: 'auto', marginBottom: '10px' }}>
+                    <table className={styles.table} style={{ minWidth: '600px' }}>
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Phone</th>
+                        <th>Residence</th>
+                        <th>Yos</th>
+                        <th>G</th>
+                        <th>Pastor</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {group.map((user, i) => (
+                        <tr key={i} className={user.isPastor ? styles.pastorRow : ''}>
+                          <td>{user.isPastor ? `${user.name} ✝️` : user.name}</td>
+                          <td>{user.phone}</td>
+                          <td>{user.residence}</td>
+                          <td>{user.yos}</td>
+                          <td>{user.gender}</td>
+                          <td>
+                            {user.isPastor ? (
+                              <strong style={{ color: '#800080', backgroundColor: '#f0e6ff', padding: '2px 6px', borderRadius: '4px', fontSize: '12px' }}>
+                                ✓ PASTOR
+                              </strong>
+                            ) : ''}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                    </table>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div style={{ margin: '20px 0', padding: '20px', backgroundColor: '#f8f9fa', borderRadius: '8px', textAlign: 'center' }}>
+              <p style={{ margin: '0', color: '#6c757d', fontSize: '16px' }}>
+                📋 No groups formed yet. Use the "Create Balanced Groups" button above to generate groups.
+              </p>
+            </div>
+          )}
+
           {/* User Management */}
           {users.length > 0 && (
             <div className={styles.userManagementSection}>
@@ -885,7 +1116,15 @@ const handleExportPdf = () => {
               <p className={styles.userManagementInfo}>
                 Click the "Mark as Pastor" button to identify pastors. Pastors will get their own groups and be clearly identified.
               </p>
-              <div className={styles.userList}>
+              
+              {/* Desktop Table View */}
+              <div className={styles.userList} style={{ display: 'none' }}>
+                <style>{`
+                  @media (min-width: 768px) {
+                    .userList { display: block !important; }
+                    .userCards { display: none !important; }
+                  }
+                `}</style>
                 <table className={styles.userTable}>
                   <thead>
                     <tr>
@@ -916,7 +1155,6 @@ const handleExportPdf = () => {
                         <td>
                           <button
                             onClick={() => togglePastorStatus(index)}
-                            className={user.isPastor ? styles.removePastorButton : styles.addPastorButton}
                             style={{
                               backgroundColor: user.isPastor ? '#ff6b6b' : '#800080',
                               color: 'white',
@@ -935,92 +1173,135 @@ const handleExportPdf = () => {
                   </tbody>
                 </table>
               </div>
+
+              {/* Mobile Card View */}
+              <div className={styles.userCards}>
+                <style>{`
+                  @media (min-width: 768px) {
+                    .userCards { display: none !important; }
+                    .userList { display: block !important; }
+                  }
+                  .userCard {
+                    background: white;
+                    border: 1px solid #ddd;
+                    border-radius: 8px;
+                    margin-bottom: 12px;
+                    padding: 16px;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                  }
+                  .userCard.pastorCard {
+                    border-color: #800080;
+                    background: #fef7ff;
+                  }
+                  .userCardHeader {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 12px;
+                    flex-wrap: wrap;
+                    gap: 8px;
+                  }
+                  .userCardName {
+                    font-weight: bold;
+                    font-size: 16px;
+                    color: #333;
+                  }
+                  .userCardStatus {
+                    font-size: 14px;
+                    padding: 4px 8px;
+                    border-radius: 4px;
+                    background: #f0f0f0;
+                  }
+                  .userCardStatus.pastor {
+                    background: #f0e6ff;
+                    color: #800080;
+                    font-weight: bold;
+                  }
+                  .userCardDetails {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 8px;
+                    margin-bottom: 12px;
+                    font-size: 14px;
+                  }
+                  .userCardDetail {
+                    display: flex;
+                    flex-direction: column;
+                  }
+                  .userCardLabel {
+                    font-weight: 600;
+                    color: #666;
+                    font-size: 12px;
+                    text-transform: uppercase;
+                  }
+                  .userCardValue {
+                    color: #333;
+                    margin-top: 2px;
+                  }
+                  .userCardAction {
+                    display: flex;
+                    justify-content: center;
+                  }
+                  .userCardButton {
+                    padding: 8px 16px;
+                    border: none;
+                    border-radius: 6px;
+                    font-size: 14px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.2s;
+                    min-width: 140px;
+                  }
+                  .userCardButton:hover {
+                    transform: translateY(-1px);
+                  }
+                `}</style>
+                {users.map((user, index) => (
+                  <div key={index} className={`userCard ${user.isPastor ? 'pastorCard' : ''}`}>
+                    <div className="userCardHeader">
+                      <div className="userCardName">{user.name}</div>
+                      <div className={`userCardStatus ${user.isPastor ? 'pastor' : ''}`}>
+                        {user.isPastor ? '✝️ Pastor' : 'Member'}
+                      </div>
+                    </div>
+                    
+                    <div className="userCardDetails">
+                      <div className="userCardDetail">
+                        <div className="userCardLabel">Phone</div>
+                        <div className="userCardValue">{user.phone}</div>
+                      </div>
+                      <div className="userCardDetail">
+                        <div className="userCardLabel">Residence</div>
+                        <div className="userCardValue">{user.residence}</div>
+                      </div>
+                      <div className="userCardDetail">
+                        <div className="userCardLabel">Year</div>
+                        <div className="userCardValue">Year {user.yos}</div>
+                      </div>
+                      <div className="userCardDetail">
+                        <div className="userCardLabel">Gender</div>
+                        <div className="userCardValue">{user.gender === 'M' ? 'Male' : 'Female'}</div>
+                      </div>
+                    </div>
+                    
+                    <div className="userCardAction">
+                      <button
+                        onClick={() => togglePastorStatus(index)}
+                        className="userCardButton"
+                        style={{
+                          backgroundColor: user.isPastor ? '#ff6b6b' : '#800080',
+                          color: 'white'
+                        }}
+                      >
+                        {user.isPastor ? '✕ Remove Pastor' : '✝️ Mark as Pastor'}
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
-
-          {/* Group Formation */}
-          <div className={styles.groupingSection}>
-            <h5>
-              <FontAwesomeIcon icon={faShuffle} style={{ marginRight: '8px' }} />
-              Group Formation
-            </h5>
-            <div className={styles.groupingControls}>
-              <label>Students per Group: </label>
-              <input 
-                type="number" 
-                value={groupSize} 
-                onChange={(e) => setGroupSize(Number(e.target.value))}
-                min={1}
-                max={50}
-              />
-              <button onClick={handleShuffleClick} className={styles.shuffleButton}>
-                <FontAwesomeIcon icon={faShuffle} /> Create Balanced Groups
-              </button>
-              {groups.length > 0 && (
-                <button onClick={handleExportPdf} className={styles.exportButton}>
-                  Download Groups PDF
-                </button>
-              )}
-            </div>
-            <p className={styles.groupingInfo}>
-              Each Bible Study Pastor gets their own group within their residence location. Groups are organized by residence with balanced gender and year distribution. Pastors appear as the first member in their groups with special highlighting in the PDF. Groups with pastors are prioritized and listed first, with pastor names prominently displayed in group titles.
-            </p>
-          </div>
         </div>
-        )}
-        
-        {groups.length > 0 ? (
-          <div className={styles.groups}>
-            {groups.map((group, index) => (
-              <div key={index} className={styles.group}>
-                <h5>
-                  Group {index + 1}
-                  {group.some(u => u.isPastor) && (
-                    <span style={{ color: '#800080', marginLeft: '10px', fontSize: '14px' }}>
-                      ✝️ Pastor: {group.find(u => u.isPastor)?.name}
-                    </span>
-                  )}
-                  {!group.some(u => u.isPastor) && (
-                    <span style={{ color: '#ff6b6b', marginLeft: '10px', fontSize: '12px' }}>
-                      ⚠️ No Pastor
-                    </span>
-                  )}
-                </h5>
-                <table className={styles.table}>
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Phone</th>
-                      <th>Residence</th>
-                      <th>Yos</th>
-                      <th>G</th>
-                      <th>Pastor</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {group.map((user, i) => (
-                      <tr key={i} className={user.isPastor ? styles.pastorRow : ''}>
-                        <td>{user.isPastor ? `${user.name} ✝️` : user.name}</td>
-                        <td>{user.phone}</td>
-                        <td>{user.residence}</td>
-                        <td>{user.yos}</td>
-                        <td>{user.gender}</td>
-                        <td>
-                          {user.isPastor ? (
-                            <strong style={{ color: '#800080', backgroundColor: '#f0e6ff', padding: '2px 6px', borderRadius: '4px', fontSize: '12px' }}>
-                              ✓ PASTOR
-                            </strong>
-                          ) : ''}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p>No groups formed. Adjust the group size and click "Create Balanced Groups" to generate groups.</p>
         )}
 
         {/* Residence Modal */}
