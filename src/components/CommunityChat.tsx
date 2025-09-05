@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MessageCircle, Send, X, Users, Image, Mic, Video, FileText, Smile, MoreHorizontal, Edit, Trash2, Reply, LogIn } from 'lucide-react';
+import { MessageCircle, Send, X, Users, Image, Mic, Video, FileText, Edit, Trash2, Reply, LogIn } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import socketService from '../services/socketService';
-import { getApiUrl } from '../config/environment';
+import { getApiUrl, getBaseUrl } from '../config/environment';
 import axios from 'axios';
 import styles from '../styles/CommunityChat.module.css';
 
@@ -50,7 +50,6 @@ const CommunityChat: React.FC = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [replyToMessage, setReplyToMessage] = useState<Message | null>(null);
   const [editingMessage, setEditingMessage] = useState<Message | null>(null);
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
   const [currentUser, setCurrentUser] = useState<{ username: string; userId: string } | null>(null);
@@ -59,7 +58,7 @@ const CommunityChat: React.FC = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatWindowRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const typingTimeoutRef = useRef<NodeJS.Timeout>();
+  const typingTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -67,7 +66,7 @@ const CommunityChat: React.FC = () => {
 
   const fetchCurrentUser = async () => {
     try {
-      const response = await axios.get(`${getApiUrl()}/users/data`, {
+      const response = await axios.get(getApiUrl('users'), {
         withCredentials: true
       });
       if (response.data && response.data.username) {
@@ -102,11 +101,11 @@ const CommunityChat: React.FC = () => {
       }
 
       // Try to connect to socket
-      const socket = await socketService.connect();
+      await socketService.connect();
       setIsConnected(true);
       setupSocketListeners();
       loadMessages();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to connect to chat:', error);
       if (error.response && error.response.status === 401) {
         setError('Please log in to access the community chat.');
@@ -157,7 +156,7 @@ const CommunityChat: React.FC = () => {
 
   const loadMessages = async () => {
     try {
-      const response = await axios.get(`${getApiUrl()}/chat/messages?page=${page}&limit=50`, {
+      const response = await axios.get(`${getApiUrl('chatMessages')}?page=${page}&limit=50`, {
         withCredentials: true
       });
       
@@ -200,7 +199,7 @@ const CommunityChat: React.FC = () => {
 
     try {
       setIsLoading(true);
-      const response = await axios.post(`${getApiUrl()}/chat/upload`, formData, {
+      const response = await axios.post(getApiUrl('chatUpload'), formData, {
         withCredentials: true,
         headers: {
           'Content-Type': 'multipart/form-data'
@@ -288,7 +287,7 @@ const CommunityChat: React.FC = () => {
           {message.messageType === 'image' && (
             <div>
               <img 
-                src={`${getApiUrl()}${message.mediaUrl}`} 
+                src={`${getBaseUrl()}${message.mediaUrl}`} 
                 alt={message.mediaFileName}
                 className={styles.messageImage}
               />
@@ -299,7 +298,7 @@ const CommunityChat: React.FC = () => {
           {message.messageType === 'video' && (
             <div>
               <video 
-                src={`${getApiUrl()}${message.mediaUrl}`} 
+                src={`${getBaseUrl()}${message.mediaUrl}`} 
                 controls
                 className={styles.messageVideo}
               />
@@ -310,7 +309,7 @@ const CommunityChat: React.FC = () => {
           {message.messageType === 'audio' && (
             <div>
               <audio 
-                src={`${getApiUrl()}${message.mediaUrl}`} 
+                src={`${getBaseUrl()}${message.mediaUrl}`} 
                 controls
                 className={styles.messageAudio}
               />
@@ -321,7 +320,7 @@ const CommunityChat: React.FC = () => {
           {message.messageType === 'file' && (
             <div>
               <a 
-                href={`${getApiUrl()}${message.mediaUrl}`}
+                href={`${getBaseUrl()}${message.mediaUrl}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.fileLink}

@@ -37,6 +37,9 @@ interface ApiConfig {
     attendanceEndSession: string;
     attendanceRecords: string;
     messages: string;
+    chatMessages: string;
+    chatUpload: string;
+    chatOnlineUsers: string;
   };
 }
 
@@ -80,7 +83,10 @@ const developmentConfig: ApiConfig = {
     attendanceStartSession: '/attendance/start-session',
     attendanceEndSession: '/attendance/end-session',
     attendanceRecords: '/attendance/records',
-    messages: '/messages'
+    messages: '/messages',
+    chatMessages: '/chat/messages',
+    chatUpload: '/chat/upload',
+    chatOnlineUsers: '/chat/online-users'
   }
 };
 
@@ -122,7 +128,10 @@ const productionConfig: ApiConfig = {
     attendanceStartSession: '/attendance/start-session',
     attendanceEndSession: '/attendance/end-session',
     attendanceRecords: '/attendance/records',
-    messages: '/messages'
+    messages: '/messages',
+    chatMessages: '/chat/messages',
+    chatUpload: '/chat/upload',
+    chatOnlineUsers: '/chat/online-users'
   }
 };
 
@@ -131,6 +140,10 @@ export const config = isDevelopment ? developmentConfig : productionConfig;
 export const getApiUrl = (endpoint: keyof ApiConfig['endpoints'], queryParams?: string): string => {
   const url = `${config.baseUrl}${config.endpoints[endpoint]}`;
   return queryParams ? `${url}?${queryParams}` : url;
+};
+
+export const getBaseUrl = (): string => {
+  return config.baseUrl;
 };
 
 export const isDevMode = (): boolean => isDevelopment;

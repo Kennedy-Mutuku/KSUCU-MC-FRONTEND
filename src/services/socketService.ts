@@ -1,5 +1,5 @@
 import { io, Socket } from 'socket.io-client';
-import { getApiUrl } from '../config/environment';
+import { getBaseUrl } from '../config/environment';
 import Cookies from 'js-cookie';
 
 class SocketService {
@@ -21,7 +21,7 @@ class SocketService {
         return;
       }
 
-      const serverUrl = getApiUrl();
+      const serverUrl = getBaseUrl();
       
       this.socket = io(serverUrl, {
         auth: {
