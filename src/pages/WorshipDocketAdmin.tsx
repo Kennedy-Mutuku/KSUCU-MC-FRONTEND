@@ -9,7 +9,8 @@ import {
     faCheckCircle,
     faArrowRight,
     faNewspaper,
-    faBox
+    faBox,
+    faBookOpen
 } from '@fortawesome/free-solid-svg-icons';
 
 const WorshipDocketAdmin: React.FC = () => {
@@ -194,9 +195,32 @@ const WorshipDocketAdmin: React.FC = () => {
                         </div>
                     </div>
 
-                    {/* 4. Leadership Attendance Management */}
+                    {/* 4. Bible Study Administration */}
                     <div className={styles.functionCard}>
                         <div className={styles.functionNumber}>4</div>
+                        <div className={styles.functionContent}>
+                            <h3>
+                                <FontAwesomeIcon icon={faBookOpen} />
+                                Bible Study Administration
+                            </h3>
+                            <p>Manage Bible study registrations, residences, and create balanced groups</p>
+                            <button 
+                                className={styles.functionButton}
+                                onClick={() => {
+                                    // Store authentication state
+                                    sessionStorage.setItem('adminAuth', 'Overseer');
+                                    window.location.href = '/adminBs';
+                                }}
+                            >
+                                Bible Study Admin
+                                <FontAwesomeIcon icon={faArrowRight} className={styles.arrowIcon} />
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* 5. Leadership Attendance Management */}
+                    <div className={styles.functionCard}>
+                        <div className={styles.functionNumber}>5</div>
                         <div className={styles.functionContent}>
                             <h3>
                                 <FontAwesomeIcon icon={faUsers} />

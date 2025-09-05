@@ -162,34 +162,32 @@
         // Create back button
         const backBtn = document.createElement('button');
         backBtn.id = 'global-back-button';
-        backBtn.innerHTML = '← Back';
+        backBtn.innerHTML = '←';
         // Check device type for responsive sizing
         const isMobile = window.innerWidth <= 768;
         const isTablet = window.innerWidth > 768 && window.innerWidth <= 1024;
         
         backBtn.style.cssText = `
           position: fixed !important;
-          top: ${isMobile ? '110px' : (isTablet ? '90px' : '80px')} !important;
-          left: 0px !important;
+          bottom: ${isMobile ? '330px' : '340px'} !important;
+          right: 20px !important;
           z-index: 2147483647 !important;
-          background: #730051 !important;
+          background: #00c6ff !important;
           color: white !important;
           border: 2px solid #ffffff !important;
-          border-left: none !important;
-          padding: ${isMobile ? '8px 12px' : '10px 18px'} !important;
-          font-size: ${isMobile ? '12px' : '14px'} !important;
+          padding: 0 !important;
+          font-size: ${isMobile ? '14px' : '16px'} !important;
           font-weight: 600 !important;
-          border-radius: 0 ${isMobile ? '15px' : '20px'} ${isMobile ? '15px' : '20px'} 0 !important;
+          border-radius: 50% !important;
           cursor: pointer !important;
-          box-shadow: 2px 3px 12px rgba(115, 0, 81, 0.4) !important;
+          box-shadow: 0 4px 15px rgba(0, 198, 255, 0.4) !important;
           font-family: Arial, sans-serif !important;
           display: flex !important;
           align-items: center !important;
           justify-content: center !important;
-          gap: ${isMobile ? '4px' : '6px'} !important;
-          min-width: ${isMobile ? '70px' : '90px'} !important;
-          min-height: ${isMobile ? '30px' : '36px'} !important;
-          transition: all 0.2s ease !important;
+          width: ${isMobile ? '50px' : '60px'} !important;
+          height: ${isMobile ? '50px' : '60px'} !important;
+          transition: all 0.3s ease !important;
           visibility: visible !important;
           opacity: 1 !important;
           margin: 0 !important;
@@ -197,15 +195,15 @@
         
         // Add hover effects
         backBtn.onmouseenter = function() {
-          this.style.background = '#00c6ff !important';
-          this.style.transform = 'scale(1.05) !important';
-          this.style.boxShadow = '0 6px 20px rgba(0, 198, 255, 0.4) !important';
+          this.style.background = '#0099cc !important';
+          this.style.transform = 'scale(1.1) !important';
+          this.style.boxShadow = '0 6px 20px rgba(0, 198, 255, 0.6) !important';
         };
         
         backBtn.onmouseleave = function() {
-          this.style.background = '#730051 !important';
+          this.style.background = '#00c6ff !important';
           this.style.transform = 'scale(1) !important';
-          this.style.boxShadow = '0 4px 15px rgba(115, 0, 81, 0.4) !important';
+          this.style.boxShadow = '0 4px 15px rgba(0, 198, 255, 0.4) !important';
         };
         
         // Add click handler
@@ -221,17 +219,14 @@
           const existing = document.getElementById('global-back-button');
           if (existing) {
             const isMobile = window.innerWidth <= 768;
-            const isTablet = window.innerWidth > 768 && window.innerWidth <= 1024;
-            existing.style.top = isMobile ? '110px' : (isTablet ? '90px' : '80px');
-            existing.style.left = '0px';
-            existing.style.borderLeft = 'none';
-            existing.style.padding = isMobile ? '8px 12px' : '10px 18px';
-            existing.style.fontSize = isMobile ? '12px' : '14px';
-            existing.style.borderRadius = `0 ${isMobile ? '15px' : '20px'} ${isMobile ? '15px' : '20px'} 0`;
-            existing.style.gap = isMobile ? '4px' : '6px';
-            existing.style.minWidth = isMobile ? '70px' : '90px';
-            existing.style.minHeight = isMobile ? '30px' : '36px';
-            existing.style.boxShadow = '2px 3px 12px rgba(115, 0, 81, 0.4)';
+            existing.style.bottom = isMobile ? '330px' : '340px';
+            existing.style.right = '20px';
+            existing.style.padding = '0';
+            existing.style.fontSize = isMobile ? '14px' : '16px';
+            existing.style.borderRadius = '50%';
+            existing.style.width = isMobile ? '50px' : '60px';
+            existing.style.height = isMobile ? '50px' : '60px';
+            existing.style.boxShadow = '0 4px 15px rgba(0, 198, 255, 0.4)';
           }
         });
       }

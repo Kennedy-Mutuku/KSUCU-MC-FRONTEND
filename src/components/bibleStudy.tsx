@@ -15,7 +15,58 @@ const Bs: React.FC = () => {
     });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [residences, setResidences] = useState<Array<{_id: string, name: string, description: string}>>([]);
     
+    // Load saved form data on component mount
+    React.useEffect(() => {
+        const savedData = localStorage.getItem('bibleStudyFormData');
+        if (savedData) {
+            try {
+                const parsedData = JSON.parse(savedData);
+                if (parsedData && (parsedData.name || parsedData.phone || parsedData.residence || parsedData.yos || parsedData.gender)) {
+                    setFormData(parsedData);
+                    setError('📋 Your previous form data has been restored. Continue filling or click Clear to start fresh.');
+                    setTimeout(() => setError(''), 5000);
+                }
+            } catch (error) {
+                console.error('Error loading saved form data:', error);
+                localStorage.removeItem('bibleStudyFormData'); // Remove corrupted data
+            }
+        }
+    }, []);
+
+    // Save form data to localStorage whenever it changes
+    React.useEffect(() => {
+        const dataToSave = {
+            ...formData,
+            // Don't save empty form
+            hasData: formData.name.trim() || formData.phone.trim() || formData.residence || formData.yos || formData.gender
+        };
+        
+        if (dataToSave.hasData) {
+            localStorage.setItem('bibleStudyFormData', JSON.stringify(formData));
+        }
+    }, [formData]);
+
+    // Fetch residences on component mount
+    React.useEffect(() => {
+        const fetchResidences = async () => {
+            try {
+                const response = await axios.get('https://ksucu-mc.co.ke/adminBs/residences');
+                setResidences(response.data);
+            } catch (error) {
+                console.error('Error fetching residences:', error);
+                // Keep the hardcoded fallback if API fails
+                setResidences([
+                    {_id: '1', name: 'Kisumu ndogo', description: ''},
+                    {_id: '2', name: 'nyamage', description: ''},
+                    {_id: '3', name: 'Fanta', description: ''}
+                ]);
+            }
+        };
+        fetchResidences();
+    }, []);
+
     // Clear error after 5 seconds
     React.useEffect(() => {
         if (error) {
@@ -76,28 +127,51 @@ const Bs: React.FC = () => {
         }
 
         try {
-            const response = await axios.post('https://ksucu-mc.co.ke/users/bibleStudy', formData);
-            console.log('Response:', response.status);
+            console.log('Submitting form data:', formData);
+            
+            const response = await axios.post('https://ksucu-mc.co.ke/users/bibleStudy', formData, {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                timeout: 10000 // 10 second timeout
+            });
+            
+            console.log('Response:', response.status, response.data);
             setError('✅ Registration successful! Welcome to Bible Study!');
             
-            // Clear form inputs after successful submission
-            setFormData({
+            // Clear form inputs and localStorage after successful submission
+            const clearedData = {
                 name: '',
                 residence: '',
                 yos: '',
                 phone: '',
                 gender: '' 
-            });
+            };
+            setFormData(clearedData);
+            localStorage.removeItem('bibleStudyFormData');
+            
         } catch (error: any) {
-            if (error.response?.status === 400) {
-                setError('❌ Phone number already registered. Please use a different number.');
+            console.error('Full error details:', {
+                message: error.message,
+                response: error.response?.data,
+                status: error.response?.status,
+                code: error.code
+            });
+            
+            if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
+                setError('❌ Request timeout. Please check your internet connection and try again.');
+            } else if (error.response?.status === 400) {
+                const message = error.response?.data?.message || 'Phone number already registered. Please use a different number.';
+                setError(`❌ ${message}`);
             } else if (error.response?.status >= 500) {
-                setError('❌ Server error. Please try again later.');
-            } else if (!navigator.onLine) {
+                setError('❌ Server error. Please try again in a few minutes.');
+            } else if (error.code === 'ERR_NETWORK' || !navigator.onLine) {
                 setError('❌ No internet connection. Please check your connection and try again.');
+            } else if (error.response?.status === 404) {
+                setError('❌ Service unavailable. Please contact support.');
             } else {
-                console.error('Error:', error);
-                setError('❌ Registration failed. Please try again.');
+                const message = error.response?.data?.message || error.message || 'Registration failed';
+                setError(`❌ ${message}. Please try again.`);
             }
         } finally {
             setLoading(false); // Set loading to false to re-enable the button
@@ -144,9 +218,11 @@ const Bs: React.FC = () => {
                         <label htmlFor="residence">Residence</label>
                         <select id="residence" name="residence" value={formData.residence} className={styles['inputs']} onChange={(e) => setFormData({ ...formData, residence: e.target.value })} required>
                             <option className={styles['payment-option']} value="">--select Residence--</option>
-                            <option value='Kisumu ndogo' className={styles['payment-option']}> Kisumu ndogo </option>
-                            <option value='nyamage' className={styles['payment-option']}> nyamage</option>
-                            <option value='Fanta' className={styles['payment-option']}> Fanta </option>
+                            {residences.map((residence) => (
+                                <option key={residence._id} value={residence.name} className={styles['payment-option']}>
+                                    {residence.name}
+                                </option>
+                            ))}
                         </select>
                     </div>
 
@@ -182,8 +258,14 @@ const Bs: React.FC = () => {
                 </form>
 
                 <div className={styles['submisions']}>
-                    <div className={styles['clearForm']} onClick={() => setFormData({ name: '', residence: '', yos: '', phone: '', gender: '' })}>Clear</div>
-                    <button className={styles['submitData']} type="submit" disabled={loading}>
+                    <div className={styles['clearForm']} onClick={() => {
+                        const clearedData = { name: '', residence: '', yos: '', phone: '', gender: '' };
+                        setFormData(clearedData);
+                        localStorage.removeItem('bibleStudyFormData');
+                        setError('Form cleared');
+                        setTimeout(() => setError(''), 2000);
+                    }}>Clear</div>
+                    <button className={styles['submitData']} type="button" onClick={handleSubmit} disabled={loading}>
                         <span className={styles['submitDataButton']}>
                             {loading ? (
                                 <>

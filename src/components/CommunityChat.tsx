@@ -3,7 +3,6 @@ import { MessageCircle, Send, X, Users, Image, Mic, Video, FileText, Edit, Trash
 import { useNavigate } from 'react-router-dom';
 import socketService from '../services/socketService';
 import { getApiUrl, getBaseUrl } from '../config/environment';
-import axios from 'axios';
 import styles from '../styles/CommunityChat.module.css';
 
 interface Message {
@@ -66,28 +65,41 @@ const CommunityChat: React.FC = () => {
 
   const fetchCurrentUser = async () => {
     try {
-      const response = await axios.get(getApiUrl('users'), {
-        withCredentials: true
+      console.log('🔍 Chat: Fetching user data...');
+      
+      // Use the same method as UniversalHeader
+      const apiUrl = getApiUrl('users');
+      const response = await fetch(apiUrl, {
+        credentials: 'include'
       });
       
-      console.log('User fetch response:', response.data); // Debug log
+      console.log('🔍 Chat: Response status:', response.status);
+      const data = await response.json();
+      console.log('🔍 Chat: Response data:', data);
       
-      // The API returns user data directly (not wrapped in success object)
-      if (response.data && response.data.username && response.data._id) {
+      if (!response.ok) {
+        console.log('❌ Chat: Response not ok:', data.message);
+        setCurrentUser(null);
+        return false;
+      }
+      
+      // Check if we have user data (same as UniversalHeader)
+      if (data && data.username && data._id) {
+        const firstName = data.username.split(' ')[0]; // Same as UniversalHeader
+        
         setCurrentUser({
-          username: response.data.username,
-          userId: response.data._id
+          username: firstName,
+          userId: data._id
         });
-        console.log('User authenticated successfully:', response.data.username);
+        console.log('✅ Chat: User authenticated successfully:', firstName);
         return true; // User is logged in
       } else {
-        console.log('No user data found in response');
+        console.log('❌ Chat: No valid user data found in response');
         setCurrentUser(null);
         return false; // User is not logged in
       }
     } catch (error: any) {
-      console.error('Failed to fetch current user:', error);
-      console.log('Error response:', error.response?.data);
+      console.error('❌ Chat: Failed to fetch current user:', error);
       setCurrentUser(null);
       return false; // Failed to authenticate
     }
@@ -163,19 +175,29 @@ const CommunityChat: React.FC = () => {
 
   const loadMessages = async () => {
     try {
-      const response = await axios.get(`${getApiUrl('chatMessages')}?page=${page}&limit=50`, {
-        withCredentials: true
+      console.log('💬 Chat: Loading messages...');
+      
+      const apiUrl = `${getApiUrl('chatMessages')}?page=${page}&limit=50`;
+      const response = await fetch(apiUrl, {
+        credentials: 'include'
       });
       
-      if (response.data.success) {
-        setMessages(prev => page === 1 ? response.data.messages : [...response.data.messages, ...prev]);
-        setHasMore(response.data.hasMore);
+      const data = await response.json();
+      console.log('💬 Chat: Messages response:', data);
+      
+      if (response.ok && data.success) {
+        setMessages(prev => page === 1 ? data.messages : [...data.messages, ...prev]);
+        setHasMore(data.hasMore);
         if (page === 1) {
           setTimeout(scrollToBottom, 100);
         }
+        console.log('💬 Chat: Messages loaded successfully');
+      } else {
+        console.error('💬 Chat: Failed to load messages:', data.message);
+        setError('Failed to load messages');
       }
     } catch (error) {
-      console.error('Failed to load messages:', error);
+      console.error('💬 Chat: Error loading messages:', error);
       setError('Failed to load messages');
     }
   };
@@ -206,18 +228,26 @@ const CommunityChat: React.FC = () => {
 
     try {
       setIsLoading(true);
-      const response = await axios.post(getApiUrl('chatUpload'), formData, {
-        withCredentials: true,
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+      console.log('📁 Chat: Uploading file...');
+      
+      const response = await fetch(getApiUrl('chatUpload'), {
+        method: 'POST',
+        credentials: 'include',
+        body: formData
       });
 
-      if (response.data.success) {
+      const data = await response.json();
+      console.log('📁 Chat: Upload response:', data);
+
+      if (response.ok && data.success) {
         setReplyToMessage(null);
+        console.log('📁 Chat: File uploaded successfully');
+      } else {
+        console.error('📁 Chat: Failed to upload file:', data.message);
+        setError('Failed to upload file');
       }
     } catch (error) {
-      console.error('Failed to upload file:', error);
+      console.error('📁 Chat: Error uploading file:', error);
       setError('Failed to upload file');
     } finally {
       setIsLoading(false);
