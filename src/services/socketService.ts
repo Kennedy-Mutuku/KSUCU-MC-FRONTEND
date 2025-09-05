@@ -94,6 +94,18 @@ class SocketService {
     }
   }
 
+  deleteMessageForMe(messageId: string) {
+    if (this.socket?.connected) {
+      this.socket.emit('deleteMessageForMe', { messageId });
+    }
+  }
+
+  updateMessageStatus(messageId: string, status: string) {
+    if (this.socket?.connected) {
+      this.socket.emit('updateMessageStatus', { messageId, status });
+    }
+  }
+
   setTyping(isTyping: boolean) {
     if (this.socket?.connected) {
       this.socket.emit('typing', { isTyping });
@@ -111,6 +123,14 @@ class SocketService {
 
   onMessageDeleted(callback: (data: { messageId: string }) => void) {
     this.socket?.on('messageDeleted', callback);
+  }
+
+  onMessageDeletedForUser(callback: (data: { messageId: string; userId?: string; username?: string }) => void) {
+    this.socket?.on('messageDeletedForUser', callback);
+  }
+
+  onMessageStatusUpdated(callback: (data: { messageId: string; status: string }) => void) {
+    this.socket?.on('messageStatusUpdated', callback);
   }
 
   onOnlineUsersUpdate(callback: (users: any[]) => void) {

@@ -1,11 +1,11 @@
 @import url(global.css);
 
 .bsTitle {
-    margin: 40px auto 20px auto;
+    margin: 15px auto 10px auto;
     width: 90%;
     max-width: 800px;
     text-align: center;
-    font-size: 2.5rem;
+    font-size: 2rem;
     font-weight: 700;
     color: #730051;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
@@ -26,11 +26,11 @@
 
 .container {
     max-width: 600px;
-    margin: 40px auto;
-    padding: 40px;
+    margin: 15px auto;
+    padding: 25px;
     background: #ffffff;
-    border-radius: 20px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
     border: 1px solid #e2e8f0;
     position: relative;
     overflow: hidden;
@@ -47,8 +47,8 @@
 }
 
 .text {
-    margin-bottom: 30px;
-    font-size: 1.5rem;
+    margin-bottom: 20px;
+    font-size: 1.3rem;
     font-weight: 600;
     color: #2c3e50;
     text-align: center;
@@ -58,7 +58,7 @@
     overflow: auto;
     display: flex;
     flex-direction: column;
-    gap: 25px;
+    gap: 16px;
 }
 
 .form > div {
@@ -79,10 +79,10 @@
 .form input[type="number"],
 .form select {
     width: 100%;
-    padding: 15px;
+    padding: 12px;
     border: 2px solid #e2e8f0;
-    border-radius: 12px;
-    font-size: 1rem;
+    border-radius: 10px;
+    font-size: 0.95rem;
     transition: all 0.3s ease;
     background: #f8fafc;
     box-sizing: border-box;
@@ -116,47 +116,146 @@
 }
 
 /* Gender selection styling */
-.form > div:has(input[type="radio"]) {
+.genderSection {
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.radioGroup {
+    display: flex;
     gap: 15px;
 }
 
-.form > div:has(input[type="radio"]) > div {
+.radioItem {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 15px;
+    gap: 10px;
+    padding: 10px 16px;
     background: #f8fafc;
     border: 2px solid #e2e8f0;
-    border-radius: 12px;
+    border-radius: 10px;
     transition: all 0.3s ease;
-    cursor: pointer;
-}
-
-.form > div:has(input[type="radio"]) > div:hover {
-    background: #ffffff;
-    border-color: #730051;
-    transform: translateY(-2px);
-}
-
-.form input[type="radio"] {
-    width: 20px;
-    height: 20px;
-    accent-color: #730051;
-    cursor: pointer;
-}
-
-.form input[type="radio"] + label {
-    margin: 0;
-    font-size: 1rem;
-    font-weight: 500;
     cursor: pointer;
     flex: 1;
 }
 
+.radioItem:hover {
+    background: #ffffff;
+    border-color: #730051;
+    transform: translateY(-1px);
+}
+
+.radioItem input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #730051;
+    cursor: pointer;
+}
+
+.radioItem label {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    flex: 1;
+    text-align: center;
+}
+
+/* Bible Study Pastor Section - Clear and Clickable */
+.pastorSection {
+    margin: 18px 0;
+}
+
+.pastorCard {
+    background: #f8f9ff;
+    border: 2px solid #730051;
+    border-radius: 12px;
+    padding: 18px;
+    position: relative;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(115, 0, 81, 0.15);
+}
+
+.pastorCard::after {
+    content: 'Click to select';
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    background: #730051;
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 4px;
+    opacity: 0.8;
+}
+
+.pastorCard:hover {
+    background: #f0f4ff;
+    border-color: #00c6ff;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(115, 0, 81, 0.2);
+}
+
+.pastorCard:hover::after {
+    background: #00c6ff;
+    opacity: 1;
+}
+
+.checkboxContainer {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.pastorCheckbox {
+    width: 20px;
+    height: 20px;
+    accent-color: #730051;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.pastorCheckbox:hover {
+    transform: scale(1.1);
+}
+
+.pastorCheckbox:checked {
+    accent-color: #00c6ff;
+}
+
+.pastorLabel {
+    cursor: pointer;
+    margin: 0;
+    flex: 1;
+    user-select: none;
+}
+
+.pastorTitle {
+    display: block;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #730051;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.pastorSubtitle {
+    display: block;
+    font-size: 0.9rem;
+    color: #4a5568;
+    font-weight: 500;
+    line-height: 1.3;
+}
+
 .submisions {
     display: flex;
-    gap: 20px;
-    margin-top: 30px;
+    gap: 16px;
+    margin-top: 20px;
     justify-content: center;
     align-items: center;
 }
@@ -165,15 +264,15 @@
     background: transparent;
     color: #e53e3e;
     border: 2px solid #e53e3e;
-    padding: 15px 30px;
-    border-radius: 50px;
+    padding: 12px 24px;
+    border-radius: 25px;
     font-weight: 600;
-    font-size: 1rem;
+    font-size: 0.95rem;
     cursor: pointer;
     transition: all 0.3s ease;
     text-decoration: none;
     display: inline-block;
-    min-width: 120px;
+    min-width: 100px;
     text-align: center;
 }
 
@@ -188,14 +287,14 @@
     background: linear-gradient(135deg, #730051, #00c6ff);
     color: white;
     border: none;
-    padding: 15px 30px;
-    border-radius: 50px;
+    padding: 12px 24px;
+    border-radius: 25px;
     font-weight: 600;
-    font-size: 1rem;
+    font-size: 0.95rem;
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: 0 4px 15px rgba(115, 0, 81, 0.3);
-    min-width: 160px;
+    min-width: 140px;
     text-align: center;
     display: flex;
     align-items: center;
@@ -227,8 +326,8 @@
 
 .form-footer {
     text-align: center;
-    margin-top: 30px;
-    padding-top: 20px;
+    margin-top: 20px;
+    padding-top: 15px;
     border-top: 1px solid #e2e8f0;
 }
 
@@ -304,62 +403,130 @@
 /* Responsive Design */
 @media (max-width: 768px) {
     .container {
-        margin: 20px;
-        padding: 30px 20px;
-        border-radius: 15px;
+        margin: 12px;
+        padding: 20px 16px;
+        border-radius: 12px;
     }
 
     .bsTitle {
-        font-size: 2rem;
-        margin: 30px auto 20px auto;
+        font-size: 1.8rem;
+        margin: 12px auto 8px auto;
+    }
+
+    .text {
+        font-size: 1.2rem;
+        margin-bottom: 16px;
     }
 
     .form {
-        gap: 20px;
+        gap: 14px;
+    }
+
+    .radioGroup {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .pastorCard {
+        padding: 16px;
+    }
+
+    .pastorTitle {
+        font-size: 1rem;
+    }
+
+    .pastorSubtitle {
+        font-size: 0.8rem;
+    }
+
+    .pastorCard::after {
+        font-size: 0.65rem;
+        padding: 2px 6px;
     }
 
     .submisions {
         flex-direction: column;
-        gap: 15px;
+        gap: 12px;
+        margin-top: 16px;
     }
 
     .clearForm,
     .submitData {
         width: 100%;
-        max-width: 300px;
-    }
-
-    .form input[type="text"],
-    .form input[type="number"],
-    .form select {
-        padding: 12px;
-    }
-}
-
-@media (max-width: 480px) {
-    .container {
-        margin: 10px;
-        padding: 20px 15px;
-    }
-
-    .bsTitle {
-        font-size: 1.8rem;
-    }
-
-    .text {
-        font-size: 1.3rem;
+        max-width: 280px;
+        padding: 10px 20px;
     }
 
     .form input[type="text"],
     .form input[type="number"],
     .form select {
         padding: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        margin: 8px;
+        padding: 18px 12px;
+    }
+
+    .bsTitle {
+        font-size: 1.6rem;
+        margin: 10px auto 6px auto;
+    }
+
+    .text {
+        font-size: 1.1rem;
+        margin-bottom: 14px;
+    }
+
+    .form {
+        gap: 12px;
+    }
+
+    .radioItem {
+        padding: 8px 12px;
+    }
+
+    .pastorCard {
+        padding: 14px;
+    }
+
+    .pastorTitle {
         font-size: 0.95rem;
+    }
+
+    .pastorSubtitle {
+        font-size: 0.75rem;
+    }
+
+    .pastorCard::after {
+        font-size: 0.6rem;
+        padding: 2px 5px;
+        top: 6px;
+        right: 8px;
+    }
+
+    .form input[type="text"],
+    .form input[type="number"],
+    .form select {
+        padding: 9px;
+        font-size: 0.9rem;
     }
 
     .clearForm,
     .submitData {
-        padding: 12px 25px;
-        font-size: 0.95rem;
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+
+    .submisions {
+        margin-top: 14px;
+        gap: 10px;
+    }
+
+    .form-footer {
+        margin-top: 16px;
+        padding-top: 12px;
     }
 }

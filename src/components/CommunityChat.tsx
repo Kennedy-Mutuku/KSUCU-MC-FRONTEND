@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MessageCircle, Send, X, Users, Image, Mic, Video, FileText, Edit, Trash2, Reply } from 'lucide-react';
+import { MessageCircle, Send, X, Users, Image, Mic, Video, FileText, Edit, Trash2, Reply, Check, CheckCheck } from 'lucide-react';
 import socketService from '../services/socketService';
 import { getApiUrl, getBaseUrl } from '../config/environment';
 import styles from '../styles/CommunityChat.module.css';
@@ -17,6 +17,12 @@ interface Message {
   edited?: boolean;
   editedAt?: string;
   deleted?: boolean;
+  deletedFor?: {
+    userId?: string;
+    username?: string;
+    deletedAt: string;
+  }[];
+  status?: 'sending' | 'sent' | 'delivered' | 'read';
   replyTo?: {
     _id: string;
     message: string;
@@ -53,6 +59,9 @@ const CommunityChat: React.FC = () => {
   const [currentUser, setCurrentUser] = useState<{ username: string; userId: string } | null>(null);
   const [showNameDialog, setShowNameDialog] = useState(false);
   const [tempName, setTempName] = useState('');
+  const [longPressMessage, setLongPressMessage] = useState<Message | null>(null);
+  const [showDeleteOptions, setShowDeleteOptions] = useState(false);
+  const [pressTimer, setPressTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatWindowRef = useRef<HTMLDivElement>(null);
@@ -145,6 +154,19 @@ const CommunityChat: React.FC = () => {
   const setupSocketListeners = () => {
     socketService.onNewMessage((message: Message) => {
       setMessages(prev => [...prev, message]);
+      
+      // Auto-mark messages as delivered if they're from other users
+      if (currentUser && message.senderId !== currentUser.userId) {
+        setTimeout(() => {
+          socketService.updateMessageStatus(message._id, 'delivered');
+          
+          // Auto-mark as read after a short delay (simulating user viewing)
+          setTimeout(() => {
+            socketService.updateMessageStatus(message._id, 'read');
+          }, 2000);
+        }, 500);
+      }
+      
       setTimeout(scrollToBottom, 100);
     });
 
@@ -155,7 +177,21 @@ const CommunityChat: React.FC = () => {
     });
 
     socketService.onMessageDeleted(({ messageId }: { messageId: string }) => {
+      // Mark message as deleted for everyone (show "This message was deleted")
+      setMessages(prev => prev.map(msg => 
+        msg._id === messageId ? { ...msg, deleted: true, message: '', mediaUrl: undefined } : msg
+      ));
+    });
+
+    socketService.onMessageDeletedForUser(({ messageId, userId, username }: { messageId: string; userId?: string; username?: string }) => {
+      // Remove message from view only for the specific user
       setMessages(prev => prev.filter(msg => msg._id !== messageId));
+    });
+
+    socketService.onMessageStatusUpdated(({ messageId, status }: { messageId: string; status: string }) => {
+      setMessages(prev => prev.map(msg => 
+        msg._id === messageId ? { ...msg, status: status as any } : msg
+      ));
     });
 
     socketService.onOnlineUsersUpdate((users: OnlineUser[]) => {
@@ -297,12 +333,89 @@ const CommunityChat: React.FC = () => {
     }
   };
 
+  const renderMessageStatus = (status: string) => {
+    switch (status) {
+      case 'sending':
+        return <div className={styles.messageStatus} title="Sending">⏳</div>;
+      case 'sent':
+        return <Check size={14} className={`${styles.messageStatus} ${styles.sent}`} title="Sent" />;
+      case 'delivered':
+        return <CheckCheck size={14} className={`${styles.messageStatus} ${styles.delivered}`} title="Delivered" />;
+      case 'read':
+        return <CheckCheck size={14} className={`${styles.messageStatus} ${styles.read}`} title="Read" />;
+      default:
+        return null;
+    }
+  };
+
+  const handleLongPressStart = (message: Message) => {
+    const timer = setTimeout(() => {
+      setLongPressMessage(message);
+      setShowDeleteOptions(true);
+    }, 500); // 500ms for long press
+    setPressTimer(timer);
+  };
+
+  const handleLongPressEnd = () => {
+    if (pressTimer) {
+      clearTimeout(pressTimer);
+      setPressTimer(null);
+    }
+  };
+
+  const handleDeleteForMe = async () => {
+    if (longPressMessage) {
+      try {
+        // Pass the message ID - backend will identify user from socket connection
+        await socketService.deleteMessageForMe(longPressMessage._id);
+        setShowDeleteOptions(false);
+        setLongPressMessage(null);
+      } catch (error) {
+        console.error('Error deleting message for me:', error);
+        setError('Failed to delete message');
+      }
+    }
+  };
+
+  const handleDeleteForAll = async () => {
+    if (longPressMessage) {
+      try {
+        await socketService.deleteMessage(longPressMessage._id);
+        setShowDeleteOptions(false);
+        setLongPressMessage(null);
+      } catch (error) {
+        console.error('Error deleting message for all:', error);
+        setError('Failed to delete message');
+      }
+    }
+  };
+
   const renderMessage = (message: Message) => {
     const isOwn = currentUser && (message.senderId === currentUser.userId || message.senderName === currentUser.username);
+    
+    // Check if message is deleted for current user (both authenticated and guest)
+    const isDeletedForMe = message.deletedFor?.some(del => {
+      if (currentUser?.userId) {
+        return del.userId === currentUser.userId;
+      } else if (currentUser?.username) {
+        return del.username === currentUser.username;
+      }
+      return false;
+    });
+    
+    // Don't render messages deleted for this user
+    if (isDeletedForMe) return null;
 
     return (
       <div key={message._id} className={`${styles.messageWrapper} ${isOwn ? styles.ownMessageWrapper : styles.otherMessageWrapper}`}>
-        <div className={`${styles.message} ${isOwn ? styles.ownMessage : styles.otherMessage}`}>
+        <div 
+          className={`${styles.message} ${isOwn ? styles.ownMessage : styles.otherMessage}`}
+          onMouseDown={() => !message.deleted && handleLongPressStart(message)}
+          onMouseUp={handleLongPressEnd}
+          onMouseLeave={handleLongPressEnd}
+          onTouchStart={() => !message.deleted && handleLongPressStart(message)}
+          onTouchEnd={handleLongPressEnd}
+        >
           {message.replyTo && (
             <div className={styles.replyTo}>
               <span className={styles.replyAuthor}>{message.replyTo.senderName}</span>
@@ -315,11 +428,15 @@ const CommunityChat: React.FC = () => {
           )}
 
           <div className={styles.messageContent}>
-            {message.messageType === 'text' && (
+            {message.deleted ? (
+              <p className={styles.deletedMessage}>
+                <i>This message was deleted</i>
+              </p>
+            ) : message.messageType === 'text' ? (
               <p>{message.message}</p>
-            )}
+            ) : null}
             
-            {message.messageType === 'image' && (
+            {!message.deleted && message.messageType === 'image' && (
               <div>
                 <img 
                   src={`${getBaseUrl()}${message.mediaUrl}`} 
@@ -330,7 +447,7 @@ const CommunityChat: React.FC = () => {
               </div>
             )}
 
-            {message.messageType === 'video' && (
+            {!message.deleted && message.messageType === 'video' && (
               <div>
                 <video 
                   src={`${getBaseUrl()}${message.mediaUrl}`} 
@@ -341,7 +458,7 @@ const CommunityChat: React.FC = () => {
               </div>
             )}
 
-            {message.messageType === 'audio' && (
+            {!message.deleted && message.messageType === 'audio' && (
               <div>
                 <audio 
                   src={`${getBaseUrl()}${message.mediaUrl}`} 
@@ -352,7 +469,7 @@ const CommunityChat: React.FC = () => {
               </div>
             )}
 
-            {message.messageType === 'file' && (
+            {!message.deleted && message.messageType === 'file' && (
               <div>
                 <a 
                   href={`${getBaseUrl()}${message.mediaUrl}`}
@@ -373,10 +490,11 @@ const CommunityChat: React.FC = () => {
               {formatTime(message.timestamp)}
               {message.edited && <span className={styles.edited}> (edited)</span>}
             </span>
+            {isOwn && message.status && renderMessageStatus(message.status)}
           </div>
         </div>
 
-        {isOwn && (
+        {isOwn && !message.deleted && (
           <div className={styles.messageActions}>
             <button onClick={() => setReplyToMessage(message)} title="Reply">
               <Reply size={16} />
@@ -611,6 +729,45 @@ const CommunityChat: React.FC = () => {
           style={{ display: 'none' }}
         />
       </div>
+
+      {/* Delete Options Modal */}
+      {showDeleteOptions && longPressMessage && (
+        <div className={styles.deleteModal} onClick={() => setShowDeleteOptions(false)}>
+          <div className={styles.deleteOptions} onClick={(e) => e.stopPropagation()}>
+            <h3>Delete Message</h3>
+            <p>Choose how you want to delete this message:</p>
+            
+            <button 
+              className={styles.deleteOption}
+              onClick={handleDeleteForMe}
+            >
+              <Trash2 size={16} />
+              Delete for Me
+              <span className={styles.deleteDescription}>
+                Remove this message from your view only
+              </span>
+            </button>
+
+            <button 
+              className={styles.deleteOption}
+              onClick={handleDeleteForAll}
+            >
+              <Trash2 size={16} />
+              Delete for All
+              <span className={styles.deleteDescription}>
+                Remove this message for everyone in the chat
+              </span>
+            </button>
+
+            <button 
+              className={`${styles.deleteOption} ${styles.cancelOption}`}
+              onClick={() => setShowDeleteOptions(false)}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -384,79 +384,133 @@ const BsMembersList: React.FC = () => {
       usersByResidence[user.residence].push(user);
     });
     
-    const groupsWithPastors: Array<Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }>> = [];
-    const groupsWithoutPastors: Array<Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }>> = [];
+    const allGroups: Array<Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }>> = [];
     
     // Process each residence separately
     Object.keys(usersByResidence).forEach(residence => {
       const residenceUsers = usersByResidence[residence];
       
-      // Separate pastors and regular users within this residence
+      // Separate users by categories for balanced distribution
       const pastors = residenceUsers.filter(user => user.isPastor);
       const regularUsers = residenceUsers.filter(user => !user.isPastor);
       
-      // Shuffle regular users within residence for random mixing of year and gender
-      const shuffledRegularUsers = regularUsers.sort(() => 0.5 - Math.random());
+      // Sort by year of study for balanced distribution
+      const sortByYear = (users: typeof regularUsers) => {
+        const yearGroups: { [key: string]: typeof users } = { '1': [], '2': [], '3': [], '4': [] };
+        users.forEach(user => {
+          if (yearGroups[user.yos]) {
+            yearGroups[user.yos].push(user);
+          }
+        });
+        return yearGroups;
+      };
       
-      // Create groups for this residence
-      const residenceGroupCount = Math.ceil(residenceUsers.length / size);
+      const regularUsersByYear = sortByYear(regularUsers);
       
-      // Distribute pastors first (one per group if possible)
-      for (let i = 0; i < residenceGroupCount; i++) {
-        const group: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> = [];
-        
-        // Add pastor if available
-        if (i < pastors.length) {
-          group.push(pastors[i]);
-        }
-        
-        // Calculate how many regular users this group needs
-        const regularUsersNeeded = size - group.length;
-        const startIndex = i * regularUsersNeeded;
-        const endIndex = Math.min(startIndex + regularUsersNeeded, shuffledRegularUsers.length);
-        
-        // Add regular users to fill the group
-        const remainingRegularUsers = shuffledRegularUsers.slice(startIndex, endIndex);
-        group.push(...remainingRegularUsers);
-        
-        // Fill incomplete groups with empty slots for better visualization
-        while (group.length < size && group.length > 0) {
-          group.push({ 
-            name: "", 
-            phone: "", 
-            residence: residence, 
-            yos: "", 
-            gender: "",
-            isPastor: false
-          });
-        }
-        
-        // Categorize groups based on whether they have a pastor
-        const hasPastor = group.some(user => user.isPastor === true);
-        if (hasPastor) {
-          groupsWithPastors.push(group);
-        } else {
-          groupsWithoutPastors.push(group);
-        }
+      // IMPORTANT: Each pastor gets their own group
+      // Calculate minimum groups needed: one per pastor + groups for remaining users
+      const minGroupsForPastors = pastors.length;
+      const remainingUsers = regularUsers.length;
+      const additionalGroupsNeeded = Math.max(0, Math.ceil(remainingUsers / size) - minGroupsForPastors);
+      const totalGroupsNeeded = minGroupsForPastors + additionalGroupsNeeded;
+      
+      // Create groups for this residence - ensure at least one group per pastor
+      const residenceGroups: Array<Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }>> = [];
+      for (let i = 0; i < totalGroupsNeeded; i++) {
+        residenceGroups.push([]);
       }
+      
+      // Step 1: Each pastor gets their own group (pastor is first member)
+      pastors.forEach((pastor, index) => {
+        if (index < residenceGroups.length) {
+          residenceGroups[index].push(pastor);
+        }
+      });
+      
+      // Step 2: Distribute remaining users evenly across all groups
+      // Separate males and females for balanced distribution
+      const maleUsers = regularUsers.filter(user => user.gender === 'M');
+      const femaleUsers = regularUsers.filter(user => user.gender === 'F');
+      
+      const malesByYear = sortByYear(maleUsers);
+      const femalesByYear = sortByYear(femaleUsers);
+      
+      // Distribute males evenly (round-robin by year)
+      let groupIndex = 0;
+      ['1', '2', '3', '4'].forEach(year => {
+        malesByYear[year].forEach(user => {
+          // Find group with least males (excluding pastors from count)
+          let bestGroup = groupIndex % residenceGroups.length;
+          let minMales = Infinity;
+          
+          for (let g = 0; g < residenceGroups.length; g++) {
+            const maleCount = residenceGroups[g].filter(u => u.gender === 'M' && !u.isPastor).length;
+            const totalCount = residenceGroups[g].length;
+            if (maleCount < minMales && totalCount < size) {
+              minMales = maleCount;
+              bestGroup = g;
+            }
+          }
+          
+          if (residenceGroups[bestGroup].length < size) {
+            residenceGroups[bestGroup].push(user);
+          }
+          groupIndex++;
+        });
+      });
+      
+      // Distribute females evenly (round-robin by year)
+      groupIndex = 0;
+      ['1', '2', '3', '4'].forEach(year => {
+        femalesByYear[year].forEach(user => {
+          // Find group with least females (excluding pastors from count)
+          let bestGroup = groupIndex % residenceGroups.length;
+          let minFemales = Infinity;
+          
+          for (let g = 0; g < residenceGroups.length; g++) {
+            const femaleCount = residenceGroups[g].filter(u => u.gender === 'F' && !u.isPastor).length;
+            const totalCount = residenceGroups[g].length;
+            if (femaleCount < minFemales && totalCount < size) {
+              minFemales = femaleCount;
+              bestGroup = g;
+            }
+          }
+          
+          if (residenceGroups[bestGroup].length < size) {
+            residenceGroups[bestGroup].push(user);
+          }
+          groupIndex++;
+        });
+      });
+      
+      // Step 3: Ensure pastor is always first in each group
+      residenceGroups.forEach(group => {
+        group.sort((a, b) => {
+          if (a.isPastor && !b.isPastor) return -1;
+          if (!a.isPastor && b.isPastor) return 1;
+          return 0;
+        });
+      });
+      
+      // Add residence groups to all groups
+      allGroups.push(...residenceGroups);
     });
     
-    // Combine groups: pastors first, then groups without pastors
-    
-    // Sort groups within each category by residence name for better organization
-    groupsWithPastors.sort((a, b) => {
+    // Sort all groups: groups with pastors first, then by residence
+    allGroups.sort((a, b) => {
+      const hasPastorA = a.some(u => u.isPastor);
+      const hasPastorB = b.some(u => u.isPastor);
+      
+      if (hasPastorA && !hasPastorB) return -1;
+      if (!hasPastorA && hasPastorB) return 1;
+      
+      // If both have or don't have pastors, sort by residence
       const residenceA = a[0]?.residence || '';
       const residenceB = b[0]?.residence || '';
       return residenceA.localeCompare(residenceB);
     });
     
-    groupsWithoutPastors.sort((a, b) => {
-      const residenceA = a[0]?.residence || '';
-      const residenceB = b[0]?.residence || '';
-      return residenceA.localeCompare(residenceB);
-    });
-    
-    setGroups([...groupsWithPastors, ...groupsWithoutPastors]);
+    setGroups(allGroups);
   };
   
 
@@ -516,12 +570,12 @@ const handleExportPdf = () => {
       const actualUsers = group.filter(user => user.name.trim() !== "");
       
       const tableData = actualUsers.map(user => [
-        user.name,
+        user.isPastor ? `${user.name} ✝` : user.name,
         user.phone,
         user.residence,
         user.yos,
         user.gender === 'M' ? 'Male' : 'Female',
-        user.isPastor ? 'Pastor' : ''
+        user.isPastor ? 'PASTOR' : ''
       ]);
 
       // Check if adding this table would exceed the page height
@@ -538,10 +592,12 @@ const handleExportPdf = () => {
 
       // Add group title with better formatting
       const hasPastor = actualUsers.some(u => u.isPastor === true);
+      const pastorName = actualUsers.find(u => u.isPastor === true)?.name || '';
+      
       doc.setTextColor(hasPastor ? 128 : 150, hasPastor ? 0 : 150, hasPastor ? 128 : 150); // Purple for groups with pastors, gray for those without
       doc.setFontSize(14);
       doc.setFont('helvetica', 'bold');
-      const groupTitle = `Group ${index + 1} (${actualUsers.length} members)${hasPastor ? ' ✓' : ' ⚠'}`;
+      const groupTitle = `Group ${index + 1} (${actualUsers.length} members)${hasPastor ? ` ✓ Pastor: ${pastorName}` : ' ⚠ No Pastor'}`;
       doc.text(groupTitle, 15, yOffset);
       yOffset += groupTitleHeight;
 
@@ -578,6 +634,21 @@ const handleExportPdf = () => {
         },
         alternateRowStyles: {
           fillColor: [248, 249, 250]
+        },
+        didParseCell: function(data: any) {
+          // Highlight pastor rows
+          const user = actualUsers[data.row.index];
+          if (user && user.isPastor) {
+            data.cell.styles.fillColor = [255, 248, 220]; // Light gold background for pastor
+            data.cell.styles.textColor = [128, 0, 128]; // Purple text for pastor
+            data.cell.styles.fontStyle = 'bold';
+          }
+          // Make Role column stand out for pastors
+          if (data.column.index === 5 && user && user.isPastor) {
+            data.cell.styles.fillColor = [128, 0, 128]; // Purple background for PASTOR role
+            data.cell.styles.textColor = [255, 255, 255]; // White text
+            data.cell.styles.fontStyle = 'bold';
+          }
         },
         columnStyles: {
           0: { cellWidth: 40 }, // Name column
@@ -769,7 +840,7 @@ const handleExportPdf = () => {
               )}
             </div>
             <p className={styles.groupingInfo}>
-              Groups will be organized by residence with each group prioritized to have a Bible Study Pastor. Mixed years of study and gender within each residence for optimal Bible study sessions. Groups with pastors will be listed first in the PDF.
+              Each Bible Study Pastor gets their own group within their residence location. Groups are organized by residence with balanced gender and year distribution. Pastors appear as the first member in their groups with special highlighting in the PDF. Groups with pastors are prioritized and listed first, with pastor names prominently displayed in group titles.
             </p>
           </div>
         </div>

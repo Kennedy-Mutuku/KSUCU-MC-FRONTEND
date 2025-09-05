@@ -230,49 +230,58 @@ const Bs: React.FC = () => {
                     </div>
 
                     {/* Gender selection */}
-                    <div>
+                    <div className={styles.genderSection}>
                         <label>Gender</label>
-                        <div>
-                            <input
-                                type="radio"
-                                id="gender-m"
-                                name="gender"
-                                value="M"
-                                checked={formData.gender === 'M'}
-                                onChange={handleGenderChange}
-                                required
-                            />
-                            <label htmlFor="gender-m">Male</label>
-                        </div>
-                        <div>
-                            <input
-                                type="radio"
-                                id="gender-f"
-                                name="gender"
-                                value="F"
-                                checked={formData.gender === 'F'}
-                                onChange={handleGenderChange}
-                                required
-                            />
-                            <label htmlFor="gender-f">Female</label>
+                        <div className={styles.radioGroup}>
+                            <div className={styles.radioItem}>
+                                <input
+                                    type="radio"
+                                    id="gender-m"
+                                    name="gender"
+                                    value="M"
+                                    checked={formData.gender === 'M'}
+                                    onChange={handleGenderChange}
+                                    required
+                                />
+                                <label htmlFor="gender-m">Male</label>
+                            </div>
+                            <div className={styles.radioItem}>
+                                <input
+                                    type="radio"
+                                    id="gender-f"
+                                    name="gender"
+                                    value="F"
+                                    checked={formData.gender === 'F'}
+                                    onChange={handleGenderChange}
+                                    required
+                                />
+                                <label htmlFor="gender-f">Female</label>
+                            </div>
                         </div>
                     </div>
 
-                    {/* Bible Study Pastor option */}
-                    <div>
-                        <div>
-                            <input
-                                type="checkbox"
-                                id="isPastor"
-                                name="isPastor"
-                                checked={formData.isPastor}
-                                onChange={(e) => setFormData({...formData, isPastor: e.target.checked})}
-                            />
-                            <label htmlFor="isPastor">I am interested in being a Bible Study Pastor</label>
+                    {/* Bible Study Pastor option - Clear & Clickable */}
+                    <div className={styles.pastorSection}>
+                        <div 
+                            className={styles.pastorCard}
+                            onClick={() => setFormData({...formData, isPastor: !formData.isPastor})}
+                        >
+                            <div className={styles.checkboxContainer}>
+                                <input
+                                    type="checkbox"
+                                    id="isPastor"
+                                    name="isPastor"
+                                    checked={formData.isPastor}
+                                    onChange={(e) => setFormData({...formData, isPastor: e.target.checked})}
+                                    className={styles.pastorCheckbox}
+                                    readOnly
+                                />
+                                <label htmlFor="isPastor" className={styles.pastorLabel}>
+                                    <span className={styles.pastorTitle}>BIBLE STUDY PASTOR</span>
+                                    <span className={styles.pastorSubtitle}>Lead discussions & guide group activities</span>
+                                </label>
+                            </div>
                         </div>
-                        <small style={{color: '#666', fontSize: '0.9em', marginTop: '5px', display: 'block'}}>
-                            Bible Study Pastors help lead discussions and guide group activities
-                        </small>
                     </div>
 
                 </form>

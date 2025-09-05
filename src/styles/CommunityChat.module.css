@@ -279,11 +279,6 @@
   font-size: 14px;
 }
 
-.messageFooter {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 2px;
-}
 
 .timestamp {
   opacity: 0.6;
@@ -624,4 +619,151 @@
   background: #d1d5db;
   border-color: #d1d5db;
   cursor: not-allowed;
+}
+
+/* Deleted Message Style */
+.deletedMessage {
+  color: #9ca3af;
+  font-style: italic;
+  font-size: 14px;
+}
+
+/* Message Status Indicators */
+.messageStatus {
+  margin-left: 4px;
+  vertical-align: middle;
+  opacity: 0.7;
+}
+
+.messageStatus.sent {
+  color: #6b7280;
+}
+
+.messageStatus.delivered {
+  color: #6b7280;
+}
+
+.messageStatus.read {
+  color: #0099cc;
+}
+
+/* Update messageFooter to include status */
+.messageFooter {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 2px;
+  gap: 4px;
+}
+
+/* Delete Modal */
+.deleteModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100000;
+  padding: 20px;
+}
+
+.deleteOptions {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  min-width: 300px;
+  max-width: 400px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.deleteOptions h3 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.deleteOptions p {
+  margin: 0 0 20px 0;
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+.deleteOption {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #e5e7eb;
+  background: white;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  text-align: left;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.deleteOption:hover {
+  border-color: #d1d5db;
+  background: #f9fafb;
+}
+
+.deleteOption svg {
+  color: #ef4444;
+  margin-top: 2px;
+}
+
+.deleteDescription {
+  display: block;
+  font-size: 12px;
+  color: #9ca3af;
+  margin-top: 2px;
+  line-height: 1.4;
+}
+
+.cancelOption {
+  border-color: #d1d5db;
+  color: #6b7280;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.cancelOption:hover {
+  border-color: #9ca3af;
+  background: #f3f4f6;
+}
+
+.cancelOption svg {
+  display: none;
+}
+
+/* Long Press Visual Feedback */
+.message:active {
+  transform: scale(0.98);
+  transition: transform 0.1s ease;
+}
+
+/* Mobile touch improvements */
+@media (max-width: 768px) {
+  .deleteModal {
+    padding: 16px;
+  }
+  
+  .deleteOptions {
+    min-width: 280px;
+    padding: 20px;
+  }
+  
+  .deleteOption {
+    padding: 14px 16px;
+    font-size: 16px;
+  }
 }
