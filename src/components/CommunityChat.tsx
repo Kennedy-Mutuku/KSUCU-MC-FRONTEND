@@ -3,6 +3,7 @@ import { MessageCircle, Send, X, Users, Image, Mic, Video, FileText, Edit, Trash
 import socketService from '../services/socketService';
 import { getApiUrl, getBaseUrl } from '../config/environment';
 import styles from '../styles/CommunityChat.module.css';
+import Cookies from 'js-cookie';
 
 interface Message {
   _id: string;
@@ -62,10 +63,18 @@ const CommunityChat: React.FC = () => {
   const [longPressMessage, setLongPressMessage] = useState<Message | null>(null);
   const [showDeleteOptions, setShowDeleteOptions] = useState(false);
   const [pressTimer, setPressTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
+  
+  // Media recording states
+  const [isRecording, setIsRecording] = useState(false);
+  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
+  const [recordingTime, setRecordingTime] = useState(0);
+  const [recordingTimer, setRecordingTimer] = useState<ReturnType<typeof setInterval> | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatWindowRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const imageInputRef = useRef<HTMLInputElement>(null);
+  const videoInputRef = useRef<HTMLInputElement>(null);
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
 
   const scrollToBottom = () => {
@@ -135,6 +144,7 @@ const CommunityChat: React.FC = () => {
           username: guestName,
           userId: 'guest'
         });
+        console.log('🔍 Chat: Set guest user:', { username: guestName, userId: 'guest' });
       }
 
       // Try to connect to socket regardless of auth status
@@ -153,6 +163,8 @@ const CommunityChat: React.FC = () => {
 
   const setupSocketListeners = () => {
     socketService.onNewMessage((message: Message) => {
+      console.log('🔍 Chat: Received new message:', message);
+      console.log('🔍 Chat: Current user when receiving message:', currentUser);
       setMessages(prev => [...prev, message]);
       
       // Auto-mark messages as delivered if they're from other users
@@ -240,7 +252,21 @@ const CommunityChat: React.FC = () => {
   };
 
   const handleSendMessage = async () => {
-    if (!newMessage.trim() || !isConnected) return;
+    console.log('handleSendMessage called', { 
+      newMessage: newMessage, 
+      trimmed: newMessage.trim(), 
+      isConnected, 
+      isLoading 
+    });
+    
+    if (!newMessage.trim() || !isConnected) {
+      console.log('Send message blocked:', { 
+        hasMessage: !!newMessage.trim(), 
+        isConnected, 
+        isLoading 
+      });
+      return;
+    }
 
     const messageText = newMessage.trim();
     setNewMessage('');
@@ -257,6 +283,22 @@ const CommunityChat: React.FC = () => {
   const handleFileUpload = async (file: File) => {
     if (!file || !isConnected) return;
 
+    // Validate file size (max 10MB)
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    if (file.size > maxSize) {
+      setError('File too large. Maximum size is 10MB.');
+      return;
+    }
+
+    // Validate file type
+    const allowedTypes = ['image/', 'video/', 'audio/', 'application/pdf', 'text/', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    const isValidType = allowedTypes.some(type => file.type.startsWith(type));
+    
+    if (!isValidType) {
+      setError('File type not supported. Please upload images, videos, audio, PDF, or document files.');
+      return;
+    }
+
     const formData = new FormData();
     formData.append('media', file);
     if (replyToMessage) {
@@ -265,11 +307,31 @@ const CommunityChat: React.FC = () => {
 
     try {
       setIsLoading(true);
-      console.log('📁 Chat: Uploading file...');
+      setError(''); // Clear previous errors
+      
+      const fileType = file.type.startsWith('image/') ? 'image' : 
+                      file.type.startsWith('video/') ? 'video' : 
+                      file.type.startsWith('audio/') ? 'audio' : 'file';
+      
+      console.log(`📁 Chat: Uploading ${fileType}...`, {
+        name: file.name,
+        size: file.size,
+        type: file.type
+      });
+
+      // Get authentication token from cookies
+      const token = Cookies.get('user_s');
+      
+      // Prepare headers
+      const headers: HeadersInit = {};
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
       
       const response = await fetch(getApiUrl('chatUpload'), {
         method: 'POST',
         credentials: 'include',
+        headers: headers,
         body: formData
       });
 
@@ -278,17 +340,149 @@ const CommunityChat: React.FC = () => {
 
       if (response.ok && data.success) {
         setReplyToMessage(null);
-        console.log('📁 Chat: File uploaded successfully');
+        console.log(`📁 Chat: ${fileType} uploaded successfully`);
+        setError(`✅ ${fileType.charAt(0).toUpperCase() + fileType.slice(1)} sent successfully!`);
+        setTimeout(() => setError(''), 3000);
       } else {
         console.error('📁 Chat: Failed to upload file:', data.message);
-        setError('Failed to upload file');
+        
+        // Handle specific authentication errors
+        if (response.status === 401 || response.status === 403) {
+          if (!token) {
+            setError('❌ Please log in to upload media files. You can still send text messages as a guest.');
+          } else {
+            setError('❌ Your session has expired. Please log in again to upload media files.');
+          }
+        } else if (response.status === 413) {
+          setError('❌ File too large. Please choose a smaller file (max 10MB).');
+        } else if (response.status === 415) {
+          setError('❌ File type not supported. Please upload images, videos, audio, or document files.');
+        } else {
+          setError(`❌ Failed to upload ${fileType}: ${data.message || 'Unknown error'}`);
+        }
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('📁 Chat: Error uploading file:', error);
-      setError('Failed to upload file');
+      if (error.name === 'NetworkError' || !navigator.onLine) {
+        setError('Network error. Please check your connection and try again.');
+      } else {
+        setError('Failed to upload file. Please try again.');
+      }
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Voice Recording Functions
+  const startVoiceRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const recorder = new MediaRecorder(stream);
+      const chunks: Blob[] = [];
+
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) {
+          chunks.push(e.data);
+        }
+      };
+
+      recorder.onstop = () => {
+        const audioBlob = new Blob(chunks, { type: 'audio/webm' });
+        const audioFile = new File([audioBlob], 'voice_message.webm', { type: 'audio/webm' });
+        handleFileUpload(audioFile);
+        
+        // Stop all tracks to release microphone
+        stream.getTracks().forEach(track => track.stop());
+      };
+
+      setMediaRecorder(recorder);
+      setIsRecording(true);
+      setRecordingTime(0);
+      
+      // Start recording
+      recorder.start();
+      
+      // Start timer
+      const timer = setInterval(() => {
+        setRecordingTime(prev => prev + 1);
+      }, 1000);
+      setRecordingTimer(timer);
+      
+      console.log('🎤 Started voice recording');
+    } catch (error) {
+      console.error('Error starting voice recording:', error);
+      setError('Could not access microphone. Please check permissions.');
+    }
+  };
+
+  const stopVoiceRecording = () => {
+    if (mediaRecorder && isRecording) {
+      mediaRecorder.stop();
+      setIsRecording(false);
+      setMediaRecorder(null);
+      
+      if (recordingTimer) {
+        clearInterval(recordingTimer);
+        setRecordingTimer(null);
+      }
+      
+      console.log('🎤 Stopped voice recording');
+    }
+  };
+
+  const cancelVoiceRecording = () => {
+    if (mediaRecorder && isRecording) {
+      mediaRecorder.stream.getTracks().forEach(track => track.stop());
+      setIsRecording(false);
+      setMediaRecorder(null);
+      setRecordingTime(0);
+      
+      if (recordingTimer) {
+        clearInterval(recordingTimer);
+        setRecordingTimer(null);
+      }
+      
+      console.log('🎤 Cancelled voice recording');
+    }
+  };
+
+  // Media Type Handlers
+  const handleImageUpload = () => {
+    const token = Cookies.get('user_s');
+    if (!token && currentUser?.userId === 'guest') {
+      setError('❌ Please log in to upload images. Guest users can only send text messages.');
+      return;
+    }
+    imageInputRef.current?.click();
+  };
+
+  const handleVideoUpload = () => {
+    const token = Cookies.get('user_s');
+    if (!token && currentUser?.userId === 'guest') {
+      setError('❌ Please log in to upload videos. Guest users can only send text messages.');
+      return;
+    }
+    videoInputRef.current?.click();
+  };
+
+  const handleVoiceMessage = () => {
+    const token = Cookies.get('user_s');
+    if (!token && currentUser?.userId === 'guest') {
+      setError('❌ Please log in to send voice messages. Guest users can only send text messages.');
+      return;
+    }
+    
+    if (isRecording) {
+      stopVoiceRecording();
+    } else {
+      startVoiceRecording();
+    }
+  };
+
+  const formatRecordingTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
   const handleTyping = (typing: boolean) => {
@@ -391,7 +585,37 @@ const CommunityChat: React.FC = () => {
   };
 
   const renderMessage = (message: Message) => {
-    const isOwn = currentUser && (message.senderId === currentUser.userId || message.senderName === currentUser.username);
+    // Enhanced ownership detection with debugging
+    let isOwn = false;
+    
+    if (currentUser) {
+      // Check multiple comparison methods
+      const userIdMatch = message.senderId === currentUser.userId;
+      const usernameMatch = message.senderName === currentUser.username;
+      const trimmedUsernameMatch = currentUser.username && message.senderName === currentUser.username.trim();
+      const caseInsensitiveUsernameMatch = currentUser.username && 
+        message.senderName.toLowerCase() === currentUser.username.toLowerCase();
+      const trimmedCaseInsensitiveMatch = currentUser.username && 
+        message.senderName.toLowerCase().trim() === currentUser.username.toLowerCase().trim();
+      
+      isOwn = userIdMatch || usernameMatch || trimmedUsernameMatch || 
+              caseInsensitiveUsernameMatch || trimmedCaseInsensitiveMatch;
+      
+      // Debug logging to help identify the issue
+      console.log('Message ownership check:', {
+        messageId: message._id,
+        messageSenderId: message.senderId,
+        messageSenderName: message.senderName,
+        currentUserId: currentUser?.userId,
+        currentUsername: currentUser?.username,
+        userIdMatch,
+        usernameMatch,
+        trimmedUsernameMatch,
+        caseInsensitiveUsernameMatch,
+        trimmedCaseInsensitiveMatch,
+        isOwn: isOwn
+      });
+    }
     
     // Check if message is deleted for current user (both authenticated and guest)
     const isDeletedForMe = message.deletedFor?.some(del => {
@@ -547,8 +771,14 @@ const CommunityChat: React.FC = () => {
       if (typingTimeoutRef.current) {
         clearTimeout(typingTimeoutRef.current);
       }
+      if (recordingTimer) {
+        clearInterval(recordingTimer);
+      }
+      if (mediaRecorder && isRecording) {
+        mediaRecorder.stream.getTracks().forEach(track => track.stop());
+      }
     };
-  }, []);
+  }, [recordingTimer, mediaRecorder, isRecording]);
 
   if (!isOpen) {
     return (
@@ -676,15 +906,45 @@ const CommunityChat: React.FC = () => {
         </div>
       )}
 
+      {/* Voice Recording Bar */}
+      {isRecording && (
+        <div className={styles.recordingBar}>
+          <div className={styles.recordingInfo}>
+            <div className={styles.recordingDot}></div>
+            <span>Recording... {formatRecordingTime(recordingTime)}</span>
+          </div>
+          <div className={styles.recordingActions}>
+            <button onClick={cancelVoiceRecording} className={styles.cancelRecording}>
+              Cancel
+            </button>
+            <button onClick={stopVoiceRecording} className={styles.stopRecording}>
+              Send
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className={styles.inputContainer}>
         <div className={styles.inputActions}>
-          <button onClick={() => fileInputRef.current?.click()}>
+          <button 
+            onClick={handleImageUpload} 
+            title={(!Cookies.get('user_s') && currentUser?.userId === 'guest') ? "Login required for image upload" : "Send Image"}
+            className={(!Cookies.get('user_s') && currentUser?.userId === 'guest') ? styles.disabledMediaButton : ''}
+          >
             <Image size={20} />
           </button>
-          <button onClick={() => fileInputRef.current?.click()}>
+          <button 
+            onClick={handleVideoUpload} 
+            title={(!Cookies.get('user_s') && currentUser?.userId === 'guest') ? "Login required for video upload" : "Send Video"}
+            className={(!Cookies.get('user_s') && currentUser?.userId === 'guest') ? styles.disabledMediaButton : ''}
+          >
             <Video size={20} />
           </button>
-          <button onClick={() => fileInputRef.current?.click()}>
+          <button 
+            onClick={handleVoiceMessage} 
+            className={`${isRecording ? styles.recordingButton : ''} ${(!Cookies.get('user_s') && currentUser?.userId === 'guest') ? styles.disabledMediaButton : ''}`}
+            title={(!Cookies.get('user_s') && currentUser?.userId === 'guest') ? "Login required for voice messages" : (isRecording ? "Stop Recording" : "Record Voice Message")}
+          >
             <Mic size={20} />
           </button>
         </div>
@@ -709,13 +969,28 @@ const CommunityChat: React.FC = () => {
         />
 
         <button 
-          onClick={handleSendMessage}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Send button clicked!', { 
+              newMessage, 
+              trimmed: newMessage.trim(), 
+              isConnected, 
+              isLoading, 
+              disabled: !newMessage.trim() || !isConnected || isLoading 
+            });
+            handleSendMessage();
+          }}
           disabled={!newMessage.trim() || !isConnected || isLoading}
-          className={styles.sendButton}
+          className={`${styles.sendButton} ${(!newMessage.trim() || !isConnected || isLoading) ? styles.disabledSendButton : ''}`}
+          style={{ pointerEvents: 'auto', zIndex: 2147483647 }}
+          type="button"
+          title={`Send message - ${(!newMessage.trim() || !isConnected || isLoading) ? 'Disabled' : 'Ready'}`}
         >
           <Send size={20} />
         </button>
 
+        {/* Hidden file inputs for different media types */}
         <input
           ref={fileInputRef}
           type="file"
@@ -725,6 +1000,35 @@ const CommunityChat: React.FC = () => {
             if (file) {
               handleFileUpload(file);
             }
+            e.target.value = ''; // Reset input
+          }}
+          style={{ display: 'none' }}
+        />
+        
+        <input
+          ref={imageInputRef}
+          type="file"
+          accept="image/*"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) {
+              handleFileUpload(file);
+            }
+            e.target.value = ''; // Reset input
+          }}
+          style={{ display: 'none' }}
+        />
+        
+        <input
+          ref={videoInputRef}
+          type="file"
+          accept="video/*"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) {
+              handleFileUpload(file);
+            }
+            e.target.value = ''; // Reset input
           }}
           style={{ display: 'none' }}
         />

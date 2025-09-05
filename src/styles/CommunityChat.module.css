@@ -13,7 +13,7 @@
   cursor: pointer;
   color: white;
   box-shadow: 0 4px 15px rgba(0, 198, 255, 0.4);
-  z-index: 99999;
+  z-index: 2147483647; /* Maximum z-index to ensure it's above everything */
   transition: all 0.3s ease;
   border: 2px solid white;
 }
@@ -51,7 +51,7 @@
   background: white;
   border-radius: 12px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  z-index: 99999;
+  z-index: 2147483647; /* Maximum z-index to ensure it's above everything */
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -73,6 +73,24 @@
     right: 10px;
     left: 10px;
     border-radius: 8px;
+    z-index: 2147483647; /* Ensure maximum z-index on mobile */
+  }
+  
+  /* Ensure send button is always visible on mobile */
+  .sendButton {
+    min-width: 40px;
+    min-height: 40px;
+    position: relative;
+    z-index: 2147483646;
+  }
+  
+  /* Make sure input container doesn't get covered */
+  .inputContainer {
+    background: white;
+    border-radius: 0 0 8px 8px;
+    position: sticky;
+    bottom: 0;
+    z-index: 2147483645;
   }
 }
 
@@ -423,6 +441,81 @@
   padding: 0;
 }
 
+/* Recording Bar */
+.recordingBar {
+  background: #fef3c7;
+  border-top: 1px solid #f59e0b;
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  animation: slideDown 0.3s ease;
+}
+
+.recordingInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #92400e;
+  font-weight: 500;
+}
+
+.recordingDot {
+  width: 8px;
+  height: 8px;
+  background: #ef4444;
+  border-radius: 50%;
+  animation: pulse 1s infinite;
+}
+
+.recordingActions {
+  display: flex;
+  gap: 8px;
+}
+
+.cancelRecording {
+  background: none;
+  border: 1px solid #d97706;
+  color: #d97706;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s;
+}
+
+.cancelRecording:hover {
+  background: #d97706;
+  color: white;
+}
+
+.stopRecording {
+  background: #059669;
+  border: 1px solid #059669;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s;
+}
+
+.stopRecording:hover {
+  background: #047857;
+  border-color: #047857;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Input Container */
 .inputContainer {
   padding: 16px;
@@ -431,6 +524,17 @@
   align-items: flex-end;
   gap: 8px;
   background: white;
+  position: relative;
+  z-index: 100;
+  pointer-events: auto; /* Ensure container allows interactions */
+}
+
+@media (max-width: 768px) {
+  .inputContainer {
+    padding: 12px 16px;
+    gap: 6px;
+    pointer-events: auto; /* Ensure mobile interactions work */
+  }
 }
 
 .inputActions {
@@ -451,6 +555,28 @@
 .inputActions button:hover {
   background: #f3f4f6;
   color: #730051;
+}
+
+.recordingButton {
+  background: #ef4444 !important;
+  color: white !important;
+  animation: pulse 1s infinite;
+}
+
+.recordingButton:hover {
+  background: #dc2626 !important;
+  color: white !important;
+}
+
+.disabledMediaButton {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+  color: #9ca3af !important;
+}
+
+.disabledMediaButton:hover {
+  background: #f9fafb !important;
+  color: #9ca3af !important;
 }
 
 .messageInput {
@@ -489,6 +615,11 @@
   align-items: center;
   justify-content: center;
   transition: all 0.2s;
+  position: relative;
+  z-index: 2147483645;
+  flex-shrink: 0;
+  pointer-events: auto; /* Ensure button can receive click events */
+  user-select: none; /* Prevent text selection */
 }
 
 .sendButton:hover:not(:disabled) {
@@ -501,6 +632,13 @@
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
+  pointer-events: none; /* Explicitly disable pointer events for disabled state */
+}
+
+.disabledSendButton {
+  background: #d1d5db !important;
+  cursor: not-allowed !important;
+  opacity: 0.6 !important;
 }
 
 /* Loading Animation */

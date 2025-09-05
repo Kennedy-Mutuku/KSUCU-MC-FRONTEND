@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
@@ -22,7 +22,7 @@ declare module 'jspdf' {
   }
 }
 
-const BsMembersList: React.FC = () => {
+const BsMembersList = () => {
   const [users, setUsers] = useState<Array<{ name: string, residence: string, yos: string, phone: string, gender: string, isPastor?: boolean }>>([]);
   const [groups, setGroups] = useState<Array<Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }>>>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -374,128 +374,157 @@ const BsMembersList: React.FC = () => {
   const shuffleAndGroupUsers = (size: number) => {
     if (users.length === 0) return;
     
-    // Group users by residence first
+    // Separate all pastors and regular users globally
+    const allPastors = users.filter(user => user.isPastor);
+    const allRegularUsers = users.filter(user => !user.isPastor);
+    
+    // Calculate optimal number of groups
+    const totalUsers = users.length;
+    const minGroups = Math.max(allPastors.length, Math.ceil(totalUsers / size));
+    
+    // Create empty groups
+    const allGroups: Array<Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }>> = [];
+    for (let i = 0; i < minGroups; i++) {
+      allGroups.push([]);
+    }
+    
+    // Step 1: Place each pastor as the first member in their own group
+    allPastors.forEach((pastor, index) => {
+      if (index < allGroups.length) {
+        allGroups[index].push(pastor);
+      }
+    });
+    
+    // Step 2: Group regular users by residence first (try to keep same residence together)
     const usersByResidence: { [key: string]: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> } = {};
     
-    users.forEach(user => {
+    allRegularUsers.forEach(user => {
       if (!usersByResidence[user.residence]) {
         usersByResidence[user.residence] = [];
       }
       usersByResidence[user.residence].push(user);
     });
     
-    const allGroups: Array<Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }>> = [];
+    // Helper function to find the best group for a user
+    const findBestGroup = (user: { name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }) => {
+      let bestGroupIndex = 0;
+      let minCount = Infinity;
+      let preferSameResidence = false;
+      
+      // First, try to find a group with same residence that isn't full
+      for (let i = 0; i < allGroups.length; i++) {
+        const group = allGroups[i];
+        const hasSpace = group.length < size;
+        const sameResidenceMembers = group.filter(u => u.residence === user.residence).length;
+        
+        if (hasSpace && sameResidenceMembers > 0) {
+          // Prioritize groups with same residence
+          if (group.length < minCount) {
+            minCount = group.length;
+            bestGroupIndex = i;
+            preferSameResidence = true;
+          }
+        }
+      }
+      
+      // If no same residence group has space, find any group with space
+      if (!preferSameResidence) {
+        for (let i = 0; i < allGroups.length; i++) {
+          const group = allGroups[i];
+          if (group.length < size && group.length < minCount) {
+            minCount = group.length;
+            bestGroupIndex = i;
+          }
+        }
+      }
+      
+      return bestGroupIndex;
+    };
     
-    // Process each residence separately
+    // Step 3: Distribute users residence by residence
     Object.keys(usersByResidence).forEach(residence => {
       const residenceUsers = usersByResidence[residence];
       
-      // Separate users by categories for balanced distribution
-      const pastors = residenceUsers.filter(user => user.isPastor);
-      const regularUsers = residenceUsers.filter(user => !user.isPastor);
+      // Separate by gender and year for balanced distribution
+      const maleUsers = residenceUsers.filter(user => user.gender === 'M');
+      const femaleUsers = residenceUsers.filter(user => user.gender === 'F');
       
-      // Sort by year of study for balanced distribution
-      const sortByYear = (users: typeof regularUsers) => {
-        const yearGroups: { [key: string]: typeof users } = { '1': [], '2': [], '3': [], '4': [] };
-        users.forEach(user => {
-          if (yearGroups[user.yos]) {
-            yearGroups[user.yos].push(user);
-          }
-        });
-        return yearGroups;
-      };
-      
-      
-      // IMPORTANT: Each pastor gets their own group
-      // Calculate minimum groups needed: one per pastor + groups for remaining users
-      const minGroupsForPastors = pastors.length;
-      const remainingUsers = regularUsers.length;
-      const additionalGroupsNeeded = Math.max(0, Math.ceil(remainingUsers / size) - minGroupsForPastors);
-      const totalGroupsNeeded = minGroupsForPastors + additionalGroupsNeeded;
-      
-      // Create groups for this residence - ensure at least one group per pastor
-      const residenceGroups: Array<Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }>> = [];
-      for (let i = 0; i < totalGroupsNeeded; i++) {
-        residenceGroups.push([]);
-      }
-      
-      // Step 1: Each pastor gets their own group (pastor is first member)
-      pastors.forEach((pastor, index) => {
-        if (index < residenceGroups.length) {
-          residenceGroups[index].push(pastor);
-        }
-      });
-      
-      // Step 2: Distribute remaining users evenly across all groups
-      // Separate males and females for balanced distribution
-      const maleUsers = regularUsers.filter(user => user.gender === 'M');
-      const femaleUsers = regularUsers.filter(user => user.gender === 'F');
-      
-      const malesByYear = sortByYear(maleUsers);
-      const femalesByYear = sortByYear(femaleUsers);
-      
-      // Distribute males evenly (round-robin by year)
-      let groupIndex = 0;
+      // Distribute males by year
       ['1', '2', '3', '4'].forEach(year => {
-        malesByYear[year].forEach(user => {
-          // Find group with least males (excluding pastors from count)
-          let bestGroup = groupIndex % residenceGroups.length;
-          let minMales = Infinity;
-          
-          for (let g = 0; g < residenceGroups.length; g++) {
-            const maleCount = residenceGroups[g].filter(u => u.gender === 'M' && !u.isPastor).length;
-            const totalCount = residenceGroups[g].length;
-            if (maleCount < minMales && totalCount < size) {
-              minMales = maleCount;
-              bestGroup = g;
-            }
+        const malesInYear = maleUsers.filter(user => user.yos === year);
+        malesInYear.forEach(user => {
+          const bestGroupIndex = findBestGroup(user);
+          if (allGroups[bestGroupIndex].length < size) {
+            allGroups[bestGroupIndex].push(user);
           }
-          
-          if (residenceGroups[bestGroup].length < size) {
-            residenceGroups[bestGroup].push(user);
-          }
-          groupIndex++;
         });
       });
       
-      // Distribute females evenly (round-robin by year)
-      groupIndex = 0;
+      // Distribute females by year
       ['1', '2', '3', '4'].forEach(year => {
-        femalesByYear[year].forEach(user => {
-          // Find group with least females (excluding pastors from count)
-          let bestGroup = groupIndex % residenceGroups.length;
-          let minFemales = Infinity;
-          
-          for (let g = 0; g < residenceGroups.length; g++) {
-            const femaleCount = residenceGroups[g].filter(u => u.gender === 'F' && !u.isPastor).length;
-            const totalCount = residenceGroups[g].length;
-            if (femaleCount < minFemales && totalCount < size) {
-              minFemales = femaleCount;
-              bestGroup = g;
-            }
+        const femalesInYear = femaleUsers.filter(user => user.yos === year);
+        femalesInYear.forEach(user => {
+          const bestGroupIndex = findBestGroup(user);
+          if (allGroups[bestGroupIndex].length < size) {
+            allGroups[bestGroupIndex].push(user);
           }
-          
-          if (residenceGroups[bestGroup].length < size) {
-            residenceGroups[bestGroup].push(user);
-          }
-          groupIndex++;
         });
       });
-      
-      // Step 3: Ensure pastor is always first in each group
-      residenceGroups.forEach(group => {
-        group.sort((a, b) => {
-          if (a.isPastor && !b.isPastor) return -1;
-          if (!a.isPastor && b.isPastor) return 1;
-          return 0;
-        });
-      });
-      
-      // Add residence groups to all groups
-      allGroups.push(...residenceGroups);
     });
     
-    // Sort all groups: groups with pastors first, then by residence
+    // Step 4: Handle any remaining users that couldn't be placed (mix residences)
+    const unplacedUsers: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> = [];
+    allRegularUsers.forEach(user => {
+      const isPlaced = allGroups.some(group => group.includes(user));
+      if (!isPlaced) {
+        unplacedUsers.push(user);
+      }
+    });
+    
+    // Place unplaced users in any available spots
+    unplacedUsers.forEach(user => {
+      for (let i = 0; i < allGroups.length; i++) {
+        if (allGroups[i].length < size) {
+          allGroups[i].push(user);
+          break;
+        }
+      }
+    });
+    
+    // Step 5: Redistribute members from overly small groups to maintain proper group sizes
+    const minGroupSize = Math.floor(size * 0.6); // Groups should be at least 60% of target size
+    
+    for (let i = allGroups.length - 1; i >= 0; i--) {
+      const group = allGroups[i];
+      const nonPastorMembers = group.filter(u => !u.isPastor);
+      
+      // If a group has a pastor, keep it regardless of size
+      // If a group has no pastor and is too small, redistribute members
+      if (!group.some(u => u.isPastor) && group.length < minGroupSize && nonPastorMembers.length > 0) {
+        // Find other groups with space to absorb these members
+        nonPastorMembers.forEach(user => {
+          for (let j = 0; j < allGroups.length; j++) {
+            if (j !== i && allGroups[j].length < size) {
+              allGroups[j].push(user);
+              break;
+            }
+          }
+        });
+        // Remove the small group
+        allGroups.splice(i, 1);
+      }
+    }
+    
+    // Step 6: Ensure pastors are always first in their groups
+    allGroups.forEach(group => {
+      group.sort((a, b) => {
+        if (a.isPastor && !b.isPastor) return -1;
+        if (!a.isPastor && b.isPastor) return 1;
+        return 0;
+      });
+    });
+    
+    // Step 7: Sort groups - those with pastors first
     allGroups.sort((a, b) => {
       const hasPastorA = a.some(u => u.isPastor);
       const hasPastorB = b.some(u => u.isPastor);
@@ -503,13 +532,16 @@ const BsMembersList: React.FC = () => {
       if (hasPastorA && !hasPastorB) return -1;
       if (!hasPastorA && hasPastorB) return 1;
       
-      // If both have or don't have pastors, sort by residence
+      // If both have or don't have pastors, sort by primary residence
       const residenceA = a[0]?.residence || '';
       const residenceB = b[0]?.residence || '';
       return residenceA.localeCompare(residenceB);
     });
     
-    setGroups(allGroups);
+    // Filter out any empty groups
+    const finalGroups = allGroups.filter(group => group.length > 0);
+    
+    setGroups(finalGroups);
   };
   
 

@@ -45,5 +45,18 @@
     "eslint-plugin-react-refresh": "^0.4.5",
     "typescript": "^5.2.2",
     "vite": "^5.1.4"
-  }
+  },
+  "description": "Kisii university Christian union main Campus Website front end",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kennedy-Mutuku/KSUCU-MC-FRONTEND.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Kennedy-Mutuku/KSUCU-MC-FRONTEND/issues"
+  },
+  "homepage": "https://github.com/Kennedy-Mutuku/KSUCU-MC-FRONTEND#readme"
 }
