@@ -6,6 +6,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import loadingAnime from '../assets/Animation - 1716747954931.gif';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faUserLock } from '@fortawesome/free-solid-svg-icons';
+import CommunityChat from './CommunityChat';
 
 const UniversalHeader: React.FC = () => {
   const [userData, setUserData] = useState<{ username: string; email: string; yos: number; phone: string; et: string; ministry: string } | null>(null);
@@ -189,6 +190,9 @@ const UniversalHeader: React.FC = () => {
 
         {error && <div className={styles.error}>{error}</div>}
       </header>
+
+      {/* Community Chat - Show for all users */}
+      <CommunityChat />
     </>
   );
 };

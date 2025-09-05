@@ -14,6 +14,7 @@ import valuesImg from '../assets/amptheatre.jpg'
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 import { faUserLock } from '@fortawesome/free-solid-svg-icons';
 import { ChevronDown, ChevronUp } from "lucide-react";
+import CommunityChat from './CommunityChat';
 
 interface NewsData {
   title: string;
@@ -741,6 +742,9 @@ const LandingPageHeader = () => {
           </div>
         </div>
       }
+
+      {/* Community Chat - Show for all users */}
+      <CommunityChat />
     </>
   );
 };
