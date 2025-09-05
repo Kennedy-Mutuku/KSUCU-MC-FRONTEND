@@ -23,8 +23,8 @@ declare module 'jspdf' {
 }
 
 const BsMembersList: React.FC = () => {
-  const [users, setUsers] = useState<Array<{ name: string, residence: string, yos: string, phone: string, gender: string }>>([]);
-  const [groups, setGroups] = useState<Array<Array<{ name: string, phone: string, residence: string, yos: string, gender: string }>>>([]);
+  const [users, setUsers] = useState<Array<{ name: string, residence: string, yos: string, phone: string, gender: string, isPastor?: boolean }>>([]);
+  const [groups, setGroups] = useState<Array<Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }>>>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [groupSize, setGroupSize] = useState<number>(10); // Default group size is 10
@@ -374,49 +374,90 @@ const BsMembersList: React.FC = () => {
   const shuffleAndGroupUsers = (size: number) => {
     if (users.length === 0) return;
     
-    // Create balanced groups with year of study, gender, and residence considerations
-    const shuffledUsers = [...users].sort(() => 0.5 - Math.random());
+    // Group users by residence first
+    const usersByResidence: { [key: string]: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> } = {};
     
-    const groups: Array<Array<{ name: string, phone: string, residence: string, yos: string, gender: string }>> = [];
-    const totalGroups = Math.ceil(users.length / size);
-    
-    // Initialize empty groups
-    for (let i = 0; i < totalGroups; i++) {
-      groups.push([]);
-    }
-    
-    // Distribute users in a round-robin fashion to balance groups
-    let currentGroupIndex = 0;
-    
-    // Sort users by residence, then by year of study, then by gender for better distribution
-    const sortedUsers = shuffledUsers.sort((a, b) => {
-      if (a.residence !== b.residence) return a.residence.localeCompare(b.residence);
-      if (a.yos !== b.yos) return parseInt(a.yos) - parseInt(b.yos);
-      return a.gender.localeCompare(b.gender);
-    });
-    
-    // Distribute users across groups
-    sortedUsers.forEach((user) => {
-      groups[currentGroupIndex].push(user);
-      currentGroupIndex = (currentGroupIndex + 1) % totalGroups;
-    });
-    
-    // Fill incomplete groups with empty slots for better visualization
-    const newGroups = groups.map((group) => {
-      const filledGroup = [...group];
-      while (filledGroup.length < size && filledGroup.length > 0) {
-        filledGroup.push({ 
-          name: "", 
-          phone: "", 
-          residence: group[0]?.residence || "", 
-          yos: "", 
-          gender: "" 
-        });
+    users.forEach(user => {
+      if (!usersByResidence[user.residence]) {
+        usersByResidence[user.residence] = [];
       }
-      return filledGroup;
-    }).filter(group => group.length > 0);
+      usersByResidence[user.residence].push(user);
+    });
     
-    setGroups(newGroups);
+    const groupsWithPastors: Array<Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }>> = [];
+    const groupsWithoutPastors: Array<Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }>> = [];
+    
+    // Process each residence separately
+    Object.keys(usersByResidence).forEach(residence => {
+      const residenceUsers = usersByResidence[residence];
+      
+      // Separate pastors and regular users within this residence
+      const pastors = residenceUsers.filter(user => user.isPastor);
+      const regularUsers = residenceUsers.filter(user => !user.isPastor);
+      
+      // Shuffle regular users within residence for random mixing of year and gender
+      const shuffledRegularUsers = regularUsers.sort(() => 0.5 - Math.random());
+      
+      // Create groups for this residence
+      const residenceGroupCount = Math.ceil(residenceUsers.length / size);
+      
+      // Distribute pastors first (one per group if possible)
+      for (let i = 0; i < residenceGroupCount; i++) {
+        const group: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> = [];
+        
+        // Add pastor if available
+        if (i < pastors.length) {
+          group.push(pastors[i]);
+        }
+        
+        // Calculate how many regular users this group needs
+        const regularUsersNeeded = size - group.length;
+        const startIndex = i * regularUsersNeeded;
+        const endIndex = Math.min(startIndex + regularUsersNeeded, shuffledRegularUsers.length);
+        
+        // Add regular users to fill the group
+        const remainingRegularUsers = shuffledRegularUsers.slice(startIndex, endIndex);
+        group.push(...remainingRegularUsers);
+        
+        // Fill incomplete groups with empty slots for better visualization
+        while (group.length < size && group.length > 0) {
+          group.push({ 
+            name: "", 
+            phone: "", 
+            residence: residence, 
+            yos: "", 
+            gender: "",
+            isPastor: false
+          });
+        }
+        
+        // Categorize groups based on whether they have a pastor
+        const hasPastor = group.some(user => user.isPastor === true);
+        if (hasPastor) {
+          groupsWithPastors.push(group);
+        } else {
+          groupsWithoutPastors.push(group);
+        }
+      }
+    });
+    
+    // Combine groups: pastors first, then groups without pastors
+    const allGroups = [...groupsWithPastors, ...groupsWithoutPastors];
+    
+    // Sort groups within each category by residence name for better organization
+    groupsWithPastors.sort((a, b) => {
+      const residenceA = a[0]?.residence || '';
+      const residenceB = b[0]?.residence || '';
+      return residenceA.localeCompare(residenceB);
+    });
+    
+    groupsWithoutPastors.sort((a, b) => {
+      const residenceA = a[0]?.residence || '';
+      const residenceB = b[0]?.residence || '';
+      return residenceA.localeCompare(residenceB);
+    });
+    
+    setGroups([...groupsWithPastors, ...groupsWithoutPastors]);
   };
   
 
@@ -480,7 +521,8 @@ const handleExportPdf = () => {
         user.phone,
         user.residence,
         user.yos,
-        user.gender === 'M' ? 'Male' : 'Female'
+        user.gender === 'M' ? 'Male' : 'Female',
+        user.isPastor ? 'Pastor' : ''
       ]);
 
       // Check if adding this table would exceed the page height
@@ -496,10 +538,11 @@ const handleExportPdf = () => {
       }
 
       // Add group title with better formatting
-      doc.setTextColor(128, 0, 128); // Purple for group titles
+      const hasPastor = actualUsers.some(u => u.isPastor === true);
+      doc.setTextColor(hasPastor ? [128, 0, 128] : [150, 150, 150]); // Purple for groups with pastors, gray for those without
       doc.setFontSize(14);
       doc.setFont('helvetica', 'bold');
-      const groupTitle = `Group ${index + 1} (${actualUsers.length} members)`;
+      const groupTitle = `Group ${index + 1} (${actualUsers.length} members)${hasPastor ? ' ✓' : ' ⚠'}`;
       doc.text(groupTitle, 15, yOffset);
       yOffset += groupTitleHeight;
 
@@ -510,17 +553,18 @@ const handleExportPdf = () => {
       const year2 = actualUsers.filter(u => u.yos === '2').length;
       const year3 = actualUsers.filter(u => u.yos === '3').length;
       const year4 = actualUsers.filter(u => u.yos === '4').length;
+      const pastorCount = actualUsers.filter(u => u.isPastor === true).length;
       
       doc.setFontSize(9);
       doc.setTextColor(100, 100, 100);
       doc.setFont('helvetica', 'normal');
-      const groupStats = `Male: ${maleCount}, Female: ${femaleCount} | Y1: ${year1}, Y2: ${year2}, Y3: ${year3}, Y4: ${year4}`;
+      const groupStats = `Male: ${maleCount}, Female: ${femaleCount} | Y1: ${year1}, Y2: ${year2}, Y3: ${year3}, Y4: ${year4} | ${hasPastor ? '✓ Has Pastor' : '⚠ No Pastor'}`;
       doc.text(groupStats, 15, yOffset);
       yOffset += 8;
 
       // Define table options with improved styling
       const tableOptions = {
-        head: [['Name', 'Phone', 'Residence', 'Year', 'Gender']],
+        head: [['Name', 'Phone', 'Residence', 'Year', 'Gender', 'Role']],
         body: tableData,
         startY: yOffset,
         theme: 'striped',
@@ -538,11 +582,12 @@ const handleExportPdf = () => {
           fillColor: [248, 249, 250]
         },
         columnStyles: {
-          0: { cellWidth: 45 }, // Name column
-          1: { cellWidth: 30 }, // Phone column  
-          2: { cellWidth: 35 }, // Residence column
-          3: { cellWidth: 15, halign: 'center' }, // Year column
-          4: { cellWidth: 20, halign: 'center' }  // Gender column
+          0: { cellWidth: 40 }, // Name column
+          1: { cellWidth: 28 }, // Phone column  
+          2: { cellWidth: 30 }, // Residence column
+          3: { cellWidth: 12, halign: 'center' }, // Year column
+          4: { cellWidth: 18, halign: 'center' }, // Gender column
+          5: { cellWidth: 17, halign: 'center' }  // Role column
         },
         margin: { left: 15, right: 15 }
       };
@@ -644,6 +689,7 @@ const handleExportPdf = () => {
                 <p><strong>Year 2:</strong> {users.filter(u => u.yos === '2').length}</p>
                 <p><strong>Year 3:</strong> {users.filter(u => u.yos === '3').length}</p>
                 <p><strong>Year 4:</strong> {users.filter(u => u.yos === '4').length}</p>
+                <p><strong>Pastors:</strong> {users.filter(u => u.isPastor === true).length}</p>
               </div>
             )}
           </div>
@@ -725,7 +771,7 @@ const handleExportPdf = () => {
               )}
             </div>
             <p className={styles.groupingInfo}>
-              Groups will be balanced by year of study, gender, and residence for optimal Bible study sessions.
+              Groups will be organized by residence with each group prioritized to have a Bible Study Pastor. Mixed years of study and gender within each residence for optimal Bible study sessions. Groups with pastors will be listed first in the PDF.
             </p>
           </div>
         </div>
@@ -744,16 +790,18 @@ const handleExportPdf = () => {
                       <th>Residence</th>
                       <th>Yos</th>
                       <th>G</th>
+                      <th>Pastor</th>
                     </tr>
                   </thead>
                   <tbody>
                     {group.map((user, i) => (
-                      <tr key={i}>
+                      <tr key={i} className={user.isPastor ? styles.pastorRow : ''}>
                         <td>{user.name}</td>
                         <td>{user.phone}</td>
                         <td>{user.residence}</td>
                         <td>{user.yos}</td>
                         <td>{user.gender}</td>
+                        <td>{user.isPastor ? '✓ Pastor' : ''}</td>
                       </tr>
                     ))}
                   </tbody>

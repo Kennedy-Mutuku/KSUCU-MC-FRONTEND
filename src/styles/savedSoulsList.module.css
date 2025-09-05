@@ -336,6 +336,17 @@
     background: #f8f9fa;
 }
 
+/* Pastor row styling */
+.pastorRow {
+    background: linear-gradient(90deg, #e8f5e8, #f0f8ff) !important;
+    font-weight: 500;
+    border-left: 4px solid #28a745;
+}
+
+.pastorRow:hover {
+    background: linear-gradient(90deg, #d4edda, #e6f3ff) !important;
+}
+
 /* Modal Styles */
 .modal {
     position: fixed;
@@ -443,6 +454,12 @@
     text-align: center;
 }
 
+.authSection h3 {
+    margin: 0 0 20px 0;
+    color: #856404;
+    font-size: 1.3rem;
+}
+
 .authSection h5 {
     margin: 0 0 15px 0;
     color: #856404;
@@ -452,6 +469,63 @@
 .authSection p {
     margin: 10px 0;
     color: #856404;
+}
+
+.authForm {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.authFormGroup {
+    text-align: left;
+}
+
+.authFormGroup label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #856404;
+}
+
+.authFormGroup input {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #ffc107;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    transition: border-color 0.2s ease;
+    box-sizing: border-box;
+}
+
+.authFormGroup input:focus {
+    outline: none;
+    border-color: #e0a800;
+}
+
+.authSubmit {
+    background: linear-gradient(45deg, #28a745, #20c997);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+    margin-top: 10px;
+}
+
+.authSubmit:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+}
+
+.authSubmit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
 }
 
 .authButton {

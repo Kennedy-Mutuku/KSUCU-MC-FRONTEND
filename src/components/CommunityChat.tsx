@@ -301,74 +301,79 @@ const CommunityChat: React.FC = () => {
     const isOwn = currentUser && (message.senderId === currentUser.userId || message.senderName === currentUser.username);
 
     return (
-      <div key={message._id} className={`${styles.message} ${isOwn ? styles.ownMessage : styles.otherMessage}`}>
-        {message.replyTo && (
-          <div className={styles.replyTo}>
-            <span className={styles.replyAuthor}>{message.replyTo.senderName}</span>
-            <span className={styles.replyContent}>{message.replyTo.message}</span>
-          </div>
-        )}
-        
-        <div className={styles.messageHeader}>
-          <span className={styles.senderName}>{message.senderName}</span>
-          <span className={styles.timestamp}>
-            {formatTime(message.timestamp)}
-            {message.edited && <span className={styles.edited}> (edited)</span>}
-          </span>
-        </div>
-
-        <div className={styles.messageContent}>
-          {message.messageType === 'text' && (
-            <p>{message.message}</p>
+      <div key={message._id} className={`${styles.messageWrapper} ${isOwn ? styles.ownMessageWrapper : styles.otherMessageWrapper}`}>
+        <div className={`${styles.message} ${isOwn ? styles.ownMessage : styles.otherMessage}`}>
+          {message.replyTo && (
+            <div className={styles.replyTo}>
+              <span className={styles.replyAuthor}>{message.replyTo.senderName}</span>
+              <span className={styles.replyContent}>{message.replyTo.message}</span>
+            </div>
           )}
           
-          {message.messageType === 'image' && (
-            <div>
-              <img 
-                src={`${getBaseUrl()}${message.mediaUrl}`} 
-                alt={message.mediaFileName}
-                className={styles.messageImage}
-              />
-              {message.message && <p>{message.message}</p>}
-            </div>
+          {!isOwn && (
+            <div className={styles.senderName}>{message.senderName}</div>
           )}
 
-          {message.messageType === 'video' && (
-            <div>
-              <video 
-                src={`${getBaseUrl()}${message.mediaUrl}`} 
-                controls
-                className={styles.messageVideo}
-              />
-              {message.message && <p>{message.message}</p>}
-            </div>
-          )}
+          <div className={styles.messageContent}>
+            {message.messageType === 'text' && (
+              <p>{message.message}</p>
+            )}
+            
+            {message.messageType === 'image' && (
+              <div>
+                <img 
+                  src={`${getBaseUrl()}${message.mediaUrl}`} 
+                  alt={message.mediaFileName}
+                  className={styles.messageImage}
+                />
+                {message.message && <p>{message.message}</p>}
+              </div>
+            )}
 
-          {message.messageType === 'audio' && (
-            <div>
-              <audio 
-                src={`${getBaseUrl()}${message.mediaUrl}`} 
-                controls
-                className={styles.messageAudio}
-              />
-              {message.message && <p>{message.message}</p>}
-            </div>
-          )}
+            {message.messageType === 'video' && (
+              <div>
+                <video 
+                  src={`${getBaseUrl()}${message.mediaUrl}`} 
+                  controls
+                  className={styles.messageVideo}
+                />
+                {message.message && <p>{message.message}</p>}
+              </div>
+            )}
 
-          {message.messageType === 'file' && (
-            <div>
-              <a 
-                href={`${getBaseUrl()}${message.mediaUrl}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.fileLink}
-              >
-                <FileText size={16} />
-                {message.mediaFileName}
-              </a>
-              {message.message && <p>{message.message}</p>}
-            </div>
-          )}
+            {message.messageType === 'audio' && (
+              <div>
+                <audio 
+                  src={`${getBaseUrl()}${message.mediaUrl}`} 
+                  controls
+                  className={styles.messageAudio}
+                />
+                {message.message && <p>{message.message}</p>}
+              </div>
+            )}
+
+            {message.messageType === 'file' && (
+              <div>
+                <a 
+                  href={`${getBaseUrl()}${message.mediaUrl}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.fileLink}
+                >
+                  <FileText size={16} />
+                  {message.mediaFileName}
+                </a>
+                {message.message && <p>{message.message}</p>}
+              </div>
+            )}
+          </div>
+          
+          <div className={styles.messageFooter}>
+            <span className={styles.timestamp}>
+              {formatTime(message.timestamp)}
+              {message.edited && <span className={styles.edited}> (edited)</span>}
+            </span>
+          </div>
         </div>
 
         {isOwn && (
@@ -392,6 +397,12 @@ const CommunityChat: React.FC = () => {
     if (tempName.trim()) {
       setShowNameDialog(false);
       connectSocket(tempName.trim());
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && tempName.trim()) {
+      handleNameSubmit();
     }
   };
 
@@ -457,11 +468,7 @@ const CommunityChat: React.FC = () => {
             type="text"
             value={tempName}
             onChange={(e) => setTempName(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && tempName.trim()) {
-                handleNameSubmit();
-              }
-            }}
+            onKeyPress={handleKeyPress}
             placeholder="e.g., Kennedy Mutuku"
             className={styles.nameInput}
           />

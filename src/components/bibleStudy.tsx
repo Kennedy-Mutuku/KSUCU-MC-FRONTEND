@@ -12,7 +12,8 @@ const Bs: React.FC = () => {
         residence: '',
         yos: '',
         phone: '',
-        gender: '' // Add gender field here
+        gender: '', // Add gender field here
+        isPastor: false // Add pastor field here
     });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
@@ -24,7 +25,7 @@ const Bs: React.FC = () => {
         if (savedData) {
             try {
                 const parsedData = JSON.parse(savedData);
-                if (parsedData && (parsedData.name || parsedData.phone || parsedData.residence || parsedData.yos || parsedData.gender)) {
+                if (parsedData && (parsedData.name || parsedData.phone || parsedData.residence || parsedData.yos || parsedData.gender || parsedData.isPastor)) {
                     setFormData(parsedData);
                     setError('📋 Your previous form data has been restored. Continue filling or click Clear to start fresh.');
                     setTimeout(() => setError(''), 5000);
@@ -41,7 +42,7 @@ const Bs: React.FC = () => {
         const dataToSave = {
             ...formData,
             // Don't save empty form
-            hasData: formData.name.trim() || formData.phone.trim() || formData.residence || formData.yos || formData.gender
+            hasData: formData.name.trim() || formData.phone.trim() || formData.residence || formData.yos || formData.gender || formData.isPastor
         };
         
         if (dataToSave.hasData) {
@@ -146,7 +147,8 @@ const Bs: React.FC = () => {
                 residence: '',
                 yos: '',
                 phone: '',
-                gender: '' 
+                gender: '',
+                isPastor: false
             };
             setFormData(clearedData);
             localStorage.removeItem('bibleStudyFormData');
@@ -256,11 +258,28 @@ const Bs: React.FC = () => {
                         </div>
                     </div>
 
+                    {/* Bible Study Pastor option */}
+                    <div>
+                        <div>
+                            <input
+                                type="checkbox"
+                                id="isPastor"
+                                name="isPastor"
+                                checked={formData.isPastor}
+                                onChange={(e) => setFormData({...formData, isPastor: e.target.checked})}
+                            />
+                            <label htmlFor="isPastor">I am interested in being a Bible Study Pastor</label>
+                        </div>
+                        <small style={{color: '#666', fontSize: '0.9em', marginTop: '5px', display: 'block'}}>
+                            Bible Study Pastors help lead discussions and guide group activities
+                        </small>
+                    </div>
+
                 </form>
 
                 <div className={styles['submisions']}>
                     <div className={styles['clearForm']} onClick={() => {
-                        const clearedData = { name: '', residence: '', yos: '', phone: '', gender: '' };
+                        const clearedData = { name: '', residence: '', yos: '', phone: '', gender: '', isPastor: false };
                         setFormData(clearedData);
                         localStorage.removeItem('bibleStudyFormData');
                         setError('Form cleared');
