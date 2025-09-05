@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { MessageCircle, Send, X, Users, Image, Mic, Video, FileText, Edit, Trash2, Reply } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import socketService from '../services/socketService';
 import { getApiUrl, getBaseUrl } from '../config/environment';
 import styles from '../styles/CommunityChat.module.css';
@@ -53,7 +52,6 @@ const CommunityChat: React.FC = () => {
   const [page, setPage] = useState(1);
   const [currentUser, setCurrentUser] = useState<{ username: string; userId: string } | null>(null);
 
-  const navigate = useNavigate();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatWindowRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
