@@ -572,7 +572,26 @@ const CommunityChat: React.FC = () => {
   };
 
   const handleDeleteForAll = async () => {
-    if (longPressMessage) {
+    if (longPressMessage && currentUser) {
+      // Double-check that the current user owns the message
+      const userIdMatch = longPressMessage.senderId === currentUser.userId;
+      const usernameMatch = longPressMessage.senderName === currentUser.username;
+      const trimmedUsernameMatch = currentUser.username && longPressMessage.senderName === currentUser.username.trim();
+      const caseInsensitiveUsernameMatch = currentUser.username && 
+        longPressMessage.senderName.toLowerCase() === currentUser.username.toLowerCase();
+      const trimmedCaseInsensitiveMatch = currentUser.username && 
+        longPressMessage.senderName.toLowerCase().trim() === currentUser.username.toLowerCase().trim();
+      
+      const isOwn = userIdMatch || usernameMatch || trimmedUsernameMatch || 
+                    caseInsensitiveUsernameMatch || trimmedCaseInsensitiveMatch;
+      
+      if (!isOwn) {
+        setError('You can only delete your own messages for everyone.');
+        setShowDeleteOptions(false);
+        setLongPressMessage(null);
+        return;
+      }
+      
       try {
         await socketService.deleteMessage(longPressMessage._id);
         setShowDeleteOptions(false);
@@ -726,7 +745,10 @@ const CommunityChat: React.FC = () => {
             <button onClick={() => setEditingMessage(message)} title="Edit">
               <Edit size={16} />
             </button>
-            <button onClick={() => socketService.deleteMessage(message._id)} title="Delete">
+            <button onClick={() => {
+              setLongPressMessage(message);
+              setShowDeleteOptions(true);
+            }} title="Delete">
               <Trash2 size={16} />
             </button>
           </div>
@@ -1052,16 +1074,37 @@ const CommunityChat: React.FC = () => {
               </span>
             </button>
 
-            <button 
-              className={styles.deleteOption}
-              onClick={handleDeleteForAll}
-            >
-              <Trash2 size={16} />
-              Delete for All
-              <span className={styles.deleteDescription}>
-                Remove this message for everyone in the chat
-              </span>
-            </button>
+            {/* Only show "Delete for All" if the message belongs to the current user */}
+            {(() => {
+              if (!currentUser || !longPressMessage) return null;
+              
+              // Check if current user owns the message
+              const userIdMatch = longPressMessage.senderId === currentUser.userId;
+              const usernameMatch = longPressMessage.senderName === currentUser.username;
+              const trimmedUsernameMatch = currentUser.username && longPressMessage.senderName === currentUser.username.trim();
+              const caseInsensitiveUsernameMatch = currentUser.username && 
+                longPressMessage.senderName.toLowerCase() === currentUser.username.toLowerCase();
+              const trimmedCaseInsensitiveMatch = currentUser.username && 
+                longPressMessage.senderName.toLowerCase().trim() === currentUser.username.toLowerCase().trim();
+              
+              const isOwn = userIdMatch || usernameMatch || trimmedUsernameMatch || 
+                          caseInsensitiveUsernameMatch || trimmedCaseInsensitiveMatch;
+              
+              if (!isOwn) return null;
+              
+              return (
+                <button 
+                  className={styles.deleteOption}
+                  onClick={handleDeleteForAll}
+                >
+                  <Trash2 size={16} />
+                  Delete for All
+                  <span className={styles.deleteDescription}>
+                    Remove this message for everyone in the chat
+                  </span>
+                </button>
+              );
+            })()}
 
             <button 
               className={`${styles.deleteOption} ${styles.cancelOption}`}

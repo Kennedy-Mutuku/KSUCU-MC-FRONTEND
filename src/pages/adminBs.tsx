@@ -77,7 +77,25 @@ const BsMembersList = () => {
       });
       
       console.log('Bible study users response:', response.data);
-      setUsers(response.data);  
+      
+      // Process users to identify pastors
+      const processedUsers = response.data.map((user: any) => {
+        // Check if user is already marked as pastor or if their name contains "pastor"
+        const isPastor = user.isPastor === true || 
+                        user.name.toLowerCase().includes('pastor') || 
+                        user.name.toLowerCase().includes('pst') ||
+                        user.name.toLowerCase().includes('rev');
+        
+        return {
+          ...user,
+          isPastor: isPastor
+        };
+      });
+      
+      console.log('Processed users with pastor identification:', processedUsers);
+      console.log('Number of pastors found:', processedUsers.filter((u: any) => u.isPastor).length);
+      
+      setUsers(processedUsers);  
       setLoading(false);
       
       if (response.data.length === 0) {
@@ -369,6 +387,17 @@ const BsMembersList = () => {
     setEditingResidence(null);
     setNewResidenceName('');
     setNewResidenceDescription('');
+  };
+
+  const togglePastorStatus = (userIndex: number) => {
+    const updatedUsers = [...users];
+    updatedUsers[userIndex].isPastor = !updatedUsers[userIndex].isPastor;
+    setUsers(updatedUsers);
+    
+    const userName = updatedUsers[userIndex].name;
+    const status = updatedUsers[userIndex].isPastor ? 'marked as Pastor' : 'unmarked as Pastor';
+    setError(`✅ ${userName} ${status} successfully!`);
+    setTimeout(() => setError(''), 3000);
   };
 
   const shuffleAndGroupUsers = (size: number) => {
@@ -846,6 +875,69 @@ const handleExportPdf = () => {
             </div>
           </div>
 
+          {/* User Management */}
+          {users.length > 0 && (
+            <div className={styles.userManagementSection}>
+              <h5>
+                <FontAwesomeIcon icon={faUsers} style={{ marginRight: '8px' }} />
+                User Management
+              </h5>
+              <p className={styles.userManagementInfo}>
+                Click the "Mark as Pastor" button to identify pastors. Pastors will get their own groups and be clearly identified.
+              </p>
+              <div className={styles.userList}>
+                <table className={styles.userTable}>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Phone</th>
+                      <th>Residence</th>
+                      <th>Year</th>
+                      <th>Gender</th>
+                      <th>Status</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {users.map((user, index) => (
+                      <tr key={index} className={user.isPastor ? styles.pastorUserRow : ''}>
+                        <td>{user.name}</td>
+                        <td>{user.phone}</td>
+                        <td>{user.residence}</td>
+                        <td>{user.yos}</td>
+                        <td>{user.gender === 'M' ? 'Male' : 'Female'}</td>
+                        <td>
+                          {user.isPastor ? (
+                            <span style={{ color: '#800080', fontWeight: 'bold' }}>✝️ Pastor</span>
+                          ) : (
+                            <span style={{ color: '#666' }}>Member</span>
+                          )}
+                        </td>
+                        <td>
+                          <button
+                            onClick={() => togglePastorStatus(index)}
+                            className={user.isPastor ? styles.removePastorButton : styles.addPastorButton}
+                            style={{
+                              backgroundColor: user.isPastor ? '#ff6b6b' : '#800080',
+                              color: 'white',
+                              border: 'none',
+                              padding: '4px 8px',
+                              borderRadius: '4px',
+                              fontSize: '12px',
+                              cursor: 'pointer'
+                            }}
+                          >
+                            {user.isPastor ? '✕ Remove Pastor' : '✝️ Mark as Pastor'}
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
           {/* Group Formation */}
           <div className={styles.groupingSection}>
             <h5>
@@ -881,7 +973,19 @@ const handleExportPdf = () => {
           <div className={styles.groups}>
             {groups.map((group, index) => (
               <div key={index} className={styles.group}>
-                <h5>Group {index + 1}</h5>
+                <h5>
+                  Group {index + 1}
+                  {group.some(u => u.isPastor) && (
+                    <span style={{ color: '#800080', marginLeft: '10px', fontSize: '14px' }}>
+                      ✝️ Pastor: {group.find(u => u.isPastor)?.name}
+                    </span>
+                  )}
+                  {!group.some(u => u.isPastor) && (
+                    <span style={{ color: '#ff6b6b', marginLeft: '10px', fontSize: '12px' }}>
+                      ⚠️ No Pastor
+                    </span>
+                  )}
+                </h5>
                 <table className={styles.table}>
                   <thead>
                     <tr>
@@ -896,12 +1000,18 @@ const handleExportPdf = () => {
                   <tbody>
                     {group.map((user, i) => (
                       <tr key={i} className={user.isPastor ? styles.pastorRow : ''}>
-                        <td>{user.name}</td>
+                        <td>{user.isPastor ? `${user.name} ✝️` : user.name}</td>
                         <td>{user.phone}</td>
                         <td>{user.residence}</td>
                         <td>{user.yos}</td>
                         <td>{user.gender}</td>
-                        <td>{user.isPastor ? '✓ Pastor' : ''}</td>
+                        <td>
+                          {user.isPastor ? (
+                            <strong style={{ color: '#800080', backgroundColor: '#f0e6ff', padding: '2px 6px', borderRadius: '4px', fontSize: '12px' }}>
+                              ✓ PASTOR
+                            </strong>
+                          ) : ''}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
