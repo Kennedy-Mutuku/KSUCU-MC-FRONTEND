@@ -169,7 +169,7 @@
         
         backBtn.style.cssText = `
           position: fixed !important;
-          bottom: ${isMobile ? '330px' : '340px'} !important;
+          bottom: ${isMobile ? '220px' : '260px'} !important;
           right: 20px !important;
           z-index: 2147483647 !important;
           background: #00c6ff !important;
@@ -219,7 +219,7 @@
           const existing = document.getElementById('global-back-button');
           if (existing) {
             const isMobile = window.innerWidth <= 768;
-            existing.style.bottom = isMobile ? '330px' : '340px';
+            existing.style.bottom = isMobile ? '220px' : '260px';
             existing.style.right = '20px';
             existing.style.padding = '0';
             existing.style.fontSize = isMobile ? '14px' : '16px';

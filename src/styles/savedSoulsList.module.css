@@ -93,7 +93,14 @@
     font-size: 1.2rem;
 }
 
-.addButton {
+.residenceButtons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.addButton, .refreshButton, .seedButton {
     background: linear-gradient(45deg, #28a745, #20c997);
     color: white;
     border: none;
@@ -102,18 +109,39 @@
     font-size: 0.9rem;
     cursor: pointer;
     transition: all 0.3s ease;
-    margin-bottom: 15px;
-    width: 100%;
+    flex: 1;
+    min-width: 120px;
 }
 
-.addButton:hover {
+.refreshButton {
+    background: linear-gradient(45deg, #17a2b8, #20c997);
+}
+
+.seedButton {
+    background: linear-gradient(45deg, #6f42c1, #e83e8c);
+}
+
+.addButton:hover, .refreshButton:hover, .seedButton:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
 }
 
-@media (min-width: 768px) {
-    .addButton {
-        width: auto;
+.refreshButton:hover {
+    box-shadow: 0 4px 12px rgba(23, 162, 184, 0.3);
+}
+
+.seedButton:hover {
+    box-shadow: 0 4px 12px rgba(111, 66, 193, 0.3);
+}
+
+@media (max-width: 767px) {
+    .residenceButtons {
+        flex-direction: column;
+    }
+    
+    .addButton, .refreshButton, .seedButton {
+        width: 100%;
+        flex: none;
     }
 }
 
@@ -403,6 +431,45 @@
 
 .cancelButton:hover {
     background: #5a6268;
+}
+
+/* Authentication Section */
+.authSection {
+    background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+    border: 2px solid #ffc107;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.authSection h5 {
+    margin: 0 0 15px 0;
+    color: #856404;
+    font-size: 1.2rem;
+}
+
+.authSection p {
+    margin: 10px 0;
+    color: #856404;
+}
+
+.authButton {
+    background: linear-gradient(45deg, #28a745, #20c997);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 10px 0;
+    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+}
+
+.authButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
 }
 
 /* Error and Success Messages */

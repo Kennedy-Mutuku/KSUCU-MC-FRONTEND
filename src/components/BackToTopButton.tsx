@@ -49,7 +49,7 @@ const BackToTopButton: React.FC = () => {
   const buttonStyle: React.CSSProperties = {
     position: 'fixed',
     right: '20px',
-    bottom: isMobile ? '210px' : '270px',
+    bottom: isMobile ? '150px' : '180px',
     width: isMobile ? '50px' : '60px',
     height: isMobile ? '50px' : '60px',
     backgroundColor: '#00c6ff',

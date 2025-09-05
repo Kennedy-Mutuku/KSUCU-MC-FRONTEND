@@ -4,6 +4,7 @@ import styles from '../styles/bs.module.css';
 import { Link } from 'react-router-dom';
 import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
+import { getBaseUrl } from '../config/environment';
 
 const Bs: React.FC = () => {
     const [formData, setFormData] = useState({
@@ -52,7 +53,7 @@ const Bs: React.FC = () => {
     React.useEffect(() => {
         const fetchResidences = async () => {
             try {
-                const response = await axios.get('https://ksucu-mc.co.ke/adminBs/residences');
+                const response = await axios.get(`${getBaseUrl()}/adminBs/residences`);
                 setResidences(response.data);
             } catch (error) {
                 console.error('Error fetching residences:', error);
@@ -129,7 +130,7 @@ const Bs: React.FC = () => {
         try {
             console.log('Submitting form data:', formData);
             
-            const response = await axios.post('https://ksucu-mc.co.ke/users/bibleStudy', formData, {
+            const response = await axios.post(`${getBaseUrl()}/users/bibleStudy`, formData, {
                 headers: {
                     'Content-Type': 'application/json'
                 },

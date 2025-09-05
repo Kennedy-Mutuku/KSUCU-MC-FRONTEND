@@ -1,7 +1,7 @@
 /* Chat Icon */
 .chatIcon {
   position: fixed;
-  bottom: 200px;
+  bottom: 100px;
   right: 20px;
   width: 60px;
   height: 60px;
@@ -60,7 +60,7 @@
 
 @media (max-width: 768px) {
   .chatIcon {
-    bottom: 150px;
+    bottom: 80px;
     right: 20px;
     width: 50px;
     height: 50px;
