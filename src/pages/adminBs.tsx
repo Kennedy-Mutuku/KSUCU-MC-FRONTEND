@@ -164,7 +164,7 @@ const BsMembersList: React.FC = () => {
       
       // Clear error after 5 seconds if using fallback
       setTimeout(() => {
-        if (error && error.includes('Using') || error.includes('unavailable')) {
+        if (error && (error.includes('Using') || error.includes('unavailable'))) {
           setError('');
         }
       }, 5000);
