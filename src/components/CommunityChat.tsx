@@ -183,7 +183,7 @@ const CommunityChat: React.FC = () => {
       ));
     });
 
-    socketService.onMessageDeletedForUser(({ messageId, userId, username }: { messageId: string; userId?: string; username?: string }) => {
+    socketService.onMessageDeletedForUser(({ messageId }: { messageId: string; userId?: string; username?: string }) => {
       // Remove message from view only for the specific user
       setMessages(prev => prev.filter(msg => msg._id !== messageId));
     });
@@ -338,11 +338,11 @@ const CommunityChat: React.FC = () => {
       case 'sending':
         return <div className={styles.messageStatus} title="Sending">⏳</div>;
       case 'sent':
-        return <Check size={14} className={`${styles.messageStatus} ${styles.sent}`} title="Sent" />;
+        return <div title="Sent"><Check size={14} className={`${styles.messageStatus} ${styles.sent}`} /></div>;
       case 'delivered':
-        return <CheckCheck size={14} className={`${styles.messageStatus} ${styles.delivered}`} title="Delivered" />;
+        return <div title="Delivered"><CheckCheck size={14} className={`${styles.messageStatus} ${styles.delivered}`} /></div>;
       case 'read':
-        return <CheckCheck size={14} className={`${styles.messageStatus} ${styles.read}`} title="Read" />;
+        return <div title="Read"><CheckCheck size={14} className={`${styles.messageStatus} ${styles.read}`} /></div>;
       default:
         return null;
     }

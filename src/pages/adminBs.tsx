@@ -405,7 +405,6 @@ const BsMembersList: React.FC = () => {
         return yearGroups;
       };
       
-      const regularUsersByYear = sortByYear(regularUsers);
       
       // IMPORTANT: Each pastor gets their own group
       // Calculate minimum groups needed: one per pastor + groups for remaining users
