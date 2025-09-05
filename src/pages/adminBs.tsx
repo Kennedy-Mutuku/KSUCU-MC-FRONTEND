@@ -442,7 +442,6 @@ const BsMembersList: React.FC = () => {
     });
     
     // Combine groups: pastors first, then groups without pastors
-    const allGroups = [...groupsWithPastors, ...groupsWithoutPastors];
     
     // Sort groups within each category by residence name for better organization
     groupsWithPastors.sort((a, b) => {
@@ -539,7 +538,7 @@ const handleExportPdf = () => {
 
       // Add group title with better formatting
       const hasPastor = actualUsers.some(u => u.isPastor === true);
-      doc.setTextColor(hasPastor ? [128, 0, 128] : [150, 150, 150]); // Purple for groups with pastors, gray for those without
+      doc.setTextColor(hasPastor ? 128 : 150, hasPastor ? 0 : 150, hasPastor ? 128 : 150); // Purple for groups with pastors, gray for those without
       doc.setFontSize(14);
       doc.setFont('helvetica', 'bold');
       const groupTitle = `Group ${index + 1} (${actualUsers.length} members)${hasPastor ? ' ✓' : ' ⚠'}`;
@@ -553,7 +552,6 @@ const handleExportPdf = () => {
       const year2 = actualUsers.filter(u => u.yos === '2').length;
       const year3 = actualUsers.filter(u => u.yos === '3').length;
       const year4 = actualUsers.filter(u => u.yos === '4').length;
-      const pastorCount = actualUsers.filter(u => u.isPastor === true).length;
       
       doc.setFontSize(9);
       doc.setTextColor(100, 100, 100);
