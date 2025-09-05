@@ -29,6 +29,12 @@ const BsMembersList: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [groupSize, setGroupSize] = useState<number>(10); // Default group size is 10
   
+  // Authentication states
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showLoginForm, setShowLoginForm] = useState(false);
+  const [loginData, setLoginData] = useState({ email: '', password: '' });
+  const [loginLoading, setLoginLoading] = useState(false);
+  
   // Residence management states
   const [residences, setResidences] = useState<Array<{_id: string, name: string, description: string}>>([]);
   const [showResidenceModal, setShowResidenceModal] = useState(false);
@@ -40,28 +46,26 @@ const BsMembersList: React.FC = () => {
   const backEndURL = getBaseUrl();
 
   useEffect(() => {
-    fetchSavedSouls();
-    fetchResidences();
+    // Check if user is on localhost (auto-authenticate for development)
+    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    if (isLocalhost) {
+      setIsAuthenticated(true);
+      fetchSavedSouls();
+      fetchResidences();
+    } else {
+      // For production, check if coming from worship docket admin
+      const adminAuth = sessionStorage.getItem('adminAuth');
+      if (adminAuth === 'Overseer') {
+        setShowLoginForm(true);
+      } else {
+        setError('Access restricted. Please access via Worship Docket Admin.');
+        setLoading(false);
+      }
+    }
   }, []);
 
   const fetchSavedSouls = async () => {
     try {
-      // Check if admin is authenticated via session storage (from worship docket admin)
-      const adminAuth = sessionStorage.getItem('adminAuth');
-      const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-      
-      if (!adminAuth && !isLocalhost) {
-        setError('Authentication required. Please access via Worship Docket Admin.');
-        setLoading(false);
-        return;
-      }
-
-      // For development/localhost, auto-set authentication
-      if (isLocalhost && !adminAuth) {
-        sessionStorage.setItem('adminAuth', 'Overseer');
-        setError('🔓 Development mode: Auto-authenticated for localhost access.');
-        setTimeout(() => setError(''), 3000);
-      }
 
       console.log('Fetching Bible study users...');
       const response = await axios.get(`${backEndURL}/adminBs/users`, { 
@@ -90,7 +94,9 @@ const BsMembersList: React.FC = () => {
       if (err.code === 'ECONNABORTED' || err.message.includes('timeout')) {
         setError('⏱️ Request timeout. Server might be slow. Please try refreshing.');
       } else if (err.response?.status === 401 || err.response?.status === 403) {
-        setError('🔐 Authentication failed. Please login through Worship Docket Admin first.');
+        setError('🔐 Authentication failed. Please login first.');
+        setShowLoginForm(true);
+        setIsAuthenticated(false);
       } else if (err.code === 'ERR_NETWORK' || !navigator.onLine) {
         setError('🌐 Network error. Please check your internet connection and try again.');
       } else if (err.response?.status >= 500) {
@@ -99,6 +105,41 @@ const BsMembersList: React.FC = () => {
         setError(`❌ ${err.response?.data?.message || err.message || 'Failed to fetch Bible study data'}. Please try again.`);
       }
       setLoading(false);
+    }
+  };
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoginLoading(true);
+    setError('');
+
+    try {
+      const response = await axios.post(`${backEndURL}/adminBs/login`, loginData, {
+        withCredentials: true,
+        timeout: 10000
+      });
+
+      if (response.status === 200) {
+        setIsAuthenticated(true);
+        setShowLoginForm(false);
+        setError('✅ Login successful! Loading Bible Study admin panel...');
+        setTimeout(() => setError(''), 3000);
+        
+        // Now fetch data
+        fetchSavedSouls();
+        fetchResidences();
+      }
+    } catch (err: any) {
+      console.error('Login error:', err);
+      if (err.response?.status === 401) {
+        setError('❌ Invalid email or password. Please try again.');
+      } else if (err.code === 'ERR_NETWORK') {
+        setError('❌ Network error. Please check your connection.');
+      } else {
+        setError('❌ Login failed. Please try again.');
+      }
+    } finally {
+      setLoginLoading(false);
     }
   };
 
@@ -549,29 +590,42 @@ const handleExportPdf = () => {
           </div>
         )}
 
-        {!sessionStorage.getItem('adminAuth') && (
+        {/* Login Form */}
+        {showLoginForm && !isAuthenticated && (
           <div className={styles.authSection}>
-            <h5>🔐 Authentication Required</h5>
-            <p>For development/testing purposes, you can authenticate directly:</p>
-            <button 
-              className={styles.authButton}
-              onClick={() => {
-                sessionStorage.setItem('adminAuth', 'Overseer');
-                setError('🔓 Authenticated successfully! Reloading data...');
-                setTimeout(() => {
-                  fetchSavedSouls();
-                  fetchResidences();
-                }, 1000);
-              }}
-            >
-              🔑 Authenticate as Admin (Dev Mode)
-            </button>
-            <p style={{fontSize: '0.8rem', color: '#6c757d', fontStyle: 'italic'}}>
-              In production, access through Worship Docket Admin → Bible Study Admin
-            </p>
+            <h3>Bible Study Admin Login</h3>
+            <form onSubmit={handleLogin} className={styles.authForm}>
+              <div className={styles.authFormGroup}>
+                <label htmlFor="email">Admin Email:</label>
+                <input
+                  type="email"
+                  id="email"
+                  value={loginData.email}
+                  onChange={(e) => setLoginData({...loginData, email: e.target.value})}
+                  required
+                  placeholder="Enter admin email"
+                />
+              </div>
+              <div className={styles.authFormGroup}>
+                <label htmlFor="password">Password:</label>
+                <input
+                  type="password"
+                  id="password"
+                  value={loginData.password}
+                  onChange={(e) => setLoginData({...loginData, password: e.target.value})}
+                  required
+                  placeholder="Enter password"
+                />
+              </div>
+              <button type="submit" disabled={loginLoading} className={styles.authSubmit}>
+                {loginLoading ? 'Logging in...' : 'Login to Bible Study Admin'}
+              </button>
+            </form>
           </div>
         )}
 
+        {/* Admin Sections - only show when authenticated */}
+        {isAuthenticated && (
         <div className={styles.adminSections}>
           {/* Student Statistics */}
           <div className={styles.statsCard}>
@@ -672,6 +726,7 @@ const handleExportPdf = () => {
             </p>
           </div>
         </div>
+        )}
         
         {groups.length > 0 ? (
           <div className={styles.groups}>

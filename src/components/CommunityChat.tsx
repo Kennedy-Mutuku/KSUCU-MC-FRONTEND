@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MessageCircle, Send, X, Users, Image, Mic, Video, FileText, Edit, Trash2, Reply, LogIn } from 'lucide-react';
+import { MessageCircle, Send, X, Users, Image, Mic, Video, FileText, Edit, Trash2, Reply } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import socketService from '../services/socketService';
 import { getApiUrl, getBaseUrl } from '../config/environment';
@@ -110,31 +110,17 @@ const CommunityChat: React.FC = () => {
       setIsLoading(true);
       setError(''); // Clear any previous errors
       
-      // Check if user is authenticated
-      const isAuthenticated = await fetchCurrentUser();
-      
-      if (!isAuthenticated) {
-        setError('Please log in to access the community chat.');
-        setIsLoading(false);
-        return;
-      }
+      // Try to fetch current user (but don't require login)
+      await fetchCurrentUser();
 
-      // Try to connect to socket
+      // Try to connect to socket regardless of auth status
       await socketService.connect();
       setIsConnected(true);
       setupSocketListeners();
       loadMessages();
     } catch (error: any) {
       console.error('Failed to connect to chat:', error);
-      if (error.response && error.response.status === 401) {
-        setError('Please log in to access the community chat.');
-      } else if (error.message && error.message.includes('Authentication')) {
-        setError('Please log in to access the community chat.');
-      } else if (error.message && error.message.includes('No authentication token')) {
-        setError('Please log in to access the community chat.');
-      } else {
-        setError('Failed to connect to chat. Please try again.');
-      }
+      setError('Failed to connect to chat. Please try again.');
       setIsConnected(false);
     } finally {
       setIsLoading(false);
@@ -448,19 +434,6 @@ const CommunityChat: React.FC = () => {
         <div className={styles.error}>
           <div className={styles.errorContent}>
             {error}
-            {error.includes('log in') && (
-              <button 
-                className={styles.loginButton}
-                onClick={() => {
-                  setError('');
-                  setIsOpen(false);
-                  navigate('/signIn');
-                }}
-              >
-                <LogIn size={16} />
-                Log In
-              </button>
-            )}
           </div>
           <button className={styles.closeError} onClick={() => setError('')}>×</button>
         </div>

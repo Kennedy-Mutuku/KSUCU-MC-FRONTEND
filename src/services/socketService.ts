@@ -14,18 +14,15 @@ class SocketService {
         return;
       }
 
-      // Get authentication token from cookies
+      // Get authentication token from cookies (optional)
       const token = Cookies.get('user_s');
-      if (!token) {
-        reject(new Error('No authentication token found'));
-        return;
-      }
-
+      
       const serverUrl = getBaseUrl();
       
+      // Connect with or without token
       this.socket = io(serverUrl, {
         auth: {
-          token: token
+          token: token || 'guest' // Use 'guest' if no token
         },
         transports: ['websocket', 'polling'],
         upgrade: true,
