@@ -1,5 +1,3 @@
-import React from 'react';
-
 const Test = () => {
   return (
     <div style={{ padding: '20px', color: 'red', fontSize: '24px' }}>

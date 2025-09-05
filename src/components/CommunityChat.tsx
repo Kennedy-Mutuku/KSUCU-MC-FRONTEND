@@ -576,11 +576,11 @@ const CommunityChat: React.FC = () => {
       // Double-check that the current user owns the message
       const userIdMatch = longPressMessage.senderId === currentUser.userId;
       const usernameMatch = longPressMessage.senderName === currentUser.username;
-      const trimmedUsernameMatch = currentUser.username && longPressMessage.senderName === currentUser.username.trim();
-      const caseInsensitiveUsernameMatch = currentUser.username && 
-        longPressMessage.senderName.toLowerCase() === currentUser.username.toLowerCase();
-      const trimmedCaseInsensitiveMatch = currentUser.username && 
-        longPressMessage.senderName.toLowerCase().trim() === currentUser.username.toLowerCase().trim();
+      const trimmedUsernameMatch = !!(currentUser.username && longPressMessage.senderName === currentUser.username.trim());
+      const caseInsensitiveUsernameMatch = !!(currentUser.username && 
+        longPressMessage.senderName.toLowerCase() === currentUser.username.toLowerCase());
+      const trimmedCaseInsensitiveMatch = !!(currentUser.username && 
+        longPressMessage.senderName.toLowerCase().trim() === currentUser.username.toLowerCase().trim());
       
       const isOwn = userIdMatch || usernameMatch || trimmedUsernameMatch || 
                     caseInsensitiveUsernameMatch || trimmedCaseInsensitiveMatch;
@@ -611,11 +611,11 @@ const CommunityChat: React.FC = () => {
       // Check multiple comparison methods
       const userIdMatch = message.senderId === currentUser.userId;
       const usernameMatch = message.senderName === currentUser.username;
-      const trimmedUsernameMatch = currentUser.username && message.senderName === currentUser.username.trim();
-      const caseInsensitiveUsernameMatch = currentUser.username && 
-        message.senderName.toLowerCase() === currentUser.username.toLowerCase();
-      const trimmedCaseInsensitiveMatch = currentUser.username && 
-        message.senderName.toLowerCase().trim() === currentUser.username.toLowerCase().trim();
+      const trimmedUsernameMatch = !!(currentUser.username && message.senderName === currentUser.username.trim());
+      const caseInsensitiveUsernameMatch = !!(currentUser.username && 
+        message.senderName.toLowerCase() === currentUser.username.toLowerCase());
+      const trimmedCaseInsensitiveMatch = !!(currentUser.username && 
+        message.senderName.toLowerCase().trim() === currentUser.username.toLowerCase().trim());
       
       isOwn = userIdMatch || usernameMatch || trimmedUsernameMatch || 
               caseInsensitiveUsernameMatch || trimmedCaseInsensitiveMatch;
@@ -1081,11 +1081,11 @@ const CommunityChat: React.FC = () => {
               // Check if current user owns the message
               const userIdMatch = longPressMessage.senderId === currentUser.userId;
               const usernameMatch = longPressMessage.senderName === currentUser.username;
-              const trimmedUsernameMatch = currentUser.username && longPressMessage.senderName === currentUser.username.trim();
-              const caseInsensitiveUsernameMatch = currentUser.username && 
-                longPressMessage.senderName.toLowerCase() === currentUser.username.toLowerCase();
-              const trimmedCaseInsensitiveMatch = currentUser.username && 
-                longPressMessage.senderName.toLowerCase().trim() === currentUser.username.toLowerCase().trim();
+              const trimmedUsernameMatch = !!(currentUser.username && longPressMessage.senderName === currentUser.username.trim());
+              const caseInsensitiveUsernameMatch = !!(currentUser.username && 
+                longPressMessage.senderName.toLowerCase() === currentUser.username.toLowerCase());
+              const trimmedCaseInsensitiveMatch = !!(currentUser.username && 
+                longPressMessage.senderName.toLowerCase().trim() === currentUser.username.toLowerCase().trim());
               
               const isOwn = userIdMatch || usernameMatch || trimmedUsernameMatch || 
                           caseInsensitiveUsernameMatch || trimmedCaseInsensitiveMatch;
