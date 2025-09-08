@@ -34,74 +34,115 @@ const UserProfile: React.FC<UserProfileProps> = ({ userData, isLoading }) => {
     const handleLogout = async () => {
         try {
             setLoggingOut(true);
-            console.log('Starting logout process...');
+            console.log('🚪 Starting comprehensive logout process...');
             
-            // Call logout API
-            const response = await axios.post(getApiUrl('usersLogout'), {}, {
-                withCredentials: true,
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
+            // First, clear client-side data immediately
+            const performClientSideLogout = () => {
+                console.log('🧹 Clearing client-side data...');
+                
+                // Clear all possible cookies
+                const cookiesToClear = ['loginToken', 'sessionToken', 'authToken', 'token', 'user_s'];
+                const domains = [
+                    undefined, // No domain
+                    window.location.hostname,
+                    `.${window.location.hostname}`,
+                    'ksucu-mc.co.ke',
+                    '.ksucu-mc.co.ke'
+                ];
+                const paths = ['/', '', undefined];
+                
+                // Clear cookies with all combinations
+                cookiesToClear.forEach(cookieName => {
+                    domains.forEach(domain => {
+                        paths.forEach(path => {
+                            // Using js-cookie library
+                            Cookies.remove(cookieName, { path, domain });
+                            
+                            // Also use direct document.cookie manipulation
+                            const domainStr = domain ? `;domain=${domain}` : '';
+                            const pathStr = path ? `;path=${path}` : '';
+                            document.cookie = `${cookieName}=;expires=Thu, 01 Jan 1970 00:00:00 GMT${pathStr}${domainStr}`;
+                        });
+                    });
+                });
+                
+                // Nuclear option: clear ALL cookies
+                document.cookie.split(";").forEach((cookie) => {
+                    const eqPos = cookie.indexOf("=");
+                    const name = eqPos > -1 ? cookie.substring(0, eqPos).trim() : cookie.trim();
+                    
+                    // Clear with different combinations
+                    document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
+                    document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=${window.location.hostname}`;
+                    document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.${window.location.hostname}`;
+                    if (window.location.hostname.includes('ksucu-mc.co.ke')) {
+                        document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.ksucu-mc.co.ke`;
+                        document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=ksucu-mc.co.ke`;
+                    }
+                });
+                
+                // Clear storage
+                localStorage.clear();
+                sessionStorage.clear();
+                
+                console.log('✅ Client-side cleanup completed');
+            };
             
-            console.log('Logout API response:', response);
+            // Perform client-side logout first
+            performClientSideLogout();
             
-            // Clear cookies more thoroughly
-            const cookiesToClear = ['loginToken', 'sessionToken', 'authToken', 'token'];
-            cookiesToClear.forEach(cookieName => {
-                Cookies.remove(cookieName);
-                Cookies.remove(cookieName, { path: '/' });
-                Cookies.remove(cookieName, { domain: window.location.hostname });
-                Cookies.remove(cookieName, { domain: `.${window.location.hostname}` });
-            });
+            // Then try to call the server logout API
+            try {
+                console.log('📡 Calling server logout API...');
+                const response = await axios.post(getApiUrl('usersLogout'), {}, {
+                    withCredentials: true,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    timeout: 5000 // 5 second timeout
+                });
+                
+                console.log('✅ Server logout successful:', response.data);
+            } catch (apiError: any) {
+                console.warn('⚠️ Server logout API failed, but continuing with client-side logout:', apiError.message);
+                // Don't throw here - client-side logout is sufficient
+            }
             
-            // Clear all cookies fallback
-            document.cookie.split(";").forEach((cookie) => {
-                const eqPos = cookie.indexOf("=");
-                const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
-                document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
-                document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=${window.location.hostname}`;
-                document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.${window.location.hostname}`;
-            });
+            // Final cleanup to be extra sure
+            performClientSideLogout();
             
-            // Clear local storage and session storage
-            localStorage.clear();
-            sessionStorage.clear();
-            
-            console.log('Logout successful, redirecting to login...');
+            console.log('🎉 Comprehensive logout completed');
             
             // Show success message briefly before redirecting
             setSuccessMessage('Successfully logged out!');
             setTimeout(() => {
-                navigate('/signIn', { replace: true });
+                // Force a hard redirect to clear any remaining state
+                window.location.href = '/login';
             }, 1000);
             
         } catch (error: any) {
-            console.error('Logout API error:', error);
+            console.error('❌ Logout process error:', error);
             
-            // Even if API fails, clear local data and redirect
-            const cookiesToClear = ['loginToken', 'sessionToken', 'authToken', 'token'];
-            cookiesToClear.forEach(cookieName => {
-                Cookies.remove(cookieName);
-                Cookies.remove(cookieName, { path: '/' });
-                Cookies.remove(cookieName, { domain: window.location.hostname });
-                Cookies.remove(cookieName, { domain: `.${window.location.hostname}` });
-            });
+            // Even if everything fails, force client-side logout
+            const performEmergencyLogout = () => {
+                // Nuclear option: clear everything
+                document.cookie.split(";").forEach((cookie) => {
+                    const name = cookie.split("=")[0].trim();
+                    document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
+                    document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=${window.location.hostname}`;
+                    document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.${window.location.hostname}`;
+                });
+                
+                localStorage.clear();
+                sessionStorage.clear();
+            };
             
-            document.cookie.split(";").forEach((cookie) => {
-                const eqPos = cookie.indexOf("=");
-                const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
-                document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
-                document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=${window.location.hostname}`;
-                document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.${window.location.hostname}`;
-            });
-            
-            localStorage.clear();
-            sessionStorage.clear();
-            
+            performEmergencyLogout();
             setSuccessMessage('Logged out successfully!');
+            
             setTimeout(() => {
-                navigate('/signIn', { replace: true });
+                // Force hard redirect as last resort
+                window.location.href = '/login';
             }, 1000);
         } finally {
             setLoggingOut(false);

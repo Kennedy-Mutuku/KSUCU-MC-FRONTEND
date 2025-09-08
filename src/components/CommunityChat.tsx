@@ -76,6 +76,7 @@ const CommunityChat: React.FC = () => {
   const [swipeDistance, setSwipeDistance] = useState(0);
   const [swipingMessage, setSwipingMessage] = useState<string | null>(null);
   const [isSwipeActive, setIsSwipeActive] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatWindowRef = useRef<HTMLDivElement>(null);
@@ -549,20 +550,6 @@ const CommunityChat: React.FC = () => {
     }
   };
 
-  const handleLongPressStart = (message: Message) => {
-    const timer = setTimeout(() => {
-      setLongPressMessage(message);
-      setShowDeleteOptions(true);
-    }, 500); // 500ms for long press
-    setPressTimer(timer);
-  };
-
-  const handleLongPressEnd = () => {
-    if (pressTimer) {
-      clearTimeout(pressTimer);
-      setPressTimer(null);
-    }
-  };
 
   const handleDeleteForMe = async () => {
     if (longPressMessage) {
@@ -669,6 +656,65 @@ const CommunityChat: React.FC = () => {
     setSwipeDistance(0);
   };
 
+  // Mouse drag handlers for desktop
+  const handleMouseDragStart = (e: React.MouseEvent, message: Message) => {
+    setSwipeStartX(e.clientX);
+    setSwipeStartY(e.clientY);
+    setSwipingMessage(message._id);
+    setIsDragging(true);
+    setSwipeDistance(0);
+    
+    // Cancel any ongoing long press when starting drag
+    if (pressTimer) {
+      clearTimeout(pressTimer);
+      setPressTimer(null);
+    }
+    
+    e.preventDefault(); // Prevent text selection
+  };
+
+  const handleMouseDragMove = (e: React.MouseEvent, message: Message) => {
+    if (!isDragging || swipingMessage !== message._id) return;
+    
+    const deltaX = e.clientX - swipeStartX;
+    const deltaY = Math.abs(e.clientY - swipeStartY);
+    
+    // If user is dragging horizontally, cancel long press
+    if (Math.abs(deltaX) > 10) {
+      if (pressTimer) {
+        clearTimeout(pressTimer);
+        setPressTimer(null);
+      }
+    }
+    
+    // Only allow horizontal drags (prevent vertical scrolling interference)
+    if (deltaY > 30) {
+      handleMouseDragEnd();
+      return;
+    }
+    
+    // Only track rightward drags (positive deltaX)
+    if (deltaX > 0 && deltaX <= 80) {
+      setSwipeDistance(deltaX);
+      e.preventDefault(); // Prevent text selection
+    }
+  };
+
+  const handleMouseDragEnd = () => {
+    if (swipeDistance > 40 && swipingMessage) {
+      // Trigger reply if drag distance is sufficient
+      const messageToReply = messages.find(msg => msg._id === swipingMessage);
+      if (messageToReply) {
+        setReplyToMessage(messageToReply);
+      }
+    }
+    
+    // Reset drag state
+    setIsDragging(false);
+    setSwipingMessage(null);
+    setSwipeDistance(0);
+  };
+
   const renderMessage = (message: Message) => {
     // Enhanced ownership detection with debugging
     let isOwn = false;
@@ -730,11 +776,47 @@ const CommunityChat: React.FC = () => {
           className={`${styles.message} ${isOwn ? styles.ownMessage : styles.otherMessage} ${swipingMessage === message._id ? styles.swipeActive : ''}`}
           style={{
             transform: swipingMessage === message._id ? `translateX(${swipeDistance}px)` : 'translateX(0px)',
-            transition: isSwipeActive && swipingMessage === message._id ? 'none' : 'transform 0.2s ease-out'
+            transition: (isSwipeActive || isDragging) && swipingMessage === message._id ? 'none' : 'transform 0.2s ease-out',
+            cursor: isDragging && swipingMessage === message._id ? 'grabbing' : 'default'
           }}
-          onMouseDown={() => !message.deleted && handleLongPressStart(message)}
-          onMouseUp={handleLongPressEnd}
-          onMouseLeave={handleLongPressEnd}
+          onMouseDown={(e) => {
+            if (!message.deleted) {
+              // Check if this is a left mouse button click for drag
+              if (e.button === 0) {
+                handleMouseDragStart(e, message);
+                // Also start long press timer
+                const timer = setTimeout(() => {
+                  // Only trigger long press if no drag is active
+                  if (!isDragging) {
+                    setLongPressMessage(message);
+                    setShowDeleteOptions(true);
+                  }
+                }, 800);
+                setPressTimer(timer);
+              }
+            }
+          }}
+          onMouseMove={(e) => {
+            if (!message.deleted && isDragging) {
+              handleMouseDragMove(e, message);
+            }
+          }}
+          onMouseUp={() => {
+            handleMouseDragEnd();
+            // Clear long press timer
+            if (pressTimer) {
+              clearTimeout(pressTimer);
+              setPressTimer(null);
+            }
+          }}
+          onMouseLeave={() => {
+            handleMouseDragEnd();
+            // Clear long press timer
+            if (pressTimer) {
+              clearTimeout(pressTimer);
+              setPressTimer(null);
+            }
+          }}
           onTouchStart={(e) => {
             if (!message.deleted) {
               handleSwipeStart(e, message);
@@ -888,6 +970,51 @@ const CommunityChat: React.FC = () => {
       }
     }, 100);
   }, [isOpen]);
+
+  // Handle global mouse events for dragging
+  useEffect(() => {
+    const handleGlobalMouseMove = (e: MouseEvent) => {
+      if (isDragging && swipingMessage) {
+        const deltaX = e.clientX - swipeStartX;
+        const deltaY = Math.abs(e.clientY - swipeStartY);
+        
+        // Cancel long press if dragging horizontally
+        if (Math.abs(deltaX) > 10) {
+          if (pressTimer) {
+            clearTimeout(pressTimer);
+            setPressTimer(null);
+          }
+        }
+        
+        // Only allow horizontal drags
+        if (deltaY > 30) {
+          handleMouseDragEnd();
+          return;
+        }
+        
+        // Only track rightward drags
+        if (deltaX > 0 && deltaX <= 80) {
+          setSwipeDistance(deltaX);
+        }
+      }
+    };
+
+    const handleGlobalMouseUp = () => {
+      if (isDragging) {
+        handleMouseDragEnd();
+      }
+    };
+
+    if (isDragging) {
+      document.addEventListener('mousemove', handleGlobalMouseMove);
+      document.addEventListener('mouseup', handleGlobalMouseUp);
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleGlobalMouseMove);
+      document.removeEventListener('mouseup', handleGlobalMouseUp);
+    };
+  }, [isDragging, swipingMessage, swipeStartX, swipeStartY, pressTimer]);
 
   useEffect(() => {
     return () => {

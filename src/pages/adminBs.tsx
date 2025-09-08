@@ -46,6 +46,7 @@ const BsMembersList = () => {
   // Reshuffling states
   const [isReshuffling, setIsReshuffling] = useState(false);
   const [reshuffleCount, setReshuffleCount] = useState(0);
+  const [isGrouping, setIsGrouping] = useState(false);
 
   const backEndURL = getBaseUrl();
 
@@ -404,239 +405,142 @@ const BsMembersList = () => {
     setTimeout(() => setError(''), 3000);
   };
 
-  const shuffleAndGroupUsers = (size: number) => {
-    if (users.length === 0) return;
-    
-    console.log('🔍 Starting group formation with', users.length, 'users, target size:', size);
-    
-    // Separate pastors and regular users
-    const allPastors = users.filter(user => user.isPastor);
-    const allRegularUsers = users.filter(user => !user.isPastor);
-    
-    console.log('📊 Found', allPastors.length, 'pastors and', allRegularUsers.length, 'regular users');
-    
-    // Calculate exact number of groups needed
-    const totalUsers = users.length;
-    const totalGroups = Math.max(
-      Math.ceil(totalUsers / size), // Minimum groups for all users
-      allPastors.length // Minimum groups for pastors (each gets own group)
-    );
-    
-    console.log('🎯 Creating', totalGroups, 'groups with target size', size);
-    
-    // Create empty groups
-    const allGroups: Array<Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }>> = [];
-    for (let i = 0; i < totalGroups; i++) {
-      allGroups.push([]);
+  const shuffleAndGroupUsers = async (size: number) => {
+    if (users.length === 0) {
+      setError('No users available for grouping');
+      return;
     }
     
-    // Step 1: Place each pastor as the first member in their own group
-    allPastors.forEach((pastor, index) => {
-      if (index < allGroups.length) {
-        allGroups[index].push(pastor);
-        console.log('✝️ Placed pastor', pastor.name, 'in Group', index + 1);
-      }
-    });
+    if (size < 1 || size > 50) {
+      setError('Group size must be between 1 and 50');
+      return;
+    }
     
-    // Step 2: Group users by residence and organize for balanced distribution
-    const usersByResidence: { [key: string]: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> } = {};
+    // Set loading state
+    setIsGrouping(true);
+    setError('🔄 Creating balanced groups...');
     
-    // Shuffle for randomization in reshuffles
-    const shuffledRegularUsers = [...allRegularUsers].sort(() => Math.random() - 0.5);
-    
-    shuffledRegularUsers.forEach(user => {
-      if (!usersByResidence[user.residence]) {
-        usersByResidence[user.residence] = [];
-      }
-      usersByResidence[user.residence].push(user);
-    });
-    
-    const residenceNames = Object.keys(usersByResidence);
-    console.log('🏠 Residences found:', residenceNames);
-    
-    // Step 3: Create a balanced distribution queue
-    const userQueue: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> = [];
-    
-    // Process residences and create balanced queue
-    residenceNames.forEach(residence => {
-      const residenceUsers = usersByResidence[residence];
+    try {
+      console.log('🔍 Starting group formation with', users.length, 'users, target size:', size);
       
-      // Separate by gender and year for balanced distribution
-      const malesByYear: { [key: string]: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> } = {
-        '1': [], '2': [], '3': [], '4': []
-      };
-      const femalesByYear: { [key: string]: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> } = {
-        '1': [], '2': [], '3': [], '4': []
-      };
-      
-      residenceUsers.forEach(user => {
-        if (user.gender === 'M') {
-          malesByYear[user.yos].push(user);
-        } else {
-          femalesByYear[user.yos].push(user);
-        }
-      });
-      
-      // Add users to queue in a balanced pattern (alternate gender and years)
-      let maleIndex = 0, femaleIndex = 0;
-      const years = ['1', '2', '3', '4'];
-      let currentYear = 0;
-      
-      while (maleIndex < residenceUsers.filter(u => u.gender === 'M').length || 
-             femaleIndex < residenceUsers.filter(u => u.gender === 'F').length) {
-        
-        // Try to add a male from current year
-        if (malesByYear[years[currentYear]].length > 0) {
-          userQueue.push(malesByYear[years[currentYear]].shift()!);
-        }
-        
-        // Try to add a female from current year
-        if (femalesByYear[years[currentYear]].length > 0) {
-          userQueue.push(femalesByYear[years[currentYear]].shift()!);
-        }
-        
-        // Move to next year
-        currentYear = (currentYear + 1) % 4;
-      }
-    });
-    
-    console.log('📝 Created balanced queue with', userQueue.length, 'users');
-    
-    // Step 4: Fill groups exactly to target size
-    userQueue.forEach((user) => {
-      // Find the best group that's not full
-      let bestGroupIndex = -1;
-      let bestScore = -1;
-      
-      // First priority: groups that aren't full and have same residence members
-      for (let i = 0; i < allGroups.length; i++) {
-        if (allGroups[i].length >= size) continue; // Skip full groups
-        
-        const group = allGroups[i];
-        const sameResidenceCount = group.filter(u => u.residence === user.residence).length;
-        const currentMales = group.filter(u => u.gender === 'M' && !u.isPastor).length;
-        const currentFemales = group.filter(u => u.gender === 'F' && !u.isPastor).length;
-        const sameYearCount = group.filter(u => u.yos === user.yos && !u.isPastor).length;
-        
-        let score = 0;
-        
-        // Prefer same residence (highest priority)
-        score += sameResidenceCount > 0 ? 100 : 0;
-        
-        // Balance gender (medium priority)
-        if (user.gender === 'M') {
-          score += currentMales <= currentFemales ? 10 : -5;
-        } else {
-          score += currentFemales <= currentMales ? 10 : -5;
-        }
-        
-        // Avoid year clustering (lower priority)
-        score -= sameYearCount * 3;
-        
-        // Prefer filling groups in order (lowest priority)
-        score += (allGroups.length - i);
-        
-        if (score > bestScore) {
-          bestScore = score;
-          bestGroupIndex = i;
-        }
-      }
-      
-      // If no good group found, find the first non-full group
-      if (bestGroupIndex === -1) {
-        for (let i = 0; i < allGroups.length; i++) {
-          if (allGroups[i].length < size) {
-            bestGroupIndex = i;
-            break;
+      // Use setTimeout to make the operation asynchronous and prevent UI freezing
+      await new Promise<void>((resolve, reject) => {
+        setTimeout(() => {
+          try {
+            // Separate pastors and regular users
+            const allPastors = users.filter(user => user.isPastor);
+            const allRegularUsers = users.filter(user => !user.isPastor);
+            
+            console.log('📊 Found', allPastors.length, 'pastors and', allRegularUsers.length, 'regular users');
+            
+            // Simple grouping algorithm to prevent complexity issues
+            const totalUsers = users.length;
+            const totalGroups = Math.max(
+              Math.ceil(totalUsers / size),
+              allPastors.length
+            );
+            
+            console.log('🎯 Creating', totalGroups, 'groups with target size', size);
+            
+            // Create empty groups
+            const allGroups: Array<Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }>> = [];
+            for (let i = 0; i < totalGroups; i++) {
+              allGroups.push([]);
+            }
+            
+            // Step 1: Place pastors first
+            allPastors.forEach((pastor, index) => {
+              if (index < allGroups.length) {
+                allGroups[index].push(pastor);
+                console.log('✝️ Placed pastor', pastor.name, 'in Group', index + 1);
+              }
+            });
+            
+            // Step 2: Simplified user distribution
+            const shuffledUsers = [...allRegularUsers].sort(() => Math.random() - 0.5);
+            
+            // Distribute users round-robin style to avoid complex loops
+            let groupIndex = 0;
+            for (const user of shuffledUsers) {
+              // Find a group that's not full
+              let placed = false;
+              let attempts = 0;
+              const maxAttempts = totalGroups * 2;
+              
+              while (!placed && attempts < maxAttempts) {
+                if (allGroups[groupIndex].length < size) {
+                  allGroups[groupIndex].push(user);
+                  placed = true;
+                } else {
+                  groupIndex = (groupIndex + 1) % totalGroups;
+                }
+                attempts++;
+              }
+              
+              // If still not placed, add to the last group
+              if (!placed && allGroups.length > 0) {
+                allGroups[allGroups.length - 1].push(user);
+              }
+              
+              groupIndex = (groupIndex + 1) % totalGroups;
+            }
+            
+            // Ensure pastors are first in their groups
+            allGroups.forEach(group => {
+              group.sort((a, b) => {
+                if (a.isPastor && !b.isPastor) return -1;
+                if (!a.isPastor && b.isPastor) return 1;
+                return 0;
+              });
+            });
+            
+            // Remove empty groups
+            const finalGroups = allGroups.filter(group => group.length > 0);
+            
+            console.log('✅ Final result:', finalGroups.length, 'groups created');
+            setGroups(finalGroups);
+            
+            resolve();
+          } catch (error) {
+            reject(error);
           }
-        }
-      }
-      
-      // Place user in the best group found
-      if (bestGroupIndex !== -1) {
-        allGroups[bestGroupIndex].push(user);
-      }
-    });
-    
-    // Step 5: Handle overflow users (should be minimal with exact sizing)
-    const placedUsers = new Set();
-    allGroups.forEach(group => {
-      group.forEach(user => placedUsers.add(user));
-    });
-    
-    const unplacedUsers = allRegularUsers.filter(user => !placedUsers.has(user));
-    if (unplacedUsers.length > 0) {
-      console.log('⚠️ Placing', unplacedUsers.length, 'overflow users in last group');
-      // Add overflow users to the last group (which may exceed target size)
-      if (allGroups.length > 0) {
-        allGroups[allGroups.length - 1].push(...unplacedUsers);
-      }
-    }
-    
-    // Step 6: Ensure pastors are always first in their groups
-    allGroups.forEach((group, index) => {
-      group.sort((a, b) => {
-        if (a.isPastor && !b.isPastor) return -1;
-        if (!a.isPastor && b.isPastor) return 1;
-        return 0;
+        }, 100); // Small delay to allow UI to update
       });
       
-      // Log group composition for debugging
-      const males = group.filter(u => u.gender === 'M' && !u.isPastor).length;
-      const females = group.filter(u => u.gender === 'F' && !u.isPastor).length;
-      const pastorName = group.find(u => u.isPastor)?.name || 'None';
-      const residences = [...new Set(group.map(u => u.residence))];
-      const years = group.reduce((acc, u) => {
-        if (!u.isPastor) acc[u.yos] = (acc[u.yos] || 0) + 1;
-        return acc;
-      }, {} as {[key: string]: number});
+      setError(`✅ Successfully created ${groups.length} groups!`);
+      setTimeout(() => setError(''), 3000);
       
-      console.log(`📋 Group ${index + 1}: ${group.length}/${size} members | Pastor: ${pastorName} | M:${males} F:${females} | Years: ${JSON.stringify(years)} | Residences: ${residences.join(', ')}`);
-    });
-    
-    // Step 7: Sort groups - those with pastors first, then by residence
-    allGroups.sort((a, b) => {
-      const hasPastorA = a.some(u => u.isPastor);
-      const hasPastorB = b.some(u => u.isPastor);
-      
-      if (hasPastorA && !hasPastorB) return -1;
-      if (!hasPastorA && hasPastorB) return 1;
-      
-      // Sort by primary residence
-      const residenceA = a[0]?.residence || '';
-      const residenceB = b[0]?.residence || '';
-      return residenceA.localeCompare(residenceB);
-    });
-    
-    // Remove empty groups and set final result
-    const finalGroups = allGroups.filter(group => group.length > 0);
-    
-    console.log('✅ Final result:', finalGroups.length, 'groups created');
-    console.log('📊 Group sizes:', finalGroups.map((group, i) => `Group ${i + 1}: ${group.length} members`));
-    
-    setGroups(finalGroups);
+    } catch (error) {
+      console.error('Error during group formation:', error);
+      setError('❌ Failed to create groups. Please try again.');
+      setGroups([]);
+    } finally {
+      setIsGrouping(false);
+    }
   };
   
 
-  const handleShuffleClick = () => {
-    shuffleAndGroupUsers(groupSize);
+  const handleShuffleClick = async () => {
     setReshuffleCount(0);
+    await shuffleAndGroupUsers(groupSize);
   };
 
-  const handleReshuffleClick = () => {
+  const handleReshuffleClick = async () => {
     if (groups.length === 0) return;
     
     setIsReshuffling(true);
     setError('🔄 Reshuffling groups with different arrangement...');
     
-    // Add a small delay for better UX
-    setTimeout(() => {
-      shuffleAndGroupUsers(groupSize);
+    try {
+      await shuffleAndGroupUsers(groupSize);
       setReshuffleCount(prev => prev + 1);
-      setIsReshuffling(false);
       setError(`✅ Groups reshuffled! (Attempt #${reshuffleCount + 1})`);
       setTimeout(() => setError(''), 3000);
-    }, 500);
+    } catch (error) {
+      setError('❌ Failed to reshuffle groups. Please try again.');
+    } finally {
+      setIsReshuffling(false);
+    }
   };
 
   const resetGroups = () => {
@@ -961,22 +865,34 @@ const handleExportPdf = () => {
                 min={1}
                 max={50}
               />
-              <button onClick={handleShuffleClick} className={styles.shuffleButton}>
-                <FontAwesomeIcon icon={faShuffle} /> Create Balanced Groups
+              <button 
+                onClick={handleShuffleClick} 
+                disabled={isGrouping}
+                className={styles.shuffleButton}
+                style={{
+                  backgroundColor: isGrouping ? '#ccc' : undefined,
+                  cursor: isGrouping ? 'not-allowed' : 'pointer'
+                }}
+              >
+                {isGrouping ? (
+                  <>🔄 Creating Groups...</>
+                ) : (
+                  <><FontAwesomeIcon icon={faShuffle} /> Create Balanced Groups</>
+                )}
               </button>
               {groups.length > 0 && (
                 <>
                   <button 
                     onClick={handleReshuffleClick} 
-                    disabled={isReshuffling}
+                    disabled={isReshuffling || isGrouping}
                     className={styles.reshuffleButton}
                     style={{
-                      backgroundColor: isReshuffling ? '#ccc' : '#ff8c00',
+                      backgroundColor: (isReshuffling || isGrouping) ? '#ccc' : '#ff8c00',
                       color: 'white',
                       border: 'none',
                       padding: '8px 16px',
                       borderRadius: '6px',
-                      cursor: isReshuffling ? 'not-allowed' : 'pointer',
+                      cursor: (isReshuffling || isGrouping) ? 'not-allowed' : 'pointer',
                       marginLeft: '10px',
                       fontSize: '14px',
                       fontWeight: '600'
