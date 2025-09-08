@@ -47,8 +47,28 @@ const BsMembersList = () => {
   const [isReshuffling, setIsReshuffling] = useState(false);
   const [reshuffleCount, setReshuffleCount] = useState(0);
   const [isGrouping, setIsGrouping] = useState(false);
+  
+  // Search and member management states
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredUsers, setFilteredUsers] = useState<Array<{ name: string, residence: string, yos: string, phone: string, gender: string, isPastor?: boolean }>>([]);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const backEndURL = getBaseUrl();
+
+  // Filter users based on search term
+  useEffect(() => {
+    if (!searchTerm.trim()) {
+      setFilteredUsers(users);
+    } else {
+      const filtered = users.filter(user => 
+        user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.phone.includes(searchTerm) ||
+        user.residence.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.yos.includes(searchTerm)
+      );
+      setFilteredUsers(filtered);
+    }
+  }, [users, searchTerm]);
 
   useEffect(() => {
     // Check if user is on localhost (auto-authenticate for development)
@@ -405,6 +425,140 @@ const BsMembersList = () => {
     setTimeout(() => setError(''), 3000);
   };
 
+  // Helper function to create a balanced queue from regular users only (no pastors)
+  const createBalancedQueueRegularUsers = (
+    users: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }>
+  ) => {
+    if (users.length === 0) return [];
+    
+    // These should all be regular users, but filter just to be safe
+    const regularUsers = users.filter(u => !u.isPastor);
+    
+    // Separate regular users by gender and year
+    const malesByYear: { [year: string]: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> } = {};
+    const femalesByYear: { [year: string]: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> } = {};
+    
+    regularUsers.forEach(user => {
+      if (user.gender === 'M') {
+        if (!malesByYear[user.yos]) malesByYear[user.yos] = [];
+        malesByYear[user.yos].push(user);
+      } else {
+        if (!femalesByYear[user.yos]) femalesByYear[user.yos] = [];
+        femalesByYear[user.yos].push(user);
+      }
+    });
+    
+    // Shuffle within each category for randomness
+    Object.values(malesByYear).forEach(yearGroup => {
+      yearGroup.sort(() => Math.random() - 0.5);
+    });
+    Object.values(femalesByYear).forEach(yearGroup => {
+      yearGroup.sort(() => Math.random() - 0.5);
+    });
+    
+    // Create balanced queue alternating gender/year
+    const queue: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> = [];
+    
+    const allYears = [...new Set([...Object.keys(malesByYear), ...Object.keys(femalesByYear)])].sort();
+    
+    if (allYears.length === 0) return [];
+    
+    let currentYear = 0;
+    let addedAny = true;
+    let iterations = 0;
+    const maxIterations = regularUsers.length * 2; // Safety limit
+    
+    while (addedAny && iterations < maxIterations) {
+      addedAny = false;
+      iterations++;
+      
+      // Try to add one male and one female from current year
+      const year = allYears[currentYear % allYears.length];
+      
+      if (malesByYear[year] && malesByYear[year].length > 0) {
+        queue.push(malesByYear[year].shift()!);
+        addedAny = true;
+      }
+      
+      if (femalesByYear[year] && femalesByYear[year].length > 0) {
+        queue.push(femalesByYear[year].shift()!);
+        addedAny = true;
+      }
+      
+      currentYear++;
+      
+      // Check if we've exhausted all years, reset if there are still users
+      if (currentYear >= allYears.length) {
+        const hasRemaining = allYears.some(y => 
+          (malesByYear[y] && malesByYear[y].length > 0) ||
+          (femalesByYear[y] && femalesByYear[y].length > 0)
+        );
+        if (hasRemaining) {
+          currentYear = 0; // Reset to continue with remaining users
+        }
+      }
+    }
+    
+    // Safety check
+    if (iterations >= maxIterations) {
+      console.warn('⚠️ Reached maximum iterations in createBalancedQueueRegularUsers');
+    }
+    
+    return queue;
+  };
+
+  const deleteMember = async (phone: string, name: string) => {
+    const confirmDelete = confirm(`⚠️ Are you sure you want to remove "${name}" from Bible Study?\n\nThis action cannot be undone. The member will need to re-register if they want to join again.`);
+    
+    if (!confirmDelete) return;
+    
+    setIsDeleting(true);
+    setError(`🗑️ Removing ${name} from Bible Study...`);
+    
+    try {
+      const response = await axios.delete(`${backEndURL}/adminBs/users/${phone}`, {
+        withCredentials: true,
+        timeout: 10000
+      });
+      
+      if (response.status === 200) {
+        // Remove from local state
+        const updatedUsers = users.filter(user => user.phone !== phone);
+        setUsers(updatedUsers);
+        
+        // Clear groups if the deleted member was in them
+        if (groups.length > 0) {
+          setGroups([]);
+          setReshuffleCount(0);
+        }
+        
+        setError(`✅ ${name} has been successfully removed from Bible Study!`);
+        setTimeout(() => setError(''), 4000);
+      }
+    } catch (err: any) {
+      console.error('Error deleting member:', err);
+      
+      if (err.response?.status === 404) {
+        setError('❌ Member not found. They may have already been removed.');
+        // Still remove from local state in case of sync issues
+        const updatedUsers = users.filter(user => user.phone !== phone);
+        setUsers(updatedUsers);
+      } else if (err.response?.status === 401 || err.response?.status === 403) {
+        setError('❌ Authentication failed. Please login again.');
+        setIsAuthenticated(false);
+        setShowLoginForm(true);
+      } else if (err.code === 'ERR_NETWORK' || !navigator.onLine) {
+        setError('❌ Network error. Please check your connection and try again.');
+      } else if (err.code === 'ECONNABORTED' || err.message.includes('timeout')) {
+        setError('❌ Request timeout. Please try again.');
+      } else {
+        setError(`❌ Failed to remove ${name}. ${err.response?.data?.message || 'Please try again.'}`);
+      }
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   const shuffleAndGroupUsers = async (size: number) => {
     if (users.length === 0) {
       setError('No users available for grouping');
@@ -427,78 +581,122 @@ const BsMembersList = () => {
       await new Promise<void>((resolve, reject) => {
         setTimeout(() => {
           try {
+            console.log(`🎯 Total users to group: ${users.length}`);
+            
             // Separate pastors and regular users
-            const allPastors = users.filter(user => user.isPastor);
-            const allRegularUsers = users.filter(user => !user.isPastor);
+            const allPastors = users.filter(u => u.isPastor);
+            const allRegularUsers = users.filter(u => !u.isPastor);
             
-            console.log('📊 Found', allPastors.length, 'pastors and', allRegularUsers.length, 'regular users');
+            console.log(`✝️ Total pastors: ${allPastors.length}`);
+            console.log(`👥 Total regular users: ${allRegularUsers.length}`);
             
-            // Simple grouping algorithm to prevent complexity issues
-            const totalUsers = users.length;
-            const totalGroups = Math.max(
-              Math.ceil(totalUsers / size),
-              allPastors.length
-            );
+            // Calculate how many groups we can form
+            const totalGroups = Math.ceil(users.length / size);
+            console.log(`📊 Will create ${totalGroups} groups of size ${size}`);
             
-            console.log('🎯 Creating', totalGroups, 'groups with target size', size);
+            // Create a combined queue with all users (pastors + regular users)
+            // We'll distribute pastors evenly across groups
+            const finalGroups: Array<Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }>> = [];
             
-            // Create empty groups
-            const allGroups: Array<Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }>> = [];
-            for (let i = 0; i < totalGroups; i++) {
-              allGroups.push([]);
-            }
-            
-            // Step 1: Place pastors first
-            allPastors.forEach((pastor, index) => {
-              if (index < allGroups.length) {
-                allGroups[index].push(pastor);
-                console.log('✝️ Placed pastor', pastor.name, 'in Group', index + 1);
-              }
+            // First, organize regular users by residence for balanced distribution
+            const regularUsersByResidence: { [residence: string]: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> } = {};
+            allRegularUsers.forEach(user => {
+              if (!regularUsersByResidence[user.residence]) regularUsersByResidence[user.residence] = [];
+              regularUsersByResidence[user.residence].push(user);
             });
             
-            // Step 2: Simplified user distribution
-            const shuffledUsers = [...allRegularUsers].sort(() => Math.random() - 0.5);
+            // Create a master queue of all regular users, processing by residence
+            const masterQueue: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> = [];
+            const residences = Object.keys(regularUsersByResidence).sort();
             
-            // Distribute users round-robin style to avoid complex loops
-            let groupIndex = 0;
-            for (const user of shuffledUsers) {
-              // Find a group that's not full
-              let placed = false;
-              let attempts = 0;
-              const maxAttempts = totalGroups * 2;
-              
-              while (!placed && attempts < maxAttempts) {
-                if (allGroups[groupIndex].length < size) {
-                  allGroups[groupIndex].push(user);
-                  placed = true;
-                } else {
-                  groupIndex = (groupIndex + 1) % totalGroups;
-                }
-                attempts++;
-              }
-              
-              // If still not placed, add to the last group
-              if (!placed && allGroups.length > 0) {
-                allGroups[allGroups.length - 1].push(user);
-              }
-              
-              groupIndex = (groupIndex + 1) % totalGroups;
+            for (const residence of residences) {
+              const residenceUsers = regularUsersByResidence[residence];
+              const balancedQueue = createBalancedQueueRegularUsers(residenceUsers);
+              masterQueue.push(...balancedQueue);
             }
             
-            // Ensure pastors are first in their groups
-            allGroups.forEach(group => {
+            console.log(`📋 Master queue created with ${masterQueue.length} regular users`);
+            
+            // Now create groups of exact size, distributing pastors evenly
+            let pastorIndex = 0;
+            let regularUserIndex = 0;
+            
+            for (let groupNum = 0; groupNum < totalGroups; groupNum++) {
+              const currentGroup: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> = [];
+              
+              // First, add a pastor if available
+              if (pastorIndex < allPastors.length) {
+                currentGroup.push(allPastors[pastorIndex]);
+                pastorIndex++;
+                console.log(`✝️ Added pastor to Group ${groupNum + 1}`);
+              }
+              
+              // Fill the rest of the group with regular users
+              while (currentGroup.length < size && regularUserIndex < masterQueue.length) {
+                currentGroup.push(masterQueue[regularUserIndex]);
+                regularUserIndex++;
+              }
+              
+              // If we still need more members and have leftover pastors, use them as regular members
+              while (currentGroup.length < size && pastorIndex < allPastors.length) {
+                currentGroup.push(allPastors[pastorIndex]);
+                pastorIndex++;
+                console.log(`✝️ Added extra pastor as regular member to Group ${groupNum + 1}`);
+              }
+              
+              // Only add non-empty groups
+              if (currentGroup.length > 0) {
+                finalGroups.push(currentGroup);
+                console.log(`✅ Group ${groupNum + 1} created with exactly ${currentGroup.length} members`);
+              }
+            }
+
+            
+            // Verify all users are grouped
+            const totalGrouped = finalGroups.reduce((sum, group) => sum + group.length, 0);
+            console.log(`\n🔍 Verification: ${totalGrouped}/${users.length} users grouped`);
+            
+            if (totalGrouped !== users.length) {
+              console.warn(`⚠️ Note: ${users.length - totalGrouped} users could not fit into groups of size ${size}`);
+            }
+            
+            // Final verification and logging
+            console.log(`\n📊 FINAL GROUP ANALYSIS:`);
+            const groupsWithPastors = finalGroups.filter(group => group.some(u => u.isPastor)).length;
+            const totalPastorsUsed = finalGroups.reduce((sum, group) => sum + group.filter(u => u.isPastor).length, 0);
+            console.log(`📈 Groups with pastors: ${groupsWithPastors}/${finalGroups.length}`);
+            console.log(`📈 Total pastors assigned: ${totalPastorsUsed}/${allPastors.length}`);
+            
+            // Ensure pastors are always first in their groups and log details
+            finalGroups.forEach((group, index) => {
+              // Sort to put pastor first
               group.sort((a, b) => {
                 if (a.isPastor && !b.isPastor) return -1;
                 if (!a.isPastor && b.isPastor) return 1;
                 return 0;
               });
+              
+              // Log group composition
+              const pastors = group.filter(u => u.isPastor);
+              const regularMembers = group.filter(u => !u.isPastor);
+              const totalMembers = group.length;
+              const males = group.filter(u => u.gender === 'M').length;
+              const females = group.filter(u => u.gender === 'F').length;
+              const pastorName = pastors.length > 0 ? pastors[0].name : 'None';
+              const residences = [...new Set(group.map(u => u.residence))];
+              
+              console.log(`📋 Group ${index + 1}: ${totalMembers}/${size} members | Pastor: ${pastorName} | M:${males} F:${females} | Residences: [${residences.join(', ')}]`);
+              
+              if (totalMembers !== size && index < finalGroups.length - 1) {
+                console.warn(`⚠️ Group ${index + 1} has ${totalMembers} members instead of ${size}`);
+              }
             });
             
             // Remove empty groups
-            const finalGroups = allGroups.filter(group => group.length > 0);
+            const nonEmptyGroups = finalGroups.filter(group => group.length > 0);
             
-            console.log('✅ Final result:', finalGroups.length, 'groups created');
-            setGroups(finalGroups);
+            console.log(`\n✅ Final result: ${nonEmptyGroups.length} groups created with residence-based distribution`);
+            setGroups(nonEmptyGroups);
             
             resolve();
           } catch (error) {
@@ -645,11 +843,13 @@ const handleExportPdf = () => {
       const year2 = actualUsers.filter(u => u.yos === '2').length;
       const year3 = actualUsers.filter(u => u.yos === '3').length;
       const year4 = actualUsers.filter(u => u.yos === '4').length;
+      const year5 = actualUsers.filter(u => u.yos === '5').length;
+      const year6 = actualUsers.filter(u => u.yos === '6').length;
       
       doc.setFontSize(9);
       doc.setTextColor(100, 100, 100);
       doc.setFont('helvetica', 'normal');
-      const groupStats = `M:${maleCount} F:${femaleCount} | Y1:${year1} Y2:${year2} Y3:${year3} Y4:${year4}`;
+      const groupStats = `M:${maleCount} F:${femaleCount} | Y1:${year1} Y2:${year2} Y3:${year3} Y4:${year4} Y5:${year5} Y6:${year6}`;
       doc.text(groupStats, 15, yOffset);
       yOffset += statsHeight;
 
@@ -734,6 +934,16 @@ const handleExportPdf = () => {
         <h4>
           <FontAwesomeIcon icon={faUsers} style={{ marginRight: '10px' }} />
           Bible Study Administration
+          {users.length > 0 && (
+            <span style={{ 
+              fontSize: '16px', 
+              fontWeight: 'normal', 
+              color: '#666', 
+              marginLeft: '15px' 
+            }}>
+              ({users.length} registered, {users.filter(u => u.isPastor === true).length} pastors)
+            </span>
+          )}
         </h4>
 
         {error && (
@@ -781,19 +991,79 @@ const handleExportPdf = () => {
         <div className={styles.adminSections}>
           {/* Student Statistics */}
           <div className={styles.statsCard}>
-            <h5>Student Statistics</h5>
-            <div className={styles.userCount}>
-              <strong>Total Registered Students: {users.length}</strong>
+            <h5>Registration Overview</h5>
+            
+            {/* Key Stats Summary */}
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+              gap: '10px',
+              marginBottom: '20px'
+            }}>
+              <div style={{
+                textAlign: 'center',
+                padding: '15px',
+                backgroundColor: '#007bff',
+                color: 'white',
+                borderRadius: '8px',
+                fontWeight: 'bold'
+              }}>
+                <div style={{ fontSize: '24px' }}>{users.length}</div>
+                <div style={{ fontSize: '12px' }}>Total Registered</div>
+              </div>
+              
+              <div style={{
+                textAlign: 'center',
+                padding: '15px',
+                backgroundColor: '#800080',
+                color: 'white',
+                borderRadius: '8px',
+                fontWeight: 'bold'
+              }}>
+                <div style={{ fontSize: '24px' }}>{users.filter(u => u.isPastor === true).length}</div>
+                <div style={{ fontSize: '12px' }}>Pastors Available</div>
+              </div>
+              
+              <div style={{
+                textAlign: 'center',
+                padding: '15px',
+                backgroundColor: '#28a745',
+                color: 'white',
+                borderRadius: '8px',
+                fontWeight: 'bold'
+              }}>
+                <div style={{ fontSize: '24px' }}>{users.filter(u => !u.isPastor).length}</div>
+                <div style={{ fontSize: '12px' }}>Regular Members</div>
+              </div>
+              
+              {groups.length > 0 && (
+                <div style={{
+                  textAlign: 'center',
+                  padding: '15px',
+                  backgroundColor: '#ff8c00',
+                  color: 'white',
+                  borderRadius: '8px',
+                  fontWeight: 'bold'
+                }}>
+                  <div style={{ fontSize: '24px' }}>{groups.length}</div>
+                  <div style={{ fontSize: '12px' }}>Groups Formed</div>
+                </div>
+              )}
             </div>
+            
             {users.length > 0 && (
-              <div className={styles.stats}>
-                <p><strong>Male:</strong> {users.filter(u => u.gender === 'M').length}</p>
-                <p><strong>Female:</strong> {users.filter(u => u.gender === 'F').length}</p>
-                <p><strong>Year 1:</strong> {users.filter(u => u.yos === '1').length}</p>
-                <p><strong>Year 2:</strong> {users.filter(u => u.yos === '2').length}</p>
-                <p><strong>Year 3:</strong> {users.filter(u => u.yos === '3').length}</p>
-                <p><strong>Year 4:</strong> {users.filter(u => u.yos === '4').length}</p>
-                <p><strong>Pastors:</strong> {users.filter(u => u.isPastor === true).length}</p>
+              <div>
+                <h6 style={{ marginBottom: '10px', color: '#666' }}>Detailed Breakdown:</h6>
+                <div className={styles.stats} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '8px' }}>
+                  <p><strong>Male:</strong> {users.filter(u => u.gender === 'M').length}</p>
+                  <p><strong>Female:</strong> {users.filter(u => u.gender === 'F').length}</p>
+                  <p><strong>Year 1:</strong> {users.filter(u => u.yos === '1').length}</p>
+                  <p><strong>Year 2:</strong> {users.filter(u => u.yos === '2').length}</p>
+                  <p><strong>Year 3:</strong> {users.filter(u => u.yos === '3').length}</p>
+                  <p><strong>Year 4:</strong> {users.filter(u => u.yos === '4').length}</p>
+                  <p><strong>Year 5:</strong> {users.filter(u => u.yos === '5').length}</p>
+                  <p><strong>Year 6:</strong> {users.filter(u => u.yos === '6').length}</p>
+                </div>
               </div>
             )}
           </div>
@@ -928,7 +1198,7 @@ const handleExportPdf = () => {
               )}
             </div>
             <p className={styles.groupingInfo}>
-              Each Bible Study Pastor gets their own group within their residence location. Groups are organized by residence with balanced gender and year distribution. Pastors appear as the first member in their groups with special highlighting in the PDF. Groups with pastors are prioritized and listed first, with pastor names prominently displayed in group titles.
+              ALL registered members are guaranteed to be grouped. Groups are filled to the exact specified size by processing residences sequentially. Each group gets one pastor (preferably from the same residence) at the start, then fills with balanced gender/year distribution. If a residence has multiple pastors, each gets their own group. The algorithm ensures 100% member inclusion with optimal balance.
             </p>
             {groups.length > 0 && (
               <div className={styles.reshuffleInfo} style={{ 
@@ -968,6 +1238,15 @@ const handleExportPdf = () => {
                 <div key={index} className={styles.group}>
                   <h5>
                     Group {index + 1}
+                    {(() => {
+                      const residences = [...new Set(group.map(u => u.residence))];
+                      const primaryResidence = residences.length === 1 ? residences[0] : `Mixed (${residences.join(', ')})`;
+                      return (
+                        <span style={{ color: '#666', marginLeft: '10px', fontSize: '12px', fontWeight: 'normal' }}>
+                          🏠 {primaryResidence}
+                        </span>
+                      );
+                    })()}
                     {group.some(u => u.isPastor) && (
                       <span style={{ color: '#800080', marginLeft: '10px', fontSize: '14px' }}>
                         ✝️ Pastor: {group.find(u => u.isPastor)?.name}
@@ -1027,10 +1306,143 @@ const handleExportPdf = () => {
             <div className={styles.userManagementSection}>
               <h5>
                 <FontAwesomeIcon icon={faUsers} style={{ marginRight: '8px' }} />
-                User Management
+                User Management ({filteredUsers.length} of {users.length} members)
               </h5>
+              
+              {/* Registration Summary */}
+              <div className={styles.registrationSummary} style={{
+                display: 'flex',
+                gap: '20px',
+                flexWrap: 'wrap',
+                marginBottom: '20px',
+                padding: '15px',
+                backgroundColor: '#f8f9fa',
+                borderRadius: '8px',
+                border: '1px solid #dee2e6'
+              }}>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '10px 15px',
+                  backgroundColor: '#007bff',
+                  color: 'white',
+                  borderRadius: '6px',
+                  fontWeight: '600',
+                  fontSize: '16px'
+                }}>
+                  <FontAwesomeIcon icon={faUsers} />
+                  <span>Total Registered: {users.length}</span>
+                </div>
+                
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '10px 15px',
+                  backgroundColor: '#800080',
+                  color: 'white',
+                  borderRadius: '6px',
+                  fontWeight: '600',
+                  fontSize: '16px'
+                }}>
+                  <span>✝️</span>
+                  <span>Total Pastors: {users.filter(u => u.isPastor === true).length}</span>
+                </div>
+                
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '10px 15px',
+                  backgroundColor: '#28a745',
+                  color: 'white',
+                  borderRadius: '6px',
+                  fontWeight: '600',
+                  fontSize: '16px'
+                }}>
+                  <span>👥</span>
+                  <span>Regular Members: {users.filter(u => !u.isPastor).length}</span>
+                </div>
+                
+                {groups.length > 0 && (
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    padding: '10px 15px',
+                    backgroundColor: '#ff8c00',
+                    color: 'white',
+                    borderRadius: '6px',
+                    fontWeight: '600',
+                    fontSize: '16px'
+                  }}>
+                    <span>🏠</span>
+                    <span>Groups Formed: {groups.length}</span>
+                  </div>
+                )}
+              </div>
+              
+              {/* Search Bar */}
+              <div className={styles.searchSection} style={{ marginBottom: '20px' }}>
+                <div style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: '10px',
+                  flexWrap: 'wrap'
+                }}>
+                  <input
+                    type="text"
+                    placeholder="🔍 Search by name, phone, residence, or year..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    style={{
+                      flex: '1',
+                      minWidth: '250px',
+                      padding: '10px 15px',
+                      border: '2px solid #ddd',
+                      borderRadius: '8px',
+                      fontSize: '14px',
+                      outline: 'none',
+                      transition: 'border-color 0.2s',
+                    }}
+                    onFocus={(e) => e.target.style.borderColor = '#800080'}
+                    onBlur={(e) => e.target.style.borderColor = '#ddd'}
+                  />
+                  {searchTerm && (
+                    <button
+                      onClick={() => setSearchTerm('')}
+                      style={{
+                        padding: '10px 15px',
+                        backgroundColor: '#ff6b6b',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '6px',
+                        cursor: 'pointer',
+                        fontSize: '14px',
+                        fontWeight: '600'
+                      }}
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
+                {searchTerm && (
+                  <p style={{ 
+                    margin: '8px 0 0 0', 
+                    color: '#666', 
+                    fontSize: '14px' 
+                  }}>
+                    {filteredUsers.length === 0 
+                      ? `No members found matching "${searchTerm}"` 
+                      : `Found ${filteredUsers.length} member${filteredUsers.length !== 1 ? 's' : ''} matching "${searchTerm}"`
+                    }
+                  </p>
+                )}
+              </div>
+              
               <p className={styles.userManagementInfo}>
-                Click the "Mark as Pastor" button to identify pastors. Pastors will get their own groups and be clearly identified.
+                Search members and manage their roles. Click "Mark as Pastor" to identify pastors or "🗑️ Remove" to delete a member.
               </p>
               
               {/* Desktop Table View */}
@@ -1050,42 +1462,65 @@ const handleExportPdf = () => {
                       <th>Year</th>
                       <th>Gender</th>
                       <th>Status</th>
-                      <th>Action</th>
+                      <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {users.map((user, index) => (
-                      <tr key={index} className={user.isPastor ? styles.pastorUserRow : ''}>
-                        <td>{user.name}</td>
-                        <td>{user.phone}</td>
-                        <td>{user.residence}</td>
-                        <td>{user.yos}</td>
-                        <td>{user.gender === 'M' ? 'Male' : 'Female'}</td>
-                        <td>
-                          {user.isPastor ? (
-                            <span style={{ color: '#800080', fontWeight: 'bold' }}>✝️ Pastor</span>
-                          ) : (
-                            <span style={{ color: '#666' }}>Member</span>
-                          )}
-                        </td>
-                        <td>
-                          <button
-                            onClick={() => togglePastorStatus(index)}
-                            style={{
-                              backgroundColor: user.isPastor ? '#ff6b6b' : '#800080',
-                              color: 'white',
-                              border: 'none',
-                              padding: '4px 8px',
-                              borderRadius: '4px',
-                              fontSize: '12px',
-                              cursor: 'pointer'
-                            }}
-                          >
-                            {user.isPastor ? '✕ Remove Pastor' : '✝️ Mark as Pastor'}
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
+                    {filteredUsers.map((user, index) => {
+                      const originalIndex = users.findIndex(u => u.phone === user.phone);
+                      return (
+                        <tr key={user.phone} className={user.isPastor ? styles.pastorUserRow : ''}>
+                          <td>{user.name}</td>
+                          <td>{user.phone}</td>
+                          <td>{user.residence}</td>
+                          <td>{user.yos}</td>
+                          <td>{user.gender === 'M' ? 'Male' : 'Female'}</td>
+                          <td>
+                            {user.isPastor ? (
+                              <span style={{ color: '#800080', fontWeight: 'bold' }}>✝️ Pastor</span>
+                            ) : (
+                              <span style={{ color: '#666' }}>Member</span>
+                            )}
+                          </td>
+                          <td>
+                            <div style={{ display: 'flex', gap: '5px', flexWrap: 'wrap' }}>
+                              <button
+                                onClick={() => togglePastorStatus(originalIndex)}
+                                disabled={isDeleting}
+                                style={{
+                                  backgroundColor: user.isPastor ? '#ff6b6b' : '#800080',
+                                  color: 'white',
+                                  border: 'none',
+                                  padding: '4px 8px',
+                                  borderRadius: '4px',
+                                  fontSize: '11px',
+                                  cursor: isDeleting ? 'not-allowed' : 'pointer',
+                                  opacity: isDeleting ? 0.6 : 1
+                                }}
+                              >
+                                {user.isPastor ? '✕ Remove Pastor' : '✝️ Mark as Pastor'}
+                              </button>
+                              <button
+                                onClick={() => deleteMember(user.phone, user.name)}
+                                disabled={isDeleting}
+                                style={{
+                                  backgroundColor: '#dc3545',
+                                  color: 'white',
+                                  border: 'none',
+                                  padding: '4px 8px',
+                                  borderRadius: '4px',
+                                  fontSize: '11px',
+                                  cursor: isDeleting ? 'not-allowed' : 'pointer',
+                                  opacity: isDeleting ? 0.6 : 1
+                                }}
+                              >
+                                🗑️ Remove
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
@@ -1172,48 +1607,69 @@ const handleExportPdf = () => {
                     transform: translateY(-1px);
                   }
                 `}</style>
-                {users.map((user, index) => (
-                  <div key={index} className={`userCard ${user.isPastor ? 'pastorCard' : ''}`}>
-                    <div className="userCardHeader">
-                      <div className="userCardName">{user.name}</div>
-                      <div className={`userCardStatus ${user.isPastor ? 'pastor' : ''}`}>
-                        {user.isPastor ? '✝️ Pastor' : 'Member'}
+                {filteredUsers.map((user, index) => {
+                  const originalIndex = users.findIndex(u => u.phone === user.phone);
+                  return (
+                    <div key={user.phone} className={`userCard ${user.isPastor ? 'pastorCard' : ''}`}>
+                      <div className="userCardHeader">
+                        <div className="userCardName">{user.name}</div>
+                        <div className={`userCardStatus ${user.isPastor ? 'pastor' : ''}`}>
+                          {user.isPastor ? '✝️ Pastor' : 'Member'}
+                        </div>
+                      </div>
+                      
+                      <div className="userCardDetails">
+                        <div className="userCardDetail">
+                          <div className="userCardLabel">Phone</div>
+                          <div className="userCardValue">{user.phone}</div>
+                        </div>
+                        <div className="userCardDetail">
+                          <div className="userCardLabel">Residence</div>
+                          <div className="userCardValue">{user.residence}</div>
+                        </div>
+                        <div className="userCardDetail">
+                          <div className="userCardLabel">Year</div>
+                          <div className="userCardValue">Year {user.yos}</div>
+                        </div>
+                        <div className="userCardDetail">
+                          <div className="userCardLabel">Gender</div>
+                          <div className="userCardValue">{user.gender === 'M' ? 'Male' : 'Female'}</div>
+                        </div>
+                      </div>
+                      
+                      <div className="userCardAction" style={{ display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' }}>
+                        <button
+                          onClick={() => togglePastorStatus(originalIndex)}
+                          disabled={isDeleting}
+                          className="userCardButton"
+                          style={{
+                            backgroundColor: user.isPastor ? '#ff6b6b' : '#800080',
+                            color: 'white',
+                            opacity: isDeleting ? 0.6 : 1,
+                            cursor: isDeleting ? 'not-allowed' : 'pointer',
+                            minWidth: '120px'
+                          }}
+                        >
+                          {user.isPastor ? '✕ Remove Pastor' : '✝️ Mark as Pastor'}
+                        </button>
+                        <button
+                          onClick={() => deleteMember(user.phone, user.name)}
+                          disabled={isDeleting}
+                          className="userCardButton"
+                          style={{
+                            backgroundColor: '#dc3545',
+                            color: 'white',
+                            opacity: isDeleting ? 0.6 : 1,
+                            cursor: isDeleting ? 'not-allowed' : 'pointer',
+                            minWidth: '100px'
+                          }}
+                        >
+                          🗑️ Remove
+                        </button>
                       </div>
                     </div>
-                    
-                    <div className="userCardDetails">
-                      <div className="userCardDetail">
-                        <div className="userCardLabel">Phone</div>
-                        <div className="userCardValue">{user.phone}</div>
-                      </div>
-                      <div className="userCardDetail">
-                        <div className="userCardLabel">Residence</div>
-                        <div className="userCardValue">{user.residence}</div>
-                      </div>
-                      <div className="userCardDetail">
-                        <div className="userCardLabel">Year</div>
-                        <div className="userCardValue">Year {user.yos}</div>
-                      </div>
-                      <div className="userCardDetail">
-                        <div className="userCardLabel">Gender</div>
-                        <div className="userCardValue">{user.gender === 'M' ? 'Male' : 'Female'}</div>
-                      </div>
-                    </div>
-                    
-                    <div className="userCardAction">
-                      <button
-                        onClick={() => togglePastorStatus(index)}
-                        className="userCardButton"
-                        style={{
-                          backgroundColor: user.isPastor ? '#ff6b6b' : '#800080',
-                          color: 'white'
-                        }}
-                      >
-                        {user.isPastor ? '✕ Remove Pastor' : '✝️ Mark as Pastor'}
-                      </button>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           )}

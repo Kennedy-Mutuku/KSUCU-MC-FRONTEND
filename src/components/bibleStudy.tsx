@@ -214,6 +214,8 @@ const Bs: React.FC = () => {
                             <option value="2" className={styles['payment-option']}> 2 </option>
                             <option value="3" className={styles['payment-option']}> 3 </option>
                             <option value="4" className={styles['payment-option']}> 4 </option>
+                            <option value="5" className={styles['payment-option']}> 5 </option>
+                            <option value="6" className={styles['payment-option']}> 6 </option>
                         </select>
                     </div>
 
