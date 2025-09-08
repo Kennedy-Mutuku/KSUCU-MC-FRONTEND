@@ -678,7 +678,6 @@ const BsMembersList = () => {
               
               // Log group composition
               const pastors = group.filter(u => u.isPastor);
-              const regularMembers = group.filter(u => !u.isPastor);
               const totalMembers = group.length;
               const males = group.filter(u => u.gender === 'M').length;
               const females = group.filter(u => u.gender === 'F').length;
@@ -1466,7 +1465,7 @@ const handleExportPdf = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredUsers.map((user, index) => {
+                    {filteredUsers.map((user) => {
                       const originalIndex = users.findIndex(u => u.phone === user.phone);
                       return (
                         <tr key={user.phone} className={user.isPastor ? styles.pastorUserRow : ''}>
@@ -1607,7 +1606,7 @@ const handleExportPdf = () => {
                     transform: translateY(-1px);
                   }
                 `}</style>
-                {filteredUsers.map((user, index) => {
+                {filteredUsers.map((user) => {
                   const originalIndex = users.findIndex(u => u.phone === user.phone);
                   return (
                     <div key={user.phone} className={`userCard ${user.isPastor ? 'pastorCard' : ''}`}>
