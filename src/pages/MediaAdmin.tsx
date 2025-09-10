@@ -111,6 +111,7 @@ const MediaAdmin: React.FC = () => {
             
             if (response.ok) {
                 const data = await response.json();
+                console.log('MediaAdmin API Success:', data.data?.length, 'items loaded');
                 
                 setMediaItems(data.data || []);
                 setSyncStatus('success');
