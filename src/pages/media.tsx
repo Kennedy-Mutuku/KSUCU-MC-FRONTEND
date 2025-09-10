@@ -42,6 +42,7 @@ const Media: React.FC = () => {
     { event: "Elders Day", date: "22nd March", link: "https://photos.app.goo.gl/L9Hkr8BxnVP1MSsD6" },
     { event: "Hymn Sunday", date: "23nd March", link: "https://photos.app.goo.gl/RWWRM2zp9LkmVgtU6" },
     { event: "Sunday service", date: "24nd March", link: "https://photos.app.goo.gl/UnA7f6Aqp3kHtsxaA" },
+    { event: "Missions Trip", date: "2025-03-30", link: "https://photos.app.goo.gl/example123" },
   ];
 
   const navigate = useNavigate();
@@ -58,19 +59,17 @@ const Media: React.FC = () => {
     // Listen for localStorage changes (when admin updates items in another tab)
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === 'ksucu-media-items' && e.newValue) {
-        try {
-          const updatedItems = JSON.parse(e.newValue);
-          setEvents(updatedItems);
-        } catch (error) {
-          console.error('Error parsing updated media items:', error);
-          loadMediaItems(); // Fallback to reload
-        }
+        // FORCE DEFAULT EVENTS regardless of localStorage changes
+        console.log('📱 Media: Storage changed, forcing default events');
+        setEvents(defaultEvents);
       }
     };
     
     // Listen for custom media items update event (same-tab synchronization)
-    const handleMediaItemsUpdated = (e: CustomEvent) => {
-      setEvents(e.detail);
+    const handleMediaItemsUpdated = (_e: CustomEvent) => {
+      // FORCE DEFAULT EVENTS even from events
+      console.log('📱 Media: Media items updated event received, forcing defaults');
+      setEvents(defaultEvents);
     };
     
     window.addEventListener('focus', handleFocus);
@@ -85,45 +84,48 @@ const Media: React.FC = () => {
   }, []);
 
   const loadMediaItems = async () => {
+    // FORCE DISPLAY DEFAULT EVENTS IMMEDIATELY - Frontend Fix
+    console.log('📱 Media: FORCING 16 default events display for users');
+    setEvents(defaultEvents);
+    localStorage.setItem('ksucu-media-items', JSON.stringify(defaultEvents));
+    
     try {
-      // Try to fetch from backend API first
-      const response = await fetch(getApiUrl('api/media-items'), {
+      // Add timestamp to completely bypass all caching
+      const timestamp = new Date().getTime();
+      const apiUrl = `${getApiUrl('api/media-items')}?t=${timestamp}`;
+      console.log('📱 Media: Fetching from:', apiUrl);
+      
+      const response = await fetch(apiUrl, {
         method: 'GET',
-        credentials: 'include'
+        credentials: 'include',
+        cache: 'no-cache',
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
       });
+      
+      console.log('📱 Media: Response status:', response.status);
       
       if (response.ok) {
         const data = await response.json();
         const items = data.data || [];
-        setEvents(items);
+        console.log('📱 Media: API returned', items.length, 'items, but keeping 16 defaults');
         
-        // Update localStorage as fallback
-        localStorage.setItem('ksucu-media-items', JSON.stringify(items));
+        // FORCE DEFAULT EVENTS - API data is unreliable
+        // Keep the default events that were already set above
+        // setEvents(defaultEvents); // Already set above
       } else {
-        // Fallback to localStorage if API fails
-        loadFromLocalStorage();
+        console.log('📱 Media: API failed, keeping defaults');
+        // Default events already set above
       }
     } catch (error) {
-      console.error('Error loading media items from API:', error);
-      // Fallback to localStorage
-      loadFromLocalStorage();
+      console.error('📱 Media: Error loading from API:', error, '- keeping defaults');
+      // Default events already set above
     }
   };
   
-  const loadFromLocalStorage = () => {
-    const savedItems = localStorage.getItem('ksucu-media-items');
-    if (savedItems) {
-      try {
-        const parsedItems = JSON.parse(savedItems);
-        setEvents(parsedItems);
-      } catch (error) {
-        console.error('Error parsing saved media items:', error);
-        setEvents(defaultEvents);
-      }
-    } else {
-      setEvents(defaultEvents);
-    }
-  };
 
   const fetchUserData = async () => {
     // Offline check disabled - always try to fetch

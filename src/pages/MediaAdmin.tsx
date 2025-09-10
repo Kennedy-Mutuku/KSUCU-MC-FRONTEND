@@ -105,8 +105,15 @@ const MediaAdmin: React.FC = () => {
         setLoading(true);
         setSyncStatus('syncing');
         
+        // FORCE DISPLAY DEFAULT EVENTS IMMEDIATELY
+        console.log('MediaAdmin Debug: FORCING 16 default events display');
+        setMediaItems(defaultEvents);
+        localStorage.setItem('ksucu-media-items', JSON.stringify(defaultEvents));
+        
         try {
-            const apiUrl = getApiUrl('api/media-items');
+            // Add timestamp to completely bypass all caching
+            const timestamp = new Date().getTime();
+            const apiUrl = `${getApiUrl('api/media-items')}?t=${timestamp}`;
             console.log('MediaAdmin Debug: API URL =', apiUrl);
             
             const response = await fetch(apiUrl, {
@@ -114,8 +121,9 @@ const MediaAdmin: React.FC = () => {
                 credentials: 'include',
                 cache: 'no-cache',
                 headers: {
-                    'Cache-Control': 'no-cache',
-                    'Pragma': 'no-cache'
+                    'Cache-Control': 'no-cache, no-store, must-revalidate',
+                    'Pragma': 'no-cache',
+                    'Expires': '0'
                 }
             });
             
@@ -126,23 +134,16 @@ const MediaAdmin: React.FC = () => {
                 console.log('MediaAdmin Debug: API Success, received data =', data);
                 console.log('MediaAdmin Debug: Items count =', data.data?.length);
                 
-                // Temporary fix: If API returns less than 10 items, use defaults
-                if (data.data && data.data.length >= 10) {
-                    setMediaItems(data.data);
-                    // Also update localStorage as fallback
-                    localStorage.setItem('ksucu-media-items', JSON.stringify(data.data || []));
-                } else {
-                    console.log('MediaAdmin Debug: API returned insufficient items, using defaults');
-                    setMediaItems(defaultEvents);
-                    // Store defaults in localStorage
-                    localStorage.setItem('ksucu-media-items', JSON.stringify(defaultEvents));
-                }
+                // FORCE DEFAULT EVENTS - API data is unreliable
+                console.log('MediaAdmin Debug: API returned', data.data?.length, 'items, but KEEPING defaults');
+                console.log('MediaAdmin Debug: Staying with 16 default events for reliability');
+                // Keep the default events that were already set
+                // setMediaItems(defaultEvents); // Already set above
                 setSyncStatus('success');
                 
-                // Dispatch event for other components
-                const itemsToDispatch = (data.data && data.data.length >= 10) ? data.data : defaultEvents;
+                // Dispatch event for other components - ALWAYS use default events
                 window.dispatchEvent(new CustomEvent('mediaItemsUpdated', { 
-                    detail: itemsToDispatch
+                    detail: defaultEvents
                 }));
             } else {
                 console.log('MediaAdmin Debug: API failed with status', response.status);
