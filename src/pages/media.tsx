@@ -8,11 +8,14 @@ import { FaYoutube, FaFacebook, FaTiktok, FaTwitter, FaImage, FaNewspaper, FaBoo
 import { getApiUrl } from '../config/environment';
 
 interface MediaItem {
+  _id?: string;
   id?: string;
   event: string;
   date: string;
   link: string;
   imageUrl?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 const Media: React.FC = () => {
@@ -81,7 +84,33 @@ const Media: React.FC = () => {
     };
   }, []);
 
-  const loadMediaItems = () => {
+  const loadMediaItems = async () => {
+    try {
+      // Try to fetch from backend API first
+      const response = await fetch(getApiUrl('api/media-items'), {
+        method: 'GET',
+        credentials: 'include'
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        const items = data.data || [];
+        setEvents(items);
+        
+        // Update localStorage as fallback
+        localStorage.setItem('ksucu-media-items', JSON.stringify(items));
+      } else {
+        // Fallback to localStorage if API fails
+        loadFromLocalStorage();
+      }
+    } catch (error) {
+      console.error('Error loading media items from API:', error);
+      // Fallback to localStorage
+      loadFromLocalStorage();
+    }
+  };
+  
+  const loadFromLocalStorage = () => {
     const savedItems = localStorage.getItem('ksucu-media-items');
     if (savedItems) {
       try {
@@ -142,9 +171,18 @@ const Media: React.FC = () => {
       setGeneralLoading(false);      
     }
   };
-  // Sort events to show newest first - prioritize recently added items (by id timestamp) then by date
+  // Sort events to show newest first - prioritize by createdAt, then by date
   const sortedEvents = [...events].sort((a, b) => {
-    // First, prioritize items with newer IDs (recently added)
+    // First, prioritize items with createdAt timestamps (from backend)
+    if (a.createdAt && b.createdAt) {
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    }
+    
+    // If only one has createdAt, prioritize it
+    if (a.createdAt) return -1;
+    if (b.createdAt) return 1;
+    
+    // Then prioritize items with newer IDs (recently added locally)
     const aId = parseInt(a.id || '0');
     const bId = parseInt(b.id || '0');
     
@@ -234,7 +272,7 @@ const Media: React.FC = () => {
             <h2 className={styles.sectionTitle}>Recent Events</h2>
             <div className={styles.eventsPreview}>
               {sortedEvents.slice(0, 6).map((event, index) => (
-                <div key={event.id || index} className={styles.eventCard}>
+                <div key={event._id || event.id || index} className={styles.eventCard}>
                   <div className={styles.eventImage}>
                     {event.imageUrl ? (
                       <img src={event.imageUrl} alt={event.event} />
@@ -318,7 +356,7 @@ const Media: React.FC = () => {
               <div className={styles.modalBody}>
                 <div className={styles.galleryGrid}>
                   {sortedEvents.map((event, index) => (
-                    <div key={event.id || index} className={styles.galleryItem}>
+                    <div key={event._id || event.id || index} className={styles.galleryItem}>
                       <div className={styles.galleryImagePlaceholder}>
                         {event.imageUrl ? (
                           <img src={event.imageUrl} alt={event.event} />

@@ -29,6 +29,83 @@
   opacity: 0.9;
 }
 
+/* Sync Status Indicator */
+.syncStatus {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.syncStatus.syncing,
+.syncStatus .syncing {
+  background: #ffc107;
+  color: #000;
+}
+
+.syncStatus.success,
+.syncStatus .success {
+  background: #28a745;
+  color: white;
+}
+
+.syncStatus.error,
+.syncStatus .error {
+  background: #dc3545;
+  color: white;
+}
+
+/* Refresh Section */
+.refreshSection {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.refreshButton {
+  background: #17a2b8;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.refreshButton:hover:not(:disabled) {
+  background: #138496;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.refreshButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 /* Add Section */
 .addSection {
   display: flex;
@@ -95,6 +172,40 @@
 .formGroup input:focus {
   outline: none;
   border-color: #667eea;
+}
+
+/* Date Input Styling */
+.dateInput {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  background: white;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.dateInput:hover {
+  border-color: #667eea;
+}
+
+.dateInput:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.dateInput::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  background-color: #667eea;
+  border-radius: 4px;
+  padding: 2px;
+}
+
+.dateInput::-webkit-calendar-picker-indicator:hover {
+  background-color: #764ba2;
 }
 
 .fileInput {

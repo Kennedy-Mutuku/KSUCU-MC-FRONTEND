@@ -137,8 +137,12 @@ const productionConfig: ApiConfig = {
 
 export const config = isDevelopment ? developmentConfig : productionConfig;
 
-export const getApiUrl = (endpoint: keyof ApiConfig['endpoints'], queryParams?: string): string => {
-  const url = `${config.baseUrl}${config.endpoints[endpoint]}`;
+export const getApiUrl = (endpoint: keyof ApiConfig['endpoints'] | string, queryParams?: string): string => {
+  // Handle both predefined endpoints and custom paths
+  const path = (endpoint in config.endpoints) 
+    ? config.endpoints[endpoint as keyof ApiConfig['endpoints']]
+    : `/${endpoint}`;
+  const url = `${config.baseUrl}${path}`;
   return queryParams ? `${url}?${queryParams}` : url;
 };
 

@@ -11,15 +11,20 @@ import {
     faSave,
     faCancel,
     faCalendarAlt,
-    faEye
+    faEye,
+    faSync
 } from '@fortawesome/free-solid-svg-icons';
+import { getApiUrl } from '../config/environment';
 
 interface MediaItem {
-    id: string;
+    _id?: string;
+    id?: string;
     event: string;
     date: string;
     link: string;
     imageUrl?: string;
+    createdAt?: string;
+    updatedAt?: string;
 }
 
 const MediaAdmin: React.FC = () => {
@@ -27,13 +32,38 @@ const MediaAdmin: React.FC = () => {
     const [isAddingNew, setIsAddingNew] = useState(false);
     const [editingItem, setEditingItem] = useState<string | null>(null);
     const [authenticated, setAuthenticated] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [syncStatus, setSyncStatus] = useState<'idle' | 'syncing' | 'success' | 'error'>('idle');
     const [newItem, setNewItem] = useState<MediaItem>({
-        id: '',
         event: '',
-        date: '',
+        date: new Date().toISOString().split('T')[0],
         link: '',
         imageUrl: ''
     });
+
+    // Helper function to format date for input field
+    const formatDateForInput = (dateStr: string): string => {
+        if (!dateStr) return new Date().toISOString().split('T')[0];
+        
+        try {
+            // Handle various date formats
+            if (dateStr.includes('-')) {
+                // Already in YYYY-MM-DD format or similar
+                const parts = dateStr.split('-');
+                if (parts.length === 3 && parts[0].length === 4) {
+                    return dateStr;
+                }
+            }
+            
+            const date = new Date(dateStr);
+            if (isNaN(date.getTime())) {
+                return new Date().toISOString().split('T')[0];
+            }
+            return date.toISOString().split('T')[0];
+        } catch {
+            return new Date().toISOString().split('T')[0];
+        }
+    };
 
     useEffect(() => {
         // Check for authentication first
@@ -42,32 +72,58 @@ const MediaAdmin: React.FC = () => {
             setAuthenticated(true);
         }
         
-        // Load existing media items from localStorage or API
+        // Load existing media items from API or localStorage
         if (adminAuth === 'Overseer') {
             loadMediaItems();
         }
     }, []);
 
-    const loadMediaItems = () => {
-        const savedItems = localStorage.getItem('ksucu-media-items');
-        if (savedItems) {
-            setMediaItems(JSON.parse(savedItems));
-        } else {
-            // Initialize with existing hardcoded items
-            const defaultItems: MediaItem[] = [
-                { id: '1', event: "Subcomm photos", date: "2025-01-20", link: "https://photos.app.goo.gl/PrxWoMuyRNEet22b7" },
-                { id: '2', event: "Sunday service", date: "2025-22-13", link: "https://photos.app.goo.gl/Vt6HDo1xEtgA3Nmn9" },
-                { id: '3', event: "Worship Weekend", date: "2025-02-10", link: "https://photos.app.goo.gl/wbNV3coJREGEUSZX7" },
-                { id: '4', event: "Bible Study weekend", date: "2025-01-26", link: "https://photos.app.goo.gl/otVcso25sG6fkxjR8" },
-                { id: '5', event: "Evangelism photos", date: "2025-02-02", link: "https://photos.app.goo.gl/JvqV19BaGGZwrVFS7" }
-            ];
-            setMediaItems(defaultItems);
-            localStorage.setItem('ksucu-media-items', JSON.stringify(defaultItems));
+    const loadMediaItems = async () => {
+        setLoading(true);
+        setSyncStatus('syncing');
+        try {
+            const response = await fetch(getApiUrl('api/media-items'), {
+                method: 'GET',
+                credentials: 'include'
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                setMediaItems(data.data || []);
+                setSyncStatus('success');
+                
+                // Also update localStorage as fallback
+                localStorage.setItem('ksucu-media-items', JSON.stringify(data.data || []));
+                
+                // Dispatch event for other components
+                window.dispatchEvent(new CustomEvent('mediaItemsUpdated', { 
+                    detail: data.data || [] 
+                }));
+            } else {
+                // Fallback to localStorage if API fails
+                const savedItems = localStorage.getItem('ksucu-media-items');
+                if (savedItems) {
+                    setMediaItems(JSON.parse(savedItems));
+                }
+                setSyncStatus('error');
+            }
+        } catch (error) {
+            console.error('Error loading media items:', error);
+            // Fallback to localStorage
+            const savedItems = localStorage.getItem('ksucu-media-items');
+            if (savedItems) {
+                setMediaItems(JSON.parse(savedItems));
+            }
+            setSyncStatus('error');
+        } finally {
+            setLoading(false);
+            setTimeout(() => setSyncStatus('idle'), 3000);
         }
     };
 
-    const saveMediaItems = (items: MediaItem[]) => {
+    const saveMediaItems = async (items: MediaItem[]) => {
         setMediaItems(items);
+        // Update localStorage immediately for offline support
         localStorage.setItem('ksucu-media-items', JSON.stringify(items));
         
         // Dispatch custom event for same-tab synchronization
@@ -76,35 +132,115 @@ const MediaAdmin: React.FC = () => {
         }));
     };
 
-    const handleAddNew = () => {
+    const handleAddNew = async () => {
         if (newItem.event && newItem.date && newItem.link) {
-            const item: MediaItem = {
-                ...newItem,
-                id: Date.now().toString()
-            };
-            const updatedItems = [item, ...mediaItems];
-            saveMediaItems(updatedItems);
-            setNewItem({ id: '', event: '', date: '', link: '', imageUrl: '' });
-            setIsAddingNew(false);
+            setLoading(true);
+            setSyncStatus('syncing');
+            try {
+                const response = await fetch(getApiUrl('api/media-items'), {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-admin-password': 'Overseer'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(newItem)
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const updatedItems = [data.data, ...mediaItems];
+                    await saveMediaItems(updatedItems);
+                    setSyncStatus('success');
+                    setNewItem({ event: '', date: new Date().toISOString().split('T')[0], link: '', imageUrl: '' });
+                    setIsAddingNew(false);
+                    // Reload to get fresh data from server
+                    await loadMediaItems();
+                } else {
+                    setSyncStatus('error');
+                    alert('Failed to add media item. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error adding media item:', error);
+                setSyncStatus('error');
+                alert('Failed to add media item. Please try again.');
+            } finally {
+                setLoading(false);
+                setTimeout(() => setSyncStatus('idle'), 3000);
+            }
         }
     };
 
     const handleEdit = (item: MediaItem) => {
-        setEditingItem(item.id);
+        setEditingItem(item._id || item.id || '');
     };
 
-    const handleSaveEdit = (id: string, updatedItem: MediaItem) => {
-        const updatedItems = mediaItems.map(item => 
-            item.id === id ? { ...updatedItem, id } : item
-        );
-        saveMediaItems(updatedItems);
-        setEditingItem(null);
+    const handleSaveEdit = async (id: string, updatedItem: MediaItem) => {
+        setLoading(true);
+        setSyncStatus('syncing');
+        try {
+            const itemId = updatedItem._id || id;
+            const response = await fetch(getApiUrl(`api/media-items/${itemId}`), {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-admin-password': 'Overseer'
+                },
+                credentials: 'include',
+                body: JSON.stringify(updatedItem)
+            });
+            
+            if (response.ok) {
+                setSyncStatus('success');
+                setEditingItem(null);
+                // Reload to get fresh data from server
+                await loadMediaItems();
+            } else {
+                setSyncStatus('error');
+                alert('Failed to update media item. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error updating media item:', error);
+            setSyncStatus('error');
+            alert('Failed to update media item. Please try again.');
+        } finally {
+            setLoading(false);
+            setTimeout(() => setSyncStatus('idle'), 3000);
+        }
     };
 
-    const handleDelete = (id: string) => {
+    const handleDelete = async (id: string) => {
         if (window.confirm('Are you sure you want to delete this media item?')) {
-            const updatedItems = mediaItems.filter(item => item.id !== id);
-            saveMediaItems(updatedItems);
+            setLoading(true);
+            setSyncStatus('syncing');
+            try {
+                const item = mediaItems.find(i => (i._id || i.id) === id);
+                const itemId = item?._id || id;
+                
+                const response = await fetch(getApiUrl(`api/media-items/${itemId}`), {
+                    method: 'DELETE',
+                    headers: {
+                        'x-admin-password': 'Overseer'
+                    },
+                    credentials: 'include'
+                });
+                
+                if (response.ok) {
+                    setSyncStatus('success');
+                    // Reload to get fresh data from server
+                    await loadMediaItems();
+                } else {
+                    setSyncStatus('error');
+                    alert('Failed to delete media item. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error deleting media item:', error);
+                setSyncStatus('error');
+                alert('Failed to delete media item. Please try again.');
+            } finally {
+                setLoading(false);
+                setTimeout(() => setSyncStatus('idle'), 3000);
+            }
         }
     };
 
@@ -117,7 +253,7 @@ const MediaAdmin: React.FC = () => {
                 if (itemId) {
                     // Update existing item
                     const updatedItems = mediaItems.map(item => 
-                        item.id === itemId ? { ...item, imageUrl } : item
+                        (item._id || item.id) === itemId ? { ...item, imageUrl } : item
                     );
                     saveMediaItems(updatedItems);
                 } else {
@@ -159,7 +295,7 @@ const MediaAdmin: React.FC = () => {
 
     return (
         <>
-                  <UniversalHeader />
+            <UniversalHeader />
             <div className={styles.container}>
                 <div className={styles.header}>
                     <h1>
@@ -167,6 +303,25 @@ const MediaAdmin: React.FC = () => {
                         Media Gallery Management
                     </h1>
                     <p>Add, edit, or remove photos and links from the KSUCU media gallery</p>
+                </div>
+
+                {/* Sync Status Indicator */}
+                <div className={styles.syncStatus}>
+                    {syncStatus === 'syncing' && (
+                        <span className={styles.syncing}>
+                            <FontAwesomeIcon icon={faSync} spin /> Syncing...
+                        </span>
+                    )}
+                    {syncStatus === 'success' && (
+                        <span className={styles.success}>
+                            <FontAwesomeIcon icon={faSync} /> Synced
+                        </span>
+                    )}
+                    {syncStatus === 'error' && (
+                        <span className={styles.error}>
+                            <FontAwesomeIcon icon={faSync} /> Sync Error - Using Offline Mode
+                        </span>
+                    )}
                 </div>
 
                 {/* Add New Media Item */}
@@ -195,10 +350,11 @@ const MediaAdmin: React.FC = () => {
                         <div className={styles.formGroup}>
                             <label>Date</label>
                             <input
-                                type="text"
+                                type="date"
                                 value={newItem.date}
                                 onChange={(e) => setNewItem(prev => ({ ...prev, date: e.target.value }))}
-                                placeholder="e.g., 2025-03-15"
+                                className={styles.dateInput}
+                                max={new Date().toISOString().split('T')[0]}
                             />
                         </div>
                         <div className={styles.formGroup}>
@@ -225,7 +381,7 @@ const MediaAdmin: React.FC = () => {
                             </div>
                         )}
                         <div className={styles.formActions}>
-                            <button className={styles.saveButton} onClick={handleAddNew}>
+                            <button className={styles.saveButton} onClick={handleAddNew} disabled={loading}>
                                 <FontAwesomeIcon icon={faSave} />
                                 Add Item
                             </button>
@@ -237,20 +393,33 @@ const MediaAdmin: React.FC = () => {
                     </div>
                 )}
 
+                {/* Refresh Button */}
+                <div className={styles.refreshSection}>
+                    <button 
+                        className={styles.refreshButton} 
+                        onClick={loadMediaItems}
+                        disabled={loading}
+                    >
+                        <FontAwesomeIcon icon={faSync} spin={loading} />
+                        {loading ? 'Refreshing...' : 'Refresh Gallery'}
+                    </button>
+                </div>
+
                 {/* Media Items List */}
                 <div className={styles.mediaList}>
                     <h2>Existing Media Items ({mediaItems.length})</h2>
                     <div className={styles.mediaGrid}>
                         {mediaItems.map((item) => (
                             <MediaItemCard 
-                                key={item.id}
+                                key={item._id || item.id}
                                 item={item}
-                                isEditing={editingItem === item.id}
+                                isEditing={editingItem === (item._id || item.id)}
                                 onEdit={handleEdit}
                                 onSave={handleSaveEdit}
                                 onDelete={handleDelete}
                                 onCancel={() => setEditingItem(null)}
-                                onImageUpload={(e) => handleImageUpload(e, item.id)}
+                                onImageUpload={(e) => handleImageUpload(e, item._id || item.id)}
+                                formatDateForInput={formatDateForInput}
                             />
                         ))}
                     </div>
@@ -269,6 +438,7 @@ interface MediaItemCardProps {
     onDelete: (id: string) => void;
     onCancel: () => void;
     onImageUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    formatDateForInput: (date: string) => string;
 }
 
 const MediaItemCard: React.FC<MediaItemCardProps> = ({
@@ -278,13 +448,17 @@ const MediaItemCard: React.FC<MediaItemCardProps> = ({
     onSave,
     onDelete,
     onCancel,
-    onImageUpload
+    onImageUpload,
+    formatDateForInput
 }) => {
     const [editData, setEditData] = useState<MediaItem>(item);
 
     useEffect(() => {
-        setEditData(item);
-    }, [item]);
+        setEditData({
+            ...item,
+            date: formatDateForInput(item.date)
+        });
+    }, [item, formatDateForInput]);
 
     if (isEditing) {
         return (
@@ -297,10 +471,11 @@ const MediaItemCard: React.FC<MediaItemCardProps> = ({
                         placeholder="Event name"
                     />
                     <input
-                        type="text"
+                        type="date"
                         value={editData.date}
                         onChange={(e) => setEditData(prev => ({ ...prev, date: e.target.value }))}
-                        placeholder="Date"
+                        className={styles.dateInput}
+                        max={new Date().toISOString().split('T')[0]}
                     />
                     <input
                         type="url"
@@ -320,7 +495,7 @@ const MediaItemCard: React.FC<MediaItemCardProps> = ({
                         </div>
                     )}
                     <div className={styles.editActions}>
-                        <button onClick={() => onSave(item.id, editData)}>
+                        <button onClick={() => onSave(item._id || item.id || '', editData)}>
                             <FontAwesomeIcon icon={faSave} />
                         </button>
                         <button onClick={onCancel}>
@@ -358,7 +533,7 @@ const MediaItemCard: React.FC<MediaItemCardProps> = ({
                         <FontAwesomeIcon icon={faEdit} />
                         Edit
                     </button>
-                    <button className={styles.deleteButton} onClick={() => onDelete(item.id)}>
+                    <button className={styles.deleteButton} onClick={() => onDelete(item._id || item.id || '')}>
                         <FontAwesomeIcon icon={faTrash} />
                         Delete
                     </button>
