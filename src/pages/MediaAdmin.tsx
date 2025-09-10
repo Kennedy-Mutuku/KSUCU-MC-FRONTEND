@@ -87,6 +87,9 @@ const MediaAdmin: React.FC = () => {
     useEffect(() => {
         // Check for authentication first
         const adminAuth = sessionStorage.getItem('adminAuth');
+        console.log('MediaAdmin Debug: adminAuth =', adminAuth);
+        console.log('MediaAdmin Debug: defaultEvents length =', defaultEvents.length);
+        console.log('MediaAdmin Debug: current mediaItems length =', mediaItems.length);
         
         if (adminAuth === 'Overseer') {
             setAuthenticated(true);
@@ -103,15 +106,24 @@ const MediaAdmin: React.FC = () => {
         
         try {
             const apiUrl = getApiUrl('api/media-items');
+            console.log('MediaAdmin Debug: API URL =', apiUrl);
             
             const response = await fetch(apiUrl, {
                 method: 'GET',
-                credentials: 'include'
+                credentials: 'include',
+                cache: 'no-cache',
+                headers: {
+                    'Cache-Control': 'no-cache',
+                    'Pragma': 'no-cache'
+                }
             });
+            
+            console.log('MediaAdmin Debug: Response status =', response.status);
             
             if (response.ok) {
                 const data = await response.json();
-                console.log('MediaAdmin API Success:', data.data?.length, 'items loaded');
+                console.log('MediaAdmin Debug: API Success, received data =', data);
+                console.log('MediaAdmin Debug: Items count =', data.data?.length);
                 
                 setMediaItems(data.data || []);
                 setSyncStatus('success');
@@ -124,24 +136,29 @@ const MediaAdmin: React.FC = () => {
                     detail: data.data || [] 
                 }));
             } else {
+                console.log('MediaAdmin Debug: API failed with status', response.status);
                 // Fallback to localStorage if API fails
                 const savedItems = localStorage.getItem('ksucu-media-items');
                 if (savedItems) {
                     const parsedItems = JSON.parse(savedItems);
+                    console.log('MediaAdmin Debug: Using localStorage items:', parsedItems.length);
                     setMediaItems(parsedItems);
                 } else {
+                    console.log('MediaAdmin Debug: Using default events:', defaultEvents.length);
                     setMediaItems(defaultEvents);
                 }
                 setSyncStatus('error');
             }
         } catch (error) {
-            console.error('Error loading media items:', error);
+            console.error('MediaAdmin Debug: Error loading media items:', error);
             // Fallback to localStorage, then default items
             const savedItems = localStorage.getItem('ksucu-media-items');
             if (savedItems) {
                 const parsedItems = JSON.parse(savedItems);
+                console.log('MediaAdmin Debug: Error fallback - Using localStorage:', parsedItems.length);
                 setMediaItems(parsedItems);
             } else {
+                console.log('MediaAdmin Debug: Error fallback - Using default events:', defaultEvents.length);
                 setMediaItems(defaultEvents);
             }
             setSyncStatus('error');
