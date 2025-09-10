@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
 import styles from '../styles/Requisitions.module.css';
@@ -11,6 +12,7 @@ interface RequisitionItem {
 }
 
 interface RequisitionForm {
+    _id?: string;
     id?: string;
     recipientName: string;
     recipientPhone: string;
@@ -51,6 +53,7 @@ const Requisitions: React.FC = () => {
     const [userRequisitions, setUserRequisitions] = useState<RequisitionForm[]>([]);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [currentUserName, setCurrentUserName] = useState('');
+    const backEndURL = 'https://ksucu-mc.co.ke';
 
 
     useEffect(() => {
@@ -74,12 +77,24 @@ const Requisitions: React.FC = () => {
         }
     }, []);
 
-    const loadUserRequisitions = (userName: string) => {
-        const allRequisitions = JSON.parse(localStorage.getItem('ksucu-requisitions') || '[]');
-        const userReqs = allRequisitions.filter((req: RequisitionForm) => 
-            req.recipientName.toLowerCase() === userName.toLowerCase()
-        );
-        setUserRequisitions(userReqs);
+    const loadUserRequisitions = async (userName: string) => {
+        try {
+            const response = await axios.get(`${backEndURL}/api/requisitions`, {
+                withCredentials: true
+            });
+            const userReqs = response.data.filter((req: RequisitionForm) => 
+                req.recipientName.toLowerCase() === userName.toLowerCase()
+            );
+            setUserRequisitions(userReqs);
+        } catch (error) {
+            console.error('Error loading requisitions:', error);
+            // Fallback to localStorage
+            const allRequisitions = JSON.parse(localStorage.getItem('ksucu-requisitions') || '[]');
+            const userReqs = allRequisitions.filter((req: RequisitionForm) => 
+                req.recipientName.toLowerCase() === userName.toLowerCase()
+            );
+            setUserRequisitions(userReqs);
+        }
     };
 
     const addItem = () => {
@@ -141,7 +156,7 @@ const Requisitions: React.FC = () => {
         setShowConfirmation(true);
     };
 
-    const confirmSubmission = () => {
+    const confirmSubmission = async () => {
         setLoading(true);
         
         // Only save filled items
@@ -149,29 +164,46 @@ const Requisitions: React.FC = () => {
         const requisition: RequisitionForm = {
             ...formData,
             items: filledItems,
-            id: Date.now().toString(),
             submittedAt: new Date().toISOString(),
             status: 'pending'
         };
 
-        // Save to localStorage
-        const existingRequisitions = JSON.parse(localStorage.getItem('ksucu-requisitions') || '[]');
-        existingRequisitions.push(requisition);
-        localStorage.setItem('ksucu-requisitions', JSON.stringify(existingRequisitions));
+        try {
+            // Save to API
+            await axios.post(`${backEndURL}/api/requisitions`, requisition, {
+                withCredentials: true
+            });
 
-        // Dispatch custom event for admin synchronization
-        window.dispatchEvent(new CustomEvent('requisitionsUpdated', { 
-            detail: existingRequisitions 
-        }));
+            // Update user's requisition list if logged in
+            if (isLoggedIn) {
+                await loadUserRequisitions(currentUserName);
+            }
 
-        // Update user's requisition list if logged in
-        if (isLoggedIn) {
-            loadUserRequisitions(currentUserName);
+            setSuccess('Requisition submitted successfully! You will be notified when it\'s processed.');
+        } catch (error) {
+            console.error('Error submitting requisition:', error);
+            
+            // Fallback to localStorage
+            requisition.id = Date.now().toString();
+            const existingRequisitions = JSON.parse(localStorage.getItem('ksucu-requisitions') || '[]');
+            existingRequisitions.push(requisition);
+            localStorage.setItem('ksucu-requisitions', JSON.stringify(existingRequisitions));
+
+            // Dispatch custom event for admin synchronization
+            window.dispatchEvent(new CustomEvent('requisitionsUpdated', { 
+                detail: existingRequisitions 
+            }));
+
+            // Update user's requisition list if logged in
+            if (isLoggedIn) {
+                await loadUserRequisitions(currentUserName);
+            }
+
+            setSuccess('Requisition submitted successfully! You will be notified when it\'s processed.');
         }
 
         setLoading(false);
         setShowConfirmation(false);
-        setSuccess('Requisition submitted successfully! You will be notified when it\'s processed.');
 
         // Reset form
         setFormData({
@@ -230,7 +262,7 @@ const Requisitions: React.FC = () => {
                                 <div className={styles.statusColumn}>
                                     <h4>Pending</h4>
                                     {userRequisitions.filter(req => req.status === 'pending').map((req) => (
-                                        <div key={req.id} className={styles.statusItem}>
+                                        <div key={req._id || req.id} className={styles.statusItem}>
                                             <strong>{req.items.map(item => item.itemName).join(', ')}</strong>
                                             <span>Submitted: {new Date(req.submittedAt).toLocaleDateString()}</span>
                                         </div>
@@ -239,7 +271,7 @@ const Requisitions: React.FC = () => {
                                 <div className={styles.statusColumn}>
                                     <h4>Approved</h4>
                                     {userRequisitions.filter(req => req.status === 'approved').map((req) => (
-                                        <div key={req.id} className={styles.statusItem}>
+                                        <div key={req._id || req.id} className={styles.statusItem}>
                                             <strong>{req.items.map(item => item.itemName).join(', ')}</strong>
                                             <span>Submitted: {new Date(req.submittedAt).toLocaleDateString()}</span>
                                         </div>
@@ -248,7 +280,7 @@ const Requisitions: React.FC = () => {
                                 <div className={styles.statusColumn}>
                                     <h4>Rejected</h4>
                                     {userRequisitions.filter(req => req.status === 'rejected').map((req) => (
-                                        <div key={req.id} className={styles.statusItem}>
+                                        <div key={req._id || req.id} className={styles.statusItem}>
                                             <strong>{req.items.map(item => item.itemName).join(', ')}</strong>
                                             <span>Submitted: {new Date(req.submittedAt).toLocaleDateString()}</span>
                                         </div>

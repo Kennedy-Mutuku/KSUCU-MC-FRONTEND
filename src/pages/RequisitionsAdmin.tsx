@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
 import styles from '../styles/RequisitionsAdmin.module.css';
@@ -22,7 +23,8 @@ interface RequisitionItem {
 }
 
 interface RequisitionForm {
-    id: string;
+    _id?: string;
+    id?: string;
     recipientName: string;
     recipientPhone: string;
     items: RequisitionItem[];
@@ -60,42 +62,35 @@ const RequisitionsAdmin: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [releasedBy, setReleasedBy] = useState('');
     const [comments, setComments] = useState('');
+    const [loading, setLoading] = useState(true);
+
+    const backEndURL = 'https://ksucu-mc.co.ke';
 
     useEffect(() => {
         loadRequisitions();
-        
-        // Listen for requisitions updates from user side
-        const handleRequisitionsUpdated = (e: CustomEvent) => {
-            setRequisitions(e.detail);
-            filterRequisitions(e.detail, filterStatus, searchTerm);
-        };
+        // Refresh requisitions every 30 seconds
+        const interval = setInterval(loadRequisitions, 30000);
+        return () => clearInterval(interval);
+    }, []);
 
-        // Listen for localStorage changes (cross-tab sync)
-        const handleStorageChange = (e: StorageEvent) => {
-            if (e.key === 'ksucu-requisitions' && e.newValue) {
-                try {
-                    const updatedRequisitions = JSON.parse(e.newValue);
-                    setRequisitions(updatedRequisitions);
-                    filterRequisitions(updatedRequisitions, filterStatus, searchTerm);
-                } catch (error) {
-                    console.error('Error parsing updated requisitions:', error);
-                }
-            }
-        };
+    useEffect(() => {
+        filterRequisitions(requisitions, filterStatus, searchTerm);
+    }, [requisitions, filterStatus, searchTerm]);
 
-        window.addEventListener('requisitionsUpdated', handleRequisitionsUpdated as EventListener);
-        window.addEventListener('storage', handleStorageChange);
-
-        return () => {
-            window.removeEventListener('requisitionsUpdated', handleRequisitionsUpdated as EventListener);
-            window.removeEventListener('storage', handleStorageChange);
-        };
-    }, [filterStatus, searchTerm]);
-
-    const loadRequisitions = () => {
-        const savedRequisitions = JSON.parse(localStorage.getItem('ksucu-requisitions') || '[]');
-        setRequisitions(savedRequisitions);
-        filterRequisitions(savedRequisitions, filterStatus, searchTerm);
+    const loadRequisitions = async () => {
+        try {
+            const response = await axios.get(`${backEndURL}/api/requisitions`, {
+                withCredentials: true
+            });
+            setRequisitions(response.data);
+            setLoading(false);
+        } catch (error) {
+            console.error('Error loading requisitions:', error);
+            // Fallback to localStorage if API fails
+            const savedRequisitions = JSON.parse(localStorage.getItem('ksucu-requisitions') || '[]');
+            setRequisitions(savedRequisitions);
+            setLoading(false);
+        }
     };
 
     const filterRequisitions = (reqs: RequisitionForm[], status: string, search: string) => {
@@ -118,41 +113,69 @@ const RequisitionsAdmin: React.FC = () => {
         ));
     };
 
-    const updateRequisition = (updatedReq: RequisitionForm) => {
-        const updatedRequisitions = requisitions.map(req => 
-            req.id === updatedReq.id ? updatedReq : req
-        );
-        setRequisitions(updatedRequisitions);
-        localStorage.setItem('ksucu-requisitions', JSON.stringify(updatedRequisitions));
-        
-        // Dispatch event for sync
-        window.dispatchEvent(new CustomEvent('requisitionsUpdated', { 
-            detail: updatedRequisitions 
-        }));
-
-        filterRequisitions(updatedRequisitions, filterStatus, searchTerm);
+    const updateRequisition = async (updatedReq: RequisitionForm) => {
+        try {
+            const reqId = updatedReq._id || updatedReq.id;
+            await axios.put(
+                `${backEndURL}/api/requisitions/${reqId}`,
+                updatedReq,
+                { withCredentials: true }
+            );
+            
+            // Reload all requisitions to ensure consistency
+            await loadRequisitions();
+        } catch (error) {
+            console.error('Error updating requisition:', error);
+            // Fallback to localStorage update
+            const updatedRequisitions = requisitions.map(req => 
+                (req._id === updatedReq._id || req.id === updatedReq.id) ? updatedReq : req
+            );
+            setRequisitions(updatedRequisitions);
+            localStorage.setItem('ksucu-requisitions', JSON.stringify(updatedRequisitions));
+        }
     };
 
-    const handleStatusUpdate = (requisition: RequisitionForm, newStatus: 'approved' | 'rejected' | 'released' | 'returned') => {
-        const updatedReq = { ...requisition, status: newStatus };
+    const handleStatusUpdate = async (requisition: RequisitionForm, newStatus: 'approved' | 'rejected' | 'released' | 'returned') => {
+        try {
+            const reqId = requisition._id || requisition.id;
+            const updateData: any = { status: newStatus };
 
-        if (newStatus === 'released' && releasedBy) {
-            updatedReq.releasedBy = releasedBy;
-            updatedReq.releasedAt = new Date().toISOString();
+            if (newStatus === 'released' && releasedBy) {
+                updateData.releasedBy = releasedBy;
+            }
+
+            if (comments) {
+                updateData.comments = comments;
+            }
+
+            await axios.patch(
+                `${backEndURL}/api/requisitions/${reqId}/status`,
+                updateData,
+                { withCredentials: true }
+            );
+            
+            // Reload all requisitions
+            await loadRequisitions();
+            setReleasedBy('');
+            setComments('');
+            setEditingRequisition(null);
+        } catch (error) {
+            console.error('Error updating status:', error);
+            // Fallback to local update
+            const updatedReq = { ...requisition, status: newStatus };
+            if (newStatus === 'released' && releasedBy) {
+                updatedReq.releasedBy = releasedBy;
+                updatedReq.releasedAt = new Date().toISOString();
+            }
+            if (newStatus === 'returned') {
+                updatedReq.returnedAt = new Date().toISOString();
+            }
+            if (comments) {
+                updatedReq.comments = comments;
+            }
+            await updateRequisition(updatedReq);
+            setEditingRequisition(null);
         }
-
-        if (newStatus === 'returned') {
-            updatedReq.returnedAt = new Date().toISOString();
-        }
-
-        if (comments) {
-            updatedReq.comments = comments;
-        }
-
-        updateRequisition(updatedReq);
-        setReleasedBy('');
-        setComments('');
-        setEditingRequisition(null);
     };
 
     const saveAdminPhone = () => {
@@ -177,7 +200,7 @@ Tel: +254 712 345 678
 ================================================================================
 
 REQUISITION DETAILS:
-Requisition ID:     ${requisition.id}
+Requisition ID:     ${requisition._id || requisition.id}
 Date Submitted:     ${new Date(requisition.submittedAt).toLocaleDateString()}
 Current Status:     ${requisition.status.toUpperCase()}
 
@@ -373,7 +396,7 @@ Version: 1.0
                         <div className={styles.emptyState}>
                             <FontAwesomeIcon icon={faBox} size="3x" />
                             <h3>No Requisitions Found</h3>
-                            <p>No requisitions match your current search</p>
+                            <p>{loading ? 'Loading requisitions...' : 'No requisitions match your current search'}</p>
                         </div>
                     ) : (
                         <div className={styles.tableContainer}>
@@ -390,7 +413,7 @@ Version: 1.0
                                         <td className={styles.statusColumn}>
                                             {filteredRequisitions.filter(r => r.status === 'pending').map((requisition) => (
                                                 <div 
-                                                    key={requisition.id} 
+                                                    key={requisition._id || requisition.id} 
                                                     className={styles.requisitionItem}
                                                     onClick={() => {
                                                         setSelectedRequisition(requisition);
@@ -433,7 +456,7 @@ Version: 1.0
                                         <td className={styles.statusColumn}>
                                             {filteredRequisitions.filter(r => r.status === 'approved').map((requisition) => (
                                                 <div 
-                                                    key={requisition.id} 
+                                                    key={requisition._id || requisition.id} 
                                                     className={styles.requisitionItem}
                                                     onClick={() => {
                                                         setSelectedRequisition(requisition);
@@ -476,7 +499,7 @@ Version: 1.0
                                         <td className={styles.statusColumn}>
                                             {filteredRequisitions.filter(r => r.status === 'rejected').map((requisition) => (
                                                 <div 
-                                                    key={requisition.id} 
+                                                    key={requisition._id || requisition.id} 
                                                     className={styles.requisitionItem}
                                                     onClick={() => {
                                                         setSelectedRequisition(requisition);
