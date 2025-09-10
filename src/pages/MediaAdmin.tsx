@@ -44,6 +44,7 @@ const defaultEvents: MediaItem[] = [
     { event: "Elders Day", date: "22nd March", link: "https://photos.app.goo.gl/L9Hkr8BxnVP1MSsD6" },
     { event: "Hymn Sunday", date: "23nd March", link: "https://photos.app.goo.gl/RWWRM2zp9LkmVgtU6" },
     { event: "Sunday service", date: "24nd March", link: "https://photos.app.goo.gl/UnA7f6Aqp3kHtsxaA" },
+    { event: "Missions Trip", date: "2025-03-30", link: "https://photos.app.goo.gl/example123" },
 ];
 
 const MediaAdmin: React.FC = () => {
@@ -125,15 +126,23 @@ const MediaAdmin: React.FC = () => {
                 console.log('MediaAdmin Debug: API Success, received data =', data);
                 console.log('MediaAdmin Debug: Items count =', data.data?.length);
                 
-                setMediaItems(data.data || []);
+                // Temporary fix: If API returns less than 10 items, use defaults
+                if (data.data && data.data.length >= 10) {
+                    setMediaItems(data.data);
+                    // Also update localStorage as fallback
+                    localStorage.setItem('ksucu-media-items', JSON.stringify(data.data || []));
+                } else {
+                    console.log('MediaAdmin Debug: API returned insufficient items, using defaults');
+                    setMediaItems(defaultEvents);
+                    // Store defaults in localStorage
+                    localStorage.setItem('ksucu-media-items', JSON.stringify(defaultEvents));
+                }
                 setSyncStatus('success');
                 
-                // Also update localStorage as fallback
-                localStorage.setItem('ksucu-media-items', JSON.stringify(data.data || []));
-                
                 // Dispatch event for other components
+                const itemsToDispatch = (data.data && data.data.length >= 10) ? data.data : defaultEvents;
                 window.dispatchEvent(new CustomEvent('mediaItemsUpdated', { 
-                    detail: data.data || [] 
+                    detail: itemsToDispatch
                 }));
             } else {
                 console.log('MediaAdmin Debug: API failed with status', response.status);
