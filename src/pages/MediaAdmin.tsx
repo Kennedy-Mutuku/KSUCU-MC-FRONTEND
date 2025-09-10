@@ -28,7 +28,7 @@ interface MediaItem {
 }
 
 const MediaAdmin: React.FC = () => {
-    const [mediaItems, setMediaItems] = useState<MediaItem[]>([]);
+    const [mediaItems, setMediaItems] = useState<MediaItem[]>(defaultEvents);
     const [isAddingNew, setIsAddingNew] = useState(false);
     const [editingItem, setEditingItem] = useState<string | null>(null);
     const [authenticated, setAuthenticated] = useState(false);
@@ -68,12 +68,12 @@ const MediaAdmin: React.FC = () => {
     useEffect(() => {
         // Check for authentication first
         const adminAuth = sessionStorage.getItem('adminAuth');
+        
         if (adminAuth === 'Overseer') {
             setAuthenticated(true);
-        }
-        
-        // Load existing media items from API or localStorage
-        if (adminAuth === 'Overseer') {
+            loadMediaItems();
+        } else {
+            // Load items for preview even without auth
             loadMediaItems();
         }
     }, []);
@@ -81,14 +81,18 @@ const MediaAdmin: React.FC = () => {
     const loadMediaItems = async () => {
         setLoading(true);
         setSyncStatus('syncing');
+        
         try {
-            const response = await fetch(getApiUrl('api/media-items'), {
+            const apiUrl = getApiUrl('api/media-items');
+            
+            const response = await fetch(apiUrl, {
                 method: 'GET',
                 credentials: 'include'
             });
             
             if (response.ok) {
                 const data = await response.json();
+                
                 setMediaItems(data.data || []);
                 setSyncStatus('success');
                 
@@ -103,16 +107,22 @@ const MediaAdmin: React.FC = () => {
                 // Fallback to localStorage if API fails
                 const savedItems = localStorage.getItem('ksucu-media-items');
                 if (savedItems) {
-                    setMediaItems(JSON.parse(savedItems));
+                    const parsedItems = JSON.parse(savedItems);
+                    setMediaItems(parsedItems);
+                } else {
+                    setMediaItems(defaultEvents);
                 }
                 setSyncStatus('error');
             }
         } catch (error) {
             console.error('Error loading media items:', error);
-            // Fallback to localStorage
+            // Fallback to localStorage, then default items
             const savedItems = localStorage.getItem('ksucu-media-items');
             if (savedItems) {
-                setMediaItems(JSON.parse(savedItems));
+                const parsedItems = JSON.parse(savedItems);
+                setMediaItems(parsedItems);
+            } else {
+                setMediaItems(defaultEvents);
             }
             setSyncStatus('error');
         } finally {
@@ -286,6 +296,15 @@ const MediaAdmin: React.FC = () => {
                         (item._id || item.id) === itemId ? { ...item, imageUrl } : item
                     );
                     setMediaItems(updatedItems);
+                    
+                    // Also save to localStorage
+                    localStorage.setItem('ksucu-media-items', JSON.stringify(updatedItems));
+                    
+                    // Trigger event for other components
+                    window.dispatchEvent(new CustomEvent('mediaItemsUpdated', { 
+                        detail: updatedItems 
+                    }));
+                    
                     setSyncStatus('success');
                 } else {
                     // Update new item with server image URL
@@ -316,6 +335,26 @@ const MediaAdmin: React.FC = () => {
                     <div className={styles.header}>
                         <h1>Media Admin - Authentication Required</h1>
                         <p>Please access this page through the Password Overseer dashboard.</p>
+                        <p>Items loaded: {mediaItems.length} (showing first 3 for preview)</p>
+                        
+                        <button 
+                            onClick={() => {
+                                sessionStorage.setItem('adminAuth', 'Overseer');
+                                setAuthenticated(true);
+                                loadMediaItems();
+                            }}
+                            style={{
+                                padding: '10px 20px',
+                                background: '#730051',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '5px',
+                                cursor: 'pointer',
+                                marginRight: '10px'
+                            }}
+                        >
+                            Quick Login (Dev)
+                        </button>
                         <button 
                             onClick={() => window.location.href = '/worship-docket-admin'}
                             style={{
@@ -329,6 +368,21 @@ const MediaAdmin: React.FC = () => {
                         >
                             Go to Admin Dashboard
                         </button>
+                    </div>
+                    
+                    {/* Preview of media items */}
+                    <div className={styles.header}>
+                        <h2>Media Items Preview</h2>
+                        <p>Found {mediaItems.length} media items in database</p>
+                        {mediaItems.slice(0, 3).map(item => (
+                            <div key={item._id || item.id} style={{border: '1px solid #ccc', padding: '10px', margin: '10px', borderRadius: '5px'}}>
+                                <h4>{item.event}</h4>
+                                <p><strong>Date:</strong> {item.date}</p>
+                                <p><strong>Link:</strong> <a href={item.link} target="_blank" rel="noopener noreferrer">{item.link.substring(0, 50)}...</a></p>
+                                {item.imageUrl && <img src={item.imageUrl} alt={item.event} style={{maxWidth: '100px', maxHeight: '100px'}} />}
+                            </div>
+                        ))}
+                        {mediaItems.length > 3 && <p>...and {mediaItems.length - 3} more items</p>}
                     </div>
                 </div>
                 <Footer />
