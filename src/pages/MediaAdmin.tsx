@@ -244,24 +244,67 @@ const MediaAdmin: React.FC = () => {
         }
     };
 
-    const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>, itemId?: string) => {
+    const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>, itemId?: string) => {
         const file = event.target.files?.[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const imageUrl = e.target?.result as string;
+        if (!file) return;
+        
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+            alert('Please select an image file (PNG, JPG, GIF, WebP)');
+            return;
+        }
+        
+        // Validate file size (max 10MB)
+        if (file.size > 10 * 1024 * 1024) {
+            alert('Image file is too large. Please select a file under 10MB.');
+            return;
+        }
+        
+        setLoading(true);
+        setSyncStatus('syncing');
+        
+        try {
+            const formData = new FormData();
+            formData.append('image', file);
+            
+            const response = await fetch(getApiUrl('api/media-items/upload-image'), {
+                method: 'POST',
+                headers: {
+                    'x-admin-password': 'Overseer'
+                },
+                credentials: 'include',
+                body: formData
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                const imageUrl = data.imageUrl;
+                
                 if (itemId) {
-                    // Update existing item
+                    // Update existing item with server image URL
                     const updatedItems = mediaItems.map(item => 
                         (item._id || item.id) === itemId ? { ...item, imageUrl } : item
                     );
-                    saveMediaItems(updatedItems);
+                    setMediaItems(updatedItems);
+                    setSyncStatus('success');
                 } else {
-                    // Update new item
+                    // Update new item with server image URL
                     setNewItem(prev => ({ ...prev, imageUrl }));
+                    setSyncStatus('success');
                 }
-            };
-            reader.readAsDataURL(file);
+            } else {
+                const error = await response.json();
+                console.error('Upload failed:', error);
+                setSyncStatus('error');
+                alert(`Failed to upload image: ${error.message || 'Unknown error'}`);
+            }
+        } catch (error) {
+            console.error('Error uploading image:', error);
+            setSyncStatus('error');
+            alert('Failed to upload image. Please try again later.');
+        } finally {
+            setLoading(false);
+            setTimeout(() => setSyncStatus('idle'), 3000);
         }
     };
 
