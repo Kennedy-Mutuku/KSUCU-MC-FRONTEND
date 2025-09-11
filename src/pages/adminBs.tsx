@@ -553,7 +553,7 @@ const BsMembersList = () => {
               finalGroups.push([]);
             }
             
-            // Create a sophisticated distribution system for balanced groups
+            // RESIDENCE-BASED GROUPING: Group all users from same residence together
             // 1. Group users by residence (alphabetical order)
             const regularUsersByResidence: { [residence: string]: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> } = {};
             allRegularUsers.forEach(user => {
@@ -565,13 +565,14 @@ const BsMembersList = () => {
             const residences = Object.keys(regularUsersByResidence).sort();
             console.log(`📍 Processing residences in alphabetical order: [${residences.join(', ')}]`);
             
-            // 3. Create balanced queues for each residence (mixed gender & year)
-            const balancedResidenceQueues: { [residence: string]: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> } = {};
+            // 3. Create residence-based groups: All users from same residence grouped together
+            const regularUsersQueue: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> = [];
             
             for (const residence of residences) {
               const residenceUsers = regularUsersByResidence[residence];
+              console.log(`🏠 Processing ${residence}: ${residenceUsers.length} users`);
               
-              // Separate by gender and year for optimal mixing
+              // Within each residence, balance by gender and year for optimal mixing
               const malesByYear: { [year: string]: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> } = {};
               const femalesByYear: { [year: string]: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> } = {};
               
@@ -593,14 +594,14 @@ const BsMembersList = () => {
                 yearGroup.sort(() => Math.random() - 0.5);
               });
               
-              // Create alternating gender/year pattern for this residence
-              const balancedQueue: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> = [];
+              // Create alternating gender/year pattern within this residence
+              const residenceQueue: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> = [];
               const allYears = [...new Set([...Object.keys(malesByYear), ...Object.keys(femalesByYear)])].sort();
               
               let currentYear = 0;
               let addedAny = true;
               
-              while (addedAny && balancedQueue.length < residenceUsers.length) {
+              while (addedAny && residenceQueue.length < residenceUsers.length) {
                 addedAny = false;
                 
                 for (let yearIndex = 0; yearIndex < allYears.length; yearIndex++) {
@@ -608,33 +609,21 @@ const BsMembersList = () => {
                   
                   // Try to add one male and one female from this year
                   if (malesByYear[year] && malesByYear[year].length > 0) {
-                    balancedQueue.push(malesByYear[year].shift()!);
+                    residenceQueue.push(malesByYear[year].shift()!);
                     addedAny = true;
                   }
                   
                   if (femalesByYear[year] && femalesByYear[year].length > 0) {
-                    balancedQueue.push(femalesByYear[year].shift()!);
+                    residenceQueue.push(femalesByYear[year].shift()!);
                     addedAny = true;
                   }
                 }
                 currentYear++;
               }
               
-              balancedResidenceQueues[residence] = balancedQueue;
-              console.log(`🏠 ${residence}: ${balancedQueue.length} users balanced by gender/year`);
-            }
-            
-            // 4. Create master distribution pattern: round-robin through residences
-            const regularUsersQueue: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> = [];
-            let maxResidenceSize = Math.max(...residences.map(r => balancedResidenceQueues[r].length));
-            
-            // Distribute round-robin: one from each residence in alphabetical order
-            for (let position = 0; position < maxResidenceSize; position++) {
-              for (const residence of residences) {
-                if (balancedResidenceQueues[residence].length > position) {
-                  regularUsersQueue.push(balancedResidenceQueues[residence][position]);
-                }
-              }
+              // Add ALL users from this residence to the main queue (residence-based blocks)
+              regularUsersQueue.push(...residenceQueue);
+              console.log(`✅ Added all ${residenceQueue.length} users from ${residence} to queue`);
             }
             
             console.log(`📋 Regular users queue: ${regularUsersQueue.length} users`);
@@ -666,32 +655,55 @@ const BsMembersList = () => {
               }
             }
             
-            // STEP 2: Distribute regular users to fill all groups
+            // STEP 2: Distribute regular users SEQUENTIALLY (residence-based blocks)
             let regularUserIndex = 0;
             let currentGroupIndex = 0;
             
-            // Fill groups round-robin style to ensure even distribution
+            console.log(`🎯 Starting sequential distribution of ${regularUsersQueue.length} users into ${totalGroups} groups`);
+            
+            // Fill groups sequentially to keep residence blocks together
             while (regularUserIndex < regularUsersQueue.length) {
               // Find the next group that has space
-              let attempts = 0;
-              while (attempts < totalGroups) {
-                if (finalGroups[currentGroupIndex].length < size) {
-                  finalGroups[currentGroupIndex].push(regularUsersQueue[regularUserIndex]);
-                  regularUserIndex++;
-                  break;
+              while (currentGroupIndex < totalGroups && finalGroups[currentGroupIndex].length >= size) {
+                currentGroupIndex++;
+              }
+              
+              // If we've filled all groups to capacity and still have users, they go in the last group
+              if (currentGroupIndex >= totalGroups) {
+                // All groups are full, add remaining users to the last group
+                finalGroups[totalGroups - 1].push(regularUsersQueue[regularUserIndex]);
+                console.log(`📝 Added ${regularUsersQueue[regularUserIndex].name} to final group (overflow)`);
+                regularUserIndex++;
+              } else {
+                // Add user to current group
+                const user = regularUsersQueue[regularUserIndex];
+                finalGroups[currentGroupIndex].push(user);
+                regularUserIndex++;
+                
+                // If current group is now full, move to next group
+                if (finalGroups[currentGroupIndex].length >= size) {
+                  console.log(`✅ Group ${currentGroupIndex + 1} filled with ${size} members`);
+                  currentGroupIndex++;
                 }
-                currentGroupIndex = (currentGroupIndex + 1) % totalGroups;
-                attempts++;
               }
-              
-              // If no group has space, we're done (shouldn't happen with correct math)
-              if (attempts >= totalGroups) {
-                console.warn(`⚠️ All groups full, ${regularUsersQueue.length - regularUserIndex} users remaining`);
-                break;
-              }
-              
-              currentGroupIndex = (currentGroupIndex + 1) % totalGroups;
             }
+            
+            console.log(`🎯 Sequential distribution complete: ${regularUserIndex} users placed`);
+            
+            // Log residence distribution pattern
+            const residenceDistribution: { [residence: string]: number[] } = {};
+            finalGroups.forEach((group, groupIndex) => {
+              group.forEach(user => {
+                if (!residenceDistribution[user.residence]) residenceDistribution[user.residence] = [];
+                residenceDistribution[user.residence].push(groupIndex + 1);
+              });
+            });
+            
+            console.log(`🏠 RESIDENCE DISTRIBUTION:`);
+            Object.keys(residenceDistribution).sort().forEach(residence => {
+              const groupNumbers = [...new Set(residenceDistribution[residence])].sort((a, b) => a - b);
+              console.log(`   ${residence}: Groups [${groupNumbers.join(', ')}]`);
+            });
             
             // Log detailed group creation with diversity analysis
             finalGroups.forEach((group, index) => {
