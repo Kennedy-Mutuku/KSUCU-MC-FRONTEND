@@ -32,11 +32,6 @@ interface Settings {
   contactInfo: ContactInfo[];
 }
 
-interface RequestStatus {
-  status: 'pending' | 'viewed' | 'approved' | 'rejected' | 'in_progress' | 'completed';
-  updatedAt: string;
-  adminNote?: string;
-}
 
 interface User {
   _id: string;
@@ -55,7 +50,7 @@ interface UserRequest {
   userId: string;
   type: 'help' | 'donation';
   data: any;
-  status: RequestStatus;
+  status: 'pending' | 'viewed' | 'approved' | 'rejected' | 'in_progress' | 'completed';
   createdAt: string;
 }
 
@@ -233,10 +228,7 @@ const CompassionCounselingPage: React.FC = () => {
           userEmail: user?.email,
           userName: user?.username,
           submittedAt: new Date().toISOString(),
-          status: {
-            status: 'pending',
-            updatedAt: new Date().toISOString()
-          }
+          status: 'pending'
         })
       });
 
@@ -283,10 +275,7 @@ const CompassionCounselingPage: React.FC = () => {
           userEmail: user?.email,
           userName: user?.username,
           submittedAt: new Date().toISOString(),
-          status: {
-            status: 'pending',
-            updatedAt: new Date().toISOString()
-          }
+          status: 'pending'
         })
       });
 
@@ -369,15 +358,12 @@ const CompassionCounselingPage: React.FC = () => {
                       </span>
                     </div>
                     <div className={styles.requestStatus}>
-                      <div className={`${styles.statusBadge} ${styles[request.status.status]}`}>
-                        {request.status.status === 'pending' && <Clock size={14} />}
-                        {request.status.status === 'viewed' && <Eye size={14} />}
-                        {request.status.status === 'approved' && <CheckCircle size={14} />}
-                        <span>{request.status.status}</span>
+                      <div className={`${styles.statusBadge} ${styles[request.status]}`}>
+                        {request.status === 'pending' && <Clock size={14} />}
+                        {request.status === 'viewed' && <Eye size={14} />}
+                        {request.status === 'approved' && <CheckCircle size={14} />}
+                        <span>{request.status}</span>
                       </div>
-                      {request.status.adminNote && (
-                        <p className={styles.adminNote}>Admin: {request.status.adminNote}</p>
-                      )}
                     </div>
                   </div>
                 ))}
