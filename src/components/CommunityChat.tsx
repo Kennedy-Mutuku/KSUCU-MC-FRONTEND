@@ -972,8 +972,8 @@ const CommunityChat: React.FC = () => {
                   title="Like this message"
                 >
                   <Heart size={16} />
-                  {message.reactions?.likes?.length > 0 && (
-                    <span className={styles.reactionCount}>{message.reactions?.likes?.length}</span>
+                  {(message.reactions?.likes?.length || 0) > 0 && (
+                    <span className={styles.reactionCount}>{message.reactions?.likes?.length || 0}</span>
                   )}
                 </button>
                 <button 
@@ -982,8 +982,8 @@ const CommunityChat: React.FC = () => {
                   title="Dislike this message"
                 >
                   <ThumbsDown size={16} />
-                  {message.reactions?.dislikes?.length > 0 && (
-                    <span className={styles.reactionCount}>{message.reactions?.dislikes?.length}</span>
+                  {(message.reactions?.dislikes?.length || 0) > 0 && (
+                    <span className={styles.reactionCount}>{message.reactions?.dislikes?.length || 0}</span>
                   )}
                 </button>
               </div>
