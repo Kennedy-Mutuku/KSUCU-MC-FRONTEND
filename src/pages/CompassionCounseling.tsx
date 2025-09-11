@@ -4,7 +4,6 @@ import styles from '../styles/compassionCounseling.module.css';
 import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
 import { Heart, Phone, MessageCircle, DollarSign, User, Mail, MapPin, Bell, CheckCircle, Eye, Clock } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 interface PaymentMethod {
@@ -39,6 +38,18 @@ interface RequestStatus {
   adminNote?: string;
 }
 
+interface User {
+  _id: string;
+  username: string;
+  email: string;
+  yos: number;
+  phone: string;
+  et: string;
+  ministry: string;
+  course?: string;
+  reg?: string;
+}
+
 interface UserRequest {
   _id: string;
   userId: string;
@@ -49,8 +60,9 @@ interface UserRequest {
 }
 
 const CompassionCounselingPage: React.FC = () => {
-  const { user, isAuthenticated, isLoading } = useAuth();
   const navigate = useNavigate();
+  const [user, setUser] = useState<User | null>(null);
+  const [checkingAuth, setCheckingAuth] = useState(true);
   const [activeTab, setActiveTab] = useState<'help' | 'donate'>('help');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
@@ -84,20 +96,56 @@ const CompassionCounselingPage: React.FC = () => {
   });
 
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      // Redirect to login if not authenticated
-      navigate('/signIn', { replace: true });
-      return;
-    }
-    
+    checkUserAuthentication();
+  }, []);
+
+  useEffect(() => {
     if (user) {
       fetchSettings();
       fetchUserRequests();
     }
-  }, [user, isAuthenticated, isLoading, navigate]);
+  }, [user]);
+
+  const checkUserAuthentication = async (retryCount = 0) => {
+    console.log('🔍 CompassionCounseling: Checking user authentication...');
+    try {
+      const apiUrl = getApiUrl('users');
+      const response = await fetch(`${apiUrl}?t=${Date.now()}`, {
+        credentials: 'include',
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache'
+        }
+      });
+
+      console.log('🔍 CompassionCounseling: Response status:', response.status);
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('✅ CompassionCounseling: User authenticated, data:', data);
+        setUser(data);
+      } else {
+        console.log('❌ CompassionCounseling: User not authenticated');
+        setUser(null);
+      }
+    } catch (error) {
+      console.error('❌ CompassionCounseling: Authentication check failed:', error);
+      
+      if (retryCount < 2) {
+        console.log(`🔄 Retrying authentication check (attempt ${retryCount + 1}/3)...`);
+        setTimeout(() => checkUserAuthentication(retryCount + 1), 2000);
+        return;
+      }
+      
+      setUser(null);
+    } finally {
+      console.log('🔍 CompassionCounseling: Authentication check completed');
+      setCheckingAuth(false);
+    }
+  };
 
   // Show loading while checking authentication
-  if (isLoading) {
+  if (checkingAuth) {
     return (
       <div className={styles.loadingContainer}>
         <div className={styles.spinner}></div>
@@ -107,7 +155,7 @@ const CompassionCounselingPage: React.FC = () => {
   }
 
   // Show login required message if not authenticated
-  if (!isAuthenticated) {
+  if (!user) {
     return (
       <div className={styles.authRequiredContainer}>
         <div className={styles.authRequiredContent}>

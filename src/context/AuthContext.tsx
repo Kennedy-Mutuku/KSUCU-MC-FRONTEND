@@ -42,6 +42,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const checkAuth = async () => {
     try {
+      console.log('🔍 AuthContext: Starting authentication check...');
       setIsLoading(true);
       const response = await fetch(getApiUrl('users'), {
         credentials: 'include',
@@ -51,16 +52,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         }
       });
 
+      console.log('🔍 AuthContext: Response status:', response.status);
+
       if (response.ok) {
         const data = await response.json();
+        console.log('✅ AuthContext: User authenticated:', data);
         setUser(data);
       } else {
+        console.log('❌ AuthContext: User not authenticated');
         setUser(null);
       }
     } catch (error) {
-      console.error('Auth check failed:', error);
+      console.error('❌ AuthContext: Auth check failed:', error);
       setUser(null);
     } finally {
+      console.log('🔍 AuthContext: Setting isLoading to false');
       setIsLoading(false);
     }
   };
