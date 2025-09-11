@@ -335,7 +335,7 @@ const CommunityChat: React.FC = () => {
       });
 
       // Get authentication token from cookies
-      const token = Cookies.get('user_s');
+      const token = Cookies.get('socket_token');
       
       // Prepare headers
       const headers: HeadersInit = {};
@@ -558,7 +558,7 @@ const CommunityChat: React.FC = () => {
 
   const handleReaction = async (messageId: string, reactionType: 'like' | 'dislike') => {
     try {
-      const token = Cookies.get('user_s');
+      const token = Cookies.get('socket_token');
       const headers: HeadersInit = {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`

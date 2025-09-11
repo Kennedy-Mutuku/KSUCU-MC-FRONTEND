@@ -14,20 +14,63 @@ class SocketService {
         return;
       }
 
-      // Get authentication token from cookies (required)
-      const token = Cookies.get('user_s');
+      // Get authentication token from cookies (required)  
+      console.log('🔐 SocketService: All available cookies:', document.cookie);
+      const token = Cookies.get('socket_token');
+      const userS = Cookies.get('user_s');
+      console.log('🔐 SocketService: socket_token:', token ? 'Found' : 'Not found');
+      console.log('🔐 SocketService: user_s:', userS ? 'Found' : 'Not found');
+      console.log('🔐 SocketService: Token value debug:', token?.substring(0, 20) + '...' || 'No token');
       
-      const serverUrl = getBaseUrl();
-      
-      // Connect with authentication token
-      this.socket = io(serverUrl, {
-        auth: {
-          token: token // Pass authentication token
-        },
-        transports: ['websocket', 'polling'],
-        upgrade: true,
-        rememberUpgrade: true
-      });
+      // If no socket_token, try to get a fresh one by making a request to the backend
+      if (!token) {
+        console.log('❌ SocketService: No socket_token found, attempting to get fresh token...');
+        try {
+          // Make a request to get user info, which should set fresh cookies
+          const response = await fetch(getBaseUrl() + '/users', {
+            credentials: 'include'
+          });
+          
+          if (response.ok) {
+            // Try to get token again after the request
+            const refreshedToken = Cookies.get('socket_token');
+            if (refreshedToken) {
+              console.log('✅ SocketService: Got refreshed token');
+              // Continue with the refreshed token
+              this.socket = io(serverUrl, {
+                auth: {
+                  token: refreshedToken
+                },
+                transports: ['websocket', 'polling'],
+                upgrade: true,
+                rememberUpgrade: true
+              });
+            } else {
+              console.log('❌ SocketService: Still no token after refresh attempt');
+              reject(new Error('No authentication token available'));
+              return;
+            }
+          } else {
+            console.log('❌ SocketService: Authentication failed');
+            reject(new Error('Authentication failed'));
+            return;
+          }
+        } catch (fetchError) {
+          console.log('❌ SocketService: Error fetching fresh token:', fetchError);
+          reject(new Error('No authentication token available'));
+          return;
+        }
+      } else {
+        // Continue with original token
+        this.socket = io(serverUrl, {
+          auth: {
+            token: token
+          },
+          transports: ['websocket', 'polling'],
+          upgrade: true,
+          rememberUpgrade: true
+        });
+      }
 
       this.socket.on('connect', () => {
         console.log('Connected to socket server');
