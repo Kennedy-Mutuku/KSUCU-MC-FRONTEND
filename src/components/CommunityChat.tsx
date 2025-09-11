@@ -91,6 +91,9 @@ const CommunityChat: React.FC = () => {
   
   // Reaction animation state
   const [reactionUpdates, setReactionUpdates] = useState<{[key: string]: {likes: number, dislikes: number}}>({});
+  
+  // Media fullscreen state
+  const [fullscreenMedia, setFullscreenMedia] = useState<{url: string, type: 'image' | 'video'} | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatWindowRef = useRef<HTMLDivElement>(null);
@@ -306,10 +309,10 @@ const CommunityChat: React.FC = () => {
   const handleFileUpload = async (file: File) => {
     if (!file || !isConnected) return;
 
-    // Validate file size (max 10MB)
-    const maxSize = 10 * 1024 * 1024; // 10MB
+    // Validate file size (max 50MB to match backend)
+    const maxSize = 50 * 1024 * 1024; // 50MB
     if (file.size > maxSize) {
-      setError('File too large. Maximum size is 10MB.');
+      setError('File too large. Maximum size is 50MB.');
       return;
     }
 
@@ -377,7 +380,7 @@ const CommunityChat: React.FC = () => {
             setError('❌ Your session has expired. Please log in again to upload media files.');
           }
         } else if (response.status === 413) {
-          setError('❌ File too large. Please choose a smaller file (max 10MB).');
+          setError('❌ File too large. Please choose a smaller file (max 50MB).');
         } else if (response.status === 415) {
           setError('❌ File type not supported. Please upload images, videos, audio, or document files.');
         } else {
@@ -554,7 +557,7 @@ const CommunityChat: React.FC = () => {
     if (longPressMessage) {
       try {
         // Pass the message ID - backend will identify user from socket connection
-        await socketService.deleteMessageForMe(longPressMessage._id);
+        socketService.deleteMessageForMe(longPressMessage._id);
         setShowDeleteOptions(false);
         setLongPressMessage(null);
       } catch (error) {
@@ -652,7 +655,7 @@ const CommunityChat: React.FC = () => {
       }
       
       try {
-        await socketService.deleteMessage(longPressMessage._id);
+        socketService.deleteMessage(longPressMessage._id);
         setShowDeleteOptions(false);
         setLongPressMessage(null);
       } catch (error) {
@@ -932,11 +935,20 @@ const CommunityChat: React.FC = () => {
               <div>
                 <img 
                   src={`${getBaseUrl()}${message.mediaUrl}`} 
-                  alt={message.mediaFileName}
+                  alt={message.mediaFileName || 'Image'}
                   className={styles.messageImage}
+                  onClick={() => setFullscreenMedia({
+                    url: `${getBaseUrl()}${message.mediaUrl}`,
+                    type: 'image'
+                  })}
                   onError={(e) => {
                     console.error('Failed to load image:', message.mediaUrl);
-                    e.currentTarget.style.display = 'none';
+                    const target = e.currentTarget as HTMLImageElement;
+                    target.style.display = 'none';
+                    const parent = target.parentElement;
+                    if (parent) {
+                      parent.innerHTML = '<div style="padding: 20px; background: #f3f4f6; border-radius: 8px; text-align: center; color: #6b7280;">🖼️ Image failed to load</div>';
+                    }
                   }}
                 />
                 {message.message && <p>{message.message}</p>}
@@ -946,9 +958,22 @@ const CommunityChat: React.FC = () => {
                 <video 
                   src={`${getBaseUrl()}${message.mediaUrl}`} 
                   controls
+                  preload="metadata"
                   className={styles.messageVideo}
-                  onError={() => {
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setFullscreenMedia({
+                      url: `${getBaseUrl()}${message.mediaUrl}`,
+                      type: 'video'
+                    });
+                  }}
+                  onError={(e) => {
                     console.error('Failed to load video:', message.mediaUrl);
+                    const target = e.currentTarget as HTMLVideoElement;
+                    const parent = target.parentElement;
+                    if (parent) {
+                      parent.innerHTML = `<div style="padding: 20px; background: #f3f4f6; border-radius: 8px; text-align: center; color: #6b7280;">📹 Video failed to load<br><small>${message.mediaFileName || 'Unknown file'}</small></div>`;
+                    }
                   }}
                 />
                 {message.message && <p>{message.message}</p>}
@@ -958,9 +983,15 @@ const CommunityChat: React.FC = () => {
                 <audio 
                   src={`${getBaseUrl()}${message.mediaUrl}`} 
                   controls
+                  preload="metadata"
                   className={styles.messageAudio}
-                  onError={() => {
+                  onError={(e) => {
                     console.error('Failed to load audio:', message.mediaUrl);
+                    const target = e.currentTarget as HTMLAudioElement;
+                    const parent = target.parentElement;
+                    if (parent) {
+                      parent.innerHTML = `<div style="padding: 12px; background: #f3f4f6; border-radius: 8px; text-align: center; color: #6b7280;">🎵 Audio failed to load<br><small>${message.mediaFileName || 'Unknown file'}</small></div>`;
+                    }
                   }}
                 />
                 {message.message && <p>{message.message}</p>}
@@ -972,8 +1003,14 @@ const CommunityChat: React.FC = () => {
                   target="_blank" 
                   rel="noopener noreferrer"
                   className={styles.fileLink}
+                  title={`Download ${message.mediaFileName || 'file'} (${message.mediaSize ? Math.round(message.mediaSize / 1024) + ' KB' : 'unknown size'})`}
                 >
-                  📎 {message.mediaFileName || 'Download File'}
+                  <span>{message.mediaFileName || 'Download File'}</span>
+                  {message.mediaSize && (
+                    <small style={{ opacity: 0.7, fontSize: '10px' }}>
+                      ({Math.round(message.mediaSize / 1024)} KB)
+                    </small>
+                  )}
                 </a>
                 {message.message && <p>{message.message}</p>}
               </div>
@@ -1473,6 +1510,29 @@ const CommunityChat: React.FC = () => {
               Cancel
             </button>
           </div>
+        </div>
+      )}
+
+      {/* Fullscreen Media Modal */}
+      {fullscreenMedia && (
+        <div 
+          className={styles.mediaFullscreen} 
+          onClick={() => setFullscreenMedia(null)}
+        >
+          {fullscreenMedia.type === 'image' ? (
+            <img 
+              src={fullscreenMedia.url}
+              alt="Fullscreen view"
+              onClick={(e) => e.stopPropagation()}
+            />
+          ) : (
+            <video 
+              src={fullscreenMedia.url}
+              controls
+              autoPlay
+              onClick={(e) => e.stopPropagation()}
+            />
+          )}
         </div>
       )}
     </div>
