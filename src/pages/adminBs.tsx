@@ -621,14 +621,7 @@ const BsMembersList = () => {
             console.log(`✝️ Total pastors: ${allPastors.length}`);
             console.log(`👥 Total regular users: ${allRegularUsers.length}`);
             
-            // Calculate how many groups we can form
-            const totalGroups = Math.ceil(users.length / size);
-            console.log(`📊 Will create ${totalGroups} groups of size ${size}`);
-            
-            // Create a combined queue with all users (pastors + regular users)
-            // We'll distribute pastors evenly across groups
-            const finalGroups: Array<Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }>> = [];
-            
+            // Create a master queue of ALL users (pastors + regular users)
             // First, organize regular users by residence for balanced distribution
             const regularUsersByResidence: { [residence: string]: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> } = {};
             allRegularUsers.forEach(user => {
@@ -646,49 +639,52 @@ const BsMembersList = () => {
               masterQueue.push(...balancedQueue);
             }
             
-            console.log(`📋 Master queue created with ${masterQueue.length} regular users`);
+            // Add all pastors to the beginning of the queue (they'll be distributed first)
+            const allUsersQueue = [...allPastors, ...masterQueue];
+            console.log(`📋 Master queue created with ${allUsersQueue.length} total users (${allPastors.length} pastors + ${masterQueue.length} regular)`);
             
-            // Now create groups of exact size, distributing pastors evenly
-            let pastorIndex = 0;
-            let regularUserIndex = 0;
+            // Create groups ensuring ALL users are included
+            const finalGroups: Array<Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }>> = [];
+            
+            // Calculate number of groups needed to include ALL users
+            const totalGroups = Math.ceil(allUsersQueue.length / size);
+            console.log(`📊 Will create ${totalGroups} groups to accommodate ALL ${allUsersQueue.length} users`);
+            
+            let userIndex = 0;
             
             for (let groupNum = 0; groupNum < totalGroups; groupNum++) {
               const currentGroup: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> = [];
               
-              // First, add a pastor if available
-              if (pastorIndex < allPastors.length) {
-                currentGroup.push(allPastors[pastorIndex]);
-                pastorIndex++;
-                console.log(`✝️ Added pastor to Group ${groupNum + 1}`);
+              // Add users to this group until we reach the target size OR run out of users
+              while (currentGroup.length < size && userIndex < allUsersQueue.length) {
+                currentGroup.push(allUsersQueue[userIndex]);
+                userIndex++;
               }
               
-              // Fill the rest of the group with regular users
-              while (currentGroup.length < size && regularUserIndex < masterQueue.length) {
-                currentGroup.push(masterQueue[regularUserIndex]);
-                regularUserIndex++;
-              }
-              
-              // If we still need more members and have leftover pastors, use them as regular members
-              while (currentGroup.length < size && pastorIndex < allPastors.length) {
-                currentGroup.push(allPastors[pastorIndex]);
-                pastorIndex++;
-                console.log(`✝️ Added extra pastor as regular member to Group ${groupNum + 1}`);
-              }
-              
-              // Only add non-empty groups
+              // Add the group if it has any members
               if (currentGroup.length > 0) {
                 finalGroups.push(currentGroup);
-                console.log(`✅ Group ${groupNum + 1} created with exactly ${currentGroup.length} members`);
+                const groupPastors = currentGroup.filter(u => u.isPastor);
+                console.log(`✅ Group ${groupNum + 1} created with ${currentGroup.length} members (${groupPastors.length} pastors)`);
+              }
+              
+              // If we've placed all users, break early
+              if (userIndex >= allUsersQueue.length) {
+                console.log(`🎯 All ${allUsersQueue.length} users have been placed in groups`);
+                break;
               }
             }
 
             
-            // Verify all users are grouped
+            // Verify ALL users are grouped
             const totalGrouped = finalGroups.reduce((sum, group) => sum + group.length, 0);
-            console.log(`\n🔍 Verification: ${totalGrouped}/${users.length} users grouped`);
+            console.log(`\n🔍 VERIFICATION: ${totalGrouped}/${users.length} users grouped`);
             
-            if (totalGrouped !== users.length) {
-              console.warn(`⚠️ Note: ${users.length - totalGrouped} users could not fit into groups of size ${size}`);
+            if (totalGrouped === users.length) {
+              console.log(`✅ SUCCESS: ALL ${users.length} users have been grouped successfully!`);
+            } else {
+              console.error(`❌ ERROR: Only ${totalGrouped}/${users.length} users were grouped. ${users.length - totalGrouped} users are missing!`);
+              // This should never happen with the new algorithm
             }
             
             // Final verification and logging
@@ -715,17 +711,21 @@ const BsMembersList = () => {
               const pastorName = pastors.length > 0 ? pastors[0].name : 'None';
               const residences = [...new Set(group.map(u => u.residence))];
               
-              console.log(`📋 Group ${index + 1}: ${totalMembers}/${size} members | Pastor: ${pastorName} | M:${males} F:${females} | Residences: [${residences.join(', ')}]`);
+              console.log(`📋 Group ${index + 1}: ${totalMembers} members | Pastor: ${pastorName} | M:${males} F:${females} | Residences: [${residences.join(', ')}]`);
               
+              // Only warn if not the last group (last group may have fewer members)
               if (totalMembers !== size && index < finalGroups.length - 1) {
-                console.warn(`⚠️ Group ${index + 1} has ${totalMembers} members instead of ${size}`);
+                console.warn(`⚠️ Group ${index + 1} has ${totalMembers} members instead of target ${size}`);
+              } else if (totalMembers !== size && index === finalGroups.length - 1) {
+                console.log(`📝 Final group ${index + 1} has ${totalMembers} members (acceptable for last group)`);
               }
             });
             
             // Remove empty groups
             const nonEmptyGroups = finalGroups.filter(group => group.length > 0);
             
-            console.log(`\n✅ Final result: ${nonEmptyGroups.length} groups created with residence-based distribution`);
+            console.log(`\n✅ FINAL RESULT: ${nonEmptyGroups.length} groups created, ALL ${users.length} users included!`);
+            console.log(`📈 Expected groups: ${Math.ceil(users.length / size)} | Actual groups: ${nonEmptyGroups.length}`);
             setGroups(nonEmptyGroups);
             
             resolve();
