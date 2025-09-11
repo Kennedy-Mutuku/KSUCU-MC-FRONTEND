@@ -105,16 +105,11 @@ const MediaAdmin: React.FC = () => {
         setLoading(true);
         setSyncStatus('syncing');
         
-        // FORCE DISPLAY DEFAULT EVENTS IMMEDIATELY
-        console.log('MediaAdmin Debug: FORCING 16 default events display');
-        setMediaItems(defaultEvents);
-        localStorage.setItem('ksucu-media-items', JSON.stringify(defaultEvents));
-        
         try {
             // Add timestamp to completely bypass all caching
             const timestamp = new Date().getTime();
             const apiUrl = `${getApiUrl('api/media-items')}?t=${timestamp}`;
-            console.log('MediaAdmin Debug: API URL =', apiUrl);
+            console.log('MediaAdmin: Fetching media items from API:', apiUrl);
             
             const response = await fetch(apiUrl, {
                 method: 'GET',
@@ -127,49 +122,63 @@ const MediaAdmin: React.FC = () => {
                 }
             });
             
-            console.log('MediaAdmin Debug: Response status =', response.status);
+            console.log('MediaAdmin: Response status =', response.status);
             
             if (response.ok) {
                 const data = await response.json();
-                console.log('MediaAdmin Debug: API Success, received data =', data);
-                console.log('MediaAdmin Debug: Items count =', data.data?.length);
+                const apiItems = data.data || [];
+                console.log('MediaAdmin: Received', apiItems.length, 'items from API');
                 
-                // FORCE DEFAULT EVENTS - API data is unreliable
-                console.log('MediaAdmin Debug: API returned', data.data?.length, 'items, but KEEPING defaults');
-                console.log('MediaAdmin Debug: Staying with 16 default events for reliability');
-                // Keep the default events that were already set
-                // setMediaItems(defaultEvents); // Already set above
+                // Merge API items with default events (API items take priority)
+                const mergedItems = [...apiItems];
+                
+                // Add default events that aren't already in the database
+                defaultEvents.forEach(defaultItem => {
+                    const exists = apiItems.some((apiItem: MediaItem) => 
+                        apiItem.event === defaultItem.event && 
+                        apiItem.link === defaultItem.link
+                    );
+                    if (!exists) {
+                        mergedItems.push(defaultItem);
+                    }
+                });
+                
+                console.log('MediaAdmin: Total items after merge:', mergedItems.length);
+                setMediaItems(mergedItems);
+                localStorage.setItem('ksucu-media-items', JSON.stringify(mergedItems));
                 setSyncStatus('success');
                 
-                // Dispatch event for other components - ALWAYS use default events
+                // Dispatch event for other components
                 window.dispatchEvent(new CustomEvent('mediaItemsUpdated', { 
-                    detail: defaultEvents
+                    detail: mergedItems
                 }));
             } else {
-                console.log('MediaAdmin Debug: API failed with status', response.status);
+                console.log('MediaAdmin: API failed with status', response.status);
                 // Fallback to localStorage if API fails
                 const savedItems = localStorage.getItem('ksucu-media-items');
                 if (savedItems) {
                     const parsedItems = JSON.parse(savedItems);
-                    console.log('MediaAdmin Debug: Using localStorage items:', parsedItems.length);
+                    console.log('MediaAdmin: Using cached items:', parsedItems.length);
                     setMediaItems(parsedItems);
                 } else {
-                    console.log('MediaAdmin Debug: Using default events:', defaultEvents.length);
+                    console.log('MediaAdmin: Using default events:', defaultEvents.length);
                     setMediaItems(defaultEvents);
+                    localStorage.setItem('ksucu-media-items', JSON.stringify(defaultEvents));
                 }
                 setSyncStatus('error');
             }
         } catch (error) {
-            console.error('MediaAdmin Debug: Error loading media items:', error);
+            console.error('MediaAdmin: Error loading media items:', error);
             // Fallback to localStorage, then default items
             const savedItems = localStorage.getItem('ksucu-media-items');
             if (savedItems) {
                 const parsedItems = JSON.parse(savedItems);
-                console.log('MediaAdmin Debug: Error fallback - Using localStorage:', parsedItems.length);
+                console.log('MediaAdmin: Using cached items:', parsedItems.length);
                 setMediaItems(parsedItems);
             } else {
-                console.log('MediaAdmin Debug: Error fallback - Using default events:', defaultEvents.length);
+                console.log('MediaAdmin: Using default events:', defaultEvents.length);
                 setMediaItems(defaultEvents);
+                localStorage.setItem('ksucu-media-items', JSON.stringify(defaultEvents));
             }
             setSyncStatus('error');
         } finally {
@@ -178,16 +187,6 @@ const MediaAdmin: React.FC = () => {
         }
     };
 
-    const saveMediaItems = async (items: MediaItem[]) => {
-        setMediaItems(items);
-        // Update localStorage immediately for offline support
-        localStorage.setItem('ksucu-media-items', JSON.stringify(items));
-        
-        // Dispatch custom event for same-tab synchronization
-        window.dispatchEvent(new CustomEvent('mediaItemsUpdated', { 
-            detail: items 
-        }));
-    };
 
     const handleAddNew = async () => {
         if (newItem.event && newItem.date && newItem.link) {
@@ -206,13 +205,13 @@ const MediaAdmin: React.FC = () => {
                 
                 if (response.ok) {
                     const data = await response.json();
-                    const updatedItems = [data.data, ...mediaItems];
-                    await saveMediaItems(updatedItems);
+                    console.log('MediaAdmin: Successfully added new item:', data.data);
                     setSyncStatus('success');
                     setNewItem({ event: '', date: new Date().toISOString().split('T')[0], link: '', imageUrl: '' });
                     setIsAddingNew(false);
                     // Reload to get fresh data from server
                     await loadMediaItems();
+                    alert('Media item added successfully!');
                 } else {
                     setSyncStatus('error');
                     alert('Failed to add media item. Please try again.');
@@ -225,6 +224,8 @@ const MediaAdmin: React.FC = () => {
                 setLoading(false);
                 setTimeout(() => setSyncStatus('idle'), 3000);
             }
+        } else {
+            alert('Please fill in all required fields: Event Name, Date, and Photo Link');
         }
     };
 

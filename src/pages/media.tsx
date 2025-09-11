@@ -59,17 +59,23 @@ const Media: React.FC = () => {
     // Listen for localStorage changes (when admin updates items in another tab)
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === 'ksucu-media-items' && e.newValue) {
-        // FORCE DEFAULT EVENTS regardless of localStorage changes
-        console.log('📱 Media: Storage changed, forcing default events');
-        setEvents(defaultEvents);
+        try {
+          const updatedItems = JSON.parse(e.newValue);
+          console.log('📱 Media: Storage changed, updating with', updatedItems.length, 'items');
+          setEvents(updatedItems);
+        } catch (error) {
+          console.error('📱 Media: Error parsing storage data:', error);
+        }
       }
     };
     
     // Listen for custom media items update event (same-tab synchronization)
-    const handleMediaItemsUpdated = (_e: CustomEvent) => {
-      // FORCE DEFAULT EVENTS even from events
-      console.log('📱 Media: Media items updated event received, forcing defaults');
-      setEvents(defaultEvents);
+    const handleMediaItemsUpdated = (e: CustomEvent) => {
+      const updatedItems = e.detail;
+      console.log('📱 Media: Media items updated event received with', updatedItems?.length, 'items');
+      if (Array.isArray(updatedItems)) {
+        setEvents(updatedItems);
+      }
     };
     
     window.addEventListener('focus', handleFocus);
@@ -84,11 +90,6 @@ const Media: React.FC = () => {
   }, []);
 
   const loadMediaItems = async () => {
-    // FORCE DISPLAY DEFAULT EVENTS IMMEDIATELY - Frontend Fix
-    console.log('📱 Media: FORCING 16 default events display for users');
-    setEvents(defaultEvents);
-    localStorage.setItem('ksucu-media-items', JSON.stringify(defaultEvents));
-    
     try {
       // Add timestamp to completely bypass all caching
       const timestamp = new Date().getTime();
@@ -110,19 +111,53 @@ const Media: React.FC = () => {
       
       if (response.ok) {
         const data = await response.json();
-        const items = data.data || [];
-        console.log('📱 Media: API returned', items.length, 'items, but keeping 16 defaults');
+        const apiItems = data.data || [];
+        console.log('📱 Media: Received', apiItems.length, 'items from API');
         
-        // FORCE DEFAULT EVENTS - API data is unreliable
-        // Keep the default events that were already set above
-        // setEvents(defaultEvents); // Already set above
+        // Merge API items with default events (API items take priority)
+        const mergedItems = [...apiItems];
+        
+        // Add default events that aren't already in the database
+        defaultEvents.forEach(defaultItem => {
+          const exists = apiItems.some((apiItem: MediaItem) => 
+            apiItem.event === defaultItem.event && 
+            apiItem.link === defaultItem.link
+          );
+          if (!exists) {
+            mergedItems.push(defaultItem);
+          }
+        });
+        
+        console.log('📱 Media: Total items after merge:', mergedItems.length);
+        setEvents(mergedItems);
+        localStorage.setItem('ksucu-media-items', JSON.stringify(mergedItems));
       } else {
-        console.log('📱 Media: API failed, keeping defaults');
-        // Default events already set above
+        console.log('📱 Media: API failed, using cached or default items');
+        // Try localStorage first
+        const savedItems = localStorage.getItem('ksucu-media-items');
+        if (savedItems) {
+          const parsedItems = JSON.parse(savedItems);
+          console.log('📱 Media: Using cached items:', parsedItems.length);
+          setEvents(parsedItems);
+        } else {
+          console.log('📱 Media: Using default events:', defaultEvents.length);
+          setEvents(defaultEvents);
+          localStorage.setItem('ksucu-media-items', JSON.stringify(defaultEvents));
+        }
       }
     } catch (error) {
-      console.error('📱 Media: Error loading from API:', error, '- keeping defaults');
-      // Default events already set above
+      console.error('📱 Media: Error loading from API:', error);
+      // Try localStorage first
+      const savedItems = localStorage.getItem('ksucu-media-items');
+      if (savedItems) {
+        const parsedItems = JSON.parse(savedItems);
+        console.log('📱 Media: Using cached items:', parsedItems.length);
+        setEvents(parsedItems);
+      } else {
+        console.log('📱 Media: Using default events:', defaultEvents.length);
+        setEvents(defaultEvents);
+        localStorage.setItem('ksucu-media-items', JSON.stringify(defaultEvents));
+      }
     }
   };
   
