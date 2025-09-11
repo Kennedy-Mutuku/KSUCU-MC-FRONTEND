@@ -68,6 +68,8 @@ const CompassionCounselingPage: React.FC = () => {
   });
   const [userRequests, setUserRequests] = useState<UserRequest[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [lastRefresh, setLastRefresh] = useState<Date | null>(null);
   
   const [helpRequest, setHelpRequest] = useState({
     name: '',
@@ -98,6 +100,14 @@ const CompassionCounselingPage: React.FC = () => {
     if (user) {
       fetchSettings();
       fetchUserRequests();
+
+      // Set up auto-refresh every 30 seconds for user requests
+      const refreshInterval = setInterval(() => {
+        fetchUserRequests(true); // Show refresh indicator for auto-refresh
+      }, 30000);
+
+      // Cleanup interval on component unmount or user change
+      return () => clearInterval(refreshInterval);
     }
   }, [user]);
 
@@ -171,11 +181,15 @@ const CompassionCounselingPage: React.FC = () => {
     );
   }
 
-  const fetchUserRequests = async () => {
+  const fetchUserRequests = async (showRefreshIndicator = false) => {
     try {
       if (!user?._id) {
         console.log('No user ID available for fetching requests');
         return;
+      }
+
+      if (showRefreshIndicator) {
+        setIsRefreshing(true);
       }
 
       const response = await fetch(getApiUrl('compassionRequests', `userId=${user._id}`), {
@@ -185,12 +199,17 @@ const CompassionCounselingPage: React.FC = () => {
       if (response.ok) {
         const data = await response.json();
         setUserRequests(data.requests || []);
+        setLastRefresh(new Date());
         console.log('User requests fetched:', data.requests?.length || 0);
       } else {
         console.error('Failed to fetch user requests:', response.status);
       }
     } catch (error) {
       console.error('Error fetching user requests:', error);
+    } finally {
+      if (showRefreshIndicator) {
+        setIsRefreshing(false);
+      }
     }
   };
 
@@ -244,7 +263,7 @@ const CompassionCounselingPage: React.FC = () => {
 
       if (response.ok) {
         showMessage('Your help request has been submitted successfully. Our compassion team will contact you soon.', 'success');
-        fetchUserRequests(); // Refresh requests list
+        fetchUserRequests(true); // Refresh requests list with indicator
         setHelpRequest({
           name: '',
           email: '',
@@ -291,7 +310,7 @@ const CompassionCounselingPage: React.FC = () => {
 
       if (response.ok) {
         showMessage('Thank you for your generous donation! Your contribution will help us serve those in need.', 'success');
-        fetchUserRequests(); // Refresh requests list
+        fetchUserRequests(true); // Refresh requests list with indicator
         setDonation({
           donorName: '',
           email: '',
@@ -340,17 +359,38 @@ const CompassionCounselingPage: React.FC = () => {
             className={styles.notificationButton}
             onClick={() => setShowNotifications(!showNotifications)}
           >
-            <Bell className={styles.notificationIcon} />
+            <Bell className={`${styles.notificationIcon} ${isRefreshing ? styles.refreshing : ''}`} />
             <span>My Requests</span>
             {userRequests.length > 0 && (
               <span className={styles.notificationBadge}>{userRequests.length}</span>
+            )}
+            {isRefreshing && (
+              <div className={styles.refreshIndicator}>●</div>
             )}
           </button>
         </div>
 
         {showNotifications && (
           <div className={styles.notificationsPanel}>
-            <h3>Your Request History</h3>
+            <div className={styles.notificationHeader}>
+              <div>
+                <h3>Your Request History</h3>
+                {lastRefresh && (
+                  <small className={styles.lastRefresh}>
+                    Last updated: {lastRefresh.toLocaleTimeString()}
+                  </small>
+                )}
+              </div>
+              <button 
+                className={styles.refreshButton}
+                onClick={() => fetchUserRequests(true)}
+                disabled={isRefreshing}
+                title="Refresh requests"
+              >
+                <Bell className={`${styles.refreshIcon} ${isRefreshing ? styles.spinning : ''}`} size={16} />
+                {isRefreshing ? 'Refreshing...' : 'Refresh'}
+              </button>
+            </div>
             {userRequests.length === 0 ? (
               <p className={styles.noRequests}>No requests submitted yet</p>
             ) : (
