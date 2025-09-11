@@ -8,11 +8,14 @@ class SocketService {
   private maxReconnectAttempts = 5;
 
   connect(): Promise<Socket> {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       if (this.socket?.connected) {
         resolve(this.socket);
         return;
       }
+
+      const serverUrl = getBaseUrl();
+      console.log('🔌 SocketService: Connecting to:', serverUrl);
 
       // Get authentication token from cookies (required)  
       console.log('🔐 SocketService: All available cookies:', document.cookie);
