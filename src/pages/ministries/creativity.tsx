@@ -110,10 +110,10 @@ const CreativityPage: React.FC = () => {
             </div>
             
             <div className={styles.actionButtons}>
-              <Link to="/worship-coordinator" className={styles.commitmentButton}>
+              <Link to="/contact-us" className={styles.commitmentButton}>
                 Join Creative Team
               </Link>
-              <Link to="/worship-coordinator" className={styles.contactButton}>
+              <Link to="/contact-us" className={styles.contactButton}>
                 Submit Creative Ideas
               </Link>
             </div>

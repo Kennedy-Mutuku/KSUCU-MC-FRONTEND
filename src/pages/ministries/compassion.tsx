@@ -115,10 +115,10 @@ const CompassionPage: React.FC = () => {
             </div>
             
             <div className={styles.actionButtons}>
-              <Link to="/worship-coordinator" className={styles.commitmentButton}>
+              <Link to="/contact-us" className={styles.commitmentButton}>
                 Join Compassion Team
               </Link>
-              <Link to="/worship-coordinator" className={styles.contactButton}>
+              <Link to="/contact-us" className={styles.contactButton}>
                 Contact Coordinator
               </Link>
             </div>

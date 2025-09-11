@@ -7,23 +7,22 @@ class SocketService {
   private reconnectAttempts = 0;
   private maxReconnectAttempts = 5;
 
-  connect(guestName?: string): Promise<Socket> {
+  connect(): Promise<Socket> {
     return new Promise((resolve, reject) => {
       if (this.socket?.connected) {
         resolve(this.socket);
         return;
       }
 
-      // Get authentication token from cookies (optional)
+      // Get authentication token from cookies (required)
       const token = Cookies.get('user_s');
       
       const serverUrl = getBaseUrl();
       
-      // Connect with token, guest name, or default guest
+      // Connect with authentication token
       this.socket = io(serverUrl, {
         auth: {
-          token: token || 'guest', // Use 'guest' if no token
-          guestName: guestName || null // Pass guest name if provided
+          token: token // Pass authentication token
         },
         transports: ['websocket', 'polling'],
         upgrade: true,
@@ -112,6 +111,13 @@ class SocketService {
     }
   }
 
+  // Reaction methods
+  addReaction(messageId: string, reactionType: 'like' | 'dislike') {
+    if (this.socket?.connected) {
+      this.socket.emit('addReaction', { messageId, reactionType });
+    }
+  }
+
   // Event listeners
   onNewMessage(callback: (message: any) => void) {
     this.socket?.on('newMessage', callback);
@@ -143,6 +149,10 @@ class SocketService {
 
   onError(callback: (error: { message: string }) => void) {
     this.socket?.on('error', callback);
+  }
+
+  onReactionUpdate(callback: (data: { messageId: string; reactions: any }) => void) {
+    this.socket?.on('reactionUpdate', callback);
   }
 
   // Remove event listeners

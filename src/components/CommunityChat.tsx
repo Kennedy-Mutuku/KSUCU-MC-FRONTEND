@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MessageCircle, Send, X, Users, Image, Mic, Video, Edit, Trash2, Reply, Check, CheckCheck } from 'lucide-react';
+import { MessageCircle, Send, X, Users, Image, Mic, Video, Edit, Trash2, Reply, Check, CheckCheck, Heart, ThumbsDown } from 'lucide-react';
 import socketService from '../services/socketService';
 import { getApiUrl, getBaseUrl } from '../config/environment';
 import styles from '../styles/CommunityChat.module.css';
@@ -30,6 +30,18 @@ interface Message {
     senderName: string;
     timestamp: string;
   };
+  reactions?: {
+    likes: {
+      userId?: string;
+      username?: string;
+      timestamp: string;
+    }[];
+    dislikes: {
+      userId?: string;
+      username?: string;
+      timestamp: string;
+    }[];
+  };
 }
 
 interface OnlineUser {
@@ -58,8 +70,7 @@ const CommunityChat: React.FC = () => {
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
   const [currentUser, setCurrentUser] = useState<{ username: string; userId: string } | null>(null);
-  const [showNameDialog, setShowNameDialog] = useState(false);
-  const [tempName, setTempName] = useState('');
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const [longPressMessage, setLongPressMessage] = useState<Message | null>(null);
   const [showDeleteOptions, setShowDeleteOptions] = useState(false);
   const [pressTimer, setPressTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
@@ -111,13 +122,12 @@ const CommunityChat: React.FC = () => {
       
       // Check if we have user data (same as UniversalHeader)
       if (data && data.username && data._id) {
-        const firstName = data.username.split(' ')[0]; // Same as UniversalHeader
-        
+        // Use the full username from database, not just first name
         setCurrentUser({
-          username: firstName,
+          username: data.username,
           userId: data._id
         });
-        console.log('✅ Chat: User authenticated successfully:', firstName);
+        console.log('✅ Chat: User authenticated successfully:', data.username);
         return true; // User is logged in
       } else {
         console.log('❌ Chat: No valid user data found in response');
@@ -131,32 +141,23 @@ const CommunityChat: React.FC = () => {
     }
   };
 
-  const connectSocket = async (guestName?: string) => {
+  const connectSocket = async () => {
     try {
       setIsLoading(true);
       setError(''); // Clear any previous errors
       
-      // Try to fetch current user (but don't require login)
+      // Require authentication for chat access
       const isAuthenticated = await fetchCurrentUser();
 
-      // If not authenticated and no guest name provided, show name dialog
-      if (!isAuthenticated && !guestName) {
-        setShowNameDialog(true);
+      // If not authenticated, show login prompt
+      if (!isAuthenticated) {
+        setShowLoginPrompt(true);
         setIsLoading(false);
         return;
       }
 
-      // Set guest name if provided
-      if (!isAuthenticated && guestName) {
-        setCurrentUser({
-          username: guestName,
-          userId: 'guest'
-        });
-        console.log('🔍 Chat: Set guest user:', { username: guestName, userId: 'guest' });
-      }
-
-      // Try to connect to socket regardless of auth status
-      await socketService.connect(guestName);
+      // Connect to socket with authenticated user
+      await socketService.connect();
       setIsConnected(true);
       setupSocketListeners();
       loadMessages();
@@ -227,6 +228,12 @@ const CommunityChat: React.FC = () => {
 
     socketService.onError(({ message }: { message: string }) => {
       setError(message);
+    });
+
+    socketService.onReactionUpdate(({ messageId, reactions }: { messageId: string; reactions: any }) => {
+      setMessages(prev => prev.map(msg => 
+        msg._id === messageId ? { ...msg, reactions } : msg
+      ));
     });
   };
 
@@ -456,30 +463,14 @@ const CommunityChat: React.FC = () => {
 
   // Media Type Handlers
   const handleImageUpload = () => {
-    const token = Cookies.get('user_s');
-    if (!token && currentUser?.userId === 'guest') {
-      setError('❌ Please log in to upload images. Guest users can only send text messages.');
-      return;
-    }
     imageInputRef.current?.click();
   };
 
   const handleVideoUpload = () => {
-    const token = Cookies.get('user_s');
-    if (!token && currentUser?.userId === 'guest') {
-      setError('❌ Please log in to upload videos. Guest users can only send text messages.');
-      return;
-    }
     videoInputRef.current?.click();
   };
 
   const handleVoiceMessage = () => {
-    const token = Cookies.get('user_s');
-    if (!token && currentUser?.userId === 'guest') {
-      setError('❌ Please log in to send voice messages. Guest users can only send text messages.');
-      return;
-    }
-    
     if (isRecording) {
       stopVoiceRecording();
     } else {
@@ -563,6 +554,51 @@ const CommunityChat: React.FC = () => {
         setError('Failed to delete message');
       }
     }
+  };
+
+  const handleReaction = async (messageId: string, reactionType: 'like' | 'dislike') => {
+    try {
+      const token = Cookies.get('user_s');
+      const headers: HeadersInit = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      };
+
+      const body = { reactionType };
+
+      const response = await fetch(getApiUrl(`chat/react/${messageId}`), {
+        method: 'POST',
+        credentials: 'include',
+        headers: headers,
+        body: JSON.stringify(body)
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        // Update message in local state
+        setMessages(prev => prev.map(msg => 
+          msg._id === messageId ? data.message : msg
+        ));
+        
+        // Also emit through socket for real-time updates
+        socketService.addReaction(messageId, reactionType);
+      } else {
+        console.error('Failed to add reaction:', data.message);
+        setError(`Failed to ${reactionType} message: ${data.message}`);
+      }
+    } catch (error) {
+      console.error('Error adding reaction:', error);
+      setError(`Failed to ${reactionType} message`);
+    }
+  };
+
+  const hasUserReacted = (reactions: any, reactionType: 'likes' | 'dislikes'): boolean => {
+    if (!reactions || !currentUser) return false;
+    
+    return reactions[reactionType]?.some((reaction: any) => {
+      return reaction.userId?.toString() === currentUser.userId.toString();
+    }) || false;
   };
 
   const handleDeleteForAll = async () => {
@@ -848,9 +884,15 @@ const CommunityChat: React.FC = () => {
             </div>
           )}
           
-          {!isOwn && (
+          <div className={styles.messageHeader}>
+            <div 
+              className={styles.userAvatar} 
+              style={{ backgroundColor: generateUserColor(message.senderName) }}
+            >
+              {generateUserInitials(message.senderName)}
+            </div>
             <div className={styles.senderName}>{message.senderName}</div>
-          )}
+          </div>
 
           <div className={styles.messageContent}>
             {message.deleted ? (
@@ -919,6 +961,34 @@ const CommunityChat: React.FC = () => {
             </span>
             {isOwn && message.status && renderMessageStatus(message.status)}
           </div>
+
+          {/* Reaction section */}
+          {!message.deleted && (
+            <div className={styles.messageReactions}>
+              <div className={styles.reactionButtons}>
+                <button 
+                  className={`${styles.reactionButton} ${hasUserReacted(message.reactions, 'likes') ? styles.reactionActive : ''}`}
+                  onClick={() => handleReaction(message._id, 'like')}
+                  title="Like this message"
+                >
+                  <Heart size={16} />
+                  {message.reactions?.likes?.length > 0 && (
+                    <span className={styles.reactionCount}>{message.reactions?.likes?.length}</span>
+                  )}
+                </button>
+                <button 
+                  className={`${styles.reactionButton} ${hasUserReacted(message.reactions, 'dislikes') ? styles.reactionActive : ''}`}
+                  onClick={() => handleReaction(message._id, 'dislike')}
+                  title="Dislike this message"
+                >
+                  <ThumbsDown size={16} />
+                  {message.reactions?.dislikes?.length > 0 && (
+                    <span className={styles.reactionCount}>{message.reactions?.dislikes?.length}</span>
+                  )}
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         {isOwn && !message.deleted && (
@@ -941,21 +1011,32 @@ const CommunityChat: React.FC = () => {
     );
   };
 
-  const handleNameSubmit = () => {
-    if (tempName.trim()) {
-      setShowNameDialog(false);
-      connectSocket(tempName.trim());
-    }
+  const handleLoginRedirect = () => {
+    window.location.href = '/signIn';
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && tempName.trim()) {
-      handleNameSubmit();
+  const generateUserInitials = (username: string): string => {
+    return username
+      .split(' ')
+      .map(name => name.charAt(0).toUpperCase())
+      .join('')
+      .substring(0, 2);
+  };
+
+  const generateUserColor = (username: string): string => {
+    const colors = [
+      '#730051', '#8b1c5b', '#0099cc', '#00c6ff', '#ef4444', 
+      '#f59e0b', '#10b981', '#8b5cf6', '#f97316', '#06b6d4'
+    ];
+    let hash = 0;
+    for (let i = 0; i < username.length; i++) {
+      hash = username.charCodeAt(i) + ((hash << 5) - hash);
     }
+    return colors[Math.abs(hash) % colors.length];
   };
 
   useEffect(() => {
-    if (isOpen && !isConnected && !showNameDialog) {
+    if (isOpen && !isConnected && !showLoginPrompt) {
       connectSocket();
     }
     
@@ -1044,8 +1125,8 @@ const CommunityChat: React.FC = () => {
     );
   }
 
-  // Show name dialog for guest users
-  if (showNameDialog) {
+  // Show login prompt for unauthenticated users
+  if (showLoginPrompt) {
     return (
       <div className={styles.chatWindow}>
         <div className={styles.chatHeader}>
@@ -1060,18 +1141,11 @@ const CommunityChat: React.FC = () => {
           </div>
         </div>
         
-        <div className={styles.nameDialog}>
-          <h3>Enter your name</h3>
-          <p>Please enter your name to join the community chat:</p>
-          <input
-            type="text"
-            value={tempName}
-            onChange={(e) => setTempName(e.target.value)}
-            onKeyPress={handleKeyPress}
-            placeholder="e.g., Kennedy Mutuku"
-            className={styles.nameInput}
-          />
-          <div className={styles.nameDialogButtons}>
+        <div className={styles.loginPrompt}>
+          <h3>Authentication Required</h3>
+          <p>Only logged-in members are allowed to access the community chat.</p>
+          <p>Please log in to your account to start chatting with other members.</p>
+          <div className={styles.loginPromptButtons}>
             <button 
               onClick={() => setIsOpen(false)}
               className={styles.cancelButton}
@@ -1079,11 +1153,10 @@ const CommunityChat: React.FC = () => {
               Cancel
             </button>
             <button 
-              onClick={handleNameSubmit}
-              disabled={!tempName.trim()}
-              className={styles.joinButton}
+              onClick={handleLoginRedirect}
+              className={styles.loginButton}
             >
-              Join Chat
+              Go to Login
             </button>
           </div>
         </div>
@@ -1179,22 +1252,20 @@ const CommunityChat: React.FC = () => {
         <div className={styles.inputActions}>
           <button 
             onClick={handleImageUpload} 
-            title={(!Cookies.get('user_s') && currentUser?.userId === 'guest') ? "Login required for image upload" : "Send Image"}
-            className={(!Cookies.get('user_s') && currentUser?.userId === 'guest') ? styles.disabledMediaButton : ''}
+            title="Send Image"
           >
             <Image size={20} />
           </button>
           <button 
             onClick={handleVideoUpload} 
-            title={(!Cookies.get('user_s') && currentUser?.userId === 'guest') ? "Login required for video upload" : "Send Video"}
-            className={(!Cookies.get('user_s') && currentUser?.userId === 'guest') ? styles.disabledMediaButton : ''}
+            title="Send Video"
           >
             <Video size={20} />
           </button>
           <button 
             onClick={handleVoiceMessage} 
-            className={`${isRecording ? styles.recordingButton : ''} ${(!Cookies.get('user_s') && currentUser?.userId === 'guest') ? styles.disabledMediaButton : ''}`}
-            title={(!Cookies.get('user_s') && currentUser?.userId === 'guest') ? "Login required for voice messages" : (isRecording ? "Stop Recording" : "Record Voice Message")}
+            className={isRecording ? styles.recordingButton : ''}
+            title={isRecording ? "Stop Recording" : "Record Voice Message"}
           >
             <Mic size={20} />
           </button>

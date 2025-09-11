@@ -110,7 +110,7 @@ const PraiseAndWorshipPage: React.FC = () => {
               <Link to="/p&w" className={styles.commitmentButton}>
                 Sign Commitment Form
               </Link>
-              <Link to="/worship-coordinator" className={styles.contactButton}>
+              <Link to="/contact-us" className={styles.contactButton}>
                 Contact Coordinator
               </Link>
             </div>

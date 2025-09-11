@@ -349,11 +349,32 @@
   align-self: flex-start !important;
 }
 
+.messageHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.userAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 12px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 .senderName {
   font-weight: 600;
-  font-size: 13px;
-  color: #1f4a8a;
-  margin-bottom: 4px;
+  font-size: 14px;
+  color: #1f2937;
+  flex: 1;
 }
 
 .messageContent {
@@ -752,8 +773,8 @@
   color: #991b1b;
 }
 
-/* Name Dialog */
-.nameDialog {
+/* Login Prompt Dialog */
+.loginPrompt {
   padding: 30px;
   text-align: center;
   height: 100%;
@@ -763,38 +784,25 @@
   background: white;
 }
 
-.nameDialog h3 {
-  margin: 0 0 10px 0;
+.loginPrompt h3 {
+  margin: 0 0 20px 0;
   color: #1f2937;
   font-size: 20px;
   font-weight: 600;
 }
 
-.nameDialog p {
-  margin: 0 0 20px 0;
+.loginPrompt p {
+  margin: 0 0 15px 0;
   color: #6b7280;
   font-size: 14px;
   line-height: 1.5;
 }
 
-.nameInput {
-  width: 100%;
-  padding: 12px;
-  border: 2px solid #e5e7eb;
-  border-radius: 8px;
-  font-size: 16px;
-  margin-bottom: 20px;
-  box-sizing: border-box;
-  transition: border-color 0.3s ease;
+.loginPrompt p:last-of-type {
+  margin-bottom: 30px;
 }
 
-.nameInput:focus {
-  outline: none;
-  border-color: #00c6ff;
-  box-shadow: 0 0 0 3px rgba(0, 198, 255, 0.1);
-}
-
-.nameDialogButtons {
+.loginPromptButtons {
   display: flex;
   gap: 10px;
   justify-content: center;
@@ -817,10 +825,10 @@
   color: #374151;
 }
 
-.joinButton {
+.loginButton {
   padding: 10px 20px;
-  border: 2px solid #00c6ff;
-  background: #00c6ff;
+  border: 2px solid #730051;
+  background: #730051;
   color: white;
   border-radius: 8px;
   cursor: pointer;
@@ -829,12 +837,12 @@
   transition: all 0.3s ease;
 }
 
-.joinButton:hover:not(:disabled) {
-  background: #0099cc;
-  border-color: #0099cc;
+.loginButton:hover:not(:disabled) {
+  background: #8b1c5b;
+  border-color: #8b1c5b;
 }
 
-.joinButton:disabled {
+.loginButton:disabled {
   background: #d1d5db;
   border-color: #d1d5db;
   cursor: not-allowed;
@@ -970,6 +978,93 @@
   transition: transform 0.1s ease;
 }
 
+/* Reaction Styles */
+.messageReactions {
+  margin-top: 6px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.otherMessageWrapper .messageReactions {
+  justify-content: flex-start;
+}
+
+.reactionButtons {
+  display: flex;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.05);
+  padding: 4px 8px;
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+}
+
+.ownMessage ~ .messageReactions .reactionButtons {
+  background: rgba(115, 0, 81, 0.1);
+}
+
+.reactionButton {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 12px;
+  font-size: 12px;
+  transition: all 0.2s ease;
+  min-width: 24px;
+  justify-content: center;
+}
+
+.reactionButton:hover {
+  background: rgba(0, 0, 0, 0.1);
+  color: #374151;
+  transform: scale(1.05);
+}
+
+.reactionButton.reactionActive {
+  background: #730051;
+  color: white;
+}
+
+.reactionButton.reactionActive:hover {
+  background: #8b1c5b;
+  color: white;
+}
+
+.reactionCount {
+  font-size: 11px;
+  font-weight: 600;
+  min-width: 12px;
+  text-align: center;
+}
+
+.reactionButton svg {
+  flex-shrink: 0;
+}
+
+/* Reaction button specific colors */
+.reactionButton:first-child.reactionActive {
+  background: #ef4444;
+  color: white;
+}
+
+.reactionButton:first-child.reactionActive:hover {
+  background: #dc2626;
+}
+
+.reactionButton:last-child.reactionActive {
+  background: #6b7280;
+  color: white;
+}
+
+.reactionButton:last-child.reactionActive:hover {
+  background: #4b5563;
+}
+
 /* Mobile touch improvements */
 @media (max-width: 768px) {
   .deleteModal {
@@ -984,5 +1079,15 @@
   .deleteOption {
     padding: 14px 16px;
     font-size: 16px;
+  }
+
+  .reactionButton {
+    min-width: 28px;
+    min-height: 28px;
+    padding: 6px 8px;
+  }
+
+  .reactionButtons {
+    padding: 6px 10px;
   }
 }
