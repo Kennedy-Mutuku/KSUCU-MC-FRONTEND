@@ -54,10 +54,25 @@ const RequisitionsAdmin: React.FC = () => {
         if (adminAuth === 'Overseer') {
             setAuthenticated(true);
         }
-        // Load admin phone number
-        const savedPhone = localStorage.getItem('admin-contact-phone') || '';
-        setAdminPhone(savedPhone);
+        // Load admin phone number from API first, fallback to localStorage
+        loadAdminPhone();
     }, []);
+
+    const loadAdminPhone = async () => {
+        try {
+            const response = await axios.get(`${backEndURL}/api/settings/admin-contact-phone`, {
+                withCredentials: true
+            });
+            setAdminPhone(response.data.value || '');
+            // Update localStorage with latest value
+            localStorage.setItem('admin-contact-phone', response.data.value || '');
+        } catch (error) {
+            console.error('Error loading admin phone from API:', error);
+            // Fallback to localStorage
+            const savedPhone = localStorage.getItem('admin-contact-phone') || '';
+            setAdminPhone(savedPhone);
+        }
+    };
     const [filterStatus] = useState<string>('all');
     const [searchTerm, setSearchTerm] = useState('');
     const [releasedBy, setReleasedBy] = useState('');
@@ -178,9 +193,25 @@ const RequisitionsAdmin: React.FC = () => {
         }
     };
 
-    const saveAdminPhone = () => {
-        localStorage.setItem('admin-contact-phone', adminPhone);
-        alert('Contact phone number saved successfully!');
+    const saveAdminPhone = async () => {
+        try {
+            // Save to backend API first
+            await axios.put(`${backEndURL}/api/settings/admin-contact-phone`, {
+                value: adminPhone,
+                description: 'Admin contact phone number for requisition inquiries'
+            }, {
+                withCredentials: true
+            });
+            
+            // Also save to localStorage as backup
+            localStorage.setItem('admin-contact-phone', adminPhone);
+            alert('Contact phone number saved successfully!');
+        } catch (error) {
+            console.error('Error saving admin phone:', error);
+            // Fallback to localStorage only
+            localStorage.setItem('admin-contact-phone', adminPhone);
+            alert('Contact phone number saved locally (backup mode).');
+        }
     };
 
     const downloadPDF = (requisition: RequisitionForm) => {

@@ -59,9 +59,8 @@ const Requisitions: React.FC = () => {
     useEffect(() => {
         // No authentication required - allow public access
         setIsAuthenticated(true);
-        // Load admin contact phone
-        const savedPhone = localStorage.getItem('admin-contact-phone') || '';
-        setAdminContactPhone(savedPhone);
+        // Load admin contact phone from API first
+        loadAdminContactPhone();
         
         // Check if user is logged in and load their requisitions
         const userData = localStorage.getItem('user-data');
@@ -76,6 +75,23 @@ const Requisitions: React.FC = () => {
             }
         }
     }, []);
+
+    const loadAdminContactPhone = async () => {
+        try {
+            const response = await axios.get(`${backEndURL}/api/settings/admin-contact-phone`, {
+                withCredentials: true
+            });
+            const phoneNumber = response.data.value || '';
+            setAdminContactPhone(phoneNumber);
+            // Update localStorage with latest value
+            localStorage.setItem('admin-contact-phone', phoneNumber);
+        } catch (error) {
+            console.error('Error loading admin contact phone from API:', error);
+            // Fallback to localStorage
+            const savedPhone = localStorage.getItem('admin-contact-phone') || '';
+            setAdminContactPhone(savedPhone);
+        }
+    };
 
     const loadUserRequisitions = async (userName: string) => {
         try {
