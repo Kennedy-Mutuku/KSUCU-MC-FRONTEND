@@ -621,7 +621,19 @@ const BsMembersList = () => {
             console.log(`✝️ Total pastors: ${allPastors.length}`);
             console.log(`👥 Total regular users: ${allRegularUsers.length}`);
             
-            // Create a master queue of ALL users (pastors + regular users)
+            // Calculate the EXACT number of groups needed to include ALL users
+            const totalUsersToGroup = users.length;
+            const totalGroups = Math.ceil(totalUsersToGroup / size);
+            console.log(`📊 MUST create EXACTLY ${totalGroups} groups for ${totalUsersToGroup} users (${size} per group)`);
+            
+            // Create empty groups array
+            const finalGroups: Array<Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }>> = [];
+            
+            // Initialize all groups as empty arrays
+            for (let i = 0; i < totalGroups; i++) {
+              finalGroups.push([]);
+            }
+            
             // First, organize regular users by residence for balanced distribution
             const regularUsersByResidence: { [residence: string]: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> } = {};
             allRegularUsers.forEach(user => {
@@ -630,50 +642,78 @@ const BsMembersList = () => {
             });
             
             // Create a master queue of all regular users, processing by residence
-            const masterQueue: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> = [];
+            const regularUsersQueue: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> = [];
             const residences = Object.keys(regularUsersByResidence).sort();
             
             for (const residence of residences) {
               const residenceUsers = regularUsersByResidence[residence];
               const balancedQueue = createBalancedQueueRegularUsers(residenceUsers);
-              masterQueue.push(...balancedQueue);
+              regularUsersQueue.push(...balancedQueue);
             }
             
-            // Add all pastors to the beginning of the queue (they'll be distributed first)
-            const allUsersQueue = [...allPastors, ...masterQueue];
-            console.log(`📋 Master queue created with ${allUsersQueue.length} total users (${allPastors.length} pastors + ${masterQueue.length} regular)`);
+            console.log(`📋 Regular users queue: ${regularUsersQueue.length} users`);
+            console.log(`👑 Pastors to distribute: ${allPastors.length} pastors`);
             
-            // Create groups ensuring ALL users are included
-            const finalGroups: Array<Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }>> = [];
+            // STEP 1: Distribute pastors - MAX 1 pastor per group
+            let pastorIndex = 0;
+            for (let groupIndex = 0; groupIndex < totalGroups && pastorIndex < allPastors.length; groupIndex++) {
+              finalGroups[groupIndex].push(allPastors[pastorIndex]);
+              console.log(`✝️ Added pastor ${allPastors[pastorIndex].name} to Group ${groupIndex + 1}`);
+              pastorIndex++;
+            }
             
-            // Calculate number of groups needed to include ALL users
-            const totalGroups = Math.ceil(allUsersQueue.length / size);
-            console.log(`📊 Will create ${totalGroups} groups to accommodate ALL ${allUsersQueue.length} users`);
-            
-            let userIndex = 0;
-            
-            for (let groupNum = 0; groupNum < totalGroups; groupNum++) {
-              const currentGroup: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> = [];
-              
-              // Add users to this group until we reach the target size OR run out of users
-              while (currentGroup.length < size && userIndex < allUsersQueue.length) {
-                currentGroup.push(allUsersQueue[userIndex]);
-                userIndex++;
+            // If we have more pastors than groups, add remaining pastors as regular members
+            let groupIndex = 0;
+            while (pastorIndex < allPastors.length) {
+              // Find a group with space
+              while (groupIndex < totalGroups && finalGroups[groupIndex].length >= size) {
+                groupIndex++;
               }
               
-              // Add the group if it has any members
-              if (currentGroup.length > 0) {
-                finalGroups.push(currentGroup);
-                const groupPastors = currentGroup.filter(u => u.isPastor);
-                console.log(`✅ Group ${groupNum + 1} created with ${currentGroup.length} members (${groupPastors.length} pastors)`);
+              if (groupIndex < totalGroups) {
+                finalGroups[groupIndex].push(allPastors[pastorIndex]);
+                console.log(`👤 Added extra pastor ${allPastors[pastorIndex].name} as regular member to Group ${groupIndex + 1}`);
+                pastorIndex++;
+                groupIndex++;
+              } else {
+                break; // All groups are full
+              }
+            }
+            
+            // STEP 2: Distribute regular users to fill all groups
+            let regularUserIndex = 0;
+            let currentGroupIndex = 0;
+            
+            // Fill groups round-robin style to ensure even distribution
+            while (regularUserIndex < regularUsersQueue.length) {
+              // Find the next group that has space
+              let attempts = 0;
+              while (attempts < totalGroups) {
+                if (finalGroups[currentGroupIndex].length < size) {
+                  finalGroups[currentGroupIndex].push(regularUsersQueue[regularUserIndex]);
+                  regularUserIndex++;
+                  break;
+                }
+                currentGroupIndex = (currentGroupIndex + 1) % totalGroups;
+                attempts++;
               }
               
-              // If we've placed all users, break early
-              if (userIndex >= allUsersQueue.length) {
-                console.log(`🎯 All ${allUsersQueue.length} users have been placed in groups`);
+              // If no group has space, we're done (shouldn't happen with correct math)
+              if (attempts >= totalGroups) {
+                console.warn(`⚠️ All groups full, ${regularUsersQueue.length - regularUserIndex} users remaining`);
                 break;
               }
+              
+              currentGroupIndex = (currentGroupIndex + 1) % totalGroups;
             }
+            
+            // Log group creation details
+            finalGroups.forEach((group, index) => {
+              if (group.length > 0) {
+                const groupPastors = group.filter(u => u.isPastor);
+                console.log(`✅ Group ${index + 1} created with ${group.length} members (${groupPastors.length} pastor${groupPastors.length !== 1 ? 's' : ''})`);
+              }
+            });
 
             
             // Verify ALL users are grouped
@@ -684,15 +724,23 @@ const BsMembersList = () => {
               console.log(`✅ SUCCESS: ALL ${users.length} users have been grouped successfully!`);
             } else {
               console.error(`❌ ERROR: Only ${totalGrouped}/${users.length} users were grouped. ${users.length - totalGrouped} users are missing!`);
-              // This should never happen with the new algorithm
             }
             
             // Final verification and logging
             console.log(`\n📊 FINAL GROUP ANALYSIS:`);
-            const groupsWithPastors = finalGroups.filter(group => group.some(u => u.isPastor)).length;
-            const totalPastorsUsed = finalGroups.reduce((sum, group) => sum + group.filter(u => u.isPastor).length, 0);
-            console.log(`📈 Groups with pastors: ${groupsWithPastors}/${finalGroups.length}`);
+            const nonEmptyGroups = finalGroups.filter(group => group.length > 0);
+            const groupsWithPastors = nonEmptyGroups.filter(group => group.some(u => u.isPastor)).length;
+            const totalPastorsUsed = nonEmptyGroups.reduce((sum, group) => sum + group.filter(u => u.isPastor).length, 0);
+            const groupsWithMultiplePastors = nonEmptyGroups.filter(group => group.filter(u => u.isPastor).length > 1).length;
+            
+            console.log(`📈 Total groups created: ${nonEmptyGroups.length}/${totalGroups} (expected: ${Math.ceil(users.length / size)})`);
+            console.log(`📈 Groups with pastors: ${groupsWithPastors}/${nonEmptyGroups.length}`);
             console.log(`📈 Total pastors assigned: ${totalPastorsUsed}/${allPastors.length}`);
+            console.log(`📈 Groups with multiple pastors: ${groupsWithMultiplePastors} (should be 0)`);
+            
+            if (groupsWithMultiplePastors > 0) {
+              console.warn(`⚠️ WARNING: ${groupsWithMultiplePastors} groups have multiple pastors!`);
+            }
             
             // Ensure pastors are always first in their groups and log details
             finalGroups.forEach((group, index) => {
@@ -721,11 +769,16 @@ const BsMembersList = () => {
               }
             });
             
-            // Remove empty groups
-            const nonEmptyGroups = finalGroups.filter(group => group.length > 0);
-            
+            // Use all groups (including potentially smaller last group)
             console.log(`\n✅ FINAL RESULT: ${nonEmptyGroups.length} groups created, ALL ${users.length} users included!`);
             console.log(`📈 Expected groups: ${Math.ceil(users.length / size)} | Actual groups: ${nonEmptyGroups.length}`);
+            
+            if (nonEmptyGroups.length === Math.ceil(users.length / size)) {
+              console.log(`🎯 PERFECT: Exactly the right number of groups created!`);
+            } else {
+              console.warn(`⚠️ Group count mismatch: Expected ${Math.ceil(users.length / size)}, got ${nonEmptyGroups.length}`);
+            }
+            
             setGroups(nonEmptyGroups);
             
             resolve();
