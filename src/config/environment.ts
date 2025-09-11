@@ -42,6 +42,7 @@ interface ApiConfig {
     chatOnlineUsers: string;
     compassionHelp: string;
     compassionDonation: string;
+    compassionRequests: string;
     compassionHelpAdmin: string;
     compassionDonationAdmin: string;
     compassionHelpUpdate: string;
@@ -102,6 +103,7 @@ const developmentConfig: ApiConfig = {
     chatOnlineUsers: '/chat/online-users',
     compassionHelp: '/api/compassion/help-request',
     compassionDonation: '/api/compassion/donation',
+    compassionRequests: '/api/compassion/user-requests',
     compassionHelpAdmin: '/api/compassion/admin/help-requests',
     compassionDonationAdmin: '/api/compassion/admin/donations',
     compassionHelpUpdate: '/api/compassion/admin/help-request',
@@ -160,6 +162,7 @@ const productionConfig: ApiConfig = {
     chatOnlineUsers: '/chat/online-users',
     compassionHelp: '/api/compassion/help-request',
     compassionDonation: '/api/compassion/donation',
+    compassionRequests: '/api/compassion/user-requests',
     compassionHelpAdmin: '/api/compassion/admin/help-requests',
     compassionDonationAdmin: '/api/compassion/admin/donations',
     compassionHelpUpdate: '/api/compassion/admin/help-request',

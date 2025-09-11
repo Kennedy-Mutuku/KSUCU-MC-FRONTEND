@@ -173,13 +173,21 @@ const CompassionCounselingPage: React.FC = () => {
 
   const fetchUserRequests = async () => {
     try {
-      const response = await fetch(getApiUrl('compassionRequests'), {
+      if (!user?._id) {
+        console.log('No user ID available for fetching requests');
+        return;
+      }
+
+      const response = await fetch(getApiUrl('compassionRequests', `userId=${user._id}`), {
         credentials: 'include'
       });
       
       if (response.ok) {
         const data = await response.json();
         setUserRequests(data.requests || []);
+        console.log('User requests fetched:', data.requests?.length || 0);
+      } else {
+        console.error('Failed to fetch user requests:', response.status);
       }
     } catch (error) {
       console.error('Error fetching user requests:', error);
