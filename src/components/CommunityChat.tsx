@@ -88,6 +88,9 @@ const CommunityChat: React.FC = () => {
   const [swipingMessage, setSwipingMessage] = useState<string | null>(null);
   const [isSwipeActive, setIsSwipeActive] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  
+  // Reaction animation state
+  const [reactionUpdates, setReactionUpdates] = useState<{[key: string]: {likes: number, dislikes: number}}>({});
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatWindowRef = useRef<HTMLDivElement>(null);
@@ -231,6 +234,11 @@ const CommunityChat: React.FC = () => {
     });
 
     socketService.onReactionUpdate(({ messageId, reactions }: { messageId: string; reactions: any }) => {
+      // Trigger animation with new counts
+      const likesCount = reactions?.likes?.length || 0;
+      const dislikesCount = reactions?.dislikes?.length || 0;
+      triggerReactionAnimation(messageId, likesCount, dislikesCount);
+      
       setMessages(prev => prev.map(msg => 
         msg._id === messageId ? { ...msg, reactions } : msg
       ));
@@ -599,6 +607,27 @@ const CommunityChat: React.FC = () => {
     return reactions[reactionType]?.some((reaction: any) => {
       return reaction.userId?.toString() === currentUser.userId.toString();
     }) || false;
+  };
+
+  const triggerReactionAnimation = (messageId: string, newLikes: number, newDislikes: number) => {
+    const previousCounts = reactionUpdates[messageId] || { likes: 0, dislikes: 0 };
+    
+    // Only trigger if counts actually changed
+    if (previousCounts.likes !== newLikes || previousCounts.dislikes !== newDislikes) {
+      setReactionUpdates(prev => ({
+        ...prev,
+        [messageId]: { likes: newLikes, dislikes: newDislikes }
+      }));
+      
+      // Remove the animation trigger after animation completes
+      setTimeout(() => {
+        setReactionUpdates(prev => {
+          const updated = { ...prev };
+          delete updated[messageId];
+          return updated;
+        });
+      }, 400);
+    }
   };
 
   const handleDeleteForAll = async () => {
@@ -972,9 +1001,9 @@ const CommunityChat: React.FC = () => {
                   title="Like this message"
                 >
                   <Heart size={16} />
-                  {(message.reactions?.likes?.length || 0) > 0 && (
-                    <span className={styles.reactionCount}>{message.reactions?.likes?.length || 0}</span>
-                  )}
+                  <span className={`${styles.reactionCount} ${reactionUpdates[message._id] ? styles.updated : ''}`}>
+                    {message.reactions?.likes?.length || 0}
+                  </span>
                 </button>
                 <button 
                   className={`${styles.reactionButton} ${hasUserReacted(message.reactions, 'dislikes') ? styles.reactionActive : ''}`}
@@ -982,9 +1011,9 @@ const CommunityChat: React.FC = () => {
                   title="Dislike this message"
                 >
                   <ThumbsDown size={16} />
-                  {(message.reactions?.dislikes?.length || 0) > 0 && (
-                    <span className={styles.reactionCount}>{message.reactions?.dislikes?.length || 0}</span>
-                  )}
+                  <span className={`${styles.reactionCount} ${reactionUpdates[message._id] ? styles.updated : ''}`}>
+                    {message.reactions?.dislikes?.length || 0}
+                  </span>
                 </button>
               </div>
             </div>
