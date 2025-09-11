@@ -47,6 +47,12 @@ interface ApiConfig {
     compassionHelpUpdate: string;
     compassionDonationUpdate: string;
     compassionStats: string;
+    compassionSettings: string;
+    compassionAdminSettings: string;
+    compassionUpdatePaymentMethods: string;
+    compassionUpdateContactInfo: string;
+    compassionAddPaymentMethod: string;
+    compassionAddContactInfo: string;
   };
 }
 
@@ -100,7 +106,13 @@ const developmentConfig: ApiConfig = {
     compassionDonationAdmin: '/api/compassion/admin/donations',
     compassionHelpUpdate: '/api/compassion/admin/help-request',
     compassionDonationUpdate: '/api/compassion/admin/donation',
-    compassionStats: '/api/compassion/admin/stats'
+    compassionStats: '/api/compassion/admin/stats',
+    compassionSettings: '/api/compassion/settings',
+    compassionAdminSettings: '/api/compassion/admin/settings',
+    compassionUpdatePaymentMethods: '/api/compassion/admin/settings/payment-methods',
+    compassionUpdateContactInfo: '/api/compassion/admin/settings/contact-info',
+    compassionAddPaymentMethod: '/api/compassion/admin/settings/payment-method',
+    compassionAddContactInfo: '/api/compassion/admin/settings/contact-info'
   }
 };
 
@@ -152,7 +164,13 @@ const productionConfig: ApiConfig = {
     compassionDonationAdmin: '/api/compassion/admin/donations',
     compassionHelpUpdate: '/api/compassion/admin/help-request',
     compassionDonationUpdate: '/api/compassion/admin/donation',
-    compassionStats: '/api/compassion/admin/stats'
+    compassionStats: '/api/compassion/admin/stats',
+    compassionSettings: '/api/compassion/settings',
+    compassionAdminSettings: '/api/compassion/admin/settings',
+    compassionUpdatePaymentMethods: '/api/compassion/admin/settings/payment-methods',
+    compassionUpdateContactInfo: '/api/compassion/admin/settings/contact-info',
+    compassionAddPaymentMethod: '/api/compassion/admin/settings/payment-method',
+    compassionAddContactInfo: '/api/compassion/admin/settings/contact-info'
   }
 };
 

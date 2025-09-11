@@ -1,15 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { getApiUrl } from '../config/environment';
 import styles from '../styles/compassionCounseling.module.css';
 import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
 import { Heart, Phone, MessageCircle, DollarSign, User, Mail, MapPin } from 'lucide-react';
 
+interface PaymentMethod {
+  _id?: string;
+  name: string;
+  type: string;
+  details: Array<{
+    label: string;
+    value: string;
+  }>;
+  isActive: boolean;
+}
+
+interface ContactInfo {
+  _id?: string;
+  type: string;
+  title: string;
+  value: string;
+  description?: string;
+  isActive: boolean;
+  priority: number;
+}
+
+interface Settings {
+  paymentMethods: PaymentMethod[];
+  contactInfo: ContactInfo[];
+}
+
 const CompassionCounselingPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'help' | 'donate'>('help');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState<'success' | 'error'>('success');
+  const [settings, setSettings] = useState<Settings>({
+    paymentMethods: [],
+    contactInfo: []
+  });
   
   const [helpRequest, setHelpRequest] = useState({
     name: '',
@@ -32,6 +62,28 @@ const CompassionCounselingPage: React.FC = () => {
     anonymous: false
   });
 
+  useEffect(() => {
+    fetchSettings();
+  }, []);
+
+  const fetchSettings = async () => {
+    try {
+      const response = await fetch(getApiUrl('compassionSettings'), {
+        credentials: 'include'
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setSettings(data.settings);
+      } else {
+        console.error('Failed to fetch settings');
+        // Keep default empty arrays if fetch fails
+      }
+    } catch (error) {
+      console.error('Error fetching settings:', error);
+      // Keep default empty arrays if fetch fails
+    }
+  };
 
   const showMessage = (text: string, type: 'success' | 'error') => {
     setMessage(text);
@@ -433,22 +485,23 @@ const CompassionCounselingPage: React.FC = () => {
             </form>
 
             {/* Payment Information */}
-            <div className={styles.paymentInfo}>
-              <h3>Payment Methods</h3>
-              <div className={styles.paymentMethods}>
-                <div className={styles.paymentMethod}>
-                  <h4>M-Pesa</h4>
-                  <p>Paybill: <strong>522522</strong></p>
-                  <p>Account: <strong>KSUCU-COMPASSION</strong></p>
-                </div>
-                <div className={styles.paymentMethod}>
-                  <h4>Bank Transfer</h4>
-                  <p>Bank: Equity Bank</p>
-                  <p>Account: <strong>0460291234567</strong></p>
-                  <p>Name: KSUCU-MC Compassion Ministry</p>
+            {settings.paymentMethods.length > 0 && (
+              <div className={styles.paymentInfo}>
+                <h3>Payment Methods</h3>
+                <div className={styles.paymentMethods}>
+                  {settings.paymentMethods.map((method, index) => (
+                    <div key={method._id || index} className={styles.paymentMethod}>
+                      <h4>{method.name}</h4>
+                      {method.details.map((detail, detailIndex) => (
+                        <p key={detailIndex}>
+                          {detail.label}: <strong>{detail.value}</strong>
+                        </p>
+                      ))}
+                    </div>
+                  ))}
                 </div>
               </div>
-            </div>
+            )}
           </div>
         )}
 
@@ -475,27 +528,29 @@ const CompassionCounselingPage: React.FC = () => {
         </div>
 
         {/* Contact Information */}
-        <div className={styles.contactSection}>
-          <h2>Contact Our Team</h2>
-          <div className={styles.contactInfo}>
-            <div className={styles.contactItem}>
-              <Phone className={styles.contactIcon} />
-              <div>
-                <h4>Emergency Hotline</h4>
-                <p>+254 700 123 456</p>
-                <small>Available 24/7 for urgent cases</small>
-              </div>
-            </div>
-            <div className={styles.contactItem}>
-              <Mail className={styles.contactIcon} />
-              <div>
-                <h4>Email Support</h4>
-                <p>compassion@ksucu.ac.ke</p>
-                <small>Response within 24 hours</small>
-              </div>
+        {settings.contactInfo.length > 0 && (
+          <div className={styles.contactSection}>
+            <h2>Contact Our Team</h2>
+            <div className={styles.contactInfo}>
+              {settings.contactInfo.map((contact, index) => {
+                const IconComponent = contact.type === 'phone' ? Phone : 
+                                   contact.type === 'email' ? Mail : 
+                                   MapPin;
+                
+                return (
+                  <div key={contact._id || index} className={styles.contactItem}>
+                    <IconComponent className={styles.contactIcon} />
+                    <div>
+                      <h4>{contact.title}</h4>
+                      <p>{contact.value}</p>
+                      {contact.description && <small>{contact.description}</small>}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
-        </div>
+        )}
       </div>
       <Footer />
     </>
