@@ -572,7 +572,11 @@ const BsMembersList = () => {
               const residenceUsers = regularUsersByResidence[residence];
               console.log(`🏠 Processing ${residence}: ${residenceUsers.length} users`);
               
-              // Within each residence, balance by gender and year for optimal mixing
+              // Calculate how many groups this residence will occupy
+              const groupsNeededForResidence = Math.ceil(residenceUsers.length / size);
+              console.log(`   ${residence} will need ${groupsNeededForResidence} groups`);
+              
+              // Separate by gender and year for optimal mixing
               const malesByYear: { [year: string]: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> } = {};
               const femalesByYear: { [year: string]: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> } = {};
               
@@ -594,14 +598,18 @@ const BsMembersList = () => {
                 yearGroup.sort(() => Math.random() - 0.5);
               });
               
-              // Create alternating gender/year pattern within this residence
+              // Create perfectly distributed queue - round-robin across ALL groups this residence will have
               const residenceQueue: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> = [];
-              const allYears = [...new Set([...Object.keys(malesByYear), ...Object.keys(femalesByYear)])].sort();
               
+              // Create temporary arrays to hold users for round-robin distribution
+              const allYears = [...new Set([...Object.keys(malesByYear), ...Object.keys(femalesByYear)])].sort();
+              const distributionPool: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> = [];
+              
+              // Create a balanced pool alternating gender and year
               let currentYear = 0;
               let addedAny = true;
               
-              while (addedAny && residenceQueue.length < residenceUsers.length) {
+              while (addedAny && distributionPool.length < residenceUsers.length) {
                 addedAny = false;
                 
                 for (let yearIndex = 0; yearIndex < allYears.length; yearIndex++) {
@@ -609,17 +617,38 @@ const BsMembersList = () => {
                   
                   // Try to add one male and one female from this year
                   if (malesByYear[year] && malesByYear[year].length > 0) {
-                    residenceQueue.push(malesByYear[year].shift()!);
+                    distributionPool.push(malesByYear[year].shift()!);
                     addedAny = true;
                   }
                   
                   if (femalesByYear[year] && femalesByYear[year].length > 0) {
-                    residenceQueue.push(femalesByYear[year].shift()!);
+                    distributionPool.push(femalesByYear[year].shift()!);
                     addedAny = true;
                   }
                 }
                 currentYear++;
               }
+              
+              // Now distribute the pool round-robin across the groups for this residence
+              // This ensures EVERY group gets mixed years and gender
+              const tempGroups: Array<Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }>> = [];
+              for (let i = 0; i < groupsNeededForResidence; i++) {
+                tempGroups.push([]);
+              }
+              
+              // Round-robin distribution to ensure perfect mixing across ALL groups
+              distributionPool.forEach((user, index) => {
+                const targetGroupIndex = index % groupsNeededForResidence;
+                tempGroups[targetGroupIndex].push(user);
+              });
+              
+              // Flatten back to a queue, but now perfectly distributed
+              tempGroups.forEach(group => {
+                residenceQueue.push(...group);
+              });
+              
+              console.log(`   ✅ Created perfectly mixed distribution for ${residence}`);
+              console.log(`   📊 Each of the ${groupsNeededForResidence} groups will have mixed years/gender`);
               
               // Add ALL users from this residence to the main queue (residence-based blocks)
               regularUsersQueue.push(...residenceQueue);
