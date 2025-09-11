@@ -336,24 +336,19 @@ const MediaAdmin: React.FC = () => {
             
             if (response.ok) {
                 const data = await response.json();
-                const imageUrl = data.imageUrl;
+                // Convert relative URL to absolute URL for proper display
+                const baseUrl = getApiUrl('').replace('/api/', '');
+                const imageUrl = baseUrl + data.imageUrl;
+                
+                console.log('Image uploaded successfully:', imageUrl);
                 
                 if (itemId) {
-                    // Update existing item with server image URL
-                    const updatedItems = mediaItems.map(item => 
-                        (item._id || item.id) === itemId ? { ...item, imageUrl } : item
-                    );
-                    setMediaItems(updatedItems);
-                    
-                    // Also save to localStorage
-                    localStorage.setItem('ksucu-media-items', JSON.stringify(updatedItems));
-                    
-                    // Trigger event for other components
-                    window.dispatchEvent(new CustomEvent('mediaItemsUpdated', { 
-                        detail: updatedItems 
-                    }));
-                    
-                    setSyncStatus('success');
+                    // Update existing item with image URL and save to database
+                    const item = mediaItems.find(i => (i._id || i.id) === itemId);
+                    if (item) {
+                        const updatedItem = { ...item, imageUrl };
+                        await handleSaveEdit(itemId, updatedItem);
+                    }
                 } else {
                     // Update new item with server image URL
                     setNewItem(prev => ({ ...prev, imageUrl }));
@@ -522,7 +517,11 @@ const MediaAdmin: React.FC = () => {
                         </div>
                         {newItem.imageUrl && (
                             <div className={styles.imagePreview}>
-                                <img src={newItem.imageUrl} alt="Preview" />
+                                <img 
+                                    src={newItem.imageUrl.startsWith('http') ? newItem.imageUrl : `${getApiUrl('').replace('/api/', '')}${newItem.imageUrl}`} 
+                                    alt="Preview" 
+                                    style={{ maxWidth: '200px', maxHeight: '200px', objectFit: 'cover' }}
+                                />
                             </div>
                         )}
                         <div className={styles.formActions}>
@@ -636,7 +635,11 @@ const MediaItemCard: React.FC<MediaItemCardProps> = ({
                     />
                     {editData.imageUrl && (
                         <div className={styles.imagePreview}>
-                            <img src={editData.imageUrl} alt="Preview" />
+                            <img 
+                                src={editData.imageUrl.startsWith('http') ? editData.imageUrl : `${getApiUrl('').replace('/api/', '')}${editData.imageUrl}`} 
+                                alt="Preview" 
+                                style={{ maxWidth: '150px', maxHeight: '150px', objectFit: 'cover' }}
+                            />
                         </div>
                     )}
                     <div className={styles.editActions}>
@@ -656,7 +659,15 @@ const MediaItemCard: React.FC<MediaItemCardProps> = ({
         <div className={styles.mediaCard}>
             {item.imageUrl ? (
                 <div className={styles.mediaImage}>
-                    <img src={item.imageUrl} alt={item.event} />
+                    <img 
+                        src={item.imageUrl.startsWith('http') ? item.imageUrl : `${getApiUrl('').replace('/api/', '')}${item.imageUrl}`} 
+                        alt={item.event} 
+                        onError={(e) => {
+                            console.error('Image load error:', item.imageUrl);
+                            e.currentTarget.style.display = 'none';
+                            e.currentTarget.parentElement!.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #999;"><svg width="50" height="50" fill="currentColor" viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div>';
+                        }}
+                    />
                 </div>
             ) : (
                 <div className={styles.mediaPlaceholder}>
