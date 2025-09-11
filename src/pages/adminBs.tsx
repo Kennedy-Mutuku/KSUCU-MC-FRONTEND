@@ -103,19 +103,11 @@ const BsMembersList = () => {
       
       console.log('Bible study users response:', response.data);
       
-      // Process users to identify pastors
-      const processedUsers = response.data.map((user: any) => {
-        // Check if user is already marked as pastor or if their name contains "pastor"
-        const isPastor = user.isPastor === true || 
-                        user.name.toLowerCase().includes('pastor') || 
-                        user.name.toLowerCase().includes('pst') ||
-                        user.name.toLowerCase().includes('rev');
-        
-        return {
-          ...user,
-          isPastor: isPastor
-        };
-      });
+      // Use users as they come from the database, with proper isPastor field
+      const processedUsers = response.data.map((user: any) => ({
+        ...user,
+        isPastor: user.isPastor === true // Only rely on database field
+      }));
       
       console.log('Processed users with pastor identification:', processedUsers);
       console.log('Number of pastors found:', processedUsers.filter((u: any) => u.isPastor).length);
@@ -414,15 +406,54 @@ const BsMembersList = () => {
     setNewResidenceDescription('');
   };
 
-  const togglePastorStatus = (userIndex: number) => {
-    const updatedUsers = [...users];
-    updatedUsers[userIndex].isPastor = !updatedUsers[userIndex].isPastor;
-    setUsers(updatedUsers);
+  const togglePastorStatus = async (userIndex: number) => {
+    const user = users[userIndex];
+    const newPastorStatus = !user.isPastor;
     
-    const userName = updatedUsers[userIndex].name;
-    const status = updatedUsers[userIndex].isPastor ? 'marked as Pastor' : 'unmarked as Pastor';
-    setError(`✅ ${userName} ${status} successfully!`);
-    setTimeout(() => setError(''), 3000);
+    try {
+      setError(`🔄 Updating ${user.name}'s pastor status...`);
+      
+      const response = await axios.put(
+        `${backEndURL}/adminBs/users/${user.phone}/pastor`,
+        { isPastor: newPastorStatus },
+        { 
+          withCredentials: true,
+          timeout: 10000
+        }
+      );
+      
+      if (response.status === 200) {
+        // Update local state only after successful API call
+        const updatedUsers = [...users];
+        updatedUsers[userIndex].isPastor = newPastorStatus;
+        setUsers(updatedUsers);
+        
+        const status = newPastorStatus ? 'marked as Pastor' : 'unmarked as Pastor';
+        setError(`✅ ${user.name} ${status} successfully!`);
+        setTimeout(() => setError(''), 3000);
+        
+        console.log(`Pastor status updated for ${user.name}: ${newPastorStatus}`);
+      }
+    } catch (err: any) {
+      console.error('Error updating pastor status:', err);
+      
+      if (err.response?.status === 401 || err.response?.status === 403) {
+        setError('❌ Authentication failed. Please login again.');
+        setIsAuthenticated(false);
+        setShowLoginForm(true);
+      } else if (err.response?.status === 404) {
+        setError(`❌ User ${user.name} not found. They may have been deleted.`);
+        // Refresh the users list
+        fetchSavedSouls();
+      } else if (err.code === 'ERR_NETWORK' || !navigator.onLine) {
+        setError('❌ Network error. Please check your connection and try again.');
+      } else if (err.code === 'ECONNABORTED' || err.message.includes('timeout')) {
+        setError('❌ Request timeout. Please try again.');
+      } else {
+        const message = err.response?.data?.message || 'Failed to update pastor status';
+        setError(`❌ ${message}. Please try again.`);
+      }
+    }
   };
 
   // Helper function to create a balanced queue from regular users only (no pastors)

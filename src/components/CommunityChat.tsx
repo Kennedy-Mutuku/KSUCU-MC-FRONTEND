@@ -345,8 +345,8 @@ const CommunityChat: React.FC = () => {
         type: file.type
       });
 
-      // Get authentication token from cookies
-      const token = Cookies.get('socket_token');
+      // Get authentication token from cookies - try both possible cookie names
+      let token = Cookies.get('user_s') || Cookies.get('socket_token');
       
       // Prepare headers
       const headers: HeadersInit = {};
@@ -371,20 +371,22 @@ const CommunityChat: React.FC = () => {
         setTimeout(() => setError(''), 3000);
       } else {
         console.error('📁 Chat: Failed to upload file:', data.message);
+        console.error('📁 Chat: Response status:', response.status);
+        console.error('📁 Chat: Full response:', data);
         
         // Handle specific authentication errors
         if (response.status === 401 || response.status === 403) {
           if (!token) {
-            setError('❌ Please log in to upload media files. You can still send text messages as a guest.');
+            setError('❌ Please log in to upload media files.');
           } else {
-            setError('❌ Your session has expired. Please log in again to upload media files.');
+            setError('❌ Authentication failed. Please refresh the page and log in again.');
           }
         } else if (response.status === 413) {
           setError('❌ File too large. Please choose a smaller file (max 50MB).');
         } else if (response.status === 415) {
           setError('❌ File type not supported. Please upload images, videos, audio, or document files.');
         } else {
-          setError(`❌ Failed to upload ${fileType}: ${data.message || 'Unknown error'}`);
+          setError(`❌ Upload failed (${response.status}): ${data.message || 'Please refresh and try again'}`);
         }
       }
     } catch (error: any) {
@@ -569,7 +571,7 @@ const CommunityChat: React.FC = () => {
 
   const handleReaction = async (messageId: string, reactionType: 'like' | 'dislike') => {
     try {
-      const token = Cookies.get('socket_token');
+      const token = Cookies.get('user_s') || Cookies.get('socket_token');
       const headers: HeadersInit = {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
