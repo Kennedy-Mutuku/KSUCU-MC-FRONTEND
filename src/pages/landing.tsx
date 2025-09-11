@@ -16,7 +16,7 @@ import visionImg from '../assets/gents.jpg'
 import missionImg from '../assets/ladies.jpg'
 import valuesImg from '../assets/amptheatre.jpg'
 import prayerPNG from '../assets/RIVET.jpg'
-import { Heart, Camera, BookOpen, Library, DollarSign, GraduationCap, Package } from "lucide-react";
+import { Heart, Camera, BookOpen, Library, DollarSign, GraduationCap, Package, MessageCircleHeart } from "lucide-react";
 import LandingPageHeader from '../components/LandingPageHeader';
 import ModernNewsDisplay from '../components/ModernNewsDisplay';
 
@@ -1393,6 +1393,14 @@ const LandingPage = () => {
             onClick={(e) => handleQuickLinkClick(() => navigate('/Bs'), e)}
           >
             <GraduationCap className={styles.icon} />
+          </div>
+          
+          <div 
+            className={styles['quick-link-item']}
+            data-text="Compassion & Counseling"
+            onClick={(e) => handleQuickLinkClick(() => navigate('/compassion-counseling'), e)}
+          >
+            <MessageCircleHeart className={styles.icon} />
           </div>
           
         </div>

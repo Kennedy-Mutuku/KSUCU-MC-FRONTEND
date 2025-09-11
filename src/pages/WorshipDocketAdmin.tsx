@@ -10,7 +10,8 @@ import {
     faArrowRight,
     faNewspaper,
     faBox,
-    faBookOpen
+    faBookOpen,
+    faHeart
 } from '@fortawesome/free-solid-svg-icons';
 
 const WorshipDocketAdmin: React.FC = () => {
@@ -218,9 +219,32 @@ const WorshipDocketAdmin: React.FC = () => {
                         </div>
                     </div>
 
-                    {/* 5. Leadership Attendance Management */}
+                    {/* 5. Compassion & Counseling Administration */}
                     <div className={styles.functionCard}>
                         <div className={styles.functionNumber}>5</div>
+                        <div className={styles.functionContent}>
+                            <h3>
+                                <FontAwesomeIcon icon={faHeart} />
+                                Compassion & Counseling Administration
+                            </h3>
+                            <p>Manage help requests, donations, and support those in need</p>
+                            <button 
+                                className={styles.functionButton}
+                                onClick={() => {
+                                    // Store authentication state
+                                    sessionStorage.setItem('adminAuth', 'Overseer');
+                                    window.location.href = '/compassion-counseling-admin';
+                                }}
+                            >
+                                Compassion Admin
+                                <FontAwesomeIcon icon={faArrowRight} className={styles.arrowIcon} />
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* 6. Leadership Attendance Management */}
+                    <div className={styles.functionCard}>
+                        <div className={styles.functionNumber}>6</div>
                         <div className={styles.functionContent}>
                             <h3>
                                 <FontAwesomeIcon icon={faUsers} />

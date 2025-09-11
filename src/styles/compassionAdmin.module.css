@@ -1,0 +1,610 @@
+/* Compassion & Counseling Admin Styles */
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+  background: #f8f9fa;
+  min-height: 100vh;
+}
+
+/* Header */
+.header {
+  background: linear-gradient(135deg, #730051 0%, #00c6ff 100%);
+  color: white;
+  text-align: center;
+  padding: 40px 20px;
+  border-radius: 15px;
+  margin-bottom: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.headerIcon {
+  width: 50px;
+  height: 50px;
+  margin-bottom: 15px;
+  opacity: 0.9;
+}
+
+.header h1 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.header p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+/* Message Display */
+.message {
+  padding: 15px 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-weight: 500;
+  text-align: center;
+  animation: slideDown 0.3s ease-out;
+}
+
+.message.success {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.message.error {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Tab Navigation */
+.tabNavigation {
+  display: flex;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+  overflow: hidden;
+}
+
+.tabButton {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 20px;
+  background: white;
+  border: none;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tabButton:hover {
+  background: #f8f9fa;
+  color: #730051;
+}
+
+.tabButton.active {
+  background: linear-gradient(135deg, #730051, #00c6ff);
+  color: white;
+}
+
+.tabIcon {
+  width: 20px;
+  height: 20px;
+}
+
+/* Filters Section */
+.filtersSection {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.searchFilter,
+.statusFilter,
+.urgencyFilter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.filterIcon {
+  width: 18px;
+  height: 18px;
+  color: #730051;
+}
+
+.searchFilter input,
+.statusFilter select,
+.urgencyFilter select {
+  flex: 1;
+  padding: 10px 12px;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.searchFilter input:focus,
+.statusFilter select:focus,
+.urgencyFilter select:focus {
+  outline: none;
+  border-color: #00c6ff;
+  box-shadow: 0 0 0 3px rgba(0, 198, 255, 0.1);
+}
+
+/* Lists */
+.requestsList,
+.donationsList {
+  background: white;
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.requestsList h2,
+.donationsList h2 {
+  color: #730051;
+  margin-bottom: 25px;
+  font-size: 1.8rem;
+  text-align: center;
+}
+
+.loading,
+.emptyState {
+  text-align: center;
+  padding: 60px 20px;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+/* Grids */
+.requestsGrid,
+.donationsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 25px;
+}
+
+/* Cards */
+.requestCard,
+.donationCard {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  border-left: 4px solid transparent;
+}
+
+.requestCard:hover,
+.donationCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.urgencyIndicator,
+.donationType {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.urgencyIcon,
+.donationIcon {
+  width: 16px;
+  height: 16px;
+}
+
+.statusBadge {
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.urgencyBadge {
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-left: 8px;
+}
+
+.cardBody h3 {
+  color: #730051;
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+}
+
+.helpType {
+  background: #e3f2fd;
+  color: #1976d2;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+.amount {
+  background: #e8f5e8;
+  color: #2e7d32;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+.description,
+.message {
+  color: #666;
+  line-height: 1.5;
+  margin-bottom: 15px;
+}
+
+.contactInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+.contactItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.contactIcon {
+  width: 14px;
+  height: 14px;
+  color: #730051;
+}
+
+.timestamp {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  color: #999;
+  font-size: 0.85rem;
+  margin-bottom: 15px;
+}
+
+.timestampIcon {
+  width: 12px;
+  height: 12px;
+}
+
+.cardActions {
+  display: flex;
+  gap: 10px;
+}
+
+.viewButton,
+.callButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.viewButton {
+  background: #730051;
+  color: white;
+  flex: 1;
+}
+
+.viewButton:hover {
+  background: #5a003d;
+  transform: translateY(-1px);
+}
+
+.callButton {
+  background: #28a745;
+  color: white;
+  flex: 1;
+}
+
+.callButton:hover {
+  background: #218838;
+  transform: translateY(-1px);
+}
+
+.buttonIcon {
+  width: 14px;
+  height: 14px;
+}
+
+/* Modal Styles */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modalContent {
+  background: white;
+  border-radius: 15px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 30px;
+  border-bottom: 1px solid #e9ecef;
+  background: linear-gradient(135deg, #730051, #00c6ff);
+  color: white;
+  border-radius: 15px 15px 0 0;
+}
+
+.modalHeader h3 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.modalHeader button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.modalHeader button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.modalBody {
+  padding: 30px;
+}
+
+.requestDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.detailItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.detailItem .icon {
+  width: 18px;
+  height: 18px;
+  color: #730051;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.detailItem > div {
+  flex: 1;
+}
+
+.detailItem strong {
+  color: #333;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.detailItem .callButton {
+  margin-left: 10px;
+  padding: 4px 8px;
+  font-size: 0.8rem;
+}
+
+.descriptionSection {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.descriptionSection strong {
+  color: #730051;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.descriptionSection p {
+  color: #666;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.statusActions {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.statusActions strong {
+  color: #730051;
+  display: block;
+  margin-bottom: 15px;
+}
+
+.statusButtons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.statusButton {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex: 1;
+  min-width: 120px;
+}
+
+.statusButton:hover {
+  transform: translateY(-1px);
+  opacity: 0.9;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: 15px;
+  }
+  
+  .header {
+    padding: 30px 15px;
+  }
+  
+  .header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .filtersSection {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .searchFilter,
+  .statusFilter,
+  .urgencyFilter {
+    min-width: 100%;
+  }
+  
+  .requestsGrid,
+  .donationsGrid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .requestCard,
+  .donationCard {
+    padding: 15px;
+  }
+  
+  .cardActions {
+    flex-direction: column;
+  }
+  
+  .modalContent {
+    margin: 10px;
+    max-height: 95vh;
+  }
+  
+  .modalHeader,
+  .modalBody {
+    padding: 20px;
+  }
+  
+  .statusButtons {
+    flex-direction: column;
+  }
+  
+  .statusButton {
+    min-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .tabNavigation {
+    flex-direction: column;
+  }
+  
+  .tabButton {
+    padding: 15px;
+    font-size: 1rem;
+  }
+  
+  .requestsList,
+  .donationsList {
+    padding: 20px;
+  }
+  
+  .contactInfo {
+    gap: 6px;
+  }
+  
+  .timestamp {
+    flex-direction: column;
+    gap: 5px;
+    align-items: flex-start;
+  }
+}

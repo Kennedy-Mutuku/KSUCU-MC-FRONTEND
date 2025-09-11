@@ -550,6 +550,9 @@ const LandingPageHeader = () => {
             <div onClick={() => handlePublicLink('/requisitions')} className={styles['quick-item--link']}>
               Requisitions
             </div>
+            <div onClick={() => handlePublicLink('/compassion-counseling')} className={styles['quick-item--link']}>
+              Compassion & Counseling
+            </div>
             <div onClick={handleAboutUsClick} className={styles['quick-item--link']}>
               About Us
             </div>

@@ -40,6 +40,13 @@ interface ApiConfig {
     chatMessages: string;
     chatUpload: string;
     chatOnlineUsers: string;
+    compassionHelp: string;
+    compassionDonation: string;
+    compassionHelpAdmin: string;
+    compassionDonationAdmin: string;
+    compassionHelpUpdate: string;
+    compassionDonationUpdate: string;
+    compassionStats: string;
   };
 }
 
@@ -86,7 +93,14 @@ const developmentConfig: ApiConfig = {
     messages: '/messages',
     chatMessages: '/chat/messages',
     chatUpload: '/chat/upload',
-    chatOnlineUsers: '/chat/online-users'
+    chatOnlineUsers: '/chat/online-users',
+    compassionHelp: '/api/compassion/help-request',
+    compassionDonation: '/api/compassion/donation',
+    compassionHelpAdmin: '/api/compassion/admin/help-requests',
+    compassionDonationAdmin: '/api/compassion/admin/donations',
+    compassionHelpUpdate: '/api/compassion/admin/help-request',
+    compassionDonationUpdate: '/api/compassion/admin/donation',
+    compassionStats: '/api/compassion/admin/stats'
   }
 };
 
@@ -131,7 +145,14 @@ const productionConfig: ApiConfig = {
     messages: '/messages',
     chatMessages: '/chat/messages',
     chatUpload: '/chat/upload',
-    chatOnlineUsers: '/chat/online-users'
+    chatOnlineUsers: '/chat/online-users',
+    compassionHelp: '/api/compassion/help-request',
+    compassionDonation: '/api/compassion/donation',
+    compassionHelpAdmin: '/api/compassion/admin/help-requests',
+    compassionDonationAdmin: '/api/compassion/admin/donations',
+    compassionHelpUpdate: '/api/compassion/admin/help-request',
+    compassionDonationUpdate: '/api/compassion/admin/donation',
+    compassionStats: '/api/compassion/admin/stats'
   }
 };
 

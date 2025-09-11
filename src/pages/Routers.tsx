@@ -45,6 +45,8 @@ import AttendanceSessionManagement from "./AttendanceSessionManagement";
 import NewsAdmin from "./NewsAdmin";
 import Requisitions from "./Requisitions";
 import RequisitionsAdmin from "./RequisitionsAdmin";
+import CompassionCounselingPage from "./CompassionCounseling";
+import CompassionCounselingAdmin from "./CompassionCounselingAdmin";
 
 export const router = createBrowserRouter([
     {
@@ -96,6 +98,8 @@ export const router = createBrowserRouter([
             {path: "/news-admin", element: <NewsAdmin />},
             {path: "/requisitions", element: <Requisitions />},
             {path: "/requisitions-admin", element: <RequisitionsAdmin />},
+            {path: "/compassion-counseling", element: <CompassionCounselingPage />},
+            {path: "/compassion-counseling-admin", element: <CompassionCounselingAdmin />},
             {path: "*", element: <NoPage />}
         ]
     }
