@@ -629,29 +629,109 @@ const BsMembersList = () => {
             console.log(`📋 Regular users queue: ${regularUsersQueue.length} users`);
             console.log(`👑 Pastors to distribute: ${allPastors.length} pastors`);
             
-            // STEP 1: Distribute pastors - MAX 1 pastor per group
-            let pastorIndex = 0;
-            for (let groupIndex = 0; groupIndex < totalGroups && pastorIndex < allPastors.length; groupIndex++) {
-              finalGroups[groupIndex].push(allPastors[pastorIndex]);
-              console.log(`✝️ Added pastor ${allPastors[pastorIndex].name} to Group ${groupIndex + 1}`);
-              pastorIndex++;
-            }
+            // STEP 1: Distribute pastors by residence - pastors go to groups in their own residence area
             
-            // If we have more pastors than groups, add remaining pastors as regular members
+            // 1.1: Group pastors by residence
+            const pastorsByResidence: { [residence: string]: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> } = {};
+            allPastors.forEach(pastor => {
+              if (!pastorsByResidence[pastor.residence]) pastorsByResidence[pastor.residence] = [];
+              pastorsByResidence[pastor.residence].push(pastor);
+            });
+            
+            console.log(`👑 Pastor distribution by residence:`);
+            Object.keys(pastorsByResidence).sort().forEach(residence => {
+              console.log(`   ${residence}: ${pastorsByResidence[residence].length} pastor${pastorsByResidence[residence].length !== 1 ? 's' : ''}`);
+            });
+            
+            // 1.2: Calculate which groups belong to which residence (based on regularUsersQueue order)
+            const residenceGroupRanges: { [residence: string]: { start: number, end: number, groups: number[] } } = {};
+            let currentResidence = '';
             let groupIndex = 0;
-            while (pastorIndex < allPastors.length) {
-              // Find a group with space
-              while (groupIndex < totalGroups && finalGroups[groupIndex].length >= size) {
-                groupIndex++;
+            let userIndex = 0;
+            
+            // Track which groups each residence fills
+            while (userIndex < regularUsersQueue.length && groupIndex < totalGroups) {
+              const user = regularUsersQueue[userIndex];
+              
+              // If we're starting a new residence
+              if (user.residence !== currentResidence) {
+                currentResidence = user.residence;
+                if (!residenceGroupRanges[currentResidence]) {
+                  residenceGroupRanges[currentResidence] = { start: groupIndex, end: groupIndex, groups: [] };
+                }
               }
               
-              if (groupIndex < totalGroups) {
-                finalGroups[groupIndex].push(allPastors[pastorIndex]);
-                console.log(`👤 Added extra pastor ${allPastors[pastorIndex].name} as regular member to Group ${groupIndex + 1}`);
-                pastorIndex++;
-                groupIndex++;
+              // Add users to current group until full, then move to next group
+              let usersInCurrentGroup = 0;
+              while (userIndex < regularUsersQueue.length && 
+                     regularUsersQueue[userIndex].residence === currentResidence && 
+                     usersInCurrentGroup < size) {
+                userIndex++;
+                usersInCurrentGroup++;
+              }
+              
+              // Record this group for the current residence
+              residenceGroupRanges[currentResidence].groups.push(groupIndex);
+              residenceGroupRanges[currentResidence].end = groupIndex;
+              
+              groupIndex++;
+            }
+            
+            console.log(`🏠 Group ranges by residence:`);
+            Object.keys(residenceGroupRanges).sort().forEach(residence => {
+              const range = residenceGroupRanges[residence];
+              console.log(`   ${residence}: Groups [${range.groups.map(g => g + 1).join(', ')}]`);
+            });
+            
+            // 1.3: Assign pastors to groups within their residence area
+            let unassignedPastors: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> = [];
+            
+            for (const residence of Object.keys(pastorsByResidence).sort()) {
+              const residencePastors = pastorsByResidence[residence];
+              const availableGroups = residenceGroupRanges[residence]?.groups || [];
+              
+              console.log(`🏠 Processing ${residence}: ${residencePastors.length} pastors, ${availableGroups.length} available groups`);
+              
+              for (let i = 0; i < residencePastors.length; i++) {
+                const pastor = residencePastors[i];
+                
+                if (i < availableGroups.length) {
+                  // Assign pastor to a group in their residence area
+                  const targetGroupIndex = availableGroups[i];
+                  finalGroups[targetGroupIndex].push(pastor);
+                  console.log(`✝️ Added pastor ${pastor.name} to Group ${targetGroupIndex + 1} (${residence} area)`);
+                } else {
+                  // Too many pastors for this residence, add to unassigned list
+                  unassignedPastors.push(pastor);
+                  console.log(`⏳ Pastor ${pastor.name} from ${residence} added to overflow list (too many pastors for this residence)`);
+                }
+              }
+            }
+            
+            // 1.4: Assign overflow pastors to any available groups
+            let availableGroupIndex = 0;
+            for (const pastor of unassignedPastors) {
+              // Find next group that doesn't have a pastor yet
+              while (availableGroupIndex < totalGroups && 
+                     finalGroups[availableGroupIndex].some(member => member.isPastor)) {
+                availableGroupIndex++;
+              }
+              
+              if (availableGroupIndex < totalGroups) {
+                finalGroups[availableGroupIndex].push(pastor);
+                console.log(`✝️ Added overflow pastor ${pastor.name} to Group ${availableGroupIndex + 1} (overflow assignment)`);
+                availableGroupIndex++;
               } else {
-                break; // All groups are full
+                // All groups have pastors, add as regular member to any group with space
+                let groupWithSpaceIndex = 0;
+                while (groupWithSpaceIndex < totalGroups && finalGroups[groupWithSpaceIndex].length >= size) {
+                  groupWithSpaceIndex++;
+                }
+                
+                if (groupWithSpaceIndex < totalGroups) {
+                  finalGroups[groupWithSpaceIndex].push(pastor);
+                  console.log(`👤 Added excess pastor ${pastor.name} as regular member to Group ${groupWithSpaceIndex + 1}`);
+                }
               }
             }
             
@@ -690,19 +770,27 @@ const BsMembersList = () => {
             
             console.log(`🎯 Sequential distribution complete: ${regularUserIndex} users placed`);
             
-            // Log residence distribution pattern
-            const residenceDistribution: { [residence: string]: number[] } = {};
+            // Log final residence distribution pattern (including pastors)
+            const residenceDistribution: { [residence: string]: { groups: number[], pastors: number, regulars: number } } = {};
             finalGroups.forEach((group, groupIndex) => {
               group.forEach(user => {
-                if (!residenceDistribution[user.residence]) residenceDistribution[user.residence] = [];
-                residenceDistribution[user.residence].push(groupIndex + 1);
+                if (!residenceDistribution[user.residence]) {
+                  residenceDistribution[user.residence] = { groups: [], pastors: 0, regulars: 0 };
+                }
+                residenceDistribution[user.residence].groups.push(groupIndex + 1);
+                if (user.isPastor) {
+                  residenceDistribution[user.residence].pastors++;
+                } else {
+                  residenceDistribution[user.residence].regulars++;
+                }
               });
             });
             
-            console.log(`🏠 RESIDENCE DISTRIBUTION:`);
+            console.log(`🏠 FINAL RESIDENCE DISTRIBUTION (with pastors):`);
             Object.keys(residenceDistribution).sort().forEach(residence => {
-              const groupNumbers = [...new Set(residenceDistribution[residence])].sort((a, b) => a - b);
-              console.log(`   ${residence}: Groups [${groupNumbers.join(', ')}]`);
+              const data = residenceDistribution[residence];
+              const groupNumbers = [...new Set(data.groups)].sort((a, b) => a - b);
+              console.log(`   ${residence}: Groups [${groupNumbers.join(', ')}] | ${data.pastors} pastor${data.pastors !== 1 ? 's' : ''}, ${data.regulars} regular member${data.regulars !== 1 ? 's' : ''}`);
             });
             
             // Log detailed group creation with diversity analysis
