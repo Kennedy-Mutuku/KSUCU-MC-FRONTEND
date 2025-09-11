@@ -150,4 +150,19 @@ export const getBaseUrl = (): string => {
   return config.baseUrl;
 };
 
+export const getImageUrl = (imagePath: string): string => {
+  if (!imagePath) return '';
+  
+  // If it's already a full URL, return as is
+  if (imagePath.startsWith('http')) return imagePath;
+  
+  // If it starts with /, treat as relative to base URL
+  if (imagePath.startsWith('/')) {
+    return `${config.baseUrl}${imagePath}`;
+  }
+  
+  // Otherwise, prepend uploads path
+  return `${config.baseUrl}/uploads/${imagePath}`;
+};
+
 export const isDevMode = (): boolean => isDevelopment;

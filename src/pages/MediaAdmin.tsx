@@ -14,7 +14,7 @@ import {
     faEye,
     faSync
 } from '@fortawesome/free-solid-svg-icons';
-import { getApiUrl } from '../config/environment';
+import { getApiUrl, getImageUrl } from '../config/environment';
 
 interface MediaItem {
     _id?: string;
@@ -336,9 +336,8 @@ const MediaAdmin: React.FC = () => {
             
             if (response.ok) {
                 const data = await response.json();
-                // Convert relative URL to absolute URL for proper display
-                const baseUrl = getApiUrl('').replace('/api/', '');
-                const imageUrl = baseUrl + data.imageUrl;
+                // Use the proper image URL helper
+                const imageUrl = getImageUrl(data.imageUrl);
                 
                 console.log('Image uploaded successfully:', imageUrl);
                 
@@ -518,9 +517,10 @@ const MediaAdmin: React.FC = () => {
                         {newItem.imageUrl && (
                             <div className={styles.imagePreview}>
                                 <img 
-                                    src={newItem.imageUrl.startsWith('http') ? newItem.imageUrl : `${getApiUrl('').replace('/api/', '')}${newItem.imageUrl}`} 
+                                    src={getImageUrl(newItem.imageUrl)} 
                                     alt="Preview" 
                                     style={{ maxWidth: '200px', maxHeight: '200px', objectFit: 'cover' }}
+                                    onError={(e) => console.error('Preview image error:', newItem.imageUrl, 'Full URL:', getImageUrl(newItem.imageUrl))}
                                 />
                             </div>
                         )}
@@ -636,9 +636,10 @@ const MediaItemCard: React.FC<MediaItemCardProps> = ({
                     {editData.imageUrl && (
                         <div className={styles.imagePreview}>
                             <img 
-                                src={editData.imageUrl.startsWith('http') ? editData.imageUrl : `${getApiUrl('').replace('/api/', '')}${editData.imageUrl}`} 
+                                src={getImageUrl(editData.imageUrl)} 
                                 alt="Preview" 
                                 style={{ maxWidth: '150px', maxHeight: '150px', objectFit: 'cover' }}
+                                onError={(e) => console.error('Edit preview image error:', editData.imageUrl, 'Full URL:', getImageUrl(editData.imageUrl))}
                             />
                         </div>
                     )}
@@ -660,10 +661,10 @@ const MediaItemCard: React.FC<MediaItemCardProps> = ({
             {item.imageUrl ? (
                 <div className={styles.mediaImage}>
                     <img 
-                        src={item.imageUrl.startsWith('http') ? item.imageUrl : `${getApiUrl('').replace('/api/', '')}${item.imageUrl}`} 
+                        src={getImageUrl(item.imageUrl)} 
                         alt={item.event} 
                         onError={(e) => {
-                            console.error('Image load error:', item.imageUrl);
+                            console.error('Image load error for:', item.imageUrl, 'Full URL:', getImageUrl(item.imageUrl));
                             e.currentTarget.style.display = 'none';
                             e.currentTarget.parentElement!.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #999;"><svg width="50" height="50" fill="currentColor" viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div>';
                         }}
@@ -673,7 +674,7 @@ const MediaItemCard: React.FC<MediaItemCardProps> = ({
                 <div className={styles.mediaPlaceholder}>
                     <FontAwesomeIcon icon={faImages} />
                 </div>
-            )}
+            ))
             <div className={styles.mediaContent}>
                 <h4>{item.event}</h4>
                 <p className={styles.mediaDate}>
