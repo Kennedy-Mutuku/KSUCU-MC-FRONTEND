@@ -48,12 +48,37 @@ const Requisitions: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const [isToastFading, setIsToastFading] = useState(false);
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [adminContactPhone, setAdminContactPhone] = useState<string>('');
     const [userRequisitions, setUserRequisitions] = useState<RequisitionForm[]>([]);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [currentUserName, setCurrentUserName] = useState('');
     const backEndURL = 'https://ksucu-mc.co.ke';
+
+    // Helper function to show toast with auto-hide
+    const showToast = (message: string, type: 'success' | 'error', duration: number = 3000) => {
+        setIsToastFading(false);
+        if (type === 'success') {
+            setSuccess(message);
+            setError('');
+        } else {
+            setError(message);
+            setSuccess('');
+        }
+
+        // Start fade out animation before removing
+        setTimeout(() => {
+            setIsToastFading(true);
+        }, duration - 500);
+
+        // Remove message after fade out completes
+        setTimeout(() => {
+            setSuccess('');
+            setError('');
+            setIsToastFading(false);
+        }, duration);
+    };
 
 
     useEffect(() => {
@@ -74,22 +99,76 @@ const Requisitions: React.FC = () => {
                 console.log('No user data found');
             }
         }
+
+        // Refresh phone number periodically (every 30 seconds)
+        const phoneRefreshInterval = setInterval(() => {
+            loadAdminContactPhone();
+        }, 30000);
+
+        // Refresh when user focuses on the page
+        const handleFocus = () => {
+            loadAdminContactPhone();
+        };
+
+        window.addEventListener('focus', handleFocus);
+
+        // Cleanup
+        return () => {
+            clearInterval(phoneRefreshInterval);
+            window.removeEventListener('focus', handleFocus);
+        };
     }, []);
 
     const loadAdminContactPhone = async () => {
         try {
+            console.log('Loading admin contact phone from API...');
             const response = await axios.get(`${backEndURL}/api/settings/admin-contact-phone`, {
-                withCredentials: true
+                withCredentials: true,
+                timeout: 5000 // 5 second timeout
             });
+            console.log('Admin phone API response:', response.data);
             const phoneNumber = response.data.value || '';
-            setAdminContactPhone(phoneNumber);
-            // Update localStorage with latest value
-            localStorage.setItem('admin-contact-phone', phoneNumber);
+            
+            // Only update state if phone number has changed
+            const currentPhone = localStorage.getItem('admin-contact-phone') || '';
+            if (phoneNumber !== currentPhone || phoneNumber !== adminContactPhone) {
+                console.log('Phone number changed from:', currentPhone, 'to:', phoneNumber);
+                setAdminContactPhone(phoneNumber);
+                // Update localStorage with latest value
+                localStorage.setItem('admin-contact-phone', phoneNumber);
+                console.log('Admin phone updated successfully:', phoneNumber);
+            } else {
+                console.log('Phone number unchanged:', phoneNumber);
+            }
         } catch (error) {
             console.error('Error loading admin contact phone from API:', error);
             // Fallback to localStorage
             const savedPhone = localStorage.getItem('admin-contact-phone') || '';
-            setAdminContactPhone(savedPhone);
+            console.log('Using fallback phone from localStorage:', savedPhone);
+            if (savedPhone !== adminContactPhone) {
+                setAdminContactPhone(savedPhone);
+            }
+            
+            // Try to load from API again after a delay if initial load failed
+            if (!savedPhone) {
+                setTimeout(async () => {
+                    try {
+                        console.log('Retrying admin phone API call...');
+                        const retryResponse = await axios.get(`${backEndURL}/api/settings/admin-contact-phone`, {
+                            withCredentials: true,
+                            timeout: 10000
+                        });
+                        const phoneNumber = retryResponse.data.value || '';
+                        if (phoneNumber && phoneNumber !== adminContactPhone) {
+                            setAdminContactPhone(phoneNumber);
+                            localStorage.setItem('admin-contact-phone', phoneNumber);
+                            console.log('Admin phone loaded on retry:', phoneNumber);
+                        }
+                    } catch (retryError) {
+                        console.error('Retry failed for admin phone:', retryError);
+                    }
+                }, 3000);
+            }
         }
     };
 
@@ -147,7 +226,7 @@ const Requisitions: React.FC = () => {
         
         // Validation
         if (!formData.recipientName || !formData.recipientPhone || !formData.timeReceived || !formData.timeToReturn || !formData.purpose) {
-            setError('Please fill in all required fields');
+            showToast('❗ Please fill in all required fields', 'error');
             return;
         }
 
@@ -155,17 +234,17 @@ const Requisitions: React.FC = () => {
         const filledItems = formData.items.filter(item => item.itemName.trim() !== '');
         
         if (filledItems.length === 0) {
-            setError('Please add at least one item to your requisition');
+            showToast('❗ Please add at least one item to your requisition', 'error');
             return;
         }
 
         if (filledItems.some(item => item.quantity <= 0)) {
-            setError('Please enter valid quantities for all items');
+            showToast('❗ Please enter valid quantities for all items', 'error');
             return;
         }
 
         if (new Date(formData.timeToReturn) <= new Date(formData.timeReceived)) {
-            setError('Return time must be after received time');
+            showToast('❗ Return time must be after received time', 'error');
             return;
         }
 
@@ -195,7 +274,7 @@ const Requisitions: React.FC = () => {
                 await loadUserRequisitions(currentUserName);
             }
 
-            setSuccess('Requisition submitted successfully! You will be notified when it\'s processed.');
+            showToast('✅ Requisition submitted successfully! You will be notified when it\'s processed.', 'success');
         } catch (error) {
             console.error('Error submitting requisition:', error);
             
@@ -215,7 +294,7 @@ const Requisitions: React.FC = () => {
                 await loadUserRequisitions(currentUserName);
             }
 
-            setSuccess('Requisition submitted successfully! You will be notified when it\'s processed.');
+            showToast('✅ Requisition submitted successfully! You will be notified when it\'s processed.', 'success');
         }
 
         setLoading(false);
@@ -236,7 +315,6 @@ const Requisitions: React.FC = () => {
             submittedAt: ''
         });
 
-        setTimeout(() => setSuccess(''), 5000);
     };
 
     if (!isAuthenticated) {
@@ -308,13 +386,13 @@ const Requisitions: React.FC = () => {
                 )}
 
                 {error && (
-                    <div className={styles.errorAlert}>
+                    <div className={`${styles.errorAlert} ${isToastFading ? styles.fadeOut : ''}`}>
                         {error}
                     </div>
                 )}
 
                 {success && (
-                    <div className={styles.successAlert}>
+                    <div className={`${styles.successAlert} ${isToastFading ? styles.fadeOut : ''}`}>
                         {success}
                     </div>
                 )}

@@ -5,7 +5,7 @@ import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
 import loadingAnime from '../assets/Animation - 1716747954931.gif';
 import { FaYoutube, FaFacebook, FaTiktok, FaTwitter, FaImage, FaNewspaper, FaBook, FaTimes, FaSync } from 'react-icons/fa';
-import { getApiUrl, getImageUrl } from '../config/environment';
+import { getApiUrl, getImageUrl, getBaseUrl, isDevMode } from '../config/environment';
 
 interface MediaItem {
   _id?: string;
@@ -48,6 +48,13 @@ const Media: React.FC = () => {
   const navigate = useNavigate();
   
   useEffect(() => {
+    // Environment debugging  
+    console.log('🔧 Media Environment Debug:');
+    console.log('  - isDev:', isDevMode());
+    console.log('  - baseUrl:', getBaseUrl());
+    console.log('  - hostname:', window.location.hostname);
+    console.log('  - sample imageUrl:', getImageUrl('/uploads/media/test.png'));
+    
     fetchUserData();
     loadMediaItems();
     
@@ -315,10 +322,20 @@ const Media: React.FC = () => {
                       <img 
                         src={getImageUrl(event.imageUrl)} 
                         alt={event.event}
+                        onLoad={() => {
+                          console.log('✅ Event image loaded:', event.event, 'URL:', getImageUrl(event.imageUrl || ''));
+                        }}
                         onError={(e) => {
                           console.error('Event image load error:', event.imageUrl, 'Full URL:', getImageUrl(event.imageUrl || ''));
                           e.currentTarget.style.display = 'none';
-                          e.currentTarget.parentElement!.innerHTML = '<svg width="50" height="50" fill="currentColor" viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>';
+                          const parent = e.currentTarget.parentElement;
+                          if (parent && !parent.querySelector('.fallback-icon')) {
+                            const fallbackDiv = document.createElement('div');
+                            fallbackDiv.className = 'fallback-icon';
+                            fallbackDiv.style.cssText = 'display: flex; align-items: center; justify-content: center; height: 100%; color: #999; font-size: 50px;';
+                            fallbackDiv.innerHTML = '📷';
+                            parent.appendChild(fallbackDiv);
+                          }
                         }}
                       />
                     ) : (
@@ -407,10 +424,20 @@ const Media: React.FC = () => {
                           <img 
                             src={getImageUrl(event.imageUrl)} 
                             alt={event.event}
+                            onLoad={() => {
+                              console.log('✅ Gallery image loaded:', event.event, 'URL:', getImageUrl(event.imageUrl || ''));
+                            }}
                             onError={(e) => {
                               console.error('Gallery image load error:', event.imageUrl, 'Full URL:', getImageUrl(event.imageUrl || ''));
                               e.currentTarget.style.display = 'none';
-                              e.currentTarget.parentElement!.innerHTML = '<svg width="50" height="50" fill="currentColor" viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>';
+                              const parent = e.currentTarget.parentElement;
+                              if (parent && !parent.querySelector('.fallback-icon')) {
+                                const fallbackDiv = document.createElement('div');
+                                fallbackDiv.className = 'fallback-icon';
+                                fallbackDiv.style.cssText = 'display: flex; align-items: center; justify-content: center; height: 100%; color: #999; font-size: 50px;';
+                                fallbackDiv.innerHTML = '📷';
+                                parent.appendChild(fallbackDiv);
+                              }
                             }}
                           />
                         ) : (

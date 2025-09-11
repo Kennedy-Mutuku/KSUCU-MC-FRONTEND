@@ -60,16 +60,21 @@ const RequisitionsAdmin: React.FC = () => {
 
     const loadAdminPhone = async () => {
         try {
+            console.log('Admin loading phone from API...');
             const response = await axios.get(`${backEndURL}/api/settings/admin-contact-phone`, {
-                withCredentials: true
+                withCredentials: true,
+                timeout: 5000
             });
+            console.log('Admin phone API response:', response.data);
             setAdminPhone(response.data.value || '');
             // Update localStorage with latest value
             localStorage.setItem('admin-contact-phone', response.data.value || '');
+            console.log('Admin phone loaded successfully:', response.data.value);
         } catch (error) {
             console.error('Error loading admin phone from API:', error);
             // Fallback to localStorage
             const savedPhone = localStorage.getItem('admin-contact-phone') || '';
+            console.log('Admin using fallback phone from localStorage:', savedPhone);
             setAdminPhone(savedPhone);
         }
     };
@@ -150,13 +155,27 @@ const RequisitionsAdmin: React.FC = () => {
         }
     };
 
-    const handleStatusUpdate = async (requisition: RequisitionForm, newStatus: 'approved' | 'rejected' | 'released' | 'returned') => {
+    const handleStatusUpdate = async (requisition: RequisitionForm, newStatus: 'approved' | 'rejected' | 'pending') => {
         try {
             const reqId = requisition._id || requisition.id;
             const updateData: any = { status: newStatus };
 
-            if (newStatus === 'released' && releasedBy) {
+            // For approved/rejected status, include overseer details
+            if ((newStatus === 'approved' || newStatus === 'rejected') && releasedBy) {
                 updateData.releasedBy = releasedBy;
+                updateData.releasedAt = new Date().toISOString();
+            }
+            
+            // For rejected status without overseer name, use default
+            if (newStatus === 'rejected' && !releasedBy) {
+                updateData.releasedBy = 'System Admin';
+                updateData.releasedAt = new Date().toISOString();
+            }
+            
+            // For reset to pending, clear processing data
+            if (newStatus === 'pending') {
+                updateData.releasedBy = undefined;
+                updateData.releasedAt = undefined;
             }
 
             if (comments) {
@@ -178,12 +197,17 @@ const RequisitionsAdmin: React.FC = () => {
             console.error('Error updating status:', error);
             // Fallback to local update
             const updatedReq = { ...requisition, status: newStatus };
-            if (newStatus === 'released' && releasedBy) {
+            if ((newStatus === 'approved' || newStatus === 'rejected') && releasedBy) {
                 updatedReq.releasedBy = releasedBy;
                 updatedReq.releasedAt = new Date().toISOString();
             }
-            if (newStatus === 'returned') {
-                updatedReq.returnedAt = new Date().toISOString();
+            if (newStatus === 'rejected' && !releasedBy) {
+                updatedReq.releasedBy = 'System Admin';
+                updatedReq.releasedAt = new Date().toISOString();
+            }
+            if (newStatus === 'pending') {
+                updatedReq.releasedBy = undefined;
+                updatedReq.releasedAt = undefined;
             }
             if (comments) {
                 updatedReq.comments = comments;
@@ -194,126 +218,133 @@ const RequisitionsAdmin: React.FC = () => {
     };
 
     const saveAdminPhone = async () => {
+        if (!adminPhone.trim()) {
+            alert('Please enter a phone number before saving.');
+            return;
+        }
+        
         try {
+            console.log('Saving admin phone to API:', adminPhone);
+            console.log('Using backend URL:', backEndURL);
+            
             // Save to backend API first
-            await axios.put(`${backEndURL}/api/settings/admin-contact-phone`, {
+            const response = await axios.put(`${backEndURL}/api/settings/admin-contact-phone`, {
                 value: adminPhone,
                 description: 'Admin contact phone number for requisition inquiries'
             }, {
-                withCredentials: true
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                withCredentials: false, // Try without credentials first
+                timeout: 15000
             });
+            
+            console.log('Save response:', response.data);
             
             // Also save to localStorage as backup
             localStorage.setItem('admin-contact-phone', adminPhone);
-            alert('Contact phone number saved successfully!');
-        } catch (error) {
+            alert('✅ Contact phone number saved successfully! It will now be visible to users on the requisition page.');
+        } catch (error: any) {
             console.error('Error saving admin phone:', error);
-            // Fallback to localStorage only
-            localStorage.setItem('admin-contact-phone', adminPhone);
-            alert('Contact phone number saved locally (backup mode).');
+            console.error('Error details:', error.response?.data || error.message);
+            
+            // Try fallback approach with different configuration
+            try {
+                console.log('Trying fallback API call...');
+                const fallbackResponse = await axios({
+                    method: 'PUT',
+                    url: `${backEndURL}/api/settings/admin-contact-phone`,
+                    data: {
+                        value: adminPhone,
+                        description: 'Admin contact phone number for requisition inquiries'
+                    },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    timeout: 20000
+                });
+                
+                console.log('Fallback response:', fallbackResponse.data);
+                localStorage.setItem('admin-contact-phone', adminPhone);
+                alert('✅ Contact phone number saved successfully via fallback method!');
+            } catch (fallbackError) {
+                console.error('Fallback also failed:', fallbackError);
+                // Final fallback to localStorage only
+                localStorage.setItem('admin-contact-phone', adminPhone);
+                alert('⚠️ Phone number saved locally only. There was an issue connecting to the server, but users can still see the number from cache.');
+            }
         }
     };
 
     const downloadPDF = (requisition: RequisitionForm) => {
-        // Create a properly formatted requisition document with letterhead
+        const currentDate = new Date().toLocaleDateString('en-GB');
+        const submissionDate = new Date(requisition.submittedAt).toLocaleDateString('en-GB');
+        const receiveDate = new Date(requisition.timeReceived).toLocaleDateString('en-GB');
+        const returnDate = new Date(requisition.timeToReturn).toLocaleDateString('en-GB');
+        
+        // Create a compact, one-page official requisition document with official letterhead
         const content = `
 ================================================================================
-                    KISII UNIVERSITY MAIN CAMPUS CHRISTIAN UNION
-                            EQUIPMENT REQUISITION FORM
+                    KISII UNIVERSITY CHRISTIAN UNION - MAIN CAMPUS
+                                 KSUCU-MC
+                              
+         P.O BOX 408-40200, KISII, KENYA • www.ksucumc.org
+              ksuchristianunion@gmail.com • Tel: ${adminPhone || '+254 712 345 678'}
+================================================================================
+                         EQUIPMENT REQUISITION FORM
+                          REF: KSUCU/EQP/${(requisition._id || requisition.id)?.toString().slice(-8).toUpperCase()}
 ================================================================================
 
-                          Official Letterhead Document
-                        
-P.O. Box 408-40200, Kisii, Kenya
-Email: ksucumc@gmail.com
-Tel: +254 712 345 678
-
-================================================================================
-
-REQUISITION DETAILS:
-Requisition ID:     ${requisition._id || requisition.id}
-Date Submitted:     ${new Date(requisition.submittedAt).toLocaleDateString()}
-Current Status:     ${requisition.status.toUpperCase()}
-
-================================================================================
-
-RECIPIENT INFORMATION:
-Full Name:          ${requisition.recipientName}
-Phone Number:       ${requisition.recipientPhone}
-Purpose/Event:      ${requisition.purpose}
-
-================================================================================
+APPLICANT DETAILS:
+Name: ${requisition.recipientName.toUpperCase()}    Phone: ${requisition.recipientPhone}
+Purpose: ${requisition.purpose}
+Date Applied: ${submissionDate}    Status: ${requisition.status.toUpperCase()}
 
 ITEMS REQUESTED:
 ${requisition.items.map((item, index) => 
-    `${index + 1}. Item: ${item.itemName}
-   Quantity: ${item.quantity}${item.description ? `
-   Description: ${item.description}` : ''}
-   
-`).join('')}
+    `${index + 1}. ${item.itemName} - Qty: ${item.quantity}${item.description ? ` (${item.description})` : ''}`
+).join('\n')}
+
+SCHEDULE:
+Collection: ${receiveDate} at ${new Date(requisition.timeReceived).toLocaleTimeString('en-GB', {hour: '2-digit', minute: '2-digit'})}
+Return: ${returnDate} at ${new Date(requisition.timeToReturn).toLocaleTimeString('en-GB', {hour: '2-digit', minute: '2-digit'})}
+Est. Cost: KES ${requisition.totalAmount.toLocaleString('en-KE', {minimumFractionDigits: 2})}
+
+PROCESSING INFO:
+${requisition.releasedBy ? `Processed by: ${requisition.releasedBy}` : 'Awaiting Processing'}
+${requisition.releasedAt ? `Date: ${new Date(requisition.releasedAt).toLocaleDateString('en-GB')}` : ''}
+Overseer Phone: ${adminPhone || 'N/A'}
+Comments: ${requisition.comments || 'None'}
 
 ================================================================================
-
-SCHEDULE INFORMATION:
-Time to Receive:    ${new Date(requisition.timeReceived).toLocaleString()}
-Time to Return:     ${new Date(requisition.timeToReturn).toLocaleString()}
-Expected Amount:    KES ${requisition.totalAmount.toFixed(2)}
-
+                              AUTHORIZATIONS
 ================================================================================
 
-PROCESSING INFORMATION:
-${requisition.releasedBy ? `Released By: ${requisition.releasedBy}` : 'Released By: ________________'}
-${requisition.releasedAt ? `Released Date: ${new Date(requisition.releasedAt).toLocaleString()}` : 'Released Date: ________________'}
-${requisition.returnedAt ? `Returned Date: ${new Date(requisition.returnedAt).toLocaleString()}` : 'Returned Date: ________________'}
+APPLICANT:
+I hereby apply for the above equipment and agree to all terms and conditions.
 
-${requisition.comments ? `Admin Comments: ${requisition.comments}` : 'Admin Comments: ________________________________________'}
+Signature: _____________________  Date: _________  Name: ${requisition.recipientName}
 
-================================================================================
+COMMITTEE REVIEW:
+Name: ________________________  Signature: _______________  Date: _________
 
-AUTHORIZATION SECTION:
+FINAL APPROVAL (OVERSEER/CHAIRMAN):
+Name: ${requisition.releasedBy || '________________________'}  Phone: ${adminPhone || '___________'}
+Signature: ____________________  Date: _________  [OFFICIAL STAMP]
 
-Requested By:       ________________________    Date: ________________
-                    (Signature)
-
-Approved By:        ________________________    Date: ________________
-                    (Admin Signature)
-
-Released By:        ________________________    Date: ________________
-                    (Equipment Officer)
-
-Received By:        ________________________    Date: ________________
-                    (Recipient Signature)
-
-Returned By:        ________________________    Date: ________________
-                    (Recipient Signature)
-
-Verified By:        ________________________    Date: ________________
-                    (Equipment Officer)
+EQUIPMENT HANDLING:
+Released by: ___________________  Date/Time: _______  Condition: ___________
+Returned by: __________________  Date/Time: _______  Condition: ___________
+Received by: __________________  Signature: ______________
 
 ================================================================================
+TERMS: 1) Full responsibility from collection to return 2) Report damage immediately
+3) Return on time (KES 200/day penalty) 4) Handle with care 5) No transfers
+6) Committee resolves disputes
 
-                           OFFICIAL STAMP SPACE
-                    
-                    [                                ]
-                    [                                ]
-                    [          OFFICIAL STAMP        ]
-                    [             SPACE              ]
-                    [                                ]
-
-================================================================================
-
-TERMS AND CONDITIONS:
-1. All equipment must be returned in good condition
-2. Any damage or loss will be charged to the recipient
-3. Late returns may result in restricted future access
-4. Equipment is subject to availability
-
-================================================================================
-
-Document Generated: ${new Date().toLocaleString()}
-System: KSUCU-MC Equipment Management System
-Version: 1.0
-
+Generated: ${new Date().toLocaleString('en-GB')} | Auth: ${Math.random().toString(36).substr(2, 6).toUpperCase()}
+© ${new Date().getFullYear()} KSUCU-MC. All Rights Reserved.
 ================================================================================
         `;
 
@@ -321,7 +352,7 @@ Version: 1.0
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `requisition_${requisition.id}_${requisition.recipientName.replace(/\s+/g, '_')}.txt`;
+        a.download = `KSUCU_Official_Requisition_${(requisition._id || requisition.id)?.toString().slice(-8).toUpperCase()}_${requisition.recipientName.replace(/\s+/g, '_').toUpperCase()}.txt`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -332,8 +363,6 @@ Version: 1.0
         switch (status) {
             case 'pending': return '#ffc107';
             case 'approved': return '#28a745';
-            case 'released': return '#17a2b8';
-            case 'returned': return '#6c757d';
             case 'rejected': return '#dc3545';
             default: return '#6c757d';
         }
@@ -652,51 +681,53 @@ Version: 1.0
                                     </div>
 
                                     {editingRequisition.status === 'pending' && (
-                                        <div className={styles.actionButtons}>
-                                            <button
-                                                onClick={() => handleStatusUpdate(editingRequisition, 'approved')}
-                                                className={styles.approveButton}
-                                            >
-                                                <FontAwesomeIcon icon={faCheck} /> Approve
-                                            </button>
-                                            <button
-                                                onClick={() => handleStatusUpdate(editingRequisition, 'rejected')}
-                                                className={styles.rejectButton}
-                                            >
-                                                <FontAwesomeIcon icon={faTimes} /> Reject
-                                            </button>
-                                        </div>
-                                    )}
-
-                                    {editingRequisition.status === 'approved' && (
-                                        <div className={styles.releaseSection}>
+                                        <>
                                             <div className={styles.formGroup}>
-                                                <label>Released By (Your Name)</label>
+                                                <label>Overseer/Reviewer Name</label>
                                                 <input
                                                     type="text"
                                                     value={releasedBy}
                                                     onChange={(e) => setReleasedBy(e.target.value)}
-                                                    placeholder="Enter your name"
+                                                    placeholder="Enter your name for approval"
                                                     required
                                                 />
                                             </div>
-                                            <button
-                                                onClick={() => handleStatusUpdate(editingRequisition, 'released')}
-                                                className={styles.releaseButton}
-                                                disabled={!releasedBy}
-                                            >
-                                                <FontAwesomeIcon icon={faCheck} /> Mark as Released
-                                            </button>
-                                        </div>
+                                            <div className={styles.actionButtons}>
+                                                <button
+                                                    onClick={() => handleStatusUpdate(editingRequisition, 'approved')}
+                                                    className={styles.approveButton}
+                                                    disabled={!releasedBy}
+                                                >
+                                                    <FontAwesomeIcon icon={faCheck} /> Approve
+                                                </button>
+                                                <button
+                                                    onClick={() => handleStatusUpdate(editingRequisition, 'rejected')}
+                                                    className={styles.rejectButton}
+                                                >
+                                                    <FontAwesomeIcon icon={faTimes} /> Reject
+                                                </button>
+                                            </div>
+                                        </>
                                     )}
 
-                                    {editingRequisition.status === 'released' && (
-                                        <button
-                                            onClick={() => handleStatusUpdate(editingRequisition, 'returned')}
-                                            className={styles.returnButton}
-                                        >
-                                            <FontAwesomeIcon icon={faCheck} /> Mark as Returned
-                                        </button>
+                                    {(editingRequisition.status === 'approved' || editingRequisition.status === 'rejected') && (
+                                        <div className={styles.statusInfo}>
+                                            <p><strong>Status:</strong> {editingRequisition.status.toUpperCase()}</p>
+                                            {editingRequisition.releasedBy && (
+                                                <p><strong>Processed by:</strong> {editingRequisition.releasedBy}</p>
+                                            )}
+                                            {editingRequisition.releasedAt && (
+                                                <p><strong>Date:</strong> {new Date(editingRequisition.releasedAt).toLocaleString()}</p>
+                                            )}
+                                            <div className={styles.actionButtons}>
+                                                <button
+                                                    onClick={() => handleStatusUpdate(editingRequisition, 'pending')}
+                                                    className={styles.pendingButton}
+                                                >
+                                                    ↻ Reset to Pending
+                                                </button>
+                                            </div>
+                                        </div>
                                     )}
 
                                     <div className={styles.formGroup}>

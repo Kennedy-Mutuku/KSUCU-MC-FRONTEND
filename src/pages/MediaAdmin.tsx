@@ -14,7 +14,7 @@ import {
     faEye,
     faSync
 } from '@fortawesome/free-solid-svg-icons';
-import { getApiUrl, getImageUrl } from '../config/environment';
+import { getApiUrl, getImageUrl, getBaseUrl, isDevMode } from '../config/environment';
 
 interface MediaItem {
     _id?: string;
@@ -86,6 +86,13 @@ const MediaAdmin: React.FC = () => {
     };
 
     useEffect(() => {
+        // Environment debugging
+        console.log('🔧 Environment Debug:');
+        console.log('  - isDev:', isDevMode());
+        console.log('  - baseUrl:', getBaseUrl());
+        console.log('  - hostname:', window.location.hostname);
+        console.log('  - sample imageUrl:', getImageUrl('/uploads/media/test.png'));
+        
         // Check for authentication first
         const adminAuth = sessionStorage.getItem('adminAuth');
         console.log('MediaAdmin Debug: adminAuth =', adminAuth);
@@ -346,6 +353,7 @@ const MediaAdmin: React.FC = () => {
                     const item = mediaItems.find(i => (i._id || i.id) === itemId);
                     if (item) {
                         const updatedItem = { ...item, imageUrl };
+                        console.log('🖼️ Updating item with image:', updatedItem);
                         await handleSaveEdit(itemId, updatedItem);
                     }
                 } else {
@@ -663,10 +671,20 @@ const MediaItemCard: React.FC<MediaItemCardProps> = ({
                     <img 
                         src={getImageUrl(item.imageUrl || '')} 
                         alt={item.event} 
+                        onLoad={() => {
+                            console.log('✅ Image loaded successfully for:', item.event, 'URL:', getImageUrl(item.imageUrl || ''));
+                        }}
                         onError={(e) => {
-                            console.error('Image load error for:', item.imageUrl, 'Full URL:', getImageUrl(item.imageUrl || ''));
+                            console.error('❌ Image load error for:', item.imageUrl, 'Full URL:', getImageUrl(item.imageUrl || ''));
                             e.currentTarget.style.display = 'none';
-                            e.currentTarget.parentElement!.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #999;"><svg width="50" height="50" fill="currentColor" viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div>';
+                            const parent = e.currentTarget.parentElement;
+                            if (parent && !parent.querySelector('.fallback-icon')) {
+                                const fallbackDiv = document.createElement('div');
+                                fallbackDiv.className = 'fallback-icon';
+                                fallbackDiv.style.cssText = 'display: flex; align-items: center; justify-content: center; height: 100%; color: #999; font-size: 50px;';
+                                fallbackDiv.innerHTML = '📷';
+                                parent.appendChild(fallbackDiv);
+                            }
                         }}
                     />
                 </div>
