@@ -857,7 +857,7 @@ body{
 }
 
 .show {
-    max-height: 600px;
+    max-height: 900px;
     opacity: 1;
     padding: 25px 20px;
     transform: translateY(0);
@@ -977,6 +977,11 @@ div.boardsCategoryDiv:focus h3 {
     
     .category-title {
         font-size: 1rem;
+    }
+    
+    .show {
+        max-height: 1200px;
+        overflow-y: auto;
     }
 }
 

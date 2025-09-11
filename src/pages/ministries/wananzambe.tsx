@@ -13,11 +13,11 @@ const WananzambePage: React.FC = () => {
       <div className={styles.container}>
         <div className={styles.heroSection}>
           <div className={styles.heroContent}>
-            <h1 className={styles.title}>Wananzambe Ministry</h1>
+            <h1 className={styles.title}>Wananzambe (Instrumentalists)</h1>
             <p className={styles.subtitle}>Instrumentalists dedicated to worship excellence</p>
           </div>
           <div className={styles.heroImage}>
-            <img src={wananzambeImg} alt="Wananzambe Ministry" />
+            <img src={wananzambeImg} alt="Wananzambe (Instrumentalists)" />
           </div>
         </div>
 

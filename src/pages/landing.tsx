@@ -630,13 +630,13 @@ const LandingPage = () => {
                     <div className={`${styles['dropdown-content']} ${showMinistries ? styles.show : ''}`}>
                     <ol className={`${styles['ministries-list']} ${styles['category-list']}`}>
                       <li className={styles['ministries-item']}>
-                        <Link to="/ministries/ushering" className={styles['ministries-item--link']}>Ushering</Link>
+                        <Link to="/ministries/ushering" className={styles['ministries-item--link']}>Ushering and Hospitality</Link>
                       </li>
                       <li className={styles['ministries-item']}>
                         <Link to="/ministries/creativity" className={styles['ministries-item--link']}>Creativity</Link>
                       </li>
                       <li className={styles['ministries-item']}>
-                        <Link to="/ministries/compassion" className={styles['ministries-item--link']}>Compassion</Link>
+                        <Link to="/ministries/compassion" className={styles['ministries-item--link']}>Compassion and Counseling</Link>
                       </li>
                       <li className={styles['ministries-item']}>
                         <Link to="/ministries/intercessory" className={styles['ministries-item--link']}>Intercessory</Link>
@@ -645,7 +645,7 @@ const LandingPage = () => {
                         <Link to="/ministries/highSchool" className={styles['ministries-item--link']}>High School</Link>
                       </li>
                       <li className={styles['ministries-item']}>
-                        <Link to="/ministries/wananzambe" className={styles['ministries-item--link']}>Wananzambe</Link>
+                        <Link to="/ministries/wananzambe" className={styles['ministries-item--link']}>Wananzambe (Instrumentalists)</Link>
                       </li>
                       <li className={styles['ministries-item']}>
                         <Link to="/ministries/churchSchool" className={styles['ministries-item--link']}>Church School</Link>

@@ -13,7 +13,7 @@ const CompassionPage: React.FC = () => {
       <div className={styles.container}>
         <div className={styles.heroSection}>
           <div className={styles.heroContent}>
-            <h1 className={styles.title}>Compassion Ministry</h1>
+            <h1 className={styles.title}>Compassion and Counseling Ministry</h1>
             <p className={styles.subtitle}>Being the hands and feet of Jesus to those in need</p>
             <div className={styles.heroButton}>
               <Link to="/compassion-counseling" className={styles.compassionButton}>
@@ -22,16 +22,16 @@ const CompassionPage: React.FC = () => {
             </div>
           </div>
           <div className={styles.heroImage}>
-            <img src={compassionImg} alt="Compassion Ministry" />
+            <img src={compassionImg} alt="Compassion and Counseling Ministry" />
           </div>
         </div>
 
 
         <div className={styles.contentSection}>
           <div className={styles.description}>
-            <h2>About Compassion Ministry</h2>
+            <h2>About Compassion and Counseling Ministry</h2>
             <p>
-              The Compassion Ministry is dedicated to being the hands and feet of Jesus, reaching out to those in 
+              The Compassion and Counseling Ministry is dedicated to being the hands and feet of Jesus, reaching out to those in 
               need with love, care, and practical support. Rooted in God's call to serve others, we strive to meet 
               the physical, emotional, and spiritual needs of individuals and families in our church and community.
             </p>
@@ -133,7 +133,7 @@ const CompassionPage: React.FC = () => {
               <span>- Martha, Volunteer Coordinator</span>
             </div>
             <div className={styles.testimonial}>
-              <p>"Being part of Compassion Ministry has opened my eyes to the needs around us and the joy of making a difference."</p>
+              <p>"Being part of Compassion and Counseling Ministry has opened my eyes to the needs around us and the joy of making a difference."</p>
               <span>- James, Food Bank Volunteer</span>
             </div>
             <div className={styles.testimonial}>

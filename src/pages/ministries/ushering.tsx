@@ -13,28 +13,28 @@ const UsheringPage: React.FC = () => {
       <div className={styles.container}>
         <div className={styles.heroSection}>
           <div className={styles.heroContent}>
-            <h1 className={styles.title}>Ushering Ministry</h1>
+            <h1 className={styles.title}>Ushering and Hospitality Ministry</h1>
             <p className={styles.subtitle}>The welcoming heart of our church</p>
           </div>
           <div className={styles.heroImage}>
-            <img src={usheringImg} alt="Ushering Ministry" />
+            <img src={usheringImg} alt="Ushering and Hospitality Ministry" />
           </div>
         </div>
 
 
         <div className={styles.contentSection}>
           <div className={styles.description}>
-            <h2>About Ushering Ministry</h2>
+            <h2>About Ushering and Hospitality Ministry</h2>
             <p>
-              The Ushering Ministry is the welcoming heart of our church, committed to creating a warm and 
-              inviting atmosphere where everyone feels valued and at home. Our ushers serve as the hands 
+              The Ushering and Hospitality Ministry is the welcoming heart of our church, committed to creating a warm and 
+              inviting atmosphere where everyone feels valued and at home. Our ushers and hospitality team serve as the hands 
               and feet of Christ, greeting each person with kindness, guiding them with care, and ensuring 
               that every service runs smoothly and orderly.
             </p>
             
             <p>
               From welcoming guests at the door to assisting with seating, offering directions, and 
-              facilitating worship elements, the Ushering Ministry plays a vital role in enhancing the 
+              facilitating worship elements, the Ushering and Hospitality Ministry plays a vital role in enhancing the 
               worship experience. Our team is dedicated to embodying hospitality, joy, and excellence, 
               reflecting God's love in every interaction.
             </p>

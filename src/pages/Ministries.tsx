@@ -107,7 +107,7 @@ const MinistriesPage: React.FC = () => {
 
         <div className={styles['ministry-section']} id='wananzambe'>
           <div className={styles['ministry-section--flex']}>
-            <h3 className={styles['ministry-name']}>Wananzambe</h3>
+            <h3 className={styles['ministry-name']}>Wananzambe (Instrumentalists)</h3>
 
            {/* {ministries.includes("wananzambe") && <Link className={styles['commitment-link']} to="/wananzambe">Sign the commitment form here</Link> } */}
             
@@ -123,8 +123,8 @@ const MinistriesPage: React.FC = () => {
 
         <div className={`${styles['ministry-section']} ${styles['ministry-section--reverse']}`} id='compassion'>
           <div className={styles['ministry-section--flex']}>
-            <h3 className={styles['ministry-name']}>Compassion</h3>
-            <p className={styles['ministry-content']}>The Compassion Ministry is dedicated to being the hands and feet of Jesus, reaching out to those in need with love, care, and practical support. Rooted in God’s call to serve others, we strive to meet the physical, emotional, and spiritual needs of individuals and families in our church and community.
+            <h3 className={styles['ministry-name']}>Compassion and Counseling</h3>
+            <p className={styles['ministry-content']}>The Compassion and Counseling Ministry is dedicated to being the hands and feet of Jesus, reaching out to those in need with love, care, and practical support. Rooted in God’s call to serve others, we strive to meet the physical, emotional, and spiritual needs of individuals and families in our church and community.
 
 Our mission is to bring hope to the hurting, comfort to the brokenhearted, and help to those facing life’s challenges. Whether through food assistance, clothing drives, hospital visits, crisis care, or prayer, we are committed to demonstrating the love of Christ in tangible ways.
 
@@ -133,7 +133,7 @@ If you feel called to make a difference, join us in this transformative ministry
 “Carry each other’s burdens, and in this way you will fulfill the law of Christ.” – Galatians 6:2</p>
           </div>
           <div className={styles['ministry-img']}>
-            <img src={compassion} alt="Compassion Ministry" />
+            <img src={compassion} alt="Compassion and Counseling Ministry" />
           </div>
         </div>
 
@@ -216,17 +216,17 @@ Whether you're new to church or have been attending for years, there's a place f
 
         <div className={styles['ministry-section']} id='ushering'>
           <div className={styles['ministry-section--flex']}>
-            <h3 className={styles['ministry-name']}>Ushering</h3>
-            <p className={styles['ministry-content']}>The Ushering Ministry is the welcoming heart of our church, committed to creating a warm and inviting atmosphere where everyone feels valued and at home. Our ushers serve as the hands and feet of Christ, greeting each person with kindness, guiding them with care, and ensuring that every service runs smoothly and orderly.
+            <h3 className={styles['ministry-name']}>Ushering and Hospitality</h3>
+            <p className={styles['ministry-content']}>The Ushering and Hospitality Ministry is the welcoming heart of our church, committed to creating a warm and inviting atmosphere where everyone feels valued and at home. Our ushers and hospitality team serve as the hands and feet of Christ, greeting each person with kindness, guiding them with care, and ensuring that every service runs smoothly and orderly.
 
-From welcoming guests at the door to assisting with seating, offering directions, and facilitating worship elements, the Ushering Ministry plays a vital role in enhancing the worship experience. Our team is dedicated to embodying hospitality, joy, and excellence, reflecting God’s love in every interaction.
+From welcoming guests at the door to assisting with seating, offering directions, and facilitating worship elements, the Ushering and Hospitality Ministry plays a vital role in enhancing the worship experience. Our team is dedicated to embodying hospitality, joy, and excellence, reflecting God’s love in every interaction.
 
 If you have a heart for service and a friendly smile, we invite you to join us in making every worship experience meaningful and memorable. Together, we can help create an environment where God’s presence is felt and His people are blessed.
 
 “Better is one day in your courts than a thousand elsewhere; I would rather be a doorkeeper in the house of my God.” – Psalm 84:10</p>
           </div>
           <div className={styles['ministry-img']}>
-            <img src={ushering} alt="Ushering Ministry" />
+            <img src={ushering} alt="Ushering and Hospitality Ministry" />
           </div>
         </div>
 

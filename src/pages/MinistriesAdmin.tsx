@@ -128,12 +128,12 @@ const MinistriesAdmin: React.FC = () => {
 
     const ministryNames: Record<MinistryKey, string> = {
         'wananzambe': 'Wananzambe (Instrumentalists)',
-        'compassion': 'Compassion Ministry',
+        'compassion': 'Compassion and Counseling Ministry',
         'pw': 'Praise & Worship',
         'intercessory': 'Intercessory Prayer',
         'cs': 'Church School',
         'hs': 'High School Ministry',
-        'ushering': 'Ushering Ministry',
+        'ushering': 'Ushering and Hospitality Ministry',
         'creativity': 'Creativity Ministry',
         'choir': 'Choir Ministry'
     };
