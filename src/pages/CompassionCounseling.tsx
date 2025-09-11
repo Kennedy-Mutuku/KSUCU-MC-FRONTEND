@@ -3,7 +3,9 @@ import { getApiUrl } from '../config/environment';
 import styles from '../styles/compassionCounseling.module.css';
 import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
-import { Heart, Phone, MessageCircle, DollarSign, User, Mail, MapPin } from 'lucide-react';
+import { Heart, Phone, MessageCircle, DollarSign, User, Mail, MapPin, Bell, CheckCircle, Eye, Clock } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 interface PaymentMethod {
   _id?: string;
@@ -31,7 +33,24 @@ interface Settings {
   contactInfo: ContactInfo[];
 }
 
+interface RequestStatus {
+  status: 'pending' | 'viewed' | 'approved' | 'rejected' | 'in_progress' | 'completed';
+  updatedAt: string;
+  adminNote?: string;
+}
+
+interface UserRequest {
+  _id: string;
+  userId: string;
+  type: 'help' | 'donation';
+  data: any;
+  status: RequestStatus;
+  createdAt: string;
+}
+
 const CompassionCounselingPage: React.FC = () => {
+  const { user, isAuthenticated, isLoading } = useAuth();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'help' | 'donate'>('help');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
@@ -40,6 +59,8 @@ const CompassionCounselingPage: React.FC = () => {
     paymentMethods: [],
     contactInfo: []
   });
+  const [userRequests, setUserRequests] = useState<UserRequest[]>([]);
+  const [showNotifications, setShowNotifications] = useState(false);
   
   const [helpRequest, setHelpRequest] = useState({
     name: '',
@@ -63,8 +84,64 @@ const CompassionCounselingPage: React.FC = () => {
   });
 
   useEffect(() => {
-    fetchSettings();
-  }, []);
+    if (!isLoading && !isAuthenticated) {
+      // Redirect to login if not authenticated
+      navigate('/signIn', { replace: true });
+      return;
+    }
+    
+    if (user) {
+      fetchSettings();
+      fetchUserRequests();
+    }
+  }, [user, isAuthenticated, isLoading, navigate]);
+
+  // Show loading while checking authentication
+  if (isLoading) {
+    return (
+      <div className={styles.loadingContainer}>
+        <div className={styles.spinner}></div>
+        <p>Checking authentication...</p>
+      </div>
+    );
+  }
+
+  // Show login required message if not authenticated
+  if (!isAuthenticated) {
+    return (
+      <div className={styles.authRequiredContainer}>
+        <div className={styles.authRequiredContent}>
+          <Heart className={styles.authIcon} />
+          <h2>Login Required</h2>
+          <p>
+            You must be logged in to access the Compassion & Counseling Ministry page.
+            This helps us provide personalized support and track your requests.
+          </p>
+          <button 
+            onClick={() => navigate('/signIn')}
+            className={styles.loginButton}
+          >
+            Go to Login
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const fetchUserRequests = async () => {
+    try {
+      const response = await fetch(getApiUrl('compassionRequests'), {
+        credentials: 'include'
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setUserRequests(data.requests || []);
+      }
+    } catch (error) {
+      console.error('Error fetching user requests:', error);
+    }
+  };
 
   const fetchSettings = async () => {
     try {
@@ -104,7 +181,14 @@ const CompassionCounselingPage: React.FC = () => {
         credentials: 'include',
         body: JSON.stringify({
           ...helpRequest,
-          submittedAt: new Date().toISOString()
+          userId: user?._id,
+          userEmail: user?.email,
+          userName: user?.username,
+          submittedAt: new Date().toISOString(),
+          status: {
+            status: 'pending',
+            updatedAt: new Date().toISOString()
+          }
         })
       });
 
@@ -112,6 +196,7 @@ const CompassionCounselingPage: React.FC = () => {
 
       if (response.ok) {
         showMessage('Your help request has been submitted successfully. Our compassion team will contact you soon.', 'success');
+        fetchUserRequests(); // Refresh requests list
         setHelpRequest({
           name: '',
           email: '',
@@ -146,7 +231,14 @@ const CompassionCounselingPage: React.FC = () => {
         credentials: 'include',
         body: JSON.stringify({
           ...donation,
-          submittedAt: new Date().toISOString()
+          userId: user?._id,
+          userEmail: user?.email,
+          userName: user?.username,
+          submittedAt: new Date().toISOString(),
+          status: {
+            status: 'pending',
+            updatedAt: new Date().toISOString()
+          }
         })
       });
 
@@ -154,6 +246,7 @@ const CompassionCounselingPage: React.FC = () => {
 
       if (response.ok) {
         showMessage('Thank you for your generous donation! Your contribution will help us serve those in need.', 'success');
+        fetchUserRequests(); // Refresh requests list
         setDonation({
           donorName: '',
           email: '',
@@ -196,21 +289,72 @@ const CompassionCounselingPage: React.FC = () => {
           </div>
         )}
 
+        {/* Notifications Panel */}
+        <div className={styles.notificationBar}>
+          <button 
+            className={styles.notificationButton}
+            onClick={() => setShowNotifications(!showNotifications)}
+          >
+            <Bell className={styles.notificationIcon} />
+            <span>My Requests</span>
+            {userRequests.length > 0 && (
+              <span className={styles.notificationBadge}>{userRequests.length}</span>
+            )}
+          </button>
+        </div>
+
+        {showNotifications && (
+          <div className={styles.notificationsPanel}>
+            <h3>Your Request History</h3>
+            {userRequests.length === 0 ? (
+              <p className={styles.noRequests}>No requests submitted yet</p>
+            ) : (
+              <div className={styles.requestsList}>
+                {userRequests.map((request) => (
+                  <div key={request._id} className={styles.requestItem}>
+                    <div className={styles.requestHeader}>
+                      <span className={styles.requestType}>
+                        {request.type === 'help' ? 'Help Request' : 'Donation'}
+                      </span>
+                      <span className={styles.requestDate}>
+                        {new Date(request.createdAt).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <div className={styles.requestStatus}>
+                      <div className={`${styles.statusBadge} ${styles[request.status.status]}`}>
+                        {request.status.status === 'pending' && <Clock size={14} />}
+                        {request.status.status === 'viewed' && <Eye size={14} />}
+                        {request.status.status === 'approved' && <CheckCircle size={14} />}
+                        <span>{request.status.status}</span>
+                      </div>
+                      {request.status.adminNote && (
+                        <p className={styles.adminNote}>Admin: {request.status.adminNote}</p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Tab Navigation */}
         <div className={styles.tabNavigation}>
           <button 
             className={`${styles.tabButton} ${activeTab === 'help' ? styles.active : ''}`}
             onClick={() => setActiveTab('help')}
+            aria-label="Request Help"
           >
             <MessageCircle className={styles.tabIcon} />
-            Request Help
+            <span>Request Help</span>
           </button>
           <button 
             className={`${styles.tabButton} ${activeTab === 'donate' ? styles.active : ''}`}
             onClick={() => setActiveTab('donate')}
+            aria-label="Make a Donation"
           >
             <DollarSign className={styles.tabIcon} />
-            Make a Donation
+            <span>Make a Donation</span>
           </button>
         </div>
 

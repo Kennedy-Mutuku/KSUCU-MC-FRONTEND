@@ -7,6 +7,112 @@
   min-height: 100vh;
 }
 
+/* Loading Styles */
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #730051 0%, #00c6ff 100%);
+  color: white;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loadingContainer p {
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+/* Authentication Required Styles */
+.authRequiredContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #730051 0%, #00c6ff 100%);
+  padding: 20px;
+}
+
+.authRequiredContent {
+  background: white;
+  border-radius: 20px;
+  padding: 40px;
+  text-align: center;
+  max-width: 500px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.authIcon {
+  width: 60px;
+  height: 60px;
+  color: #730051;
+  margin-bottom: 20px;
+}
+
+.authRequiredContent h2 {
+  color: #730051;
+  font-size: 2rem;
+  margin-bottom: 15px;
+  font-weight: 700;
+}
+
+.authRequiredContent p {
+  color: #666;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+.loginButton {
+  background: linear-gradient(135deg, #730051, #00c6ff);
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 25px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(115, 0, 81, 0.3);
+}
+
+.loginButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(115, 0, 81, 0.4);
+}
+
+.loginButton:active {
+  transform: translateY(0);
+}
+
 /* Hero Section */
 .heroSection {
   background: linear-gradient(135deg, #730051 0%, #00c6ff 100%);
@@ -53,6 +159,163 @@
   animation: slideDown 0.3s ease-out;
 }
 
+/* Notification Bar */
+.notificationBar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+.notificationButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: white;
+  border: 2px solid #730051;
+  border-radius: 25px;
+  color: #730051;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.notificationButton:hover {
+  background: #730051;
+  color: white;
+}
+
+.notificationIcon {
+  width: 18px;
+  height: 18px;
+}
+
+.notificationBadge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #ff4444;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+/* Notifications Panel */
+.notificationsPanel {
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  animation: slideDown 0.3s ease-out;
+}
+
+.notificationsPanel h3 {
+  color: #730051;
+  margin-bottom: 15px;
+  font-size: 1.3rem;
+}
+
+.noRequests {
+  text-align: center;
+  color: #666;
+  padding: 20px;
+  font-style: italic;
+}
+
+.requestsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.requestItem {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 15px;
+  border-left: 4px solid #730051;
+}
+
+.requestHeader {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.requestType {
+  font-weight: 600;
+  color: #333;
+}
+
+.requestDate {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.requestStatus {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 15px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  width: fit-content;
+}
+
+.statusBadge.pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.statusBadge.viewed {
+  background: #cce5ff;
+  color: #004085;
+}
+
+.statusBadge.approved {
+  background: #d4edda;
+  color: #155724;
+}
+
+.statusBadge.rejected {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.statusBadge.in_progress {
+  background: #d1ecf1;
+  color: #0c5460;
+}
+
+.statusBadge.completed {
+  background: #d4edda;
+  color: #155724;
+}
+
+.adminNote {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 0;
+  padding: 8px;
+  background: white;
+  border-radius: 5px;
+  border-left: 3px solid #00c6ff;
+}
+
 .message.success {
   background: #d4edda;
   color: #155724;
@@ -84,6 +347,7 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   margin-bottom: 30px;
   overflow: hidden;
+  gap: 2px;
 }
 
 .tabButton {
@@ -100,6 +364,11 @@
   color: #666;
   cursor: pointer;
   transition: all 0.3s ease;
+  position: relative;
+}
+
+.tabButton:first-child {
+  border-right: 2px solid #e9ecef;
 }
 
 .tabButton:hover {
@@ -110,6 +379,14 @@
 .tabButton.active {
   background: linear-gradient(135deg, #730051, #00c6ff);
   color: white;
+}
+
+.tabButton.active:first-child {
+  background: linear-gradient(135deg, #2c7a7b, #38b2ac);
+}
+
+.tabButton.active:last-child {
+  background: linear-gradient(135deg, #730051, #d63384);
 }
 
 .tabIcon {
@@ -430,68 +707,83 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .container {
-    padding: 10px;
+    padding: 8px;
     background: #fff;
   }
   
   .heroSection {
-    padding: 30px 15px;
-    margin-bottom: 15px;
-    border-radius: 10px;
-  }
-  
-  .title {
-    font-size: 1.8rem;
+    padding: 20px 12px;
     margin-bottom: 10px;
-  }
-  
-  .subtitle {
-    font-size: 1rem;
-    line-height: 1.4;
-  }
-  
-  .heroIcon {
-    width: 40px;
-    height: 40px;
-    margin-bottom: 15px;
-  }
-  
-  .tabNavigation {
-    margin-bottom: 15px;
     border-radius: 8px;
   }
   
+  .title {
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+  }
+  
+  .subtitle {
+    font-size: 0.9rem;
+    line-height: 1.3;
+  }
+  
+  .heroIcon {
+    width: 35px;
+    height: 35px;
+    margin-bottom: 10px;
+  }
+  
+  .tabNavigation {
+    margin-bottom: 12px;
+    border-radius: 8px;
+    gap: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+  
   .tabButton {
-    padding: 15px 10px;
-    font-size: 1rem;
-    flex-direction: column;
-    gap: 5px;
+    padding: 12px 8px;
+    font-size: 0.9rem;
+    flex-direction: row;
+    gap: 6px;
+    border-radius: 0;
+  }
+  
+  .tabButton:first-child {
+    border-right: 1px solid #e9ecef;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+  }
+  
+  .tabButton:last-child {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
   }
   
   .tabIcon {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
   }
   
   .tabContent {
-    padding: 15px;
-    border-radius: 10px;
-    margin-bottom: 15px;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   }
   
   .sectionHeader {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     text-align: left;
   }
   
   .sectionHeader h2 {
-    font-size: 1.5rem;
-    margin-bottom: 10px;
+    font-size: 1.3rem;
+    margin-bottom: 8px;
   }
   
   .sectionHeader p {
-    font-size: 1rem;
-    line-height: 1.5;
+    font-size: 0.9rem;
+    line-height: 1.4;
   }
   
   .form {
@@ -500,36 +792,40 @@
   
   .formRow {
     grid-template-columns: 1fr;
-    gap: 12px;
-    margin-bottom: 15px;
+    gap: 0;
+    margin-bottom: 0;
   }
   
   .formGroup {
-    margin-bottom: 15px;
+    margin-bottom: 12px;
   }
   
   .formGroup label {
-    font-size: 0.9rem;
-    margin-bottom: 6px;
+    font-size: 0.85rem;
+    margin-bottom: 4px;
+    font-weight: 500;
   }
   
   .formGroup input,
   .formGroup select,
   .formGroup textarea {
-    padding: 10px 12px;
+    padding: 8px 10px;
     font-size: 16px; /* Prevents zoom on iOS */
     border-radius: 6px;
+    border: 1px solid #e0e0e0;
   }
   
   .formGroup textarea {
-    min-height: 80px;
+    min-height: 60px;
   }
   
   .submitButton {
     padding: 12px 20px;
-    font-size: 1rem;
+    font-size: 0.95rem;
     border-radius: 8px;
-    margin-top: 15px;
+    margin-top: 10px;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(115, 0, 81, 0.2);
   }
   
   .paymentInfo {
@@ -559,8 +855,10 @@
   }
   
   .serviceCard {
-    padding: 20px 15px;
+    padding: 15px 12px;
     border-radius: 8px;
+    background: #f9f9f9;
+    border: 1px solid #e9ecef;
   }
   
   .serviceIcon {
@@ -610,9 +908,9 @@
   
   .infoSection,
   .contactSection {
-    padding: 20px 15px;
-    margin-bottom: 15px;
-    border-radius: 10px;
+    padding: 15px 12px;
+    margin-bottom: 12px;
+    border-radius: 8px;
   }
   
   .infoSection h2,
@@ -638,74 +936,100 @@
   }
   
   .heroSection {
-    padding: 20px 10px;
-    margin-bottom: 10px;
+    padding: 15px 10px;
+    margin-bottom: 8px;
   }
   
   .title {
-    font-size: 1.6rem;
-    margin-bottom: 8px;
+    font-size: 1.4rem;
+    margin-bottom: 6px;
   }
   
   .subtitle {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
   }
   
   .heroIcon {
-    width: 35px;
-    height: 35px;
-    margin-bottom: 10px;
-  }
-  
-  .tabNavigation {
-    flex-direction: column;
-    margin-bottom: 10px;
-  }
-  
-  .tabButton {
-    padding: 12px;
-    font-size: 0.95rem;
-    flex-direction: row;
-    gap: 8px;
-    justify-content: center;
-  }
-  
-  .tabIcon {
-    width: 16px;
-    height: 16px;
-  }
-  
-  .tabContent {
-    padding: 12px;
-    margin-bottom: 10px;
-  }
-  
-  .sectionHeader {
-    margin-bottom: 15px;
-  }
-  
-  .sectionHeader h2 {
-    font-size: 1.3rem;
+    width: 30px;
+    height: 30px;
     margin-bottom: 8px;
   }
   
+  .tabNavigation {
+    margin-bottom: 8px;
+    display: flex;
+    flex-direction: row;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e9ecef;
+  }
+  
+  .tabButton {
+    padding: 10px 5px;
+    font-size: 0.85rem;
+    flex-direction: column;
+    gap: 4px;
+    justify-content: center;
+    border: none;
+  }
+  
+  .tabButton span {
+    font-size: 0.75rem;
+    display: block;
+  }
+  
+  .tabButton:not(.active) {
+    background: #f9f9f9;
+  }
+  
+  .tabButton.active span {
+    font-weight: 700;
+  }
+  
+  .tabIcon {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .tabContent {
+    padding: 10px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  }
+  
+  .sectionHeader {
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e9ecef;
+  }
+  
+  .sectionHeader h2 {
+    font-size: 1.2rem;
+    margin-bottom: 6px;
+    color: #730051;
+  }
+  
   .sectionHeader p {
-    font-size: 0.9rem;
-    line-height: 1.4;
+    font-size: 0.85rem;
+    line-height: 1.3;
+    color: #666;
   }
   
   .formGroup {
-    margin-bottom: 12px;
+    margin-bottom: 10px;
   }
   
   .formGroup label {
-    font-size: 0.85rem;
-    margin-bottom: 4px;
+    font-size: 0.8rem;
+    margin-bottom: 3px;
+    font-weight: 600;
+    color: #444;
   }
   
   .inputIcon {
-    width: 14px;
-    height: 14px;
+    width: 12px;
+    height: 12px;
+    color: #730051;
   }
   
   .formGroup input,
@@ -714,16 +1038,28 @@
     padding: 8px 10px;
     font-size: 16px;
     border-radius: 5px;
+    border: 1px solid #ddd;
+    background: #fafafa;
+  }
+  
+  .formGroup input:focus,
+  .formGroup select:focus,
+  .formGroup textarea:focus {
+    background: white;
+    border-color: #730051;
   }
   
   .formGroup textarea {
-    min-height: 70px;
+    min-height: 60px;
   }
   
   .submitButton {
-    padding: 10px 16px;
-    font-size: 0.95rem;
-    margin-top: 10px;
+    padding: 12px 16px;
+    font-size: 0.9rem;
+    margin-top: 8px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    box-shadow: 0 3px 10px rgba(115, 0, 81, 0.25);
   }
   
   .paymentInfo {

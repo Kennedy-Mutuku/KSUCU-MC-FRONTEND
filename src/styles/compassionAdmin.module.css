@@ -39,24 +39,33 @@
 
 /* Message Display */
 .message {
-  padding: 15px 20px;
-  border-radius: 8px;
+  padding: 16px 24px;
+  border-radius: 12px;
   margin-bottom: 20px;
-  font-weight: 500;
+  font-weight: 600;
   text-align: center;
-  animation: slideDown 0.3s ease-out;
+  animation: slideDown 0.4s ease-out;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  position: relative;
+  z-index: 1000;
+  font-size: 1.05rem;
+  line-height: 1.4;
+  border: 2px solid transparent;
+  backdrop-filter: blur(10px);
 }
 
 .message.success {
-  background: #d4edda;
-  color: #155724;
-  border: 1px solid #c3e6cb;
+  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+  color: #0f5132;
+  border-color: #198754;
+  box-shadow: 0 6px 25px rgba(25, 135, 84, 0.4);
 }
 
 .message.error {
-  background: #f8d7da;
+  background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
   color: #721c24;
-  border: 1px solid #f5c6cb;
+  border-color: #dc3545;
+  box-shadow: 0 6px 25px rgba(220, 53, 69, 0.4);
 }
 
 @keyframes slideDown {
@@ -670,50 +679,51 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .container {
-    padding: 10px;
+    padding: 5px;
   }
   
   .header {
-    padding: 20px 10px;
-    margin-bottom: 15px;
-  }
-  
-  .header h1 {
-    font-size: 1.7rem;
+    padding: 10px 5px;
     margin-bottom: 8px;
   }
   
+  .header h1 {
+    font-size: 1.3rem;
+    margin-bottom: 4px;
+  }
+  
   .header p {
-    font-size: 1rem;
+    font-size: 0.8rem;
   }
   
   .headerIcon {
-    width: 35px;
-    height: 35px;
-    margin-bottom: 10px;
+    width: 24px;
+    height: 24px;
+    margin-bottom: 5px;
   }
   
   .tabNavigation {
-    margin-bottom: 15px;
+    margin-bottom: 8px;
+    gap: 4px;
   }
   
   .tabButton {
-    padding: 15px 10px;
-    font-size: 1rem;
+    padding: 8px 6px;
+    font-size: 0.8rem;
     flex-direction: column;
-    gap: 5px;
+    gap: 3px;
   }
   
   .tabIcon {
-    width: 16px;
-    height: 16px;
+    width: 12px;
+    height: 12px;
   }
   
   .filtersSection {
     flex-direction: column;
-    gap: 12px;
-    padding: 15px;
-    margin-bottom: 15px;
+    gap: 6px;
+    padding: 8px;
+    margin-bottom: 8px;
   }
   
   .searchFilter,
@@ -725,58 +735,59 @@
   .searchFilter input,
   .statusFilter select,
   .urgencyFilter select {
-    padding: 8px 10px;
-    font-size: 16px;
+    padding: 6px 8px;
+    font-size: 14px;
   }
   
   .requestsList,
   .donationsList {
-    padding: 15px;
+    padding: 8px;
   }
   
   .requestsList h2,
   .donationsList h2 {
-    font-size: 1.5rem;
-    margin-bottom: 20px;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
   }
   
   .requestsGrid,
   .donationsGrid {
     grid-template-columns: 1fr;
-    gap: 15px;
+    gap: 8px;
   }
   
   .requestCard,
   .donationCard {
-    padding: 12px;
-    border-radius: 8px;
+    padding: 8px;
+    border-radius: 6px;
   }
   
   .cardHeader {
-    margin-bottom: 10px;
+    margin-bottom: 6px;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 4px;
+    align-items: center;
   }
   
   .urgencyIndicator,
   .donationType {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
   }
   
   .urgencyIcon,
   .donationIcon {
-    width: 14px;
-    height: 14px;
+    width: 10px;
+    height: 10px;
   }
   
   .statusBadge {
-    padding: 4px 8px;
-    font-size: 0.7rem;
+    padding: 2px 6px;
+    font-size: 0.65rem;
   }
   
   .cardBody h3 {
-    font-size: 1.1rem;
-    margin-bottom: 8px;
+    font-size: 0.9rem;
+    margin-bottom: 4px;
   }
   
   .helpType {
@@ -1406,6 +1417,16 @@
     padding: 15px;
   }
   
+  /* Enhanced mobile message styles for tablets */
+  .message {
+    padding: 15px 20px;
+    font-size: 1rem;
+    margin-bottom: 16px;
+    position: sticky;
+    top: 10px;
+    z-index: 1001;
+  }
+  
   .detailRow {
     flex-direction: column;
     gap: 8px;
@@ -1440,5 +1461,24 @@
   
   .detailsSection {
     padding: 12px;
+  }
+  
+  /* Enhanced mobile message styles */
+  .message {
+    padding: 14px 20px;
+    font-size: 0.95rem;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    position: sticky;
+    top: 5px;
+    z-index: 1001;
+  }
+  
+  .message.success {
+    box-shadow: 0 4px 20px rgba(25, 135, 84, 0.5);
+  }
+  
+  .message.error {
+    box-shadow: 0 4px 20px rgba(220, 53, 69, 0.5);
   }
 }
