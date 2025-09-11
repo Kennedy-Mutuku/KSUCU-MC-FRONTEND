@@ -794,6 +794,11 @@
   transition: transform 0.05s; /* Very fast feedback on touch */
 }
 
+.sendButton:focus {
+  outline: 2px solid rgba(115, 0, 81, 0.5);
+  outline-offset: 2px;
+}
+
 .sendButton:disabled {
   background: #d1d5db;
   cursor: not-allowed;

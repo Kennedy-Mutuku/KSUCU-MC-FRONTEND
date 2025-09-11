@@ -1357,52 +1357,18 @@ const CommunityChat: React.FC = () => {
         />
 
         <button 
-          onMouseDown={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-          }}
-          onTouchStart={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-          }}
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            console.log('Send button clicked!', { 
-              newMessage, 
-              trimmed: newMessage.trim(), 
-              isConnected, 
-              isLoading, 
-              disabled: !newMessage.trim() || !isConnected || isLoading 
-            });
+            
             if (newMessage.trim() && isConnected && !isLoading) {
+              console.log('Sending message:', newMessage.trim());
               handleSendMessage();
-            }
-          }}
-          onTouchEnd={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            console.log('Send button touch end!', { 
-              newMessage, 
-              trimmed: newMessage.trim(), 
-              isConnected, 
-              isLoading 
-            });
-            if (newMessage.trim() && isConnected && !isLoading) {
-              handleSendMessage();
+              handleTyping(false);
             }
           }}
           disabled={!newMessage.trim() || !isConnected || isLoading}
           className={`${styles.sendButton} ${(!newMessage.trim() || !isConnected || isLoading) ? styles.disabledSendButton : ''}`}
-          style={{ 
-            pointerEvents: 'auto', 
-            zIndex: 2147483647,
-            touchAction: 'manipulation',
-            WebkitTouchCallout: 'none',
-            WebkitUserSelect: 'none',
-            userSelect: 'none',
-            outline: 'none'
-          }}
           type="button"
           title={`Send message - ${(!newMessage.trim() || !isConnected || isLoading) ? 'Disabled' : 'Ready'}`}
         >
