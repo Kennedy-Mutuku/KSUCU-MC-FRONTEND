@@ -456,87 +456,6 @@ const BsMembersList = () => {
     }
   };
 
-  // Helper function to create a balanced queue from regular users only (no pastors)
-  const createBalancedQueueRegularUsers = (
-    users: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }>
-  ) => {
-    if (users.length === 0) return [];
-    
-    // These should all be regular users, but filter just to be safe
-    const regularUsers = users.filter(u => !u.isPastor);
-    
-    // Separate regular users by gender and year
-    const malesByYear: { [year: string]: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> } = {};
-    const femalesByYear: { [year: string]: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> } = {};
-    
-    regularUsers.forEach(user => {
-      if (user.gender === 'M') {
-        if (!malesByYear[user.yos]) malesByYear[user.yos] = [];
-        malesByYear[user.yos].push(user);
-      } else {
-        if (!femalesByYear[user.yos]) femalesByYear[user.yos] = [];
-        femalesByYear[user.yos].push(user);
-      }
-    });
-    
-    // Shuffle within each category for randomness
-    Object.values(malesByYear).forEach(yearGroup => {
-      yearGroup.sort(() => Math.random() - 0.5);
-    });
-    Object.values(femalesByYear).forEach(yearGroup => {
-      yearGroup.sort(() => Math.random() - 0.5);
-    });
-    
-    // Create balanced queue alternating gender/year
-    const queue: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> = [];
-    
-    const allYears = [...new Set([...Object.keys(malesByYear), ...Object.keys(femalesByYear)])].sort();
-    
-    if (allYears.length === 0) return [];
-    
-    let currentYear = 0;
-    let addedAny = true;
-    let iterations = 0;
-    const maxIterations = regularUsers.length * 2; // Safety limit
-    
-    while (addedAny && iterations < maxIterations) {
-      addedAny = false;
-      iterations++;
-      
-      // Try to add one male and one female from current year
-      const year = allYears[currentYear % allYears.length];
-      
-      if (malesByYear[year] && malesByYear[year].length > 0) {
-        queue.push(malesByYear[year].shift()!);
-        addedAny = true;
-      }
-      
-      if (femalesByYear[year] && femalesByYear[year].length > 0) {
-        queue.push(femalesByYear[year].shift()!);
-        addedAny = true;
-      }
-      
-      currentYear++;
-      
-      // Check if we've exhausted all years, reset if there are still users
-      if (currentYear >= allYears.length) {
-        const hasRemaining = allYears.some(y => 
-          (malesByYear[y] && malesByYear[y].length > 0) ||
-          (femalesByYear[y] && femalesByYear[y].length > 0)
-        );
-        if (hasRemaining) {
-          currentYear = 0; // Reset to continue with remaining users
-        }
-      }
-    }
-    
-    // Safety check
-    if (iterations >= maxIterations) {
-      console.warn('⚠️ Reached maximum iterations in createBalancedQueueRegularUsers');
-    }
-    
-    return queue;
-  };
 
   const deleteMember = async (phone: string, name: string) => {
     const confirmDelete = confirm(`⚠️ Are you sure you want to remove "${name}" from Bible Study?\n\nThis action cannot be undone. The member will need to re-register if they want to join again.`);
@@ -634,21 +553,88 @@ const BsMembersList = () => {
               finalGroups.push([]);
             }
             
-            // First, organize regular users by residence for balanced distribution
+            // Create a sophisticated distribution system for balanced groups
+            // 1. Group users by residence (alphabetical order)
             const regularUsersByResidence: { [residence: string]: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> } = {};
             allRegularUsers.forEach(user => {
               if (!regularUsersByResidence[user.residence]) regularUsersByResidence[user.residence] = [];
               regularUsersByResidence[user.residence].push(user);
             });
             
-            // Create a master queue of all regular users, processing by residence
-            const regularUsersQueue: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> = [];
+            // 2. Sort residences alphabetically
             const residences = Object.keys(regularUsersByResidence).sort();
+            console.log(`📍 Processing residences in alphabetical order: [${residences.join(', ')}]`);
+            
+            // 3. Create balanced queues for each residence (mixed gender & year)
+            const balancedResidenceQueues: { [residence: string]: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> } = {};
             
             for (const residence of residences) {
               const residenceUsers = regularUsersByResidence[residence];
-              const balancedQueue = createBalancedQueueRegularUsers(residenceUsers);
-              regularUsersQueue.push(...balancedQueue);
+              
+              // Separate by gender and year for optimal mixing
+              const malesByYear: { [year: string]: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> } = {};
+              const femalesByYear: { [year: string]: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> } = {};
+              
+              residenceUsers.forEach(user => {
+                if (user.gender === 'M') {
+                  if (!malesByYear[user.yos]) malesByYear[user.yos] = [];
+                  malesByYear[user.yos].push(user);
+                } else {
+                  if (!femalesByYear[user.yos]) femalesByYear[user.yos] = [];
+                  femalesByYear[user.yos].push(user);
+                }
+              });
+              
+              // Shuffle within each gender/year group for randomness
+              Object.values(malesByYear).forEach(yearGroup => {
+                yearGroup.sort(() => Math.random() - 0.5);
+              });
+              Object.values(femalesByYear).forEach(yearGroup => {
+                yearGroup.sort(() => Math.random() - 0.5);
+              });
+              
+              // Create alternating gender/year pattern for this residence
+              const balancedQueue: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> = [];
+              const allYears = [...new Set([...Object.keys(malesByYear), ...Object.keys(femalesByYear)])].sort();
+              
+              let currentYear = 0;
+              let addedAny = true;
+              
+              while (addedAny && balancedQueue.length < residenceUsers.length) {
+                addedAny = false;
+                
+                for (let yearIndex = 0; yearIndex < allYears.length; yearIndex++) {
+                  const year = allYears[(currentYear + yearIndex) % allYears.length];
+                  
+                  // Try to add one male and one female from this year
+                  if (malesByYear[year] && malesByYear[year].length > 0) {
+                    balancedQueue.push(malesByYear[year].shift()!);
+                    addedAny = true;
+                  }
+                  
+                  if (femalesByYear[year] && femalesByYear[year].length > 0) {
+                    balancedQueue.push(femalesByYear[year].shift()!);
+                    addedAny = true;
+                  }
+                }
+                currentYear++;
+              }
+              
+              balancedResidenceQueues[residence] = balancedQueue;
+              console.log(`🏠 ${residence}: ${balancedQueue.length} users balanced by gender/year`);
+            }
+            
+            // 4. Create master distribution pattern: round-robin through residences
+            const regularUsersQueue: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> = [];
+            let maxResidenceSize = Math.max(...residences.map(r => balancedResidenceQueues[r].length));
+            
+            // Distribute round-robin: one from each residence in alphabetical order
+            for (let position = 0; position < maxResidenceSize; position++) {
+              for (const residence of residences) {
+                if (balancedResidenceQueues[residence].length > position) {
+                  regularUsersQueue.push(balancedResidenceQueues[residence][position]);
+                }
+              }
             }
             
             console.log(`📋 Regular users queue: ${regularUsersQueue.length} users`);
@@ -707,11 +693,16 @@ const BsMembersList = () => {
               currentGroupIndex = (currentGroupIndex + 1) % totalGroups;
             }
             
-            // Log group creation details
+            // Log detailed group creation with diversity analysis
             finalGroups.forEach((group, index) => {
               if (group.length > 0) {
                 const groupPastors = group.filter(u => u.isPastor);
-                console.log(`✅ Group ${index + 1} created with ${group.length} members (${groupPastors.length} pastor${groupPastors.length !== 1 ? 's' : ''})`);
+                const males = group.filter(u => u.gender === 'M').length;
+                const females = group.filter(u => u.gender === 'F').length;
+                const residencesInGroup = [...new Set(group.map(u => u.residence))].sort();
+                const yearsInGroup = [...new Set(group.map(u => u.yos))].sort();
+                
+                console.log(`✅ Group ${index + 1}: ${group.length} members | ${groupPastors.length} pastor${groupPastors.length !== 1 ? 's' : ''} | M:${males} F:${females} | Years:[${yearsInGroup.join(',')}] | Residences:[${residencesInGroup.join(', ')}]`);
               }
             });
 
@@ -738,6 +729,21 @@ const BsMembersList = () => {
             console.log(`📈 Total pastors assigned: ${totalPastorsUsed}/${allPastors.length}`);
             console.log(`📈 Groups with multiple pastors: ${groupsWithMultiplePastors} (should be 0)`);
             
+            // Calculate diversity statistics
+            const totalResidencesInGroups = nonEmptyGroups.reduce((sum, group) => sum + new Set(group.map(u => u.residence)).size, 0);
+            const avgResidencesPerGroup = (totalResidencesInGroups / nonEmptyGroups.length).toFixed(1);
+            const totalYearsInGroups = nonEmptyGroups.reduce((sum, group) => sum + new Set(group.map(u => u.yos)).size, 0);
+            const avgYearsPerGroup = (totalYearsInGroups / nonEmptyGroups.length).toFixed(1);
+            const genderBalanceScore = nonEmptyGroups.reduce((sum, group) => {
+              const males = group.filter(u => u.gender === 'M').length;
+              const females = group.filter(u => u.gender === 'F').length;
+              return sum + Math.min(males, females) / Math.max(males, females, 1);
+            }, 0) / nonEmptyGroups.length;
+            
+            console.log(`📈 Average residences per group: ${avgResidencesPerGroup}`);
+            console.log(`📈 Average years per group: ${avgYearsPerGroup}`);
+            console.log(`📈 Gender balance score: ${(genderBalanceScore * 100).toFixed(1)}% (higher is better)`);
+            
             if (groupsWithMultiplePastors > 0) {
               console.warn(`⚠️ WARNING: ${groupsWithMultiplePastors} groups have multiple pastors!`);
             }
@@ -759,7 +765,8 @@ const BsMembersList = () => {
               const pastorName = pastors.length > 0 ? pastors[0].name : 'None';
               const residences = [...new Set(group.map(u => u.residence))];
               
-              console.log(`📋 Group ${index + 1}: ${totalMembers} members | Pastor: ${pastorName} | M:${males} F:${females} | Residences: [${residences.join(', ')}]`);
+              const years = [...new Set(group.map(u => u.yos))].sort();
+              console.log(`📋 Group ${index + 1}: ${totalMembers} members | Pastor: ${pastorName} | M:${males} F:${females} | Years:[${years.join(',')}] | Residences:[${residences.join(', ')}]`);
               
               // Only warn if not the last group (last group may have fewer members)
               if (totalMembers !== size && index < finalGroups.length - 1) {
