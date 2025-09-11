@@ -11,12 +11,9 @@ import {
   Calendar, 
   Clock, 
   AlertTriangle, 
-  CheckCircle, 
-  XCircle, 
   Eye, 
   Filter,
   Search,
-  Download,
   MessageCircle,
   DollarSign,
   User

@@ -278,7 +278,6 @@ const RequisitionsAdmin: React.FC = () => {
     };
 
     const downloadPDF = (requisition: RequisitionForm) => {
-        const currentDate = new Date().toLocaleDateString('en-GB');
         const submissionDate = new Date(requisition.submittedAt).toLocaleDateString('en-GB');
         const receiveDate = new Date(requisition.timeReceived).toLocaleDateString('en-GB');
         const returnDate = new Date(requisition.timeToReturn).toLocaleDateString('en-GB');

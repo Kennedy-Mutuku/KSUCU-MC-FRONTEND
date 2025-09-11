@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { getApiUrl } from '../config/environment';
 import styles from '../styles/compassionCounseling.module.css';
 import UniversalHeader from '../components/UniversalHeader';
@@ -32,27 +32,6 @@ const CompassionCounselingPage: React.FC = () => {
     anonymous: false
   });
 
-  const resetForms = () => {
-    setHelpRequest({
-      name: '',
-      email: '',
-      phone: '',
-      location: '',
-      helpType: 'material',
-      urgency: 'medium',
-      description: '',
-      preferredContact: 'phone'
-    });
-    setDonation({
-      donorName: '',
-      email: '',
-      phone: '',
-      amount: '',
-      donationType: 'monetary',
-      message: '',
-      anonymous: false
-    });
-  };
 
   const showMessage = (text: string, type: 'success' | 'error') => {
     setMessage(text);
