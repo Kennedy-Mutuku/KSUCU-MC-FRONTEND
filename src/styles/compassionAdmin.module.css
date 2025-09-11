@@ -527,20 +527,50 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .container {
-    padding: 15px;
+    padding: 10px;
   }
   
   .header {
-    padding: 30px 15px;
+    padding: 20px 10px;
+    margin-bottom: 15px;
   }
   
   .header h1 {
-    font-size: 1.8rem;
+    font-size: 1.7rem;
+    margin-bottom: 8px;
+  }
+  
+  .header p {
+    font-size: 1rem;
+  }
+  
+  .headerIcon {
+    width: 35px;
+    height: 35px;
+    margin-bottom: 10px;
+  }
+  
+  .tabNavigation {
+    margin-bottom: 15px;
+  }
+  
+  .tabButton {
+    padding: 15px 10px;
+    font-size: 1rem;
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .tabIcon {
+    width: 16px;
+    height: 16px;
   }
   
   .filtersSection {
     flex-direction: column;
-    gap: 15px;
+    gap: 12px;
+    padding: 15px;
+    margin-bottom: 15px;
   }
   
   .searchFilter,
@@ -549,62 +579,436 @@
     min-width: 100%;
   }
   
-  .requestsGrid,
-  .donationsGrid {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-  
-  .requestCard,
-  .donationCard {
-    padding: 15px;
-  }
-  
-  .cardActions {
-    flex-direction: column;
-  }
-  
-  .modalContent {
-    margin: 10px;
-    max-height: 95vh;
-  }
-  
-  .modalHeader,
-  .modalBody {
-    padding: 20px;
-  }
-  
-  .statusButtons {
-    flex-direction: column;
-  }
-  
-  .statusButton {
-    min-width: 100%;
-  }
-}
-
-@media (max-width: 480px) {
-  .tabNavigation {
-    flex-direction: column;
-  }
-  
-  .tabButton {
-    padding: 15px;
-    font-size: 1rem;
+  .searchFilter input,
+  .statusFilter select,
+  .urgencyFilter select {
+    padding: 8px 10px;
+    font-size: 16px;
   }
   
   .requestsList,
   .donationsList {
-    padding: 20px;
+    padding: 15px;
+  }
+  
+  .requestsList h2,
+  .donationsList h2 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+  }
+  
+  .requestsGrid,
+  .donationsGrid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .requestCard,
+  .donationCard {
+    padding: 12px;
+    border-radius: 8px;
+  }
+  
+  .cardHeader {
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .urgencyIndicator,
+  .donationType {
+    font-size: 0.8rem;
+  }
+  
+  .urgencyIcon,
+  .donationIcon {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .statusBadge {
+    padding: 4px 8px;
+    font-size: 0.7rem;
+  }
+  
+  .cardBody h3 {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+  }
+  
+  .helpType {
+    font-size: 0.8rem;
+    padding: 3px 6px;
+    margin-bottom: 8px;
+  }
+  
+  .amount {
+    font-size: 1rem;
+    padding: 4px 8px;
+    margin-bottom: 8px;
+  }
+  
+  .description,
+  .message {
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin-bottom: 10px;
   }
   
   .contactInfo {
     gap: 6px;
+    margin-bottom: 10px;
+  }
+  
+  .contactItem {
+    font-size: 0.85rem;
+  }
+  
+  .contactIcon {
+    width: 12px;
+    height: 12px;
+  }
+  
+  .timestamp {
+    gap: 10px;
+    font-size: 0.8rem;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  
+  .timestampIcon {
+    width: 10px;
+    height: 10px;
+  }
+  
+  .cardActions {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .viewButton,
+  .callButton {
+    padding: 6px 10px;
+    font-size: 0.85rem;
+  }
+  
+  .buttonIcon {
+    width: 12px;
+    height: 12px;
+  }
+  
+  .modalContent {
+    margin: 5px;
+    max-height: 98vh;
+    border-radius: 10px;
+  }
+  
+  .modalHeader {
+    padding: 15px;
+  }
+  
+  .modalHeader h3 {
+    font-size: 1.2rem;
+  }
+  
+  .modalBody {
+    padding: 15px;
+  }
+  
+  .detailItem {
+    padding: 10px;
+    gap: 8px;
+  }
+  
+  .detailItem .icon {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .detailItem strong {
+    font-size: 0.9rem;
+  }
+  
+  .detailItem .callButton {
+    margin-left: 8px;
+    padding: 3px 6px;
+    font-size: 0.75rem;
+  }
+  
+  .descriptionSection {
+    padding: 10px;
+  }
+  
+  .statusActions {
+    padding: 15px;
+  }
+  
+  .statusButtons {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .statusButton {
+    min-width: 100%;
+    padding: 8px 12px;
+    font-size: 0.85rem;
+  }
+  
+  .loading,
+  .emptyState {
+    padding: 40px 15px;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 5px;
+  }
+  
+  .header {
+    padding: 15px 8px;
+    margin-bottom: 10px;
+  }
+  
+  .header h1 {
+    font-size: 1.5rem;
+    margin-bottom: 6px;
+  }
+  
+  .header p {
+    font-size: 0.9rem;
+  }
+  
+  .headerIcon {
+    width: 30px;
+    height: 30px;
+    margin-bottom: 8px;
+  }
+  
+  .tabNavigation {
+    flex-direction: column;
+    margin-bottom: 10px;
+  }
+  
+  .tabButton {
+    padding: 12px 8px;
+    font-size: 0.9rem;
+    flex-direction: row;
+    gap: 6px;
+    justify-content: center;
+  }
+  
+  .tabIcon {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .filtersSection {
+    gap: 10px;
+    padding: 12px;
+    margin-bottom: 10px;
+  }
+  
+  .filterIcon {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .searchFilter input,
+  .statusFilter select,
+  .urgencyFilter select {
+    padding: 6px 8px;
+    font-size: 14px;
+  }
+  
+  .requestsList,
+  .donationsList {
+    padding: 12px;
+  }
+  
+  .requestsList h2,
+  .donationsList h2 {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+  }
+  
+  .requestsGrid,
+  .donationsGrid {
+    gap: 12px;
+  }
+  
+  .requestCard,
+  .donationCard {
+    padding: 10px;
+  }
+  
+  .cardHeader {
+    margin-bottom: 8px;
+    gap: 6px;
+  }
+  
+  .urgencyIndicator,
+  .donationType {
+    font-size: 0.75rem;
+    gap: 4px;
+  }
+  
+  .urgencyIcon,
+  .donationIcon {
+    width: 12px;
+    height: 12px;
+  }
+  
+  .statusBadge {
+    padding: 3px 6px;
+    font-size: 0.65rem;
+  }
+  
+  .cardBody h3 {
+    font-size: 1rem;
+    margin-bottom: 6px;
+  }
+  
+  .helpType {
+    font-size: 0.75rem;
+    padding: 2px 4px;
+    margin-bottom: 6px;
+  }
+  
+  .amount {
+    font-size: 0.9rem;
+    padding: 3px 6px;
+    margin-bottom: 6px;
+  }
+  
+  .description,
+  .message {
+    font-size: 0.85rem;
+    line-height: 1.3;
+    margin-bottom: 8px;
+  }
+  
+  .contactInfo {
+    gap: 4px;
+    margin-bottom: 8px;
+  }
+  
+  .contactItem {
+    font-size: 0.8rem;
+    gap: 6px;
+  }
+  
+  .contactIcon {
+    width: 10px;
+    height: 10px;
   }
   
   .timestamp {
     flex-direction: column;
-    gap: 5px;
+    gap: 3px;
     align-items: flex-start;
+    font-size: 0.75rem;
+    margin-bottom: 8px;
+  }
+  
+  .timestampIcon {
+    width: 8px;
+    height: 8px;
+  }
+  
+  .cardActions {
+    gap: 6px;
+  }
+  
+  .viewButton,
+  .callButton {
+    padding: 5px 8px;
+    font-size: 0.8rem;
+  }
+  
+  .buttonIcon {
+    width: 10px;
+    height: 10px;
+  }
+  
+  .modalContent {
+    margin: 2px;
+    max-height: 99vh;
+    border-radius: 8px;
+  }
+  
+  .modalHeader {
+    padding: 12px;
+  }
+  
+  .modalHeader h3 {
+    font-size: 1.1rem;
+  }
+  
+  .modalHeader button {
+    width: 25px;
+    height: 25px;
+    font-size: 1.2rem;
+  }
+  
+  .modalBody {
+    padding: 12px;
+  }
+  
+  .detailItem {
+    padding: 8px;
+    gap: 6px;
+  }
+  
+  .detailItem .icon {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .detailItem strong {
+    font-size: 0.85rem;
+  }
+  
+  .detailItem .callButton {
+    margin-left: 6px;
+    padding: 2px 4px;
+    font-size: 0.7rem;
+  }
+  
+  .descriptionSection {
+    padding: 8px;
+  }
+  
+  .descriptionSection strong {
+    font-size: 0.9rem;
+  }
+  
+  .descriptionSection p {
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+  
+  .statusActions {
+    padding: 12px;
+  }
+  
+  .statusActions strong {
+    font-size: 0.9rem;
+  }
+  
+  .statusButtons {
+    gap: 6px;
+  }
+  
+  .statusButton {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+  
+  .loading,
+  .emptyState {
+    padding: 30px 10px;
+    font-size: 0.9rem;
   }
 }

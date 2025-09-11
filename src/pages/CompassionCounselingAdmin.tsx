@@ -373,7 +373,7 @@ const CompassionCounselingAdmin: React.FC = () => {
                 <div>
                   <strong>Type:</strong> {selectedDonation.donationType}
                   {selectedDonation.amount && (
-                    <span> - KES {selectedDonation.amount}</span>
+                    <span> - KSh {selectedDonation.amount}</span>
                   )}
                 </div>
               </div>
@@ -600,7 +600,7 @@ const CompassionCounselingAdmin: React.FC = () => {
                     <div className={styles.cardBody}>
                       <h3>{donation.anonymous ? 'Anonymous Donor' : donation.donorName}</h3>
                       {donation.amount && (
-                        <p className={styles.amount}>KES {donation.amount}</p>
+                        <p className={styles.amount}>KSh {donation.amount}</p>
                       )}
                       {donation.message && (
                         <p className={styles.message}>

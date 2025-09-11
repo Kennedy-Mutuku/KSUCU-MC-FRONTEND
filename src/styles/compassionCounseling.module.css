@@ -430,66 +430,404 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .container {
-    padding: 15px;
-  }
-  
-  .title {
-    font-size: 2rem;
-  }
-  
-  .subtitle {
-    font-size: 1rem;
-  }
-  
-  .tabContent {
-    padding: 20px;
-  }
-  
-  .formRow {
-    grid-template-columns: 1fr;
-    gap: 15px;
-  }
-  
-  .paymentMethods {
-    grid-template-columns: 1fr;
-  }
-  
-  .servicesGrid {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-  
-  .contactInfo {
-    grid-template-columns: 1fr;
-  }
-  
-  .infoSection,
-  .contactSection {
-    padding: 30px 20px;
-  }
-}
-
-@media (max-width: 480px) {
-  .tabNavigation {
-    flex-direction: column;
-  }
-  
-  .tabButton {
-    padding: 15px;
-    font-size: 1rem;
+    padding: 10px;
+    background: #fff;
   }
   
   .heroSection {
-    padding: 40px 15px;
+    padding: 30px 15px;
+    margin-bottom: 15px;
+    border-radius: 10px;
   }
   
   .title {
     font-size: 1.8rem;
+    margin-bottom: 10px;
+  }
+  
+  .subtitle {
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+  
+  .heroIcon {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 15px;
+  }
+  
+  .tabNavigation {
+    margin-bottom: 15px;
+    border-radius: 8px;
+  }
+  
+  .tabButton {
+    padding: 15px 10px;
+    font-size: 1rem;
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .tabIcon {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .tabContent {
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+  }
+  
+  .sectionHeader {
+    margin-bottom: 20px;
+    text-align: left;
+  }
+  
+  .sectionHeader h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+  }
+  
+  .sectionHeader p {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+  
+  .form {
+    max-width: 100%;
+  }
+  
+  .formRow {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-bottom: 15px;
+  }
+  
+  .formGroup {
+    margin-bottom: 15px;
+  }
+  
+  .formGroup label {
+    font-size: 0.9rem;
+    margin-bottom: 6px;
   }
   
   .formGroup input,
   .formGroup select,
   .formGroup textarea {
     padding: 10px 12px;
+    font-size: 16px; /* Prevents zoom on iOS */
+    border-radius: 6px;
+  }
+  
+  .formGroup textarea {
+    min-height: 80px;
+  }
+  
+  .submitButton {
+    padding: 12px 20px;
+    font-size: 1rem;
+    border-radius: 8px;
+    margin-top: 15px;
+  }
+  
+  .paymentInfo {
+    padding: 20px 15px;
+    margin-top: 20px;
+    border-radius: 8px;
+  }
+  
+  .paymentMethods {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .paymentMethod {
+    padding: 15px;
+    border-radius: 6px;
+  }
+  
+  .paymentMethod h4 {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+  }
+  
+  .servicesGrid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .serviceCard {
+    padding: 20px 15px;
+    border-radius: 8px;
+  }
+  
+  .serviceIcon {
+    width: 35px;
+    height: 35px;
+    margin-bottom: 15px;
+  }
+  
+  .serviceCard h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+  }
+  
+  .serviceCard p {
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+  
+  .contactInfo {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .contactItem {
+    padding: 15px;
+    border-radius: 8px;
+  }
+  
+  .contactIcon {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .contactItem h4 {
+    font-size: 1.1rem;
+    margin-bottom: 4px;
+  }
+  
+  .contactItem p {
+    font-size: 1rem;
+    margin-bottom: 4px;
+  }
+  
+  .contactItem small {
+    font-size: 0.85rem;
+  }
+  
+  .infoSection,
+  .contactSection {
+    padding: 20px 15px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+  }
+  
+  .infoSection h2,
+  .contactSection h2 {
+    font-size: 1.6rem;
+    margin-bottom: 20px;
+  }
+  
+  .checkboxLabel {
+    font-size: 0.95rem;
+    gap: 10px;
+  }
+  
+  .checkmark {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 5px;
+  }
+  
+  .heroSection {
+    padding: 20px 10px;
+    margin-bottom: 10px;
+  }
+  
+  .title {
+    font-size: 1.6rem;
+    margin-bottom: 8px;
+  }
+  
+  .subtitle {
+    font-size: 0.9rem;
+  }
+  
+  .heroIcon {
+    width: 35px;
+    height: 35px;
+    margin-bottom: 10px;
+  }
+  
+  .tabNavigation {
+    flex-direction: column;
+    margin-bottom: 10px;
+  }
+  
+  .tabButton {
+    padding: 12px;
+    font-size: 0.95rem;
+    flex-direction: row;
+    gap: 8px;
+    justify-content: center;
+  }
+  
+  .tabIcon {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .tabContent {
+    padding: 12px;
+    margin-bottom: 10px;
+  }
+  
+  .sectionHeader {
+    margin-bottom: 15px;
+  }
+  
+  .sectionHeader h2 {
+    font-size: 1.3rem;
+    margin-bottom: 8px;
+  }
+  
+  .sectionHeader p {
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+  
+  .formGroup {
+    margin-bottom: 12px;
+  }
+  
+  .formGroup label {
+    font-size: 0.85rem;
+    margin-bottom: 4px;
+  }
+  
+  .inputIcon {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .formGroup input,
+  .formGroup select,
+  .formGroup textarea {
+    padding: 8px 10px;
+    font-size: 16px;
+    border-radius: 5px;
+  }
+  
+  .formGroup textarea {
+    min-height: 70px;
+  }
+  
+  .submitButton {
+    padding: 10px 16px;
+    font-size: 0.95rem;
+    margin-top: 10px;
+  }
+  
+  .paymentInfo {
+    padding: 15px 10px;
+    margin-top: 15px;
+  }
+  
+  .paymentInfo h3 {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+  }
+  
+  .paymentMethod {
+    padding: 12px;
+  }
+  
+  .paymentMethod h4 {
+    font-size: 1rem;
+    margin-bottom: 6px;
+  }
+  
+  .paymentMethod p {
+    font-size: 0.9rem;
+    margin: 3px 0;
+  }
+  
+  .infoSection,
+  .contactSection {
+    padding: 15px 10px;
+    margin-bottom: 10px;
+  }
+  
+  .infoSection h2,
+  .contactSection h2 {
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+  }
+  
+  .serviceCard {
+    padding: 15px 10px;
+    text-align: left;
+  }
+  
+  .serviceIcon {
+    width: 30px;
+    height: 30px;
+    margin-bottom: 10px;
+    margin-right: 10px;
+    float: left;
+  }
+  
+  .serviceCard h3 {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+    margin-left: 45px;
+  }
+  
+  .serviceCard p {
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin-left: 45px;
+  }
+  
+  .contactItem {
+    padding: 12px;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .contactIcon {
+    width: 20px;
+    height: 20px;
+    margin-top: 0;
+    flex-shrink: 0;
+  }
+  
+  .contactItem h4 {
+    font-size: 1rem;
+    margin-bottom: 2px;
+  }
+  
+  .contactItem p {
+    font-size: 0.95rem;
+    margin-bottom: 2px;
+  }
+  
+  .contactItem small {
+    font-size: 0.8rem;
+  }
+  
+  .checkboxLabel {
+    font-size: 0.9rem;
+    gap: 8px;
+  }
+  
+  .checkmark {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .message {
+    padding: 12px 15px;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
   }
 }

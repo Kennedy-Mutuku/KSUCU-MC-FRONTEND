@@ -390,7 +390,7 @@ const CompassionCounselingPage: React.FC = () => {
                 <div className={styles.formGroup}>
                   <label htmlFor="amount">
                     <DollarSign className={styles.inputIcon} />
-                    Amount (KES) *
+                    Amount (KSh) *
                   </label>
                   <input
                     type="number"
@@ -399,7 +399,7 @@ const CompassionCounselingPage: React.FC = () => {
                     onChange={(e) => setDonation(prev => ({...prev, amount: e.target.value}))}
                     required
                     min="1"
-                    placeholder="Enter amount in KES"
+                    placeholder="Enter amount in KSh"
                   />
                 </div>
               )}
