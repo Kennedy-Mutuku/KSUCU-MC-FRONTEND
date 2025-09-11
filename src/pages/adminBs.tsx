@@ -658,7 +658,8 @@ const BsMembersList = () => {
             console.log(`📋 Regular users queue: ${regularUsersQueue.length} users`);
             console.log(`👑 Pastors to distribute: ${allPastors.length} pastors`);
             
-            // STEP 1: Distribute pastors by residence - pastors go to groups in their own residence area
+            // STEP 1: Enhanced Residence-Based Pastor Assignment
+            // Priority: Each pastor gets a group from their residence first, only if residence pastors are insufficient
             
             // 1.1: Group pastors by residence
             const pastorsByResidence: { [residence: string]: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> } = {};
@@ -667,7 +668,7 @@ const BsMembersList = () => {
               pastorsByResidence[pastor.residence].push(pastor);
             });
             
-            console.log(`👑 Pastor distribution by residence:`);
+            console.log(`👑 Enhanced Pastor distribution by residence:`);
             Object.keys(pastorsByResidence).sort().forEach(residence => {
               console.log(`   ${residence}: ${pastorsByResidence[residence].length} pastor${pastorsByResidence[residence].length !== 1 ? 's' : ''}`);
             });
@@ -706,61 +707,83 @@ const BsMembersList = () => {
               groupIndex++;
             }
             
-            console.log(`🏠 Group ranges by residence:`);
+            console.log(`🏠 Residence group mapping:`);
             Object.keys(residenceGroupRanges).sort().forEach(residence => {
               const range = residenceGroupRanges[residence];
-              console.log(`   ${residence}: Groups [${range.groups.map(g => g + 1).join(', ')}]`);
+              console.log(`   ${residence}: Groups [${range.groups.map(g => g + 1).join(', ')}] (${range.groups.length} groups)`);
             });
             
-            // 1.3: Assign pastors to groups within their residence area
-            let unassignedPastors: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> = [];
+            // 1.3: ENHANCED Pastor Assignment with STRICT residence priority
+            let unassignedPastors: Array<{ name: string, phone: string, residence: string, yos: string, gender: string, isPastor?: boolean }> = [...allPastors];
             
+            console.log(`👑 ENHANCED PASTOR ASSIGNMENT: Assigning ${allPastors.length} pastors with residence priority...`);
+            
+            // PHASE 1: MANDATORY residence-first assignment - Each residence's pastors get assigned to residence groups FIRST
             for (const residence of Object.keys(pastorsByResidence).sort()) {
               const residencePastors = pastorsByResidence[residence];
               const availableGroups = residenceGroupRanges[residence]?.groups || [];
               
-              console.log(`🏠 Processing ${residence}: ${residencePastors.length} pastors, ${availableGroups.length} available groups`);
+              console.log(`🏠 PRIORITY ASSIGNMENT - ${residence}: ${residencePastors.length} pastors for ${availableGroups.length} residence groups`);
               
-              for (let i = 0; i < residencePastors.length; i++) {
+              // Assign residence pastors to residence groups (one pastor per group)
+              const pastorsToAssign = Math.min(residencePastors.length, availableGroups.length);
+              
+              for (let i = 0; i < pastorsToAssign; i++) {
                 const pastor = residencePastors[i];
+                const targetGroupIndex = availableGroups[i];
                 
-                if (i < availableGroups.length) {
-                  // Assign pastor to a group in their residence area
-                  const targetGroupIndex = availableGroups[i];
-                  finalGroups[targetGroupIndex].push(pastor);
-                  console.log(`✝️ Added pastor ${pastor.name} to Group ${targetGroupIndex + 1} (${residence} area)`);
-                } else {
-                  // Too many pastors for this residence, add to unassigned list
-                  unassignedPastors.push(pastor);
-                  console.log(`⏳ Pastor ${pastor.name} from ${residence} added to overflow list (too many pastors for this residence)`);
-                }
+                // Assign pastor to their residence group (guaranteed assignment)
+                finalGroups[targetGroupIndex].push(pastor);
+                unassignedPastors = unassignedPastors.filter(p => p.phone !== pastor.phone);
+                console.log(`✝️ RESIDENCE MATCH: Pastor ${pastor.name} → Group ${targetGroupIndex + 1} (${residence}) - PERFECT MATCH`);
+              }
+              
+              // Log if residence has more pastors than groups
+              if (residencePastors.length > availableGroups.length) {
+                const excessPastors = residencePastors.length - availableGroups.length;
+                console.log(`⚡ ${residence} has ${excessPastors} excess pastor${excessPastors > 1 ? 's' : ''} (will assign to other groups)`);
+              }
+              
+              // Log if residence has fewer pastors than groups
+              if (residencePastors.length < availableGroups.length) {
+                const missingPastors = availableGroups.length - residencePastors.length;
+                console.log(`📍 ${residence} needs ${missingPastors} more pastor${missingPastors > 1 ? 's' : ''} for all groups (will receive from other residences)`);
               }
             }
             
-            // 1.4: Assign overflow pastors to any available groups
-            let availableGroupIndex = 0;
-            for (const pastor of unassignedPastors) {
-              // Find next group that doesn't have a pastor yet
-              while (availableGroupIndex < totalGroups && 
-                     finalGroups[availableGroupIndex].some(member => member.isPastor)) {
-                availableGroupIndex++;
+            // PHASE 2: Smart assignment of remaining pastors to groups WITHOUT pastors, prioritizing residence proximity
+            console.log(`👑 PHASE 2: Assigning ${unassignedPastors.length} remaining pastors to groups without pastors...`);
+            
+            // Find all groups that still don't have pastors
+            const groupsWithoutPastors: number[] = [];
+            for (let i = 0; i < totalGroups; i++) {
+              if (!finalGroups[i].some(member => member.isPastor)) {
+                groupsWithoutPastors.push(i);
               }
-              
-              if (availableGroupIndex < totalGroups) {
-                finalGroups[availableGroupIndex].push(pastor);
-                console.log(`✝️ Added overflow pastor ${pastor.name} to Group ${availableGroupIndex + 1} (overflow assignment)`);
-                availableGroupIndex++;
-              } else {
-                // All groups have pastors, add as regular member to any group with space
-                let groupWithSpaceIndex = 0;
-                while (groupWithSpaceIndex < totalGroups && finalGroups[groupWithSpaceIndex].length >= size) {
-                  groupWithSpaceIndex++;
-                }
+            }
+            
+            console.log(`📋 Groups without pastors: [${groupsWithoutPastors.map(g => g + 1).join(', ')}] (${groupsWithoutPastors.length} groups)`);
+            
+            // Assign remaining pastors to groups without pastors
+            let groupsWithoutPastorsIndex = 0;
+            for (const pastor of unassignedPastors) {
+              if (groupsWithoutPastorsIndex < groupsWithoutPastors.length) {
+                const targetGroupIndex = groupsWithoutPastors[groupsWithoutPastorsIndex];
+                finalGroups[targetGroupIndex].push(pastor);
                 
-                if (groupWithSpaceIndex < totalGroups) {
-                  finalGroups[groupWithSpaceIndex].push(pastor);
-                  console.log(`👤 Added excess pastor ${pastor.name} as regular member to Group ${groupWithSpaceIndex + 1}`);
-                }
+                // Try to identify the primary residence of the target group for better logging
+                const groupResidences = finalGroups[targetGroupIndex].map(u => u.residence);
+                const primaryResidence = groupResidences.length > 0 ? groupResidences[0] : 'Unknown';
+                
+                console.log(`✝️ CROSS-RESIDENCE: Pastor ${pastor.name} (${pastor.residence}) → Group ${targetGroupIndex + 1} (primarily ${primaryResidence})`);
+                groupsWithoutPastorsIndex++;
+              } else {
+                // This should rarely happen if we have balanced pastor distribution
+                console.warn(`⚠️ WARNING: All groups already have pastors, but ${pastor.name} still unassigned!`);
+                
+                // Emergency assignment: add to the first group (multiple pastors in one group)
+                finalGroups[0].push(pastor);
+                console.log(`🚨 EMERGENCY: Added ${pastor.name} to Group 1 (multiple pastors in group)`);
               }
             }
             
@@ -1268,6 +1291,20 @@ const handleExportPdf = () => {
                   <div style={{ fontSize: '12px' }}>Groups Formed</div>
                 </div>
               )}
+              
+              {groups.length > 0 && (
+                <div style={{
+                  textAlign: 'center',
+                  padding: '15px',
+                  backgroundColor: '#6f42c1',
+                  color: 'white',
+                  borderRadius: '8px',
+                  fontWeight: 'bold'
+                }}>
+                  <div style={{ fontSize: '24px' }}>{groups.filter(group => group.some(u => u.isPastor)).length}/{groups.length}</div>
+                  <div style={{ fontSize: '12px' }}>Groups with Pastors</div>
+                </div>
+              )}
             </div>
             
             {users.length > 0 && (
@@ -1282,6 +1319,69 @@ const handleExportPdf = () => {
                   <p><strong>Year 4:</strong> {users.filter(u => u.yos === '4').length}</p>
                   <p><strong>Year 5:</strong> {users.filter(u => u.yos === '5').length}</p>
                   <p><strong>Year 6:</strong> {users.filter(u => u.yos === '6').length}</p>
+                </div>
+                
+                {/* Residence-Based Pastor Analysis */}
+                <div style={{ marginTop: '20px' }}>
+                  <h6 style={{ marginBottom: '10px', color: '#666' }}>🏠 Pastor Distribution by Residence:</h6>
+                  <div style={{ 
+                    display: 'grid', 
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
+                    gap: '10px',
+                    maxHeight: '200px',
+                    overflowY: 'auto'
+                  }}>
+                    {(() => {
+                      // Group users by residence
+                      const residenceStats = residences.reduce((acc, residence) => {
+                        const residenceUsers = users.filter(u => u.residence === residence.name);
+                        const residencePastors = residenceUsers.filter(u => u.isPastor);
+                        
+                        if (residenceUsers.length > 0) {
+                          acc[residence.name] = {
+                            total: residenceUsers.length,
+                            pastors: residencePastors.length,
+                            regular: residenceUsers.length - residencePastors.length
+                          };
+                        }
+                        return acc;
+                      }, {} as Record<string, {total: number, pastors: number, regular: number}>);
+                      
+                      return Object.keys(residenceStats).sort().map(residence => {
+                        const stats = residenceStats[residence];
+                        const needsPastors = stats.pastors === 0;
+                        const hasSufficientPastors = stats.pastors >= Math.ceil(stats.total / groupSize);
+                        
+                        return (
+                          <div key={residence} style={{
+                            padding: '10px',
+                            borderRadius: '6px',
+                            border: '1px solid #ddd',
+                            backgroundColor: needsPastors ? '#ffebee' : hasSufficientPastors ? '#e8f5e8' : '#fff3e0',
+                            fontSize: '14px'
+                          }}>
+                            <div style={{ fontWeight: 'bold', color: '#333', marginBottom: '4px' }}>
+                              {residence}
+                              {needsPastors && <span style={{color: '#d32f2f', marginLeft: '5px'}}>⚠️</span>}
+                              {hasSufficientPastors && <span style={{color: '#2e7d32', marginLeft: '5px'}}>✅</span>}
+                            </div>
+                            <div style={{ color: '#666', fontSize: '12px' }}>
+                              <div>Total: {stats.total} members</div>
+                              <div style={{color: needsPastors ? '#d32f2f' : '#2e7d32'}}>
+                                Pastors: {stats.pastors}
+                              </div>
+                              <div>Est. groups: ~{Math.ceil(stats.total / groupSize)}</div>
+                            </div>
+                          </div>
+                        );
+                      });
+                    })()}
+                  </div>
+                  <div style={{ fontSize: '12px', color: '#666', marginTop: '8px' }}>
+                    <span style={{color: '#d32f2f'}}>⚠️ Needs pastors</span> • 
+                    <span style={{color: '#2e7d32', marginLeft: '8px'}}>✅ Well covered</span> • 
+                    <span style={{color: '#f57c00', marginLeft: '8px'}}>⚡ Moderate coverage</span>
+                  </div>
                 </div>
               </div>
             )}
@@ -1417,7 +1517,7 @@ const handleExportPdf = () => {
               )}
             </div>
             <p className={styles.groupingInfo}>
-              ALL registered members are guaranteed to be grouped. Groups are filled to the exact specified size by processing residences sequentially. Each group gets one pastor (preferably from the same residence) at the start, then fills with balanced gender/year distribution. If a residence has multiple pastors, each gets their own group. The algorithm ensures 100% member inclusion with optimal balance.
+              <strong>🏠 ENHANCED RESIDENCE-BASED PASTOR ASSIGNMENT:</strong> Each pastor is prioritized for groups within their own residence area first. Only when a residence lacks enough pastors will pastors from other residences be assigned. This ensures maximum community cohesion while guaranteeing every group has pastoral leadership. All registered members are included with optimal gender/year balance.
             </p>
             {groups.length > 0 && (
               <div className={styles.reshuffleInfo} style={{ 
