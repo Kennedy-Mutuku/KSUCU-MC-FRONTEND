@@ -751,39 +751,72 @@ const BsMembersList = () => {
               }
             }
             
-            // PHASE 2: Smart assignment of remaining pastors to groups WITHOUT pastors, prioritizing residence proximity
-            console.log(`👑 PHASE 2: Assigning ${unassignedPastors.length} remaining pastors to groups without pastors...`);
+            // PHASE 2: SMART residence-proximity assignment for remaining pastors
+            console.log(`👑 PHASE 2: Assigning ${unassignedPastors.length} remaining pastors with residence proximity priority...`);
             
-            // Find all groups that still don't have pastors
-            const groupsWithoutPastors: number[] = [];
+            // Find all groups that still don't have pastors with their primary residence
+            const groupsWithoutPastors: Array<{groupIndex: number, primaryResidence: string, allResidences: string[]}> = [];
             for (let i = 0; i < totalGroups; i++) {
               if (!finalGroups[i].some(member => member.isPastor)) {
-                groupsWithoutPastors.push(i);
+                const groupResidences = finalGroups[i].map(u => u.residence);
+                const primaryResidence = groupResidences.length > 0 ? groupResidences[0] : 'Unknown';
+                const uniqueResidences = [...new Set(groupResidences)];
+                
+                groupsWithoutPastors.push({
+                  groupIndex: i,
+                  primaryResidence: primaryResidence,
+                  allResidences: uniqueResidences
+                });
               }
             }
             
-            console.log(`📋 Groups without pastors: [${groupsWithoutPastors.map(g => g + 1).join(', ')}] (${groupsWithoutPastors.length} groups)`);
+            console.log(`📋 Groups without pastors:`);
+            groupsWithoutPastors.forEach(group => {
+              console.log(`   Group ${group.groupIndex + 1}: Primary residence ${group.primaryResidence} (contains: ${group.allResidences.join(', ')})`);
+            });
             
-            // Assign remaining pastors to groups without pastors
-            let groupsWithoutPastorsIndex = 0;
+            // Smart assignment: Try to match pastors to groups from their residence first
             for (const pastor of unassignedPastors) {
-              if (groupsWithoutPastorsIndex < groupsWithoutPastors.length) {
-                const targetGroupIndex = groupsWithoutPastors[groupsWithoutPastorsIndex];
-                finalGroups[targetGroupIndex].push(pastor);
-                
-                // Try to identify the primary residence of the target group for better logging
-                const groupResidences = finalGroups[targetGroupIndex].map(u => u.residence);
-                const primaryResidence = groupResidences.length > 0 ? groupResidences[0] : 'Unknown';
-                
-                console.log(`✝️ CROSS-RESIDENCE: Pastor ${pastor.name} (${pastor.residence}) → Group ${targetGroupIndex + 1} (primarily ${primaryResidence})`);
-                groupsWithoutPastorsIndex++;
-              } else {
-                // This should rarely happen if we have balanced pastor distribution
+              let assigned = false;
+              
+              // PRIORITY 1: Find a group that contains members from the pastor's residence
+              for (let i = 0; i < groupsWithoutPastors.length; i++) {
+                const group = groupsWithoutPastors[i];
+                if (group.allResidences.includes(pastor.residence)) {
+                  finalGroups[group.groupIndex].push(pastor);
+                  console.log(`✝️ RESIDENCE PROXIMITY: Pastor ${pastor.name} (${pastor.residence}) → Group ${group.groupIndex + 1} (contains ${pastor.residence} members) - GOOD MATCH`);
+                  groupsWithoutPastors.splice(i, 1); // Remove this group from available list
+                  assigned = true;
+                  break;
+                }
+              }
+              
+              // PRIORITY 2: If no residence match, assign to any available group
+              if (!assigned && groupsWithoutPastors.length > 0) {
+                const group = groupsWithoutPastors.shift()!; // Take the first available group
+                finalGroups[group.groupIndex].push(pastor);
+                console.log(`✝️ CROSS-RESIDENCE: Pastor ${pastor.name} (${pastor.residence}) → Group ${group.groupIndex + 1} (primarily ${group.primaryResidence}) - FALLBACK ASSIGNMENT`);
+                assigned = true;
+              }
+              
+              // EMERGENCY: If all groups have pastors but this pastor still needs assignment
+              if (!assigned) {
                 console.warn(`⚠️ WARNING: All groups already have pastors, but ${pastor.name} still unassigned!`);
                 
-                // Emergency assignment: add to the first group (multiple pastors in one group)
-                finalGroups[0].push(pastor);
-                console.log(`🚨 EMERGENCY: Added ${pastor.name} to Group 1 (multiple pastors in group)`);
+                // Find the group with the most members from this pastor's residence
+                let bestGroupIndex = 0;
+                let maxSameResidenceMembers = 0;
+                
+                for (let i = 0; i < totalGroups; i++) {
+                  const sameResidenceCount = finalGroups[i].filter(u => u.residence === pastor.residence).length;
+                  if (sameResidenceCount > maxSameResidenceMembers) {
+                    maxSameResidenceMembers = sameResidenceCount;
+                    bestGroupIndex = i;
+                  }
+                }
+                
+                finalGroups[bestGroupIndex].push(pastor);
+                console.log(`🚨 EMERGENCY: Added ${pastor.name} to Group ${bestGroupIndex + 1} (has ${maxSameResidenceMembers} ${pastor.residence} members) - MULTIPLE PASTORS`);
               }
             }
             
