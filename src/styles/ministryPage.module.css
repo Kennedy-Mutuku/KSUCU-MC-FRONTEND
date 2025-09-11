@@ -35,6 +35,10 @@
   z-index: 1;
 }
 
+.heroButton {
+  margin-top: 25px;
+}
+
 .title {
   font-size: 2.5rem;
   font-weight: 700;
@@ -271,6 +275,12 @@
   margin-right: 8px;
 }
 
+.heroButton .compassionButton {
+  display: inline-block;
+  text-align: center;
+  min-width: 280px;
+}
+
 .compassionButton:hover {
   color: white;
   transform: translateY(-3px);
@@ -461,5 +471,12 @@
   
   .instrumentsGrid {
     grid-template-columns: 1fr;
+  }
+  
+  .heroButton .compassionButton {
+    width: 100%;
+    max-width: 280px;
+    font-size: 0.95rem;
+    padding: 16px 25px;
   }
 }

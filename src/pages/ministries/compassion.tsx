@@ -15,6 +15,11 @@ const CompassionPage: React.FC = () => {
           <div className={styles.heroContent}>
             <h1 className={styles.title}>Compassion Ministry</h1>
             <p className={styles.subtitle}>Being the hands and feet of Jesus to those in need</p>
+            <div className={styles.heroButton}>
+              <Link to="/compassion-counseling" className={styles.compassionButton}>
+                Request Support or Give Support to the Ministry
+              </Link>
+            </div>
           </div>
           <div className={styles.heroImage}>
             <img src={compassionImg} alt="Compassion Ministry" />
@@ -110,9 +115,6 @@ const CompassionPage: React.FC = () => {
             </div>
             
             <div className={styles.actionButtons}>
-              <Link to="/compassion-counseling" className={styles.compassionButton}>
-                Compassion & Counseling
-              </Link>
               <Link to="/worship-coordinator" className={styles.commitmentButton}>
                 Join Compassion Team
               </Link>
