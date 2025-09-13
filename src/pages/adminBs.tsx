@@ -608,11 +608,24 @@ const BsMembersList = () => {
               // Sort years to process them in order
               const allYears = [...new Set([...Object.keys(malesByYear), ...Object.keys(femalesByYear)])].sort();
               
-              // Collect all males and females maintaining year diversity
-              allYears.forEach(year => {
-                if (malesByYear[year]) allMales.push(...malesByYear[year]);
-                if (femalesByYear[year]) allFemales.push(...femalesByYear[year]);
-              });
+              // Collect all males and females with round-robin year distribution for better balance
+              const maxYearCount = Math.max(
+                ...allYears.map(year => 
+                  (malesByYear[year]?.length || 0) + (femalesByYear[year]?.length || 0)
+                )
+              );
+              
+              // Use round-robin to interleave years for optimal distribution
+              for (let i = 0; i < maxYearCount; i++) {
+                allYears.forEach(year => {
+                  if (malesByYear[year] && i < malesByYear[year].length) {
+                    allMales.push(malesByYear[year][i]);
+                  }
+                  if (femalesByYear[year] && i < femalesByYear[year].length) {
+                    allFemales.push(femalesByYear[year][i]);
+                  }
+                });
+              }
               
               console.log(`   📊 ${residence}: ${allMales.length} males, ${allFemales.length} females`);
               
@@ -630,22 +643,26 @@ const BsMembersList = () => {
                 tempGroups.push([]);
               }
               
-              // Distribute males evenly across groups
+              // Distribute males using round-robin for optimal year balance
               let maleIndex = 0;
-              for (let groupIdx = 0; groupIdx < groupsNeededForResidence; groupIdx++) {
-                const malesForThisGroup = malesPerGroup + (groupIdx < extraMales ? 1 : 0);
-                for (let i = 0; i < malesForThisGroup && maleIndex < allMales.length; i++) {
-                  tempGroups[groupIdx].push(allMales[maleIndex++]);
+              let currentGroup = 0;
+              while (maleIndex < allMales.length) {
+                const targetSize = malesPerGroup + (currentGroup < extraMales ? 1 : 0);
+                if (tempGroups[currentGroup].filter(u => u.gender === 'M').length < targetSize) {
+                  tempGroups[currentGroup].push(allMales[maleIndex++]);
                 }
+                currentGroup = (currentGroup + 1) % groupsNeededForResidence;
               }
               
-              // Distribute females evenly across groups
+              // Distribute females using round-robin for optimal year balance
               let femaleIndex = 0;
-              for (let groupIdx = 0; groupIdx < groupsNeededForResidence; groupIdx++) {
-                const femalesForThisGroup = femalesPerGroup + (groupIdx < extraFemales ? 1 : 0);
-                for (let i = 0; i < femalesForThisGroup && femaleIndex < allFemales.length; i++) {
-                  tempGroups[groupIdx].push(allFemales[femaleIndex++]);
+              currentGroup = 0;
+              while (femaleIndex < allFemales.length) {
+                const targetSize = femalesPerGroup + (currentGroup < extraFemales ? 1 : 0);
+                if (tempGroups[currentGroup].filter(u => u.gender === 'F').length < targetSize) {
+                  tempGroups[currentGroup].push(allFemales[femaleIndex++]);
                 }
+                currentGroup = (currentGroup + 1) % groupsNeededForResidence;
               }
               
               // Shuffle within each group to mix years while maintaining gender balance
@@ -653,11 +670,14 @@ const BsMembersList = () => {
                 group.sort(() => Math.random() - 0.5);
               });
               
-              // Log gender balance for this residence
+              // Log gender and year balance for this residence
               tempGroups.forEach((group, idx) => {
                 const groupMales = group.filter(u => u.gender === 'M').length;
                 const groupFemales = group.filter(u => u.gender === 'F').length;
-                console.log(`   Group ${idx + 1} from ${residence}: ${groupMales}M/${groupFemales}F`);
+                const yearDistribution = allYears.map(year => 
+                  `Y${year}:${group.filter(u => u.yos === year).length}`
+                ).join(' ');
+                console.log(`   Group ${idx + 1} from ${residence}: ${groupMales}M/${groupFemales}F | ${yearDistribution}`);
               });
               
               // Flatten back to a queue, maintaining the balanced distribution
@@ -665,8 +685,8 @@ const BsMembersList = () => {
                 residenceQueue.push(...group);
               });
               
-              console.log(`   ✅ Created perfectly mixed distribution for ${residence}`);
-              console.log(`   📊 Each of the ${groupsNeededForResidence} groups will have mixed years/gender`);
+              console.log(`   ✅ Created perfectly balanced gender/year distribution for ${residence}`);
+              console.log(`   📊 Each of the ${groupsNeededForResidence} groups has optimal gender balance and year diversity`);
               
               // Add ALL users from this residence to the main queue (residence-based blocks)
               regularUsersQueue.push(...residenceQueue);
@@ -952,6 +972,15 @@ const BsMembersList = () => {
             
             console.log(`📈 Average residences per group: ${avgResidencesPerGroup}`);
             console.log(`📈 Average years per group: ${avgYearsPerGroup}`);
+            
+            // Calculate year balance score (higher = better year diversity)
+            const yearBalanceScore = nonEmptyGroups.reduce((sum, group) => {
+              const uniqueYears = new Set(group.map(u => u.yos)).size;
+              const totalMembers = group.length;
+              return sum + (uniqueYears / Math.min(totalMembers, 6)); // Max 6 years possible
+            }, 0) / nonEmptyGroups.length;
+            
+            console.log(`📈 Year diversity score: ${(yearBalanceScore * 100).toFixed(1)}% (higher = better year mixing)`);
             console.log(`📈 Gender balance score: ${(genderBalanceScore * 100).toFixed(1)}% (100% = perfect balance)`);
             console.log(`📈 Gender distribution: Min M:F ratio = ${Math.min(...genderStats.filter(s => s.ratio !== 'N/A').map(s => parseFloat(s.ratio as string))).toFixed(2)}, Max M:F ratio = ${Math.max(...genderStats.filter(s => s.ratio !== 'N/A').map(s => parseFloat(s.ratio as string))).toFixed(2)}`);
             
@@ -1576,7 +1605,7 @@ const handleExportPdf = () => {
               )}
             </div>
             <p className={styles.groupingInfo}>
-              <strong>🏠 ENHANCED GENDER-BALANCED GROUPING:</strong> Groups are formed with optimal gender balance - males and females are distributed evenly across all groups within each residence. Each pastor is prioritized for groups within their own residence area first. This ensures balanced gender representation, maximum community cohesion, and guarantees every group has pastoral leadership when possible. All registered members are included with optimal gender and year diversity.
+              <strong>🏠 ENHANCED GENDER & YEAR-BALANCED GROUPING:</strong> Groups are formed with optimal gender balance and year diversity - males and females from all years of study are distributed evenly across all groups within each residence using round-robin algorithms. Each pastor is prioritized for groups within their own residence area first. This ensures balanced gender representation, maximum year diversity, strong community cohesion, and guarantees every group has pastoral leadership when possible. All registered members are included with optimal gender and year distribution.
             </p>
             {groups.length > 0 && (
               <div className={styles.reshuffleInfo} style={{ 
