@@ -38,25 +38,119 @@ ul li {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
+/* Category Filter */
+.categoryFilter {
+    margin: 15px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.categoryFilter label {
+    font-weight: bold;
+    color: #333;
+}
+
+.categoryDropdown {
+    padding: 8px 15px;
+    border: 2px solid #00c6ff;
+    border-radius: 5px;
+    background-color: white;
+    color: #333;
+    font-size: 14px;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.categoryDropdown:hover {
+    border-color: #730051;
+}
+
+.categoryDropdown:focus {
+    border-color: #730051;
+    box-shadow: 0 0 5px rgba(115, 0, 81, 0.3);
+}
+
 /* Feedback Section */
 .feedbackSection {
-    display: flex;
-    gap: 20px;
     margin-top: 20px;
 }
 
-.feedbackSection div {
-    flex: 1;
+.messagesContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.messageCard {
     background: #fff;
     padding: 15px;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-left: 4px solid #00c6ff;
 }
 
-.feedbackSection h6 {
-    font-size: 16px;
-    color: #555;
+.messageHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 10px;
+}
+
+.category {
+    background-color: #730051;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.timestamp {
+    font-size: 12px;
+    color: #888;
+}
+
+.subject {
+    font-size: 16px;
+    color: #333;
+    margin: 10px 0;
+    font-weight: bold;
+}
+
+.messageContent {
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.messageFooter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 10px;
+    border-top: 1px solid #eee;
+    font-size: 13px;
+}
+
+.anonymous {
+    color: #888;
+    font-style: italic;
+}
+
+.sender {
+    color: #00c6ff;
+}
+
+.status {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    padding: 3px 10px;
+    border-radius: 10px;
+    font-size: 11px;
+    text-transform: capitalize;
 }
 
 /* Table Styles */

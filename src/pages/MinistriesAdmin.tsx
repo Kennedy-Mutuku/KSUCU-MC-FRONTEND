@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
 import styles from '../styles/ministriesAdmin.module.css';
+import { getApiUrl } from '../config/environment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
     faUsers, 
@@ -156,7 +157,7 @@ const MinistriesAdmin: React.FC = () => {
         setLoading(true);
         try {
             const response = await axios.get(
-                `http://localhost:3000/commitmentForm/ministry/${selectedMinistry}`, 
+                `${getApiUrl('commitmentFormMinistry')}/${selectedMinistry}`, 
                 { withCredentials: true }
             );
             setCommitmentForms(response.data.commitments);
@@ -173,7 +174,7 @@ const MinistriesAdmin: React.FC = () => {
     const approveCommitment = async (commitmentId: string) => {
         try {
             await axios.put(
-                `http://localhost:3000/commitmentForm/approve/${commitmentId}`, 
+                `${getApiUrl('commitmentFormApprove')}/${commitmentId}`, 
                 {}, 
                 { withCredentials: true }
             );
@@ -191,7 +192,7 @@ const MinistriesAdmin: React.FC = () => {
     const revokeCommitment = async (commitmentId: string) => {
         try {
             await axios.put(
-                `http://localhost:3000/commitmentForm/revoke/${commitmentId}`, 
+                `${getApiUrl('commitmentFormRevoke')}/${commitmentId}`, 
                 {}, 
                 { withCredentials: true }
             );
@@ -214,7 +215,7 @@ const MinistriesAdmin: React.FC = () => {
         try {
             // Load session info
             const sessionResponse = await axios.get(
-                `http://localhost:3000/attendance/session/${selectedMinistry}`,
+                `${getApiUrl('attendanceSession')}/${selectedMinistry}`,
                 { withCredentials: true }
             );
             console.log('Session response:', sessionResponse.data);
@@ -223,7 +224,7 @@ const MinistriesAdmin: React.FC = () => {
             // Load attendance records if there's an active session
             if (sessionResponse.data.session) {
                 const recordsResponse = await axios.get(
-                    `http://localhost:3000/attendance/records/${sessionResponse.data.session._id}`,
+                    `${getApiUrl('attendanceRecords')}/${sessionResponse.data.session._id}`,
                     { withCredentials: true }
                 );
                 console.log('Records response:', recordsResponse.data);
@@ -250,7 +251,7 @@ const MinistriesAdmin: React.FC = () => {
         setLoading(true);
         try {
             const response = await axios.post(
-                `http://localhost:3000/attendance/start-session`,
+                getApiUrl('attendanceStartSession'),
                 { ministry: selectedMinistry },
                 { withCredentials: true }
             );
@@ -290,7 +291,7 @@ const MinistriesAdmin: React.FC = () => {
         setLoading(true);
         try {
             await axios.post(
-                `http://localhost:3000/attendance/end-session`,
+                getApiUrl('attendanceEndSession'),
                 { sessionId: attendanceSession._id },
                 { withCredentials: true }
             );
@@ -336,15 +337,15 @@ const MinistriesAdmin: React.FC = () => {
             // First end the current session if it exists and is active
             if (attendanceSession && attendanceSession.isActive) {
                 await axios.post(
-                    `http://localhost:3000/attendance/end-session`,
+                    getApiUrl('attendanceEndSession'),
                     { sessionId: attendanceSession._id },
                     { withCredentials: true }
                 );
             }
-            
+
             // Then start a new session
             const response = await axios.post(
-                `http://localhost:3000/attendance/start-session`,
+                getApiUrl('attendanceStartSession'),
                 { ministry: selectedMinistry },
                 { withCredentials: true }
             );

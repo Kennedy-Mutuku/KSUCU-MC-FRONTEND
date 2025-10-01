@@ -4,6 +4,8 @@ import { getApiUrl } from '../config/environment';
 import styles from '../styles/feedback.module.css';
 import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const FeedbackForm: React.FC = () => {
     const [formData, setFormData] = useState({
@@ -54,10 +56,20 @@ const FeedbackForm: React.FC = () => {
         e.preventDefault();
 
         if (!formData.subject || !formData.message) {
-            setError('Please fill in all required fields.');
+            toast.warning('Please fill in all required fields.', {
+                position: "top-right",
+                autoClose: 3000,
+            });
             return;
-        } else {
-            setError('');
+        }
+
+        // Check if user wants identified message but is not logged in
+        if (!formData.isAnonymous && !userData) {
+            toast.warning('Please log in to send identified messages.', {
+                position: "top-right",
+                autoClose: 4000,
+            });
+            return;
         }
 
         setLoading(true);
@@ -86,23 +98,38 @@ const FeedbackForm: React.FC = () => {
             });
 
             if (response.ok) {
-                setError('Feedback submitted successfully!');
+                toast.success('Feedback submitted successfully!', {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                });
+
                 setFormData({
                     subject: '',
                     message: '',
                     category: 'feedback',
                     isAnonymous: true
                 });
-                
+
                 setTimeout(() => {
                     navigate('/');
-                }, 2000);
+                }, 3000);
             } else {
                 throw new Error('Failed to send message');
             }
         } catch (error: any) {
             console.error('Error:', error);
-            setError('Failed to submit feedback. Please try again later.');
+            toast.error('Failed to submit feedback. Please try again later.', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+            });
         } finally {
             setLoading(false);
         }
@@ -110,6 +137,7 @@ const FeedbackForm: React.FC = () => {
 
     return (
         <>
+            <ToastContainer />
             <UniversalHeader />
             <h2 className={styles.bsTitle}>Feedback</h2>
             {error && <div className={styles.error}>{error}</div>}
@@ -185,7 +213,13 @@ const FeedbackForm: React.FC = () => {
                     )}
 
                     <section className={styles.submission}>
-                        <button className={styles.submitButton} type="submit" disabled={loading}>{loading ? 'Submitting...' : 'Submit'}</button>
+                        <button
+                            className={styles.submitButton}
+                            type="submit"
+                            disabled={loading || (!formData.isAnonymous && !userData)}
+                        >
+                            {loading ? 'Submitting...' : 'Submit'}
+                        </button>
                     </section>
                 </form>
 

@@ -54,6 +54,11 @@ interface ApiConfig {
     compassionUpdateContactInfo: string;
     compassionAddPaymentMethod: string;
     compassionAddContactInfo: string;
+    commitmentFormUserDetails: string;
+    commitmentFormSubmit: string;
+    commitmentFormMinistry: string;
+    commitmentFormApprove: string;
+    commitmentFormRevoke: string;
   };
 }
 
@@ -114,7 +119,12 @@ const developmentConfig: ApiConfig = {
     compassionUpdatePaymentMethods: '/api/compassion/admin/settings/payment-methods',
     compassionUpdateContactInfo: '/api/compassion/admin/settings/contact-info',
     compassionAddPaymentMethod: '/api/compassion/admin/settings/payment-method',
-    compassionAddContactInfo: '/api/compassion/admin/settings/contact-info'
+    compassionAddContactInfo: '/api/compassion/admin/settings/contact-info',
+    commitmentFormUserDetails: '/commitmentForm/user-details',
+    commitmentFormSubmit: '/commitmentForm/submit-commitment',
+    commitmentFormMinistry: '/commitmentForm/ministry',
+    commitmentFormApprove: '/commitmentForm/approve',
+    commitmentFormRevoke: '/commitmentForm/revoke'
   }
 };
 
@@ -173,7 +183,12 @@ const productionConfig: ApiConfig = {
     compassionUpdatePaymentMethods: '/api/compassion/admin/settings/payment-methods',
     compassionUpdateContactInfo: '/api/compassion/admin/settings/contact-info',
     compassionAddPaymentMethod: '/api/compassion/admin/settings/payment-method',
-    compassionAddContactInfo: '/api/compassion/admin/settings/contact-info'
+    compassionAddContactInfo: '/api/compassion/admin/settings/contact-info',
+    commitmentFormUserDetails: '/commitmentForm/user-details',
+    commitmentFormSubmit: '/commitmentForm/submit-commitment',
+    commitmentFormMinistry: '/commitmentForm/ministry',
+    commitmentFormApprove: '/commitmentForm/approve',
+    commitmentFormRevoke: '/commitmentForm/revoke'
   }
 };
 

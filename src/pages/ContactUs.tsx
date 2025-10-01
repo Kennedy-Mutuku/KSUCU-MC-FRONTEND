@@ -3,12 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { getApiUrl } from '../config/environment';
 import styles from '../styles/contactUs.module.css';
 import cuLogo from '../assets/cuLogoUAR.png';
-import { 
-  MessageCircle, 
-  Send, 
-  UserCheck, 
-  UserX, 
-  Heart, 
+import {
+  MessageCircle,
+  Send,
+  UserCheck,
+  UserX,
+  Heart,
   Shield,
   CheckCircle,
   AlertCircle,
@@ -17,6 +17,8 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faUserLock } from '@fortawesome/free-solid-svg-icons';
 import loadingAnime from '../assets/Animation - 1716747954931.gif';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface UserData {
   username: string;
@@ -34,8 +36,6 @@ const ContactUs = () => {
   const [subject, setSubject] = useState('');
   const [category, setCategory] = useState('feedback');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
-  const [error, setError] = useState('');
   const [generalLoading, setGeneralLoading] = useState(false);
   
   const navigate = useNavigate();
@@ -79,19 +79,33 @@ const ContactUs = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!message.trim()) {
-      setError('Please enter your message');
+      toast.warning('Please enter your message', {
+        position: "top-right",
+        autoClose: 3000,
+      });
       return;
     }
 
     if (!subject.trim()) {
-      setError('Please enter a subject');
+      toast.warning('Please enter a subject', {
+        position: "top-right",
+        autoClose: 3000,
+      });
+      return;
+    }
+
+    // Check if user wants identified message but is not logged in
+    if (!isAnonymous && !userData) {
+      toast.warning('Please log in to send identified messages.', {
+        position: "top-right",
+        autoClose: 4000,
+      });
       return;
     }
 
     setIsSubmitting(true);
-    setError('');
 
     try {
       const messageData = {
@@ -118,21 +132,34 @@ const ContactUs = () => {
       });
 
       if (response.ok) {
-        setSubmitStatus('success');
+        toast.success('Message sent successfully! Thank you for reaching out.', {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+
         setMessage('');
         setSubject('');
         setCategory('feedback');
-        
+
         setTimeout(() => {
-          setSubmitStatus('idle');
           navigate('/');
         }, 3000);
       } else {
         throw new Error('Failed to send message');
       }
     } catch (error) {
-      setSubmitStatus('error');
-      setError('Failed to send message. Please try again.');
+      toast.error('Failed to send message. Please try again.', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -161,6 +188,7 @@ const ContactUs = () => {
 
   return (
     <div className={styles.container}>
+      <ToastContainer />
       {/* Header */}
       <header className={styles.header}>
         <div className={styles.headerContent}>
@@ -312,14 +340,6 @@ const ContactUs = () => {
             </div>
           )}
 
-          {/* Error Message */}
-          {error && (
-            <div className={styles.errorMessage}>
-              <AlertCircle size={16} />
-              <span>{error}</span>
-            </div>
-          )}
-
           {/* Submit Button */}
           <button
             type="submit"
@@ -339,23 +359,6 @@ const ContactUs = () => {
             )}
           </button>
         </form>
-
-        {/* Success/Error Status */}
-        {submitStatus === 'success' && (
-          <div className={styles.successMessage}>
-            <CheckCircle size={24} />
-            <h3>Message Sent Successfully!</h3>
-            <p>Thank you for reaching out. Your message has been received and will be reviewed by our leadership team.</p>
-          </div>
-        )}
-
-        {submitStatus === 'error' && (
-          <div className={styles.errorMessage}>
-            <AlertCircle size={24} />
-            <h3>Failed to Send Message</h3>
-            <p>There was an issue sending your message. Please try again later.</p>
-          </div>
-        )}
       </main>
 
       {/* Footer */}

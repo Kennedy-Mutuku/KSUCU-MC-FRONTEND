@@ -4,6 +4,7 @@ import SignatureCanvas from "react-signature-canvas";
 import styles from "../styles/InstrumentalistsCommitment.module.css"; // Import your CSS module
 import UniversalHeader from "../components/UniversalHeader";
 import Footer from "../components/footer";
+import { getApiUrl } from '../config/environment';
 
 const InstrumentalistsCommitment: React.FC = () => {
   const sigCanvas = useRef<SignatureCanvas | null>(null);
@@ -40,7 +41,7 @@ const InstrumentalistsCommitment: React.FC = () => {
   useEffect(() => {
     const fetchFormData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/commitmentForm/user-details", { withCredentials: true });
+        const response = await axios.get(getApiUrl('commitmentFormUserDetails'), { withCredentials: true });
         const data = response.data;
         console.log(data);
         
@@ -95,7 +96,7 @@ const InstrumentalistsCommitment: React.FC = () => {
   //   };
 
   //   try {
-  //     const response = await axios.post("http://localhost:3000/commitmentForm/submit-commitment", formData, {
+  //     const response = await axios.post(getApiUrl('commitmentFormSubmit'), formData, {
   //       headers: {
   //         "Content-Type": "application/json",
   //       },
@@ -164,7 +165,7 @@ const InstrumentalistsCommitment: React.FC = () => {
     };
   
     try {
-      const response = await axios.post("http://localhost:3000/commitmentForm/submit-commitment", formData, {
+      const response = await axios.post(getApiUrl('commitmentFormSubmit'), formData, {
         headers: {
           "Content-Type": "application/json",
         },

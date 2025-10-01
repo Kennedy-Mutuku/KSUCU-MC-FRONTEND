@@ -4,6 +4,7 @@ import SignatureCanvas from "react-signature-canvas";
 import styles from "../styles/InstrumentalistsCommitment.module.css";
 import UniversalHeader from "../components/UniversalHeader";
 import Footer from "../components/footer";
+import { getApiUrl } from '../config/environment';
 
 const ChoirCommitment: React.FC = () => {
   const sigCanvas = useRef<SignatureCanvas | null>(null);
@@ -38,7 +39,7 @@ const ChoirCommitment: React.FC = () => {
   useEffect(() => {
     const fetchFormData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/commitmentForm/user-details", { withCredentials: true });
+        const response = await axios.get(getApiUrl('commitmentFormUserDetails'), { withCredentials: true });
         const data = response.data;
         
         if (data.username) setFullName(data.username);
@@ -120,7 +121,7 @@ const ChoirCommitment: React.FC = () => {
     };
   
     try {
-      const response = await axios.post("http://localhost:3000/commitmentForm/submit-commitment", formData, {
+      const response = await axios.post(getApiUrl('commitmentFormSubmit'), formData, {
         headers: {
           "Content-Type": "application/json",
         },

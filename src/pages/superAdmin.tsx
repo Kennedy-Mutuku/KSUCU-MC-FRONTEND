@@ -5,11 +5,28 @@ import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
 import { getApiUrl } from '../config/environment';
 
+interface Message {
+    _id: string;
+    subject: string;
+    message: string;
+    category: string;
+    isAnonymous: boolean;
+    senderInfo?: {
+        username?: string;
+        email?: string;
+        ministry?: string;
+        yos?: number;
+    };
+    timestamp: string;
+    isRead: boolean;
+    status: string;
+}
+
 const SuperAdmin: React.FC = () => {
     const [userCount, setUserCount] = useState<number>(0);
     const [usersByYos, setUsersByYos] = useState<{ [key: string]: number }>({});
-    const [anonymousFeedback, setAnonymousFeedback] = useState<string[]>([]);
-    const [nonAnonymousFeedback, setNonAnonymousFeedback] = useState<{ name: string, message: string }[]>([]);
+    const [messages, setMessages] = useState<Message[]>([]);
+    const [selectedCategory, setSelectedCategory] = useState<string>('all');
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [usersByMinistry, setUsersByMinistry] = useState<{ [key: string]: number }>({});
@@ -22,7 +39,7 @@ const SuperAdmin: React.FC = () => {
 
     useEffect(() => {
         fetchUserData();
-        fetchFeedback();
+        fetchMessages();
     }, []);
 
     // const fetchUserData = async () => {
@@ -74,29 +91,16 @@ const SuperAdmin: React.FC = () => {
         }
     };
     
-    const fetchFeedback = async () => {
+    const fetchMessages = async () => {
         try {
-            const response = await axios.get(`${backEndURL}/feedback`, { withCredentials: true });
-            const feedback = response.data;
-            console.log(response.data);
-            
-            
-            const anonymous: string[] = [];
-            const nonAnonymous: { name: string, message: string }[] = [];
-            
-            feedback.forEach((item: { anonymous: boolean, name?: string, message: string }) => {
-                if (item.anonymous) {
-                    anonymous.push(item.message);
-                } else {
-                    nonAnonymous.push({ name: item.name || 'Unknown', message: item.message });
-                }
-            });
-            
-            setAnonymousFeedback(anonymous);
-            setNonAnonymousFeedback(nonAnonymous);
+            const response = await axios.get(`${backEndURL}/messages`, { withCredentials: true });
+            const messages = response.data;
+            console.log('Messages fetched:', messages);
+
+            setMessages(messages);
         } catch (err) {
-            console.error('Error fetching feedback:', err);
-            setError('Failed to fetch feedback');
+            console.error('Error fetching messages:', err);
+            setError('Failed to fetch messages');
         } finally {
             setLoading(false);
         }
@@ -137,25 +141,62 @@ const SuperAdmin: React.FC = () => {
                     ))}
                 </ul>
 
-                
-                <h5>Feedback</h5>
+
+                <h5>Messages & Feedback</h5>
+
+                <div className={styles.categoryFilter}>
+                    <label htmlFor="categorySelect">Filter by Category: </label>
+                    <select
+                        id="categorySelect"
+                        value={selectedCategory}
+                        onChange={(e) => setSelectedCategory(e.target.value)}
+                        className={styles.categoryDropdown}
+                    >
+                        <option value="all">All Categories</option>
+                        <option value="feedback">Feedback</option>
+                        <option value="suggestion">Suggestion</option>
+                        <option value="complaint">Complaint</option>
+                        <option value="praise">Praise</option>
+                        <option value="prayer">Prayer</option>
+                        <option value="technical">Technical</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
                 <div className={styles.feedbackSection}>
-                    <div>
-                        <h6>Anonymous Feedback</h6>
-                        <ul>
-                            {anonymousFeedback.map((msg, index) => (
-                                <li key={index}>{msg}</li>
+                    {messages.length === 0 ? (
+                        <p>No messages yet.</p>
+                    ) : (
+                        <div className={styles.messagesContainer}>
+                            {messages
+                                .filter(msg => selectedCategory === 'all' || msg.category === selectedCategory)
+                                .map((msg) => (
+                                <div key={msg._id} className={styles.messageCard}>
+                                    <div className={styles.messageHeader}>
+                                        <span className={styles.category}>{msg.category}</span>
+                                        <span className={styles.timestamp}>
+                                            {new Date(msg.timestamp).toLocaleDateString()} {new Date(msg.timestamp).toLocaleTimeString()}
+                                        </span>
+                                    </div>
+                                    <h6 className={styles.subject}>{msg.subject}</h6>
+                                    <p className={styles.messageContent}>{msg.message}</p>
+                                    <div className={styles.messageFooter}>
+                                        {msg.isAnonymous ? (
+                                            <span className={styles.anonymous}>Anonymous</span>
+                                        ) : (
+                                            <span className={styles.sender}>
+                                                From: {msg.senderInfo?.username || 'Unknown'}
+                                                {msg.senderInfo?.email && ` (${msg.senderInfo.email})`}
+                                                {msg.senderInfo?.ministry && ` - ${msg.senderInfo.ministry}`}
+                                                {msg.senderInfo?.yos && ` - YOS ${msg.senderInfo.yos}`}
+                                            </span>
+                                        )}
+                                        <span className={styles.status}>{msg.status}</span>
+                                    </div>
+                                </div>
                             ))}
-                        </ul>
-                    </div>
-                    <div>
-                        <h6>Non-Anonymous Feedback</h6>
-                        <ul>
-                            {nonAnonymousFeedback.map((feedback, index) => (
-                                <li key={index}><strong>{feedback.name}:</strong> {feedback.message}</li>
-                            ))}
-                        </ul>
-                    </div>
+                        </div>
+                    )}
                 </div>
 
                 <h5>List of all Students</h5>

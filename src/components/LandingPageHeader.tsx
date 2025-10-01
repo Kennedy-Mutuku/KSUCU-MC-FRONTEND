@@ -13,7 +13,7 @@ import missionImg from '../assets/ladies.jpg'
 import valuesImg from '../assets/amptheatre.jpg'
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 import { faUserLock } from '@fortawesome/free-solid-svg-icons';
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, MessageSquare } from "lucide-react";
 import CommunityChat from './CommunityChat';
 
 interface NewsData {
@@ -555,6 +555,10 @@ const LandingPageHeader = () => {
             </div>
             <div onClick={handleAboutUsClick} className={styles['quick-item--link']}>
               About Us
+            </div>
+            <div onClick={() => handlePublicLink('/recomendations')} className={styles['quick-item--link']}>
+              <MessageSquare size={16} style={{ marginRight: '6px', display: 'inline' }} />
+              Feedback
             </div>
               </div>
             </>
