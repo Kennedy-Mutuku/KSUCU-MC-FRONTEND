@@ -10,8 +10,6 @@ import {
   UserX,
   Heart,
   Shield,
-  CheckCircle,
-  AlertCircle,
   ArrowLeft
 } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

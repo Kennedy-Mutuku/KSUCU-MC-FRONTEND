@@ -15,7 +15,6 @@ const FeedbackForm: React.FC = () => {
         isAnonymous: true
     });
     const [userData, setUserData] = useState<any>(null);
-    const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     
@@ -140,7 +139,6 @@ const FeedbackForm: React.FC = () => {
             <ToastContainer />
             <UniversalHeader />
             <h2 className={styles.bsTitle}>Feedback</h2>
-            {error && <div className={styles.error}>{error}</div>}
 
             <div className={styles.container}>
                 <h2 className={styles.text}>Submit Your Suggestions, Feedbacks or concerns</h2>
