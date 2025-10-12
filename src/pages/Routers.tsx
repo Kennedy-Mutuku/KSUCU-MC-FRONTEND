@@ -47,6 +47,8 @@ import Requisitions from "./Requisitions";
 import RequisitionsAdmin from "./RequisitionsAdmin";
 import CompassionCounselingPage from "./CompassionCounseling";
 import CompassionCounselingAdmin from "./CompassionCounselingAdmin";
+import PollingOfficerDashboard from "./PollingOfficerDashboard";
+import PollingOfficerManagement from "./PollingOfficerManagement";
 
 export const router = createBrowserRouter([
     {
@@ -100,6 +102,8 @@ export const router = createBrowserRouter([
             {path: "/requisitions-admin", element: <RequisitionsAdmin />},
             {path: "/compassion-counseling", element: <CompassionCounselingPage />},
             {path: "/compassion-counseling-admin", element: <CompassionCounselingAdmin />},
+            {path: "/polling-officer-dashboard", element: <PollingOfficerDashboard />},
+            {path: "/polling-officer-management", element: <PollingOfficerManagement />},
             {path: "*", element: <NoPage />}
         ]
     }

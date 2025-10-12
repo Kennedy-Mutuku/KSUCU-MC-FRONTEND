@@ -59,6 +59,17 @@ interface ApiConfig {
     commitmentFormMinistry: string;
     commitmentFormApprove: string;
     commitmentFormRevoke: string;
+    pollingOfficerLogin: string;
+    pollingOfficerLogout: string;
+    pollingOfficerCreate: string;
+    pollingOfficerList: string;
+    pollingOfficerStatus: string;
+    pollingOfficerUnvotedUsers: string;
+    pollingOfficerMarkVoted: string;
+    pollingOfficerRegisterAndVote: string;
+    pollingOfficerSearchUser: string;
+    pollingOfficerStats: string;
+    pollingOfficerVotedUsers: string;
   };
 }
 
@@ -124,7 +135,18 @@ const developmentConfig: ApiConfig = {
     commitmentFormSubmit: '/commitmentForm/submit-commitment',
     commitmentFormMinistry: '/commitmentForm/ministry',
     commitmentFormApprove: '/commitmentForm/approve',
-    commitmentFormRevoke: '/commitmentForm/revoke'
+    commitmentFormRevoke: '/commitmentForm/revoke',
+    pollingOfficerLogin: '/polling-officer/login',
+    pollingOfficerLogout: '/polling-officer/logout',
+    pollingOfficerCreate: '/polling-officer/create',
+    pollingOfficerList: '/polling-officer/list',
+    pollingOfficerStatus: '/polling-officer/status',
+    pollingOfficerUnvotedUsers: '/polling-officer/unvoted-users',
+    pollingOfficerMarkVoted: '/polling-officer/mark-voted',
+    pollingOfficerRegisterAndVote: '/polling-officer/register-and-vote',
+    pollingOfficerSearchUser: '/polling-officer/search-user',
+    pollingOfficerStats: '/polling-officer/stats',
+    pollingOfficerVotedUsers: '/polling-officer/voted-users'
   }
 };
 
@@ -188,7 +210,18 @@ const productionConfig: ApiConfig = {
     commitmentFormSubmit: '/commitmentForm/submit-commitment',
     commitmentFormMinistry: '/commitmentForm/ministry',
     commitmentFormApprove: '/commitmentForm/approve',
-    commitmentFormRevoke: '/commitmentForm/revoke'
+    commitmentFormRevoke: '/commitmentForm/revoke',
+    pollingOfficerLogin: '/polling-officer/login',
+    pollingOfficerLogout: '/polling-officer/logout',
+    pollingOfficerCreate: '/polling-officer/create',
+    pollingOfficerList: '/polling-officer/list',
+    pollingOfficerStatus: '/polling-officer/status',
+    pollingOfficerUnvotedUsers: '/polling-officer/unvoted-users',
+    pollingOfficerMarkVoted: '/polling-officer/mark-voted',
+    pollingOfficerRegisterAndVote: '/polling-officer/register-and-vote',
+    pollingOfficerSearchUser: '/polling-officer/search-user',
+    pollingOfficerStats: '/polling-officer/stats',
+    pollingOfficerVotedUsers: '/polling-officer/voted-users'
   }
 };
 

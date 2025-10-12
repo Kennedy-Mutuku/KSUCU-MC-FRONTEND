@@ -140,14 +140,29 @@ const SignIn: React.FC = () => {
             const mapping = domainMappings.find(mapping =>
                 processedEmail?.endsWith(mapping.domain)
             );
-            
-            // If no mapping found, default to user login
-            const { endpoint, route } = mapping || { endpoint: getApiUrl('usersLogin'), route: '/profile' };
-    
+
+            // Determine endpoint and route
+            let endpoint: string;
+            let route: string;
+
+            if (mapping) {
+                // Admin domain found
+                endpoint = mapping.endpoint;
+                route = mapping.route;
+            } else if (processedEmail.includes('officer')) {
+                // Polling officer pattern detected
+                endpoint = getApiUrl('pollingOfficerLogin');
+                route = '/polling-officer-dashboard';
+            } else {
+                // Default to regular user login
+                endpoint = getApiUrl('usersLogin');
+                route = '/profile';
+            }
+
             console.log('🔐 SignIn: Email entered:', formData.email);
             console.log('🔐 SignIn: Processed email:', processedEmail);
             console.log('🔐 SignIn: Password length:', formData.password?.length);
-            console.log('🔐 SignIn: Mapping found:', mapping ? 'Yes' : 'No');
+            console.log('🔐 SignIn: Mapping found:', mapping ? 'Yes (Admin)' : processedEmail.includes('officer') ? 'Yes (Officer Pattern)' : 'No (User)');
             console.log('🔐 SignIn: Attempting login to:', endpoint);
             console.log('🔐 SignIn: Will redirect to:', route);
 

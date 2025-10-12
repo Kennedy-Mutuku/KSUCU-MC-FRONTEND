@@ -184,6 +184,108 @@ ul li {
     background-color: #e1e1e1;
 }
 
+/* Polling Statistics Styles */
+.pollingStatsContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.statCard {
+    background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    color: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.statCard h3 {
+    font-size: 32px;
+    margin: 0 0 8px 0;
+}
+
+.statCard p {
+    margin: 0;
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+.pollingOfficersSection {
+    margin-bottom: 30px;
+}
+
+.manageLink {
+    display: inline-block;
+    padding: 10px 20px;
+    background: #4caf50;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.manageLink:hover {
+    background: #45a049;
+}
+
+.officersTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.officersTable th,
+.officersTable td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}
+
+.officersTable th {
+    background-color: #00c6ff;
+    color: white;
+    font-weight: bold;
+}
+
+.officersTable tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.officersTable tbody tr:hover {
+    background-color: #e1e1e1;
+}
+
+.statusBadge {
+    padding: 4px 10px;
+    border-radius: 5px;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.statusBadge.active {
+    background: #4caf50;
+    color: white;
+}
+
+.statusBadge.suspended {
+    background: #ff9800;
+    color: white;
+}
+
+.statusBadge.deleted {
+    background: #f44336;
+    color: white;
+}
+
 /* Responsive Design */
 @media (max-width: 767px) {
     .feedbackSection {
@@ -193,5 +295,15 @@ ul li {
     .studentTable th, .studentTable td {
         padding: 10px;
         font-size: 14px;
+    }
+
+    .pollingStatsContainer {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .officersTable th,
+    .officersTable td {
+        padding: 8px;
+        font-size: 13px;
     }
 }

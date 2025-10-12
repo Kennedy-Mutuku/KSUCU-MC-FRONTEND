@@ -1,0 +1,198 @@
+/* Overlay */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Dialog */
+.dialog {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    min-width: 400px;
+    max-width: 500px;
+    animation: slideUp 0.3s ease-out;
+    overflow: hidden;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Header */
+.header {
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.header.info {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-bottom: none;
+}
+
+.header.warning {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    border-bottom: none;
+}
+
+.header.danger {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    color: white;
+    border-bottom: none;
+}
+
+.header.success {
+    background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
+    color: white;
+    border-bottom: none;
+}
+
+.header h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.closeBtn {
+    background: none;
+    border: none;
+    font-size: 32px;
+    cursor: pointer;
+    color: inherit;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+    line-height: 1;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.closeBtn:hover {
+    opacity: 1;
+}
+
+/* Body */
+.body {
+    padding: 24px;
+}
+
+.body p {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #374151;
+    white-space: pre-line;
+}
+
+/* Footer */
+.footer {
+    padding: 16px 24px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    background: #f9fafb;
+    border-top: 1px solid #e5e7eb;
+}
+
+/* Buttons */
+.cancelBtn,
+.confirmBtn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+}
+
+.cancelBtn {
+    background: white;
+    color: #6b7280;
+    border: 2px solid #e5e7eb;
+}
+
+.cancelBtn:hover {
+    background: #f9fafb;
+    border-color: #d1d5db;
+}
+
+.confirmBtn {
+    color: white;
+    border: none;
+}
+
+.confirmBtn.info {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.confirmBtn.warning {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.confirmBtn.danger {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+}
+
+.confirmBtn.success {
+    background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
+}
+
+.confirmBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+    .dialog {
+        min-width: 90%;
+        margin: 20px;
+    }
+
+    .body p {
+        font-size: 14px;
+    }
+
+    .footer {
+        flex-direction: column-reverse;
+    }
+
+    .cancelBtn,
+    .confirmBtn {
+        width: 100%;
+    }
+}

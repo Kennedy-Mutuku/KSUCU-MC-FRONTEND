@@ -22,6 +22,22 @@ interface Message {
     status: string;
 }
 
+interface PollingStats {
+    totalUsers: number;
+    totalVoted: number;
+    totalNotVoted: number;
+    percentageVoted: string;
+}
+
+interface PollingOfficer {
+    _id: string;
+    fullName: string;
+    email: string;
+    status: string;
+    votedCount?: number;
+    registeredCount?: number;
+}
+
 const SuperAdmin: React.FC = () => {
     const [userCount, setUserCount] = useState<number>(0);
     const [usersByYos, setUsersByYos] = useState<{ [key: string]: number }>({});
@@ -32,6 +48,8 @@ const SuperAdmin: React.FC = () => {
     const [usersByMinistry, setUsersByMinistry] = useState<{ [key: string]: number }>({});
     const [usersByEt, setUsersByEt] = useState<{ [key: string]: number }>({});
     const [users, setUsers] = useState<{ username: string; reg: string; course: string; yos: string }[]>([]);
+    const [pollingStats, setPollingStats] = useState<PollingStats | null>(null);
+    const [pollingOfficers, setPollingOfficers] = useState<PollingOfficer[]>([]);
 
 
     // Use dynamic API URL based on environment
@@ -40,6 +58,8 @@ const SuperAdmin: React.FC = () => {
     useEffect(() => {
         fetchUserData();
         fetchMessages();
+        fetchPollingStats();
+        fetchPollingOfficers();
     }, []);
 
     // const fetchUserData = async () => {
@@ -106,6 +126,26 @@ const SuperAdmin: React.FC = () => {
         }
     };
 
+    const fetchPollingStats = async () => {
+        try {
+            const pollingURL = backEndURL.replace('/sadmin', '/polling-officer');
+            const response = await axios.get(`${pollingURL}/stats`, { withCredentials: true });
+            setPollingStats(response.data);
+        } catch (err) {
+            console.error('Error fetching polling stats:', err);
+        }
+    };
+
+    const fetchPollingOfficers = async () => {
+        try {
+            const pollingURL = backEndURL.replace('/sadmin', '/polling-officer');
+            const response = await axios.get(`${pollingURL}/list`, { withCredentials: true });
+            setPollingOfficers(response.data);
+        } catch (err) {
+            console.error('Error fetching polling officers:', err);
+        }
+    };
+
     if (loading) {
         return <p>Loading ......</p>;
     }
@@ -119,6 +159,64 @@ const SuperAdmin: React.FC = () => {
                   <UniversalHeader />
             <div className={styles.container}>
                 <h4>Total Students: {userCount}</h4>
+
+                {/* Polling Statistics Section */}
+                {pollingStats && (
+                    <>
+                        <h5>Polling/Voting Statistics</h5>
+                        <div className={styles.pollingStatsContainer}>
+                            <div className={styles.statCard}>
+                                <h3>{pollingStats.totalVoted}</h3>
+                                <p>Voted</p>
+                            </div>
+                            <div className={styles.statCard}>
+                                <h3>{pollingStats.totalNotVoted}</h3>
+                                <p>Not Voted</p>
+                            </div>
+                            <div className={styles.statCard}>
+                                <h3>{pollingStats.percentageVoted}%</h3>
+                                <p>Completion</p>
+                            </div>
+                        </div>
+
+                        <h5>Polling Officers</h5>
+                        <div className={styles.pollingOfficersSection}>
+                            <a href="/polling-officer-management" className={styles.manageLink}>
+                                Manage Polling Officers
+                            </a>
+                            {pollingOfficers.length > 0 ? (
+                                <table className={styles.officersTable}>
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Status</th>
+                                            <th>Registered</th>
+                                            <th>Voted</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {pollingOfficers.map(officer => (
+                                            <tr key={officer._id}>
+                                                <td>{officer.fullName}</td>
+                                                <td>{officer.email}</td>
+                                                <td>
+                                                    <span className={`${styles.statusBadge} ${styles[officer.status]}`}>
+                                                        {officer.status}
+                                                    </span>
+                                                </td>
+                                                <td>{officer.registeredCount || 0}</td>
+                                                <td>{officer.votedCount || 0}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            ) : (
+                                <p>No polling officers yet. <a href="/polling-officer-management">Create one</a></p>
+                            )}
+                        </div>
+                    </>
+                )}
 
                 <h5>Category by Year of Study:</h5>
                 <ul>
