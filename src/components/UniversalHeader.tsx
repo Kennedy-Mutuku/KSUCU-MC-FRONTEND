@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { getApiUrl } from '../config/environment';
 import styles from '../styles/index.module.css';
 import cuLogo from '../assets/cuLogoUAR.png';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import loadingAnime from '../assets/Animation - 1716747954931.gif';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faUserLock } from '@fortawesome/free-solid-svg-icons';
@@ -13,16 +13,24 @@ const UniversalHeader: React.FC = () => {
   const [error, setError] = useState('');
   const [generalLoading, setgeneralLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleNavToggle = () => {
     document.body.classList.toggle(styles['nav-open']);
   };
 
   useEffect(() => {
-    fetchUserData();
-    
-    const handleFocus = () => {
+    // Skip fetching user data if on polling officer routes
+    const isPollingOfficerRoute = location.pathname.startsWith('/polling-officer');
+
+    if (!isPollingOfficerRoute) {
       fetchUserData();
+    }
+
+    const handleFocus = () => {
+      if (!isPollingOfficerRoute) {
+        fetchUserData();
+      }
     };
 
     window.addEventListener('focus', handleFocus);
@@ -30,7 +38,7 @@ const UniversalHeader: React.FC = () => {
     return () => {
       window.removeEventListener('focus', handleFocus);
     };
-  }, []);
+  }, [location.pathname]);
 
   const fetchUserData = async () => {
     console.log('🏠 Header: Fetching user data...');
