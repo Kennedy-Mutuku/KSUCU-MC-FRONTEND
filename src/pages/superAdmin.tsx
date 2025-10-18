@@ -178,12 +178,13 @@ const SuperAdmin: React.FC = () => {
                     (a.username || '').localeCompare(b.username || '')
                 );
 
-                const doc = new jsPDF();
+                const doc = new jsPDF('landscape');
                 const pageHeight = doc.internal.pageSize.height;
+                const pageWidth = doc.internal.pageSize.width;
                 let yOffset = 45;
 
-                // Add letterhead to first page
-                doc.addImage(letterhead, 'PNG', 10, 10, 190, 35);
+                // Add letterhead to first page (adjusted for landscape)
+                doc.addImage(letterhead, 'PNG', 10, 10, 270, 35);
                 yOffset += 5;
 
                 // Document title
@@ -225,12 +226,14 @@ const SuperAdmin: React.FC = () => {
                     student.username || 'N/A',
                     student.reg || 'N/A',
                     student.course || 'N/A',
-                    student.yos || 'N/A'
+                    student.yos || 'N/A',
+                    student.email || 'N/A',
+                    student.phone || 'N/A'
                 ]);
 
                 // Table options with compact design for 20+ students per page
                 const tableOptions = {
-                    head: [['#', 'Name', 'Registration No.', 'Course', 'Year of Study']],
+                    head: [['#', 'Name', 'Registration No.', 'Course', 'Year of Study', 'Email', 'Phone']],
                     body: tableData,
                     startY: yOffset,
                     theme: 'grid',
@@ -254,14 +257,16 @@ const SuperAdmin: React.FC = () => {
                         0: { cellWidth: 12, halign: 'center' }, // #
                         1: { cellWidth: 45 }, // Name
                         2: { cellWidth: 35 }, // Reg
-                        3: { cellWidth: 60 }, // Course
-                        4: { cellWidth: 20, halign: 'center' } // YOS
+                        3: { cellWidth: 75 }, // Course
+                        4: { cellWidth: 18, halign: 'center' }, // YOS
+                        5: { cellWidth: 55 }, // Email
+                        6: { cellWidth: 30 } // Phone
                     },
-                    margin: { left: 15, right: 15 },
+                    margin: { left: 10, right: 10 },
                     didDrawPage: function(data: any) {
-                        // Add letterhead to new pages
+                        // Add letterhead to new pages (adjusted for landscape)
                         if (data.pageNumber > 1) {
-                            doc.addImage(letterhead, 'PNG', 10, 10, 190, 35);
+                            doc.addImage(letterhead, 'PNG', 10, 10, 270, 35);
                         }
                     }
                 };
