@@ -8,12 +8,6 @@ import Footer from '../components/footer';
 import { getApiUrl } from '../config/environment';
 import letterhead from '../assets/letterhead.png';
 
-declare module 'jspdf' {
-    interface jsPDF {
-        autoTable: (options: any) => { finalY: number };
-    }
-}
-
 interface Message {
     _id: string;
     subject: string;
