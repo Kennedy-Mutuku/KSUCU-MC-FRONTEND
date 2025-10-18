@@ -180,7 +180,6 @@ const SuperAdmin: React.FC = () => {
 
                 const doc = new jsPDF('landscape');
                 const pageHeight = doc.internal.pageSize.height;
-                const pageWidth = doc.internal.pageSize.width;
                 let yOffset = 45;
 
                 // Add letterhead to first page (adjusted for landscape)
