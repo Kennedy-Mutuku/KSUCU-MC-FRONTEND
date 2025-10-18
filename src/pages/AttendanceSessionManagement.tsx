@@ -350,6 +350,7 @@ const AttendanceSessionManagement: React.FC = () => {
                 body: JSON.stringify({
                     leadershipRole: leadershipRole
                 })
+            
             });
 
             if (response.ok) {
@@ -858,6 +859,7 @@ const AttendanceSessionManagement: React.FC = () => {
                                             })()}
                                         </div>
                                     </div>
+
                                 );
                             })}
                         </div>

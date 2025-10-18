@@ -153,6 +153,45 @@ ul li {
     text-transform: capitalize;
 }
 
+/* Student List Header with Button */
+.studentListHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+    margin-bottom: 10px;
+}
+
+.studentListHeader h5 {
+    margin: 0;
+    border: none;
+    padding: 0;
+}
+
+.downloadPdfButton {
+    background: linear-gradient(135deg, #730051 0%, #9b0065 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(115, 0, 81, 0.3);
+}
+
+.downloadPdfButton:hover {
+    background: linear-gradient(135deg, #9b0065 0%, #730051 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(115, 0, 81, 0.4);
+}
+
+.downloadPdfButton:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 8px rgba(115, 0, 81, 0.3);
+}
+
 /* Table Styles */
 .studentTable {
     width: 100%;
@@ -304,6 +343,18 @@ ul li {
     .officersTable th,
     .officersTable td {
         padding: 8px;
+        font-size: 13px;
+    }
+
+    .studentListHeader {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .downloadPdfButton {
+        width: 100%;
+        padding: 10px 20px;
         font-size: 13px;
     }
 }

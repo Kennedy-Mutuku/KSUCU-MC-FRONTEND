@@ -1,9 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 import styles from '../styles/superAdmin.module.css';
 import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
 import { getApiUrl } from '../config/environment';
+import letterhead from '../assets/letterhead.png';
+
+declare module 'jspdf' {
+    interface jsPDF {
+        autoTable: (options: any) => { finalY: number };
+    }
+}
 
 interface Message {
     _id: string;
@@ -143,6 +152,147 @@ const SuperAdmin: React.FC = () => {
             setPollingOfficers(response.data);
         } catch (err) {
             console.error('Error fetching polling officers:', err);
+        }
+    };
+
+    const handleExportPdfByYos = () => {
+        try {
+            // Group students by Year of Study
+            const studentsByYos: { [key: string]: any[] } = {};
+
+            users.forEach(user => {
+                const yos = user.yos || 'Unknown';
+                if (!studentsByYos[yos]) {
+                    studentsByYos[yos] = [];
+                }
+                studentsByYos[yos].push(user);
+            });
+
+            // Sort YOS keys
+            const sortedYosKeys = Object.keys(studentsByYos).sort((a, b) => {
+                if (a === 'Unknown') return 1;
+                if (b === 'Unknown') return -1;
+                return parseInt(a) - parseInt(b);
+            });
+
+            // Generate a separate PDF for each Year of Study
+            sortedYosKeys.forEach(yos => {
+                const studentsInYos = studentsByYos[yos];
+
+                // Sort students alphabetically by name
+                const sortedStudents = [...studentsInYos].sort((a, b) =>
+                    (a.username || '').localeCompare(b.username || '')
+                );
+
+                const doc = new jsPDF();
+                const pageHeight = doc.internal.pageSize.height;
+                let yOffset = 45;
+
+                // Add letterhead to first page
+                doc.addImage(letterhead, 'PNG', 10, 10, 190, 35);
+                yOffset += 5;
+
+                // Document title
+                const title = `KSUCU Student List - Year ${yos}`;
+                const dateText = `Generated: ${new Date().toLocaleDateString('en-GB', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                })}`;
+                const timeText = `Time: ${new Date().toLocaleTimeString('en-US', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                })}`;
+
+                // Title formatting
+                doc.setTextColor(128, 0, 128); // Purple color
+                doc.setFontSize(16);
+                doc.setFont('helvetica', 'bold');
+                doc.text(title, doc.internal.pageSize.width / 2, yOffset, { align: "center" });
+
+                // Stats
+                yOffset += 10;
+                doc.setFontSize(12);
+                doc.setTextColor(0, 0, 0);
+                doc.setFont('helvetica', 'normal');
+                const stats = `Total Students: ${sortedStudents.length}`;
+                doc.text(stats, doc.internal.pageSize.width / 2, yOffset, { align: "center" });
+
+                // Date and time
+                yOffset += 8;
+                doc.setFontSize(10);
+                doc.text(dateText, 15, yOffset);
+                doc.text(timeText, doc.internal.pageSize.width - 15, yOffset, { align: "right" });
+                yOffset += 15;
+
+                // Prepare table data
+                const tableData = sortedStudents.map((student, index) => [
+                    (index + 1).toString(),
+                    student.username || 'N/A',
+                    student.reg || 'N/A',
+                    student.course || 'N/A',
+                    student.yos || 'N/A'
+                ]);
+
+                // Table options with compact design for 20+ students per page
+                const tableOptions = {
+                    head: [['#', 'Name', 'Registration No.', 'Course', 'Year of Study']],
+                    body: tableData,
+                    startY: yOffset,
+                    theme: 'grid',
+                    headStyles: {
+                        fillColor: [128, 0, 128], // Purple header
+                        textColor: [255, 255, 255],
+                        fontSize: 9,
+                        fontStyle: 'bold',
+                        cellPadding: 2
+                    },
+                    styles: {
+                        fontSize: 8,
+                        cellPadding: 1.5,
+                        lineWidth: 0.1,
+                        lineColor: [200, 200, 200]
+                    },
+                    alternateRowStyles: {
+                        fillColor: [248, 249, 250]
+                    },
+                    columnStyles: {
+                        0: { cellWidth: 12, halign: 'center' }, // #
+                        1: { cellWidth: 45 }, // Name
+                        2: { cellWidth: 35 }, // Reg
+                        3: { cellWidth: 60 }, // Course
+                        4: { cellWidth: 20, halign: 'center' } // YOS
+                    },
+                    margin: { left: 15, right: 15 },
+                    didDrawPage: function(data: any) {
+                        // Add letterhead to new pages
+                        if (data.pageNumber > 1) {
+                            doc.addImage(letterhead, 'PNG', 10, 10, 190, 35);
+                        }
+                    }
+                };
+
+                // Add table to PDF
+                doc.autoTable(tableOptions);
+
+                // Add footer with page numbers
+                const pageCount = doc.getNumberOfPages();
+                for (let i = 1; i <= pageCount; i++) {
+                    doc.setPage(i);
+                    doc.setFontSize(8);
+                    doc.setTextColor(100, 100, 100);
+                    doc.text('Generated by KSUCU-MC Administration System', 15, pageHeight - 10);
+                    doc.text(`Page ${i} of ${pageCount}`, doc.internal.pageSize.width - 15, pageHeight - 10, { align: 'right' });
+                }
+
+                // Save PDF
+                const fileName = `KSUCU_Students_Year_${yos}_${new Date().toISOString().split('T')[0]}.pdf`;
+                doc.save(fileName);
+            });
+
+        } catch (error) {
+            console.error("Error generating PDF:", error);
+            alert("Failed to generate PDF. Please try again.");
         }
     };
 
@@ -297,7 +447,16 @@ const SuperAdmin: React.FC = () => {
                     )}
                 </div>
 
-                <h5>List of all Students</h5>
+                <div className={styles.studentListHeader}>
+                    <h5>List of all Students</h5>
+                    <button
+                        className={styles.downloadPdfButton}
+                        onClick={handleExportPdfByYos}
+                        title="Download student data as PDF (separated by Year of Study)"
+                    >
+                        Download as PDF
+                    </button>
+                </div>
                 <table className={styles.studentTable}>
                     <thead>
                         <tr>
