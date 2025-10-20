@@ -595,10 +595,10 @@ const LandingPageHeader = () => {
                     right: '20px',
                     background: 'linear-gradient(180deg, rgba(20, 10, 15, 0.75) 0%, rgba(60, 25, 40, 0.8) 100%)',
                     color: 'white',
-                    padding: window.innerWidth <= 767 ? '18px 16px' : '24px 20px',
+                    padding: window.innerWidth <= 767 ? '12px 14px' : '24px 20px',
                     borderRadius: '12px',
-                    fontSize: window.innerWidth <= 767 ? '14px' : '16px',
-                    lineHeight: '1.8',
+                    fontSize: window.innerWidth <= 767 ? '12px' : '16px',
+                    lineHeight: window.innerWidth <= 767 ? '1.5' : '1.8',
                     textAlign: 'center',
                     fontWeight: '600',
                     fontFamily: '"Georgia", "Garamond", serif',
@@ -610,7 +610,7 @@ const LandingPageHeader = () => {
                     zIndex: 5,
                     maxWidth: '90%',
                     margin: '0 auto',
-                    letterSpacing: '0.5px',
+                    letterSpacing: '0.3px',
                     textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)'
                   }}>
                     {images[currentIndex].quote}
