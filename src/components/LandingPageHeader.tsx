@@ -50,20 +50,34 @@ const LandingPageHeader = () => {
     setIsMobileNavOpen(!isMobileNavOpen);
   };
 
-  const images = [
-    { url: visionImg, text: `<h1 class="${styles['section-text']}"></h1><div class="${styles['loadingBar-intro']}"></div>` },
-    { url: missionImg, text: `<h1 class="${styles['section-text']}"></h1><div class="${styles['loadingBar-intro']}"></div>` },
-    { url: valuesImg, text: `<h1 class="${styles['section-text']}"></h1><div class="${styles['loadingBar-intro']}"></div>` }
+  const christianQuotes = [
+    "\"Faith is the substance of things hoped for, the evidence of things not seen.\" - Hebrews 11:1",
+    "\"I can do all things through Christ who strengthens me.\" - Philippians 4:13",
+    "\"For God so loved the world that he gave his one and only Son.\" - John 3:16"
   ];
-  
+
+  const images = [
+    { url: visionImg, text: `<h1 class="${styles['section-text']}"></h1><div class="${styles['loadingBar-intro']}"></div>`, quote: christianQuotes[0] },
+    { url: missionImg, text: `<h1 class="${styles['section-text']}"></h1><div class="${styles['loadingBar-intro']}"></div>`, quote: christianQuotes[1] },
+    { url: valuesImg, text: `<h1 class="${styles['section-text']}"></h1><div class="${styles['loadingBar-intro']}"></div>`, quote: christianQuotes[2] }
+  ];
+
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [showQuote, setShowQuote] = useState(true);
 
   useEffect(() => {
     fetchUserData()
     fetchNewsData()
-    
+
     const interval = setInterval(() => {
+      setShowQuote(true); // Show quote when new photo enters
       setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+
+      // Hide quote after 6 seconds on mobile, 4 seconds on desktop
+      const hideDelay = window.innerWidth <= 767 ? 6000 : 4000;
+      setTimeout(() => {
+        setShowQuote(false);
+      }, hideDelay);
     }, 10000);
 
     // Auto-refresh news every 30 seconds to ensure all devices get updates
@@ -567,13 +581,46 @@ const LandingPageHeader = () => {
 
         
         <div className={`${styles['']} ${styles['container-vidTitle']}`}>
-          <div className={styles['intro-video--header']}>
+          <div className={styles['intro-video--header']} style={{ position: 'relative' }}>
             <div className={styles['video-intro']}>
-              <div className={styles['intro-video']} style={{ backgroundImage: `url(${images[currentIndex].url})` }} dangerouslySetInnerHTML={{ __html: images[currentIndex].text }}></div>
-              <span className={styles["commission-claimer"]} onClick={handleOpenCommission}>
-                <FontAwesomeIcon icon={faQuestion} beatFade />
-              </span>
+              <div className={styles['intro-video']} style={{ backgroundImage: `url(${images[currentIndex].url})` }}>
+                <div dangerouslySetInnerHTML={{ __html: images[currentIndex].text }}></div>
+
+                {/* Animated Christian Quote Overlay */}
+                {showQuote && (
+                  <div style={{
+                    position: 'absolute',
+                    bottom: window.innerWidth <= 767 ? '40px' : '20px',
+                    left: '20px',
+                    right: '20px',
+                    background: 'linear-gradient(180deg, rgba(20, 10, 15, 0.75) 0%, rgba(60, 25, 40, 0.8) 100%)',
+                    color: 'white',
+                    padding: window.innerWidth <= 767 ? '18px 16px' : '24px 20px',
+                    borderRadius: '12px',
+                    fontSize: window.innerWidth <= 767 ? '14px' : '16px',
+                    lineHeight: '1.8',
+                    textAlign: 'center',
+                    fontWeight: '600',
+                    fontFamily: '"Georgia", "Garamond", serif',
+                    fontStyle: 'italic',
+                    animation: 'popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                    backdropFilter: 'blur(10px)',
+                    border: '1.5px solid rgba(255, 215, 175, 0.25)',
+                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 10px rgba(255, 255, 255, 0.08)',
+                    zIndex: 5,
+                    maxWidth: '90%',
+                    margin: '0 auto',
+                    letterSpacing: '0.5px',
+                    textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)'
+                  }}>
+                    {images[currentIndex].quote}
+                  </div>
+                )}
+              </div>
             </div>
+            <span className={styles["commission-claimer"]} onClick={handleOpenCommission}>
+              <FontAwesomeIcon icon={faQuestion} beatFade />
+            </span>
           </div>
         </div>
       </header>
