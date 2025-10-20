@@ -59,6 +59,21 @@ const LandingPage = () => {
   });
   const navigate = useNavigate();
 
+  // Handle body overflow when any modal opens
+  useEffect(() => {
+    const isAnyModalOpen = openPrayerJoint || openBibleStudy || openDevelopment || openGraphicDesign || openKairosCourse || openFocus;
+
+    if (isAnyModalOpen) {
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = '';
+      };
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [openPrayerJoint, openBibleStudy, openDevelopment, openGraphicDesign, openKairosCourse, openFocus]);
 
   const images = [
     { url:  visionImg , text: `
@@ -416,56 +431,44 @@ const LandingPage = () => {
 
   function handleOpenPrayerJoint(): void {
     setOpenPrayerJoint(true)
-    document.body.style.overflow = 'hidden';
   }
   function handleClosePrayerJoint(): void {
     setOpenPrayerJoint(false)
-    document.body.style.overflow = '';
   }
 
   function handleOpenBibleStudy(): void {
     setOpenBibleStudy(true)
-    document.body.style.overflow = 'hidden';
   }
   function handleCloseBibleStudy(): void {
     setOpenBibleStudy(false)
-    document.body.style.overflow = '';
   }
 
   function handleOpenDevelopment(): void {
     setOpenDevelopment(true)
-    document.body.style.overflow = 'hidden';
   }
   function handleCloseDevelopment(): void {
     setOpenDevelopment(false)
-    document.body.style.overflow = '';
   }
 
   function handleOpenGraphics(): void {
     setOpenGraphicDesign(true)
-    document.body.style.overflow = 'hidden';
   }
   function handleCloseGraphics(): void {
     setOpenGraphicDesign(false)
-    document.body.style.overflow = '';
   }
 
   function handleOpenFocus(): void {
     setOpenFocus(true)
-    document.body.style.overflow = 'hidden';
   }
   function handleCloseFocus(): void {
     setOpenFocus(false)
-    document.body.style.overflow = '';
   }
 
   function handleOpenCairos(): void {
     setOpenCairosCourse(true)
-    document.body.style.overflow = 'hidden';
   }
   function handleCloseCairos(): void {
     setOpenCairosCourse(false)
-    document.body.style.overflow = '';
   }
 
   // Method to handle the toggling behavior

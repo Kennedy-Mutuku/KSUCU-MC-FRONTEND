@@ -585,9 +585,11 @@ body{
 @keyframes fadeIn {
     0% {
         opacity: 0;
+        transform: translate(0, 0);
     }
     100% {
         opacity: 1;
+        transform: translate(0, 0);
     }
 }
 
@@ -1314,8 +1316,10 @@ div.boardsCategoryDiv:focus h3 {
     align-items: center;
     padding: 20px;
     box-sizing: border-box;
-    animation: fadeIn 0.3s ease-out;
+    animation: fadeIn 0.3s ease-out forwards;
     overflow-y: auto;
+    pointer-events: auto;
+    will-change: opacity;
 }
 .closeOtherDisplayDiv{
     position: absolute;
