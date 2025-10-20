@@ -53,6 +53,8 @@ const SuperAdmin: React.FC = () => {
     const [users, setUsers] = useState<{ username: string; reg: string; course: string; yos: string }[]>([]);
     const [pollingStats, setPollingStats] = useState<PollingStats | null>(null);
     const [pollingOfficers, setPollingOfficers] = useState<PollingOfficer[]>([]);
+    const [showResetConfirm, setShowResetConfirm] = useState<boolean>(false);
+    const [isResetting, setIsResetting] = useState<boolean>(false);
 
 
     // Use dynamic API URL based on environment
@@ -146,6 +148,23 @@ const SuperAdmin: React.FC = () => {
             setPollingOfficers(response.data);
         } catch (err) {
             console.error('Error fetching polling officers:', err);
+        }
+    };
+
+    const handleResetPolling = async () => {
+        setIsResetting(true);
+        try {
+            const response = await axios.post(`${backEndURL}/reset-polling`, {}, { withCredentials: true });
+            alert(`Success! ${response.data.message}\n${response.data.usersAffected} users' voting status has been reset.`);
+
+            // Refresh polling stats
+            await fetchPollingStats();
+            setShowResetConfirm(false);
+        } catch (err: any) {
+            console.error('Error resetting polling data:', err);
+            alert(`Error resetting polling data: ${err.response?.data?.message || 'Unknown error'}`);
+        } finally {
+            setIsResetting(false);
         }
     };
 
@@ -311,7 +330,16 @@ const SuperAdmin: React.FC = () => {
                 {/* Polling Statistics Section */}
                 {pollingStats && (
                     <>
-                        <h5>Polling/Voting Statistics</h5>
+                        <div className={styles.pollingHeader}>
+                            <h5>Polling/Voting Statistics</h5>
+                            <button
+                                className={styles.resetButton}
+                                onClick={() => setShowResetConfirm(true)}
+                                title="Reset all polling data for a new election"
+                            >
+                                Reset Polling Data
+                            </button>
+                        </div>
                         <div className={styles.pollingStatsContainer}>
                             <div className={styles.statCard}>
                                 <h3>{pollingStats.totalVoted}</h3>
@@ -476,6 +504,37 @@ const SuperAdmin: React.FC = () => {
                     </tbody>
                 </table>
 
+                {/* Confirmation Dialog */}
+                {showResetConfirm && (
+                    <div className={styles.confirmOverlay}>
+                        <div className={styles.confirmDialog}>
+                            <h3>Reset Polling Data?</h3>
+                            <p>
+                                This will reset all voting records back to zero. All users will be marked as "not voted".
+                                This action is meant for starting a new election period.
+                            </p>
+                            <p className={styles.warningText}>
+                                <strong>Warning:</strong> This action cannot be undone!
+                            </p>
+                            <div className={styles.confirmButtons}>
+                                <button
+                                    className={styles.cancelButton}
+                                    onClick={() => setShowResetConfirm(false)}
+                                    disabled={isResetting}
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    className={styles.confirmButton}
+                                    onClick={handleResetPolling}
+                                    disabled={isResetting}
+                                >
+                                    {isResetting ? 'Resetting...' : 'Yes, Reset Polling Data'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
             <Footer />
         </>
