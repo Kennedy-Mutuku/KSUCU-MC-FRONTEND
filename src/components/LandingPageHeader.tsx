@@ -486,15 +486,15 @@ const LandingPageHeader = () => {
                 <Link to="/profile" className={styles['signUp-btn']}>{userData.username}</Link>
                 : <Link to="/signUp" className={styles['signUp-btn']}>Sign up</Link>
               }
-              {userData ?
-                <Link to="/signIn" className={styles['Login-btn']} onClick={handleLogout} >Log out</Link> :
-                <Link to="/signIn" className={styles['Login-btn']}>Log in</Link>
-              }
               <div className={styles['About-btn']}>
                 <button onClick={handleAboutUsClick} className={styles['nav-link']} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'inherit', fontSize: 'inherit', fontFamily: 'inherit', textDecoration: 'none' }}>
                   About us
                 </button>
               </div>
+              {userData ?
+                <Link to="/signIn" className={styles['Login-btn']} onClick={handleLogout} >Log out</Link> :
+                <Link to="/signIn" className={styles['Login-btn']}>Log in</Link>
+              }
             </div>
           </div>
 
@@ -553,9 +553,12 @@ const LandingPageHeader = () => {
             <div onClick={() => handleProtectedLink('/financial', 'Financials')} className={styles['quick-item--link']}>
               Financials
             </div>
-            <a 
-              href="/pdfs/constitution.pdf" 
-              download="constitution.pdf" 
+            <div onClick={() => handleProtectedLink('/my-docs', 'My Docs')} className={styles['quick-item--link']}>
+              My Docs
+            </div>
+            <a
+              href="/pdfs/constitution.pdf"
+              download="constitution.pdf"
               className={styles['quick-item--link']}
             >
               <FontAwesomeIcon icon={faDownload} style={{ marginRight: '8px' }} />

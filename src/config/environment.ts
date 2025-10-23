@@ -70,6 +70,13 @@ interface ApiConfig {
     pollingOfficerSearchUser: string;
     pollingOfficerStats: string;
     pollingOfficerVotedUsers: string;
+    myDocuments: string;
+    uploadDocument: string;
+    downloadDocument: string;
+    viewDocument: string;
+    deleteDocument: string;
+    getUserDocumentsAdmin: string;
+    getAllDocumentsAdmin: string;
   };
 }
 
@@ -146,7 +153,14 @@ const developmentConfig: ApiConfig = {
     pollingOfficerRegisterAndVote: '/polling-officer/register-and-vote',
     pollingOfficerSearchUser: '/polling-officer/search-user',
     pollingOfficerStats: '/polling-officer/stats',
-    pollingOfficerVotedUsers: '/polling-officer/voted-users'
+    pollingOfficerVotedUsers: '/polling-officer/voted-users',
+    myDocuments: '/documents/my-docs',
+    uploadDocument: '/documents/upload',
+    downloadDocument: '/documents/download/:documentId',
+    viewDocument: '/documents/view/:documentId',
+    deleteDocument: '/documents/:documentId',
+    getUserDocumentsAdmin: '/documents/admin/user/:userId',
+    getAllDocumentsAdmin: '/documents/admin/all'
   }
 };
 
@@ -221,7 +235,14 @@ const productionConfig: ApiConfig = {
     pollingOfficerRegisterAndVote: '/polling-officer/register-and-vote',
     pollingOfficerSearchUser: '/polling-officer/search-user',
     pollingOfficerStats: '/polling-officer/stats',
-    pollingOfficerVotedUsers: '/polling-officer/voted-users'
+    pollingOfficerVotedUsers: '/polling-officer/voted-users',
+    myDocuments: '/documents/my-docs',
+    uploadDocument: '/documents/upload',
+    downloadDocument: '/documents/download/:documentId',
+    viewDocument: '/documents/view/:documentId',
+    deleteDocument: '/documents/:documentId',
+    getUserDocumentsAdmin: '/documents/admin/user/:userId',
+    getAllDocumentsAdmin: '/documents/admin/all'
   }
 };
 

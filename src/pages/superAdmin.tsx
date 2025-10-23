@@ -7,6 +7,7 @@ import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
 import { getApiUrl } from '../config/environment';
 import letterhead from '../assets/letterhead.png';
+import DocumentUploader from '../components/DocumentUploader';
 
 interface Message {
     _id: string;
@@ -55,6 +56,8 @@ const SuperAdmin: React.FC = () => {
     const [pollingOfficers, setPollingOfficers] = useState<PollingOfficer[]>([]);
     const [showResetConfirm, setShowResetConfirm] = useState<boolean>(false);
     const [isResetting, setIsResetting] = useState<boolean>(false);
+    const [selectedUserForDocUpload, setSelectedUserForDocUpload] = useState<{ _id: string; username: string } | null>(null);
+    const [showDocUploadModal, setShowDocUploadModal] = useState<boolean>(false);
 
 
     // Use dynamic API URL based on environment
@@ -490,6 +493,7 @@ const SuperAdmin: React.FC = () => {
                             <th>Reg</th>
                             <th>Course</th>
                             <th>Year of Study (YOS)</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -499,6 +503,34 @@ const SuperAdmin: React.FC = () => {
                                 <td>{user.reg}</td>
                                 <td>{user.course}</td>
                                 <td>{user.yos}</td>
+                                <td>
+                                    <button
+                                        onClick={() => {
+                                            setSelectedUserForDocUpload({
+                                                _id: user.reg,
+                                                username: user.username
+                                            });
+                                            setShowDocUploadModal(true);
+                                        }}
+                                        style={{
+                                            padding: '6px 12px',
+                                            backgroundColor: '#00c6ff',
+                                            color: 'white',
+                                            border: 'none',
+                                            borderRadius: '4px',
+                                            cursor: 'pointer',
+                                            fontSize: '0.85rem'
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#0099cc';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#00c6ff';
+                                        }}
+                                    >
+                                        Upload Document
+                                    </button>
+                                </td>
                             </tr>
                         ))}
                     </tbody>
@@ -533,6 +565,35 @@ const SuperAdmin: React.FC = () => {
                                 </button>
                             </div>
                         </div>
+                    </div>
+                )}
+
+                {/* Document Upload Modal */}
+                {showDocUploadModal && selectedUserForDocUpload && (
+                    <div style={{
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        zIndex: 1000
+                    }}>
+                        <DocumentUploader
+                            userId={selectedUserForDocUpload._id}
+                            userName={selectedUserForDocUpload.username}
+                            onClose={() => {
+                                setShowDocUploadModal(false);
+                                setSelectedUserForDocUpload(null);
+                            }}
+                            onUploadSuccess={() => {
+                                setShowDocUploadModal(false);
+                                setSelectedUserForDocUpload(null);
+                            }}
+                        />
                     </div>
                 )}
             </div>

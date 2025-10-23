@@ -2008,13 +2008,19 @@ hr{
 
     .About-btn{
         position: relative;
-        padding: 8px 16px;
+        padding: 6px 14px;
         border-radius: 20px;
-        transition: all 0.3s ease;
-        background: rgba(115, 0, 81, 0.06);
-        border: 1px solid rgba(115, 0, 81, 0.12);
-        font-weight: 500;
-        font-size: 0.9rem;
+        transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        background: linear-gradient(135deg, rgba(115, 0, 81, 0.08) 0%, rgba(115, 0, 81, 0.04) 100%);
+        border: 1.5px solid rgba(115, 0, 81, 0.15);
+        font-weight: 600;
+        font-size: 0.85rem;
+        letter-spacing: 0.3px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 32px;
+        box-shadow: 0 2px 8px rgba(115, 0, 81, 0.08);
     }
 
     .Quick-links-btn{
@@ -2042,10 +2048,10 @@ hr{
     }
 
     .About-btn:hover{
-        background: rgba(115, 0, 81, 0.15);
-        box-shadow: 0 4px 15px rgba(115, 0, 81, 0.2);
-        transform: translateY(-2px);
-        border-color: rgba(115, 0, 81, 0.3);
+        background: linear-gradient(135deg, rgba(115, 0, 81, 0.15) 0%, rgba(115, 0, 81, 0.1) 100%);
+        box-shadow: 0 6px 20px rgba(115, 0, 81, 0.18), 0 2px 8px rgba(115, 0, 81, 0.12);
+        transform: translateY(-3px);
+        border-color: rgba(115, 0, 81, 0.35);
     }
 
     .nav-link, .nav-link-quick-link{

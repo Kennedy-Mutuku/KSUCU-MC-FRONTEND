@@ -49,6 +49,7 @@ import CompassionCounselingPage from "./CompassionCounseling";
 import CompassionCounselingAdmin from "./CompassionCounselingAdmin";
 import PollingOfficerDashboard from "./PollingOfficerDashboard";
 import PollingOfficerManagement from "./PollingOfficerManagement";
+import MyDocs from "./MyDocs";
 
 export const router = createBrowserRouter([
     {
@@ -104,6 +105,7 @@ export const router = createBrowserRouter([
             {path: "/compassion-counseling-admin", element: <CompassionCounselingAdmin />},
             {path: "/polling-officer-dashboard", element: <PollingOfficerDashboard />},
             {path: "/polling-officer-management", element: <PollingOfficerManagement />},
+            {path: "/my-docs", element: <MyDocs />},
             {path: "*", element: <NoPage />}
         ]
     }
