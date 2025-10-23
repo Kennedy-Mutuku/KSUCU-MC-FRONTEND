@@ -643,7 +643,7 @@ const AttendanceSessionManagement: React.FC = () => {
         }
     };
 
-    const goBack = () => {sbri
+    const goBack = () => {
         window.location.href = '/worship-docket-admin';
     };
 

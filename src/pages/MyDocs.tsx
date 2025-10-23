@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getApiUrl } from '../config/environment';
 import { Download, Eye, Trash2, File, AlertCircle } from 'lucide-react';
-import styles from '../styles/index.module.css';
 
 interface Document {
   _id: string;
@@ -131,8 +130,7 @@ const MyDocs = () => {
     });
   };
 
-  const getFileIcon = (filename: string) => {
-    const ext = filename.split('.').pop()?.toLowerCase();
+  const getFileIcon = () => {
     return <File size={20} />;
   };
 
@@ -226,8 +224,7 @@ const MyDocs = () => {
                   key={doc._id}
                   style={{
                     borderBottom: '1px solid #eee',
-                    backgroundColor: index % 2 === 0 ? '#fff' : '#f9f9f9',
-                    hover: { backgroundColor: '#f0f0f0' }
+                    backgroundColor: index % 2 === 0 ? '#fff' : '#f9f9f9'
                   }}
                   onMouseEnter={(e) => {
                     (e.currentTarget as HTMLTableRowElement).style.backgroundColor = '#f0f0f0';
@@ -237,7 +234,7 @@ const MyDocs = () => {
                   }}
                 >
                   <td style={{ padding: '15px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    {getFileIcon(doc.filename)}
+                    {getFileIcon()}
                     <div>
                       <div style={{ fontWeight: '600', color: '#333' }}>{doc.originalName}</div>
                       {doc.description && (

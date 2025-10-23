@@ -197,10 +197,9 @@ const DocumentUploader = ({ userId, onUploadSuccess, onClose, userName }: Docume
             padding: '40px 20px',
             textAlign: 'center',
             cursor: 'pointer',
-            backgroundColor: '#f0f9ff',
+            backgroundColor: file ? '#e3f2fd' : '#f0f9ff',
             marginBottom: '16px',
-            transition: 'all 0.3s',
-            backgroundColor: file ? '#e3f2fd' : '#f0f9ff'
+            transition: 'all 0.3s'
           }}
           onMouseEnter={(e) => {
             (e.currentTarget as HTMLDivElement).style.borderColor = '#0099cc';
