@@ -77,6 +77,12 @@ interface ApiConfig {
     deleteDocument: string;
     getUserDocumentsAdmin: string;
     getAllDocumentsAdmin: string;
+    uploadDocumentAdmin: string;
+    createDocumentCategory: string;
+    getDocumentCategories: string;
+    getDocumentsDashboard: string;
+    updateDocumentStatus: string;
+    archiveDocument: string;
   };
 }
 
@@ -160,7 +166,13 @@ const developmentConfig: ApiConfig = {
     viewDocument: '/documents/view/:documentId',
     deleteDocument: '/documents/:documentId',
     getUserDocumentsAdmin: '/documents/admin/user/:userId',
-    getAllDocumentsAdmin: '/documents/admin/all'
+    getAllDocumentsAdmin: '/documents/admin/all',
+    uploadDocumentAdmin: '/documents/admin/upload',
+    createDocumentCategory: '/documents/admin/category',
+    getDocumentCategories: '/documents/admin/categories',
+    getDocumentsDashboard: '/documents/admin/dashboard',
+    updateDocumentStatus: '/documents/admin/:documentId/status',
+    archiveDocument: '/documents/admin/:documentId/archive'
   }
 };
 
@@ -242,7 +254,13 @@ const productionConfig: ApiConfig = {
     viewDocument: '/documents/view/:documentId',
     deleteDocument: '/documents/:documentId',
     getUserDocumentsAdmin: '/documents/admin/user/:userId',
-    getAllDocumentsAdmin: '/documents/admin/all'
+    getAllDocumentsAdmin: '/documents/admin/all',
+    uploadDocumentAdmin: '/documents/admin/upload',
+    createDocumentCategory: '/documents/admin/category',
+    getDocumentCategories: '/documents/admin/categories',
+    getDocumentsDashboard: '/documents/admin/dashboard',
+    updateDocumentStatus: '/documents/admin/:documentId/status',
+    archiveDocument: '/documents/admin/:documentId/archive'
   }
 };
 

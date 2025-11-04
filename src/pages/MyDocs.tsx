@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getApiUrl } from '../config/environment';
-import { Download, Eye, Trash2, File, AlertCircle } from 'lucide-react';
+import { Download, Eye, File, AlertCircle } from 'lucide-react';
 
 interface Document {
   _id: string;
@@ -10,6 +10,9 @@ interface Document {
   fileSize: number;
   uploadedAt: string;
   description: string;
+  categoryName: string;
+  status: string;
+  notes: string;
   uploadedBy: {
     username: string;
     email: string;
@@ -20,7 +23,6 @@ const MyDocs = () => {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -86,31 +88,6 @@ const MyDocs = () => {
     window.open(viewUrl, '_blank');
   };
 
-  const handleDelete = async (documentId: string) => {
-    if (!window.confirm('Are you sure you want to delete this document?')) {
-      return;
-    }
-
-    try {
-      const response = await fetch(getApiUrl('deleteDocument').replace(':documentId', documentId), {
-        method: 'DELETE',
-        credentials: 'include'
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to delete document');
-      }
-
-      setSuccessMessage('Document deleted successfully');
-      setTimeout(() => setSuccessMessage(''), 3000);
-
-      // Refresh documents list
-      fetchDocuments();
-    } catch (err) {
-      console.error('Error deleting document:', err);
-      setError('Failed to delete document');
-    }
-  };
 
   const formatFileSize = (bytes: number): string => {
     if (bytes === 0) return '0 Bytes';
@@ -161,19 +138,6 @@ const MyDocs = () => {
         </div>
       )}
 
-      {successMessage && (
-        <div style={{
-          backgroundColor: '#efe',
-          border: '1px solid #cfc',
-          borderRadius: '8px',
-          padding: '15px',
-          marginBottom: '20px',
-          color: '#3c3'
-        }}>
-          {successMessage}
-        </div>
-      )}
-
       {/* Loading State */}
       {loading ? (
         <div style={{ textAlign: 'center', padding: '40px' }}>
@@ -207,14 +171,16 @@ const MyDocs = () => {
           }}>
             <thead>
               <tr style={{
-                backgroundColor: '#00c6ff',
+                backgroundColor: '#000',
                 color: 'white',
                 fontWeight: '600'
               }}>
                 <th style={{ padding: '15px', textAlign: 'left' }}>File Name</th>
+                <th style={{ padding: '15px', textAlign: 'left' }}>Category</th>
                 <th style={{ padding: '15px', textAlign: 'left' }}>Size</th>
                 <th style={{ padding: '15px', textAlign: 'left' }}>Uploaded By</th>
                 <th style={{ padding: '15px', textAlign: 'left' }}>Date</th>
+                <th style={{ padding: '15px', textAlign: 'center' }}>Status</th>
                 <th style={{ padding: '15px', textAlign: 'center' }}>Actions</th>
               </tr>
             </thead>
@@ -244,14 +210,40 @@ const MyDocs = () => {
                       )}
                     </div>
                   </td>
+                  <td style={{ padding: '15px' }}>
+                    <div style={{
+                      display: 'inline-block',
+                      padding: '4px 12px',
+                      backgroundColor: '#f0f0f0',
+                      borderRadius: '20px',
+                      fontSize: '0.85rem',
+                      color: '#333'
+                    }}>
+                      {doc.categoryName || 'Uncategorized'}
+                    </div>
+                  </td>
                   <td style={{ padding: '15px', color: '#666' }}>
                     {formatFileSize(doc.fileSize)}
                   </td>
                   <td style={{ padding: '15px', color: '#666' }}>
-                    {doc.uploadedBy.username}
+                    <div style={{ fontSize: '0.9rem' }}>{doc.uploadedBy.username}</div>
+                    <div style={{ fontSize: '0.8rem', color: '#999' }}>{doc.uploadedBy.email}</div>
                   </td>
                   <td style={{ padding: '15px', color: '#666', fontSize: '0.9rem' }}>
                     {formatDate(doc.uploadedAt)}
+                  </td>
+                  <td style={{ padding: '15px', textAlign: 'center' }}>
+                    <div style={{
+                      display: 'inline-block',
+                      padding: '4px 8px',
+                      borderRadius: '4px',
+                      fontSize: '0.8rem',
+                      fontWeight: '600',
+                      backgroundColor: doc.status === 'active' ? '#e8f5e9' : doc.status === 'archived' ? '#fff3e0' : '#ffebee',
+                      color: doc.status === 'active' ? '#2e7d32' : doc.status === 'archived' ? '#e65100' : '#c62828'
+                    }}>
+                      {doc.status ? doc.status.toUpperCase() : 'ACTIVE'}
+                    </div>
                   </td>
                   <td style={{ padding: '15px', textAlign: 'center' }}>
                     <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
@@ -259,7 +251,7 @@ const MyDocs = () => {
                         onClick={() => handleView(doc._id)}
                         style={{
                           backgroundColor: '#00c6ff',
-                          color: 'white',
+                          color: '#000',
                           border: 'none',
                           borderRadius: '6px',
                           padding: '6px 10px',
@@ -302,30 +294,6 @@ const MyDocs = () => {
                         }}
                       >
                         <Download size={16} /> Download
-                      </button>
-                      <button
-                        onClick={() => handleDelete(doc._id)}
-                        style={{
-                          backgroundColor: '#f44336',
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: '6px',
-                          padding: '6px 10px',
-                          cursor: 'pointer',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '5px',
-                          fontSize: '0.9rem',
-                          transition: 'background-color 0.3s'
-                        }}
-                        onMouseEnter={(e) => {
-                          (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#da190b';
-                        }}
-                        onMouseLeave={(e) => {
-                          (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#f44336';
-                        }}
-                      >
-                        <Trash2 size={16} /> Delete
                       </button>
                     </div>
                   </td>

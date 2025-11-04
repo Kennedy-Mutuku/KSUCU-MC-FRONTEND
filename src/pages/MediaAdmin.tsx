@@ -343,11 +343,11 @@ const MediaAdmin: React.FC = () => {
             
             if (response.ok) {
                 const data = await response.json();
-                // Use the proper image URL helper
-                const imageUrl = getImageUrl(data.imageUrl);
-                
+                // Store the raw imageUrl from backend (it's already a proper path like /uploads/media/...)
+                const imageUrl = data.imageUrl;
+
                 console.log('Image uploaded successfully:', imageUrl);
-                
+
                 if (itemId) {
                     // Update existing item with image URL and save to database
                     const item = mediaItems.find(i => (i._id || i.id) === itemId);

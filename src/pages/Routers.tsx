@@ -50,6 +50,7 @@ import CompassionCounselingAdmin from "./CompassionCounselingAdmin";
 import PollingOfficerDashboard from "./PollingOfficerDashboard";
 import PollingOfficerManagement from "./PollingOfficerManagement";
 import MyDocs from "./MyDocs";
+import SuperAdminDocumentDashboard from "./superAdminDocumentDashboard";
 
 export const router = createBrowserRouter([
     {
@@ -106,6 +107,7 @@ export const router = createBrowserRouter([
             {path: "/polling-officer-dashboard", element: <PollingOfficerDashboard />},
             {path: "/polling-officer-management", element: <PollingOfficerManagement />},
             {path: "/my-docs", element: <MyDocs />},
+            {path: "/admin/documents", element: <SuperAdminDocumentDashboard />},
             {path: "*", element: <NoPage />}
         ]
     }
