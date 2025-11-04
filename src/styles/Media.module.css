@@ -1,9 +1,9 @@
-/* Modern Professional Media Page Styles */
+/* Clean & Modern Media Page Styles */
 
 /* Reset and Base Styles */
 .main {
     min-height: 100vh;
-    background: linear-gradient(135deg, #000000 0%, #730051 50%, #00c6ff 100%);
+    background: #ffffff;
     color: #333;
 }
 
@@ -15,9 +15,9 @@
 
 /* Hero Section */
 .heroSection {
-    background: linear-gradient(135deg, #730051 0%, #00c6ff 100%);
+    background: #000000;
     color: white;
-    padding: 100px 0 80px;
+    padding: 80px 0 60px;
     text-align: center;
     position: relative;
     overflow: hidden;
@@ -30,7 +30,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.3);
+    background: none;
 }
 
 .heroContent {
@@ -45,18 +45,15 @@
     font-size: 3.5rem;
     font-weight: 800;
     margin-bottom: 20px;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-    background: linear-gradient(45deg, #ffffff, #00c6ff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #ffffff;
 }
 
 .heroSubtitle {
     font-size: 1.3rem;
     margin-bottom: 0;
-    opacity: 0.95;
+    opacity: 0.9;
     font-weight: 300;
+    color: #ffffff;
 }
 
 /* Section Titles */
@@ -65,9 +62,8 @@
     font-weight: 700;
     text-align: center;
     margin-bottom: 60px;
-    color: #ffffff;
+    color: #000000;
     position: relative;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
 }
 
 .sectionTitle::after {
@@ -77,47 +73,48 @@
     left: 50%;
     transform: translateX(-50%);
     width: 80px;
-    height: 4px;
-    background: linear-gradient(45deg, #730051, #00c6ff);
+    height: 3px;
+    background: #00c6ff;
     border-radius: 2px;
 }
 
 /* Social Media Section */
 .socialSection {
-    background: #fff;
-    padding: 100px 0;
+    background: #f8f8f8;
+    padding: 80px 0;
 }
 
 .socialGrid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 30px;
-    margin-top: 60px;
+    gap: 40px;
+    margin-top: 50px;
 }
 
 .socialCard {
-    background: #fff;
-    border-radius: 20px;
+    background: #ffffff;
+    border-radius: 8px;
     padding: 40px 30px;
     text-align: center;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    box-shadow: none;
     transition: all 0.3s ease;
     text-decoration: none;
     color: inherit;
-    border: 1px solid #f0f0f0;
+    border: 1px solid #e0e0e0;
 }
 
 .socialCard:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 24px rgba(0,198,255,0.15);
     text-decoration: none;
     color: inherit;
+    border-color: #00c6ff;
 }
 
 .socialIcon {
     width: 80px;
     height: 80px;
-    border-radius: 50%;
+    border-radius: 8px;
     margin: 0 auto 25px;
     display: flex;
     align-items: center;
@@ -125,10 +122,13 @@
     font-size: 2.5rem;
     color: white;
     transition: transform 0.3s ease;
+    background-color: #000000 !important;
 }
 
 .socialCard:hover .socialIcon {
     transform: scale(1.1);
+    background-color: #00c6ff !important;
+    color: #000000;
 }
 
 .socialCard h3 {
@@ -147,43 +147,42 @@
 
 /* Content Section */
 .contentSection {
-    background: linear-gradient(135deg, #000000 0%, #730051 100%);
-    padding: 100px 0;
+    background: #ffffff;
+    padding: 80px 0;
 }
 
 .contentGrid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 40px;
-    margin-top: 60px;
+    margin-top: 50px;
 }
 
 .contentCard {
-    background: linear-gradient(145deg, #ffffff 0%, rgba(255,255,255,0.95) 100%);
-    border-radius: 20px;
+    background: #ffffff;
+    border-radius: 8px;
     padding: 40px 30px;
     text-align: center;
-    box-shadow: 0 15px 50px rgba(0, 198, 255, 0.2), 0 5px 20px rgba(115, 0, 81, 0.1);
+    box-shadow: none;
     transition: all 0.3s ease;
     text-decoration: none;
     color: inherit;
     cursor: pointer;
-    border: 2px solid rgba(0, 198, 255, 0.1);
-    backdrop-filter: blur(10px);
+    border: 2px solid #e0e0e0;
 }
 
 .contentCard:hover {
-    transform: translateY(-10px) scale(1.02);
-    box-shadow: 0 25px 80px rgba(0, 198, 255, 0.3), 0 10px 30px rgba(115, 0, 81, 0.2);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 24px rgba(0,198,255,0.15);
     text-decoration: none;
     color: inherit;
-    border-color: rgba(0, 198, 255, 0.3);
+    border-color: #00c6ff;
 }
 
 .contentIcon {
     width: 70px;
     height: 70px;
-    border-radius: 20px;
+    border-radius: 8px;
     margin: 0 auto 25px;
     display: flex;
     align-items: center;
@@ -191,6 +190,7 @@
     font-size: 2rem;
     color: white;
     transition: transform 0.3s ease;
+    background-color: #00c6ff !important;
 }
 
 .contentCard:hover .contentIcon {
@@ -213,34 +213,35 @@
 
 /* Events Section */
 .eventsSection {
-    background: #fff;
-    padding: 100px 0;
+    background: #f8f8f8;
+    padding: 80px 0;
 }
 
 .eventsPreview {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 30px;
-    margin: 60px 0;
+    gap: 40px;
+    margin: 50px 0;
 }
 
 .eventCard {
-    background: #fff;
-    border-radius: 15px;
+    background: #ffffff;
+    border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+    box-shadow: none;
     transition: all 0.3s ease;
-    border: 1px solid #f0f0f0;
+    border: 1px solid #e0e0e0;
 }
 
 .eventCard:hover {
     transform: translateY(-5px);
-    box-shadow: 0 15px 45px rgba(0,0,0,0.15);
+    box-shadow: 0 8px 24px rgba(0,198,255,0.15);
+    border-color: #00c6ff;
 }
 
 .eventImage {
     height: 220px;
-    background: linear-gradient(135deg, #730051 0%, #00c6ff 80%, #ffffff 100%);
+    background: #000000;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -291,19 +292,20 @@
 
 .viewPhotosBtn {
     display: inline-block;
-    background: linear-gradient(135deg, #730051 0%, #00c6ff 100%);
-    color: white;
+    background: #00c6ff;
+    color: #000000;
     padding: 12px 24px;
-    border-radius: 30px;
+    border-radius: 4px;
     text-decoration: none;
     font-weight: 600;
     font-size: 0.95rem;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    box-shadow: 0 4px 15px rgba(0, 198, 255, 0.3);
+    transition: all 0.3s ease;
+    box-shadow: none;
     position: relative;
     overflow: hidden;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    border: 2px solid #00c6ff;
 }
 
 .viewPhotosBtn::before {
@@ -313,8 +315,8 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
-    transition: left 0.4s ease;
+    background: none;
+    transition: none;
 }
 
 .viewPhotosBtn:hover::before {
@@ -322,10 +324,12 @@
 }
 
 .viewPhotosBtn:hover {
-    transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 8px 25px rgba(0, 198, 255, 0.4), 0 4px 12px rgba(115, 0, 81, 0.2);
+    transform: none;
+    box-shadow: none;
     text-decoration: none;
     color: white;
+    background: #000000;
+    border-color: #000000;
 }
 
 .viewAllContainer {
@@ -334,16 +338,16 @@
 }
 
 .viewAllBtn {
-    background: linear-gradient(135deg, #730051 0%, #00c6ff 100%);
-    color: white;
-    border: none;
+    background: #00c6ff;
+    color: #000000;
+    border: 2px solid #00c6ff;
     padding: 18px 45px;
-    border-radius: 50px;
+    border-radius: 4px;
     font-size: 1.2rem;
     font-weight: 700;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    box-shadow: 0 8px 25px rgba(0, 198, 255, 0.4), 0 4px 12px rgba(115, 0, 81, 0.2);
+    transition: all 0.3s ease;
+    box-shadow: none;
     position: relative;
     overflow: hidden;
     text-transform: uppercase;
@@ -357,8 +361,8 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-    transition: left 0.5s ease;
+    background: none;
+    transition: none;
 }
 
 .viewAllBtn:hover::before {
@@ -366,8 +370,11 @@
 }
 
 .viewAllBtn:hover {
-    transform: translateY(-4px) scale(1.05);
-    box-shadow: 0 12px 40px rgba(0, 198, 255, 0.5), 0 6px 20px rgba(115, 0, 81, 0.3);
+    transform: none;
+    box-shadow: none;
+    background: #000000;
+    color: white;
+    border-color: #000000;
 }
 
 /* Enhanced Modal Styles */
@@ -377,29 +384,28 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, rgba(115, 0, 81, 0.8) 50%, rgba(0, 198, 255, 0.7) 100%);
+    background: rgba(0, 0, 0, 0.6);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 1000;
     padding: 20px;
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(5px);
 }
 
 .modal {
-    background: linear-gradient(145deg, #ffffff 0%, rgba(255, 255, 255, 0.98) 100%);
-    border-radius: 25px;
+    background: #ffffff;
+    border-radius: 8px;
     max-width: 1200px;
     max-height: 90vh;
     width: 100%;
     overflow: hidden;
-    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4), 0 10px 30px rgba(0, 198, 255, 0.2);
-    border: 2px solid rgba(0, 198, 255, 0.1);
-    backdrop-filter: blur(15px);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    border: none;
 }
 
 .modalHeader {
-    background: linear-gradient(135deg, #730051 0%, #00c6ff 100%);
+    background: #000000;
     color: white;
     padding: 25px 30px;
     display: flex;
@@ -415,7 +421,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+    background: none;
     pointer-events: none;
 }
 
@@ -432,33 +438,34 @@
 }
 
 .refreshBtn {
-    background: rgba(255, 255, 255, 0.2);
-    border: none;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.5);
     color: white;
     width: 40px;
     height: 40px;
-    border-radius: 8px;
+    border-radius: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     font-size: 16px;
     transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
 }
 
 .refreshBtn:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    border-color: #00c6ff;
+    color: #00c6ff;
     transform: rotate(180deg);
 }
 
 .closeBtn {
-    background: rgba(255, 255, 255, 0.2);
-    border: none;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.5);
     color: white;
     width: 40px;
     height: 40px;
-    border-radius: 50%;
+    border-radius: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -468,8 +475,10 @@
 }
 
 .closeBtn:hover {
-    background: rgba(255, 255, 255, 0.3);
-    transform: scale(1.1);
+    background: rgba(255, 255, 255, 0.1);
+    border-color: #00c6ff;
+    color: #00c6ff;
+    transform: none;
 }
 
 .modalBody {
@@ -485,24 +494,23 @@
 }
 
 .galleryItem {
-    background: linear-gradient(145deg, #ffffff 0%, rgba(255,255,255,0.95) 100%);
-    border-radius: 18px;
+    background: #ffffff;
+    border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 8px 30px rgba(0, 198, 255, 0.15), 0 3px 12px rgba(115, 0, 81, 0.1);
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    border: 2px solid rgba(0, 198, 255, 0.1);
-    backdrop-filter: blur(5px);
+    box-shadow: none;
+    transition: all 0.3s ease;
+    border: 1px solid #e0e0e0;
 }
 
 .galleryItem:hover {
-    transform: translateY(-12px) scale(1.03);
-    box-shadow: 0 20px 60px rgba(0, 198, 255, 0.25), 0 8px 25px rgba(115, 0, 81, 0.15);
-    border-color: rgba(0, 198, 255, 0.3);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 24px rgba(0,198,255,0.15);
+    border-color: #00c6ff;
 }
 
 .galleryImagePlaceholder {
     height: 160px;
-    background: linear-gradient(135deg, #730051 0%, #00c6ff 70%, #ffffff 100%);
+    background: #000000;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -553,17 +561,18 @@
 
 .galleryViewBtn {
     display: inline-block;
-    background: linear-gradient(135deg, #730051 0%, #00c6ff 100%);
-    color: white;
+    background: #00c6ff;
+    color: #000000;
     padding: 10px 20px;
-    border-radius: 25px;
+    border-radius: 4px;
     text-decoration: none;
     font-weight: 600;
     font-size: 0.9rem;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0, 198, 255, 0.3);
+    box-shadow: none;
     position: relative;
     overflow: hidden;
+    border: 2px solid #00c6ff;
 }
 
 .galleryViewBtn::before {
@@ -573,8 +582,8 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-    transition: left 0.3s ease;
+    background: none;
+    transition: none;
 }
 
 .galleryViewBtn:hover::before {
@@ -582,10 +591,12 @@
 }
 
 .galleryViewBtn:hover {
-    transform: translateY(-2px) scale(1.05);
-    box-shadow: 0 6px 20px rgba(0, 198, 255, 0.4), 0 3px 10px rgba(115, 0, 81, 0.2);
+    transform: none;
+    box-shadow: none;
     text-decoration: none;
     color: white;
+    background: #000000;
+    border-color: #000000;
 }
 
 /* Error Styles */
