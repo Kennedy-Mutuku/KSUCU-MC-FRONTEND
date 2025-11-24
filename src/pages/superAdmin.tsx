@@ -8,6 +8,7 @@ import Footer from '../components/footer';
 import { getApiUrl } from '../config/environment';
 import letterhead from '../assets/letterhead.png';
 import DocumentUploader from '../components/DocumentUploader';
+import MinutesManager from '../components/MinutesManager';
 
 interface Message {
     _id: string;
@@ -58,6 +59,7 @@ const SuperAdmin: React.FC = () => {
     const [isResetting, setIsResetting] = useState<boolean>(false);
     const [selectedUserForDocUpload, setSelectedUserForDocUpload] = useState<{ _id: string; username: string } | null>(null);
     const [showDocUploadModal, setShowDocUploadModal] = useState<boolean>(false);
+    const [showMinutesManager, setShowMinutesManager] = useState<boolean>(false);
 
 
     // Use dynamic API URL based on environment
@@ -397,6 +399,18 @@ const SuperAdmin: React.FC = () => {
                     </>
                 )}
 
+                {/* Minutes Management Section */}
+                <div className={styles.minutesSection}>
+                    <h5>Meeting Minutes Management</h5>
+                    <button
+                        className={styles.minutesButton}
+                        onClick={() => setShowMinutesManager(true)}
+                        title="Manage meeting minutes"
+                    >
+                        📄 Manage Minutes
+                    </button>
+                </div>
+
                 <h5>Category by Year of Study:</h5>
                 <ul>
                     {Object.entries(usersByYos).map(([yos, count]) => (
@@ -594,6 +608,32 @@ const SuperAdmin: React.FC = () => {
                                 setSelectedUserForDocUpload(null);
                             }}
                         />
+                    </div>
+                )}
+
+                {/* Minutes Manager Modal */}
+                {showMinutesManager && (
+                    <div style={{
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        zIndex: 1000,
+                        overflowY: 'auto'
+                    }}>
+                        <div style={{ width: '100%', maxHeight: '95vh', overflowY: 'auto' }}>
+                            <MinutesManager
+                                onClose={() => setShowMinutesManager(false)}
+                                onUploadSuccess={() => {
+                                    setShowMinutesManager(false);
+                                }}
+                            />
+                        </div>
                     </div>
                 )}
             </div>

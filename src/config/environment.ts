@@ -83,6 +83,7 @@ interface ApiConfig {
     getDocumentsDashboard: string;
     updateDocumentStatus: string;
     archiveDocument: string;
+    minutes: string;
   };
 }
 
@@ -172,7 +173,8 @@ const developmentConfig: ApiConfig = {
     getDocumentCategories: '/documents/admin/categories',
     getDocumentsDashboard: '/documents/admin/dashboard',
     updateDocumentStatus: '/documents/admin/:documentId/status',
-    archiveDocument: '/documents/admin/:documentId/archive'
+    archiveDocument: '/documents/admin/:documentId/archive',
+    minutes: '/minutes'
   }
 };
 
@@ -260,7 +262,8 @@ const productionConfig: ApiConfig = {
     getDocumentCategories: '/documents/admin/categories',
     getDocumentsDashboard: '/documents/admin/dashboard',
     updateDocumentStatus: '/documents/admin/:documentId/status',
-    archiveDocument: '/documents/admin/:documentId/archive'
+    archiveDocument: '/documents/admin/:documentId/archive',
+    minutes: '/minutes'
   }
 };
 
