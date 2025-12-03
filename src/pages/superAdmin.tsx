@@ -9,6 +9,8 @@ import { getApiUrl } from '../config/environment';
 import letterhead from '../assets/letterhead.png';
 import DocumentUploader from '../components/DocumentUploader';
 import MinutesManager from '../components/MinutesManager';
+import AdminSidebar, { AdminSection } from '../components/AdminSidebar';
+import PinEntry from '../components/PinEntry';
 
 interface Message {
     _id: string;
@@ -61,8 +63,17 @@ const SuperAdmin: React.FC = () => {
     const [showDocUploadModal, setShowDocUploadModal] = useState<boolean>(false);
     const [showMinutesManager, setShowMinutesManager] = useState<boolean>(false);
 
+    // PIN protection state
+    const [minutesPinVerified, setMinutesPinVerified] = useState<boolean>(false);
+    const [showPinEntry, setShowPinEntry] = useState<boolean>(false);
+    const [pinNeedsSetup, setPinNeedsSetup] = useState<boolean>(false);
+    const [pinError, setPinError] = useState<string>('');
+    const [pinLoading, setPinLoading] = useState<boolean>(false);
 
-    // Use dynamic API URL based on environment
+    // Sidebar state
+    const [activeSection, setActiveSection] = useState<AdminSection>('dashboard');
+    const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
+
     const backEndURL = getApiUrl('superAdmin').replace('/login', '');
 
     useEffect(() => {
@@ -72,46 +83,24 @@ const SuperAdmin: React.FC = () => {
         fetchPollingOfficers();
     }, []);
 
-    // const fetchUserData = async () => {
-    //     try {
-    //         const response = await axios.get(`${backEndURL}/users`, { withCredentials: true });
-    //         const users = response.data;
-    //         console.log(response.data);
-            
-    //         setUserCount(users.length);
-            
-    //         const groupedUsers: { [key: string]: number } = {};
-
-    //         users.forEach((user: { yos: string }) => {
-    //             groupedUsers[user.yos] = (groupedUsers[user.yos] || 0) + 1;
-    //         });
-    //         setUsersByYos(groupedUsers);
-    //     } catch (err) {
-    //         console.error('Error fetching user data:', err);
-    //         setError('Failed to fetch user data');
-    //     }
-    // };
-
     const fetchUserData = async () => {
         try {
             const response = await axios.get(`${backEndURL}/users`, { withCredentials: true });
             const users = response.data;
-            console.log(response.data);
-            
+
             setUserCount(users.length);
-            setUsers(users); // Store users for the table
-    
-            // Categorizing users by yos, ministry, and et
+            setUsers(users);
+
             const groupedByYos: { [key: string]: number } = {};
             const groupedByMinistry: { [key: string]: number } = {};
             const groupedByEt: { [key: string]: number } = {};
-    
+
             users.forEach((user: { yos: string, ministry: string, et: string }) => {
                 groupedByYos[user.yos] = (groupedByYos[user.yos] || 0) + 1;
                 groupedByMinistry[user.ministry] = (groupedByMinistry[user.ministry] || 0) + 1;
                 groupedByEt[user.et] = (groupedByEt[user.et] || 0) + 1;
             });
-    
+
             setUsersByYos(groupedByYos);
             setUsersByMinistry(groupedByMinistry);
             setUsersByEt(groupedByEt);
@@ -120,14 +109,11 @@ const SuperAdmin: React.FC = () => {
             setError('Failed to fetch user data');
         }
     };
-    
+
     const fetchMessages = async () => {
         try {
             const response = await axios.get(`${backEndURL}/messages`, { withCredentials: true });
-            const messages = response.data;
-            console.log('Messages fetched:', messages);
-
-            setMessages(messages);
+            setMessages(response.data);
         } catch (err) {
             console.error('Error fetching messages:', err);
             setError('Failed to fetch messages');
@@ -156,13 +142,66 @@ const SuperAdmin: React.FC = () => {
         }
     };
 
+    const checkMinutesPinStatus = async () => {
+        try {
+            const response = await axios.get(getApiUrl('minutesPinStatus'), { withCredentials: true });
+            setPinNeedsSetup(response.data.needsSetup);
+            return response.data;
+        } catch (err) {
+            console.error('Error checking PIN status:', err);
+            return { needsSetup: false, hasPin: false };
+        }
+    };
+
+    const handleMinutesAccess = async () => {
+        if (minutesPinVerified) {
+            setShowMinutesManager(true);
+            return;
+        }
+
+        const status = await checkMinutesPinStatus();
+        setPinNeedsSetup(status.needsSetup);
+        setShowPinEntry(true);
+        setPinError('');
+    };
+
+    const handlePinSubmit = async (pin: string) => {
+        setPinLoading(true);
+        setPinError('');
+
+        try {
+            if (pinNeedsSetup) {
+                // Setup new PIN
+                await axios.post(getApiUrl('minutesPinSetup'), { pin }, { withCredentials: true });
+                setMinutesPinVerified(true);
+                setShowPinEntry(false);
+                setShowMinutesManager(true);
+            } else {
+                // Verify existing PIN
+                const response = await axios.post(getApiUrl('minutesPinVerify'), { pin }, { withCredentials: true });
+                if (response.data.valid) {
+                    setMinutesPinVerified(true);
+                    setShowPinEntry(false);
+                    setShowMinutesManager(true);
+                }
+            }
+        } catch (err: any) {
+            setPinError(err.response?.data?.error || 'Invalid PIN');
+        } finally {
+            setPinLoading(false);
+        }
+    };
+
+    const handlePinCancel = () => {
+        setShowPinEntry(false);
+        setPinError('');
+    };
+
     const handleResetPolling = async () => {
         setIsResetting(true);
         try {
             const response = await axios.post(`${backEndURL}/reset-polling`, {}, { withCredentials: true });
             alert(`Success! ${response.data.message}\n${response.data.usersAffected} users' voting status has been reset.`);
-
-            // Refresh polling stats
             await fetchPollingStats();
             setShowResetConfirm(false);
         } catch (err: any) {
@@ -175,7 +214,6 @@ const SuperAdmin: React.FC = () => {
 
     const handleExportPdfByYos = () => {
         try {
-            // Group students by Year of Study
             const studentsByYos: { [key: string]: any[] } = {};
 
             users.forEach(user => {
@@ -186,31 +224,24 @@ const SuperAdmin: React.FC = () => {
                 studentsByYos[yos].push(user);
             });
 
-            // Sort YOS keys
             const sortedYosKeys = Object.keys(studentsByYos).sort((a, b) => {
                 if (a === 'Unknown') return 1;
                 if (b === 'Unknown') return -1;
                 return parseInt(a) - parseInt(b);
             });
 
-            // Generate a separate PDF for each Year of Study
             sortedYosKeys.forEach(yos => {
                 const studentsInYos = studentsByYos[yos];
-
-                // Sort students alphabetically by name
                 const sortedStudents = [...studentsInYos].sort((a, b) =>
                     (a.username || '').localeCompare(b.username || '')
                 );
 
                 const doc = new jsPDF('landscape');
-                const pageHeight = doc.internal.pageSize.height;
                 let yOffset = 45;
 
-                // Add letterhead to first page (adjusted for landscape)
                 doc.addImage(letterhead, 'PNG', 10, 10, 270, 35);
                 yOffset += 5;
 
-                // Document title
                 const title = `KSUCU Student List - Year ${yos}`;
                 const dateText = `Generated: ${new Date().toLocaleDateString('en-GB', {
                     year: 'numeric',
@@ -222,13 +253,11 @@ const SuperAdmin: React.FC = () => {
                     minute: '2-digit'
                 })}`;
 
-                // Title formatting
-                doc.setTextColor(128, 0, 128); // Purple color
+                doc.setTextColor(128, 0, 128);
                 doc.setFontSize(16);
                 doc.setFont('helvetica', 'bold');
                 doc.text(title, doc.internal.pageSize.width / 2, yOffset, { align: "center" });
 
-                // Stats
                 yOffset += 10;
                 doc.setFontSize(12);
                 doc.setTextColor(0, 0, 0);
@@ -236,14 +265,12 @@ const SuperAdmin: React.FC = () => {
                 const stats = `Total Students: ${sortedStudents.length}`;
                 doc.text(stats, doc.internal.pageSize.width / 2, yOffset, { align: "center" });
 
-                // Date and time
                 yOffset += 8;
                 doc.setFontSize(10);
                 doc.text(dateText, 15, yOffset);
                 doc.text(timeText, doc.internal.pageSize.width - 15, yOffset, { align: "right" });
                 yOffset += 15;
 
-                // Prepare table data
                 const tableData = sortedStudents.map((student, index) => [
                     (index + 1).toString(),
                     student.username || 'N/A',
@@ -254,14 +281,13 @@ const SuperAdmin: React.FC = () => {
                     student.phone || 'N/A'
                 ]);
 
-                // Table options with compact design for 20+ students per page
                 const tableOptions = {
                     head: [['#', 'Name', 'Registration No.', 'Course', 'Year of Study', 'Email', 'Phone']],
                     body: tableData,
                     startY: yOffset,
                     theme: 'grid',
                     headStyles: {
-                        fillColor: [128, 0, 128], // Purple header
+                        fillColor: [128, 0, 128],
                         textColor: [255, 255, 255],
                         fontSize: 9,
                         fontStyle: 'bold',
@@ -277,28 +303,26 @@ const SuperAdmin: React.FC = () => {
                         fillColor: [248, 249, 250]
                     },
                     columnStyles: {
-                        0: { cellWidth: 12, halign: 'center' }, // #
-                        1: { cellWidth: 45 }, // Name
-                        2: { cellWidth: 35 }, // Reg
-                        3: { cellWidth: 75 }, // Course
-                        4: { cellWidth: 18, halign: 'center' }, // YOS
-                        5: { cellWidth: 55 }, // Email
-                        6: { cellWidth: 30 } // Phone
+                        0: { cellWidth: 12, halign: 'center' },
+                        1: { cellWidth: 45 },
+                        2: { cellWidth: 35 },
+                        3: { cellWidth: 75 },
+                        4: { cellWidth: 18, halign: 'center' },
+                        5: { cellWidth: 55 },
+                        6: { cellWidth: 30 }
                     },
                     margin: { left: 10, right: 10 },
                     didDrawPage: function(data: any) {
-                        // Add letterhead to new pages (adjusted for landscape)
                         if (data.pageNumber > 1) {
                             doc.addImage(letterhead, 'PNG', 10, 10, 270, 35);
                         }
                     }
                 };
 
-                // Add table to PDF
                 doc.autoTable(tableOptions);
 
-                // Add footer with page numbers
                 const pageCount = doc.getNumberOfPages();
+                const pageHeight = doc.internal.pageSize.height;
                 for (let i = 1; i <= pageCount; i++) {
                     doc.setPage(i);
                     doc.setFontSize(8);
@@ -307,7 +331,6 @@ const SuperAdmin: React.FC = () => {
                     doc.text(`Page ${i} of ${pageCount}`, doc.internal.pageSize.width - 15, pageHeight - 10, { align: 'right' });
                 }
 
-                // Save PDF
                 const fileName = `KSUCU_Students_Year_${yos}_${new Date().toISOString().split('T')[0]}.pdf`;
                 doc.save(fileName);
             });
@@ -318,329 +341,396 @@ const SuperAdmin: React.FC = () => {
         }
     };
 
-    if (loading) {
-        return <p>Loading ......</p>;
-    }
-
-    if (error) {
-        return <p>{error}</p>;
-    }
-
-    return (
-        <>
-                  <UniversalHeader />
-            <div className={styles.container}>
-                <h4>Total Students: {userCount}</h4>
-
-                {/* Polling Statistics Section */}
+    // Section render functions
+    const renderDashboard = () => (
+        <div className={styles.section}>
+            <h2 className={styles.sectionTitle}>Dashboard Overview</h2>
+            <div className={styles.statsGrid}>
+                <div className={styles.statCard}>
+                    <h3>{userCount}</h3>
+                    <p>Total Students</p>
+                </div>
                 {pollingStats && (
                     <>
-                        <div className={styles.pollingHeader}>
-                            <h5>Polling/Voting Statistics</h5>
-                            <button
-                                className={styles.resetButton}
-                                onClick={() => setShowResetConfirm(true)}
-                                title="Reset all polling data for a new election"
-                            >
-                                Reset Polling Data
-                            </button>
+                        <div className={styles.statCard}>
+                            <h3>{pollingStats.totalVoted}</h3>
+                            <p>Voted</p>
                         </div>
-                        <div className={styles.pollingStatsContainer}>
-                            <div className={styles.statCard}>
-                                <h3>{pollingStats.totalVoted}</h3>
-                                <p>Voted</p>
-                            </div>
-                            <div className={styles.statCard}>
-                                <h3>{pollingStats.totalNotVoted}</h3>
-                                <p>Not Voted</p>
-                            </div>
-                            <div className={styles.statCard}>
-                                <h3>{pollingStats.percentageVoted}%</h3>
-                                <p>Completion</p>
-                            </div>
+                        <div className={styles.statCard}>
+                            <h3>{pollingStats.totalNotVoted}</h3>
+                            <p>Not Voted</p>
                         </div>
-
-                        <h5>Polling Officers</h5>
-                        <div className={styles.pollingOfficersSection}>
-                            <a href="/polling-officer-management" className={styles.manageLink}>
-                                Manage Polling Officers
-                            </a>
-                            {pollingOfficers.length > 0 ? (
-                                <table className={styles.officersTable}>
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Email</th>
-                                            <th>Status</th>
-                                            <th>Registered</th>
-                                            <th>Voted</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {pollingOfficers.map(officer => (
-                                            <tr key={officer._id}>
-                                                <td>{officer.fullName}</td>
-                                                <td>{officer.email}</td>
-                                                <td>
-                                                    <span className={`${styles.statusBadge} ${styles[officer.status]}`}>
-                                                        {officer.status}
-                                                    </span>
-                                                </td>
-                                                <td>{officer.registeredCount || 0}</td>
-                                                <td>{officer.votedCount || 0}</td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            ) : (
-                                <p>No polling officers yet. <a href="/polling-officer-management">Create one</a></p>
-                            )}
+                        <div className={styles.statCard}>
+                            <h3>{pollingStats.percentageVoted}%</h3>
+                            <p>Completion</p>
                         </div>
                     </>
                 )}
+            </div>
 
-                {/* Minutes Management Section */}
-                <div className={styles.minutesSection}>
-                    <h5>Meeting Minutes Management</h5>
-                    <button
-                        className={styles.minutesButton}
-                        onClick={() => setShowMinutesManager(true)}
-                        title="Manage meeting minutes"
-                    >
-                        📄 Manage Minutes
-                    </button>
-                </div>
-
-                <h5>Category by Year of Study:</h5>
-                <ul>
-                    {Object.entries(usersByYos).map(([yos, count]) => (
-                        <li key={yos}>YOS {yos} - {count} students</li>
-                    ))}
-                </ul>
-
-                <h5>Category by Ministry:</h5>
-                <ul>
-                    {Object.entries(usersByMinistry).map(([ministry, count]) => (
-                        <li key={ministry}>{ministry} - {count} students</li>
-                    ))}
-                </ul>
-
-                <h5>Category by ET:</h5>
-                <ul>
-                    {Object.entries(usersByEt).map(([et, count]) => (
-                        <li key={et}>{et} - {count} students</li>
-                    ))}
-                </ul>
-
-
-                <h5>Messages & Feedback</h5>
-
-                <div className={styles.categoryFilter}>
-                    <label htmlFor="categorySelect">Filter by Category: </label>
-                    <select
-                        id="categorySelect"
-                        value={selectedCategory}
-                        onChange={(e) => setSelectedCategory(e.target.value)}
-                        className={styles.categoryDropdown}
-                    >
-                        <option value="all">All Categories</option>
-                        <option value="feedback">Feedback</option>
-                        <option value="suggestion">Suggestion</option>
-                        <option value="complaint">Complaint</option>
-                        <option value="praise">Praise</option>
-                        <option value="prayer">Prayer</option>
-                        <option value="technical">Technical</option>
-                        <option value="other">Other</option>
-                    </select>
-                </div>
-
-                <div className={styles.feedbackSection}>
-                    {messages.length === 0 ? (
-                        <p>No messages yet.</p>
-                    ) : (
-                        <div className={styles.messagesContainer}>
-                            {messages
-                                .filter(msg => selectedCategory === 'all' || msg.category === selectedCategory)
-                                .map((msg) => (
-                                <div key={msg._id} className={styles.messageCard}>
-                                    <div className={styles.messageHeader}>
-                                        <span className={styles.category}>{msg.category}</span>
-                                        <span className={styles.timestamp}>
-                                            {new Date(msg.timestamp).toLocaleDateString()} {new Date(msg.timestamp).toLocaleTimeString()}
-                                        </span>
-                                    </div>
-                                    <h6 className={styles.subject}>{msg.subject}</h6>
-                                    <p className={styles.messageContent}>{msg.message}</p>
-                                    <div className={styles.messageFooter}>
-                                        {msg.isAnonymous ? (
-                                            <span className={styles.anonymous}>Anonymous</span>
-                                        ) : (
-                                            <span className={styles.sender}>
-                                                From: {msg.senderInfo?.username || 'Unknown'}
-                                                {msg.senderInfo?.email && ` (${msg.senderInfo.email})`}
-                                                {msg.senderInfo?.ministry && ` - ${msg.senderInfo.ministry}`}
-                                                {msg.senderInfo?.yos && ` - YOS ${msg.senderInfo.yos}`}
-                                            </span>
-                                        )}
-                                        <span className={styles.status}>{msg.status}</span>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
-
-                <div className={styles.studentListHeader}>
-                    <h5>List of all Students</h5>
-                    <button
-                        className={styles.downloadPdfButton}
-                        onClick={handleExportPdfByYos}
-                        title="Download student data as PDF (separated by Year of Study)"
-                    >
-                        Download as PDF
-                    </button>
-                </div>
-                <table className={styles.studentTable}>
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Reg</th>
-                            <th>Course</th>
-                            <th>Year of Study (YOS)</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {users.map((user, index) => (
-                            <tr key={index}>
-                                <td>{user.username}</td>
-                                <td>{user.reg}</td>
-                                <td>{user.course}</td>
-                                <td>{user.yos}</td>
-                                <td>
-                                    <button
-                                        onClick={() => {
-                                            setSelectedUserForDocUpload({
-                                                _id: user.reg,
-                                                username: user.username
-                                            });
-                                            setShowDocUploadModal(true);
-                                        }}
-                                        style={{
-                                            padding: '6px 12px',
-                                            backgroundColor: '#00c6ff',
-                                            color: 'white',
-                                            border: 'none',
-                                            borderRadius: '4px',
-                                            cursor: 'pointer',
-                                            fontSize: '0.85rem'
-                                        }}
-                                        onMouseEnter={(e) => {
-                                            (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#0099cc';
-                                        }}
-                                        onMouseLeave={(e) => {
-                                            (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#00c6ff';
-                                        }}
-                                    >
-                                        Upload Document
-                                    </button>
-                                </td>
-                            </tr>
+            <h3 className={styles.subSectionTitle}>Quick Stats by Category</h3>
+            <div className={styles.categoryStatsGrid}>
+                <div className={styles.categoryCard}>
+                    <h4>By Year of Study</h4>
+                    <ul>
+                        {Object.entries(usersByYos).map(([yos, count]) => (
+                            <li key={yos}>YOS {yos}: <strong>{count}</strong></li>
                         ))}
-                    </tbody>
-                </table>
+                    </ul>
+                </div>
+                <div className={styles.categoryCard}>
+                    <h4>By Ministry</h4>
+                    <ul>
+                        {Object.entries(usersByMinistry).map(([ministry, count]) => (
+                            <li key={ministry}>{ministry}: <strong>{count}</strong></li>
+                        ))}
+                    </ul>
+                </div>
+                <div className={styles.categoryCard}>
+                    <h4>By Evangelistic Team</h4>
+                    <ul>
+                        {Object.entries(usersByEt).map(([et, count]) => (
+                            <li key={et}>{et}: <strong>{count}</strong></li>
+                        ))}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    );
 
-                {/* Confirmation Dialog */}
-                {showResetConfirm && (
-                    <div className={styles.confirmOverlay}>
-                        <div className={styles.confirmDialog}>
-                            <h3>Reset Polling Data?</h3>
-                            <p>
-                                This will reset all voting records back to zero. All users will be marked as "not voted".
-                                This action is meant for starting a new election period.
-                            </p>
-                            <p className={styles.warningText}>
-                                <strong>Warning:</strong> This action cannot be undone!
-                            </p>
-                            <div className={styles.confirmButtons}>
+    const renderStudents = () => (
+        <div className={styles.section}>
+            <div className={styles.sectionHeader}>
+                <h2 className={styles.sectionTitle}>Student List</h2>
+                <button className={styles.primaryButton} onClick={handleExportPdfByYos}>
+                    Download as PDF
+                </button>
+            </div>
+            <table className={styles.dataTable}>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Reg</th>
+                        <th>Course</th>
+                        <th>YOS</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {users.map((user, index) => (
+                        <tr key={index}>
+                            <td>{user.username}</td>
+                            <td>{user.reg}</td>
+                            <td>{user.course}</td>
+                            <td>{user.yos}</td>
+                            <td>
                                 <button
-                                    className={styles.cancelButton}
-                                    onClick={() => setShowResetConfirm(false)}
-                                    disabled={isResetting}
+                                    className={styles.actionButton}
+                                    onClick={() => {
+                                        setSelectedUserForDocUpload({
+                                            _id: user.reg,
+                                            username: user.username
+                                        });
+                                        setShowDocUploadModal(true);
+                                    }}
                                 >
-                                    Cancel
+                                    Upload Document
                                 </button>
-                                <button
-                                    className={styles.confirmButton}
-                                    onClick={handleResetPolling}
-                                    disabled={isResetting}
-                                >
-                                    {isResetting ? 'Resetting...' : 'Yes, Reset Polling Data'}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                )}
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+    );
 
-                {/* Document Upload Modal */}
-                {showDocUploadModal && selectedUserForDocUpload && (
-                    <div style={{
-                        position: 'fixed',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        zIndex: 1000
-                    }}>
-                        <DocumentUploader
-                            userId={selectedUserForDocUpload._id}
-                            userName={selectedUserForDocUpload.username}
-                            onClose={() => {
-                                setShowDocUploadModal(false);
-                                setSelectedUserForDocUpload(null);
-                            }}
-                            onUploadSuccess={() => {
-                                setShowDocUploadModal(false);
-                                setSelectedUserForDocUpload(null);
-                            }}
-                        />
-                    </div>
-                )}
+    const renderPolling = () => (
+        <div className={styles.section}>
+            <div className={styles.sectionHeader}>
+                <h2 className={styles.sectionTitle}>Polling & Elections</h2>
+                <button
+                    className={styles.dangerButton}
+                    onClick={() => setShowResetConfirm(true)}
+                >
+                    Reset Polling Data
+                </button>
+            </div>
 
-                {/* Minutes Manager Modal */}
-                {showMinutesManager && (
-                    <div style={{
-                        position: 'fixed',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        zIndex: 1000,
-                        overflowY: 'auto'
-                    }}>
-                        <div style={{ width: '100%', maxHeight: '95vh', overflowY: 'auto' }}>
-                            <MinutesManager
-                                onClose={() => setShowMinutesManager(false)}
-                                onUploadSuccess={() => {
-                                    setShowMinutesManager(false);
-                                }}
-                            />
-                        </div>
+            {pollingStats && (
+                <div className={styles.statsGrid}>
+                    <div className={styles.statCard}>
+                        <h3>{pollingStats.totalVoted}</h3>
+                        <p>Voted</p>
                     </div>
+                    <div className={styles.statCard}>
+                        <h3>{pollingStats.totalNotVoted}</h3>
+                        <p>Not Voted</p>
+                    </div>
+                    <div className={styles.statCard}>
+                        <h3>{pollingStats.percentageVoted}%</h3>
+                        <p>Completion</p>
+                    </div>
+                </div>
+            )}
+
+            <div className={styles.subSection}>
+                <div className={styles.subSectionHeader}>
+                    <h3 className={styles.subSectionTitle}>Polling Officers</h3>
+                    <a href="/polling-officer-management" className={styles.linkButton}>
+                        Manage Officers
+                    </a>
+                </div>
+
+                {pollingOfficers.length > 0 ? (
+                    <table className={styles.dataTable}>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                                <th>Registered</th>
+                                <th>Voted</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {pollingOfficers.map(officer => (
+                                <tr key={officer._id}>
+                                    <td>{officer.fullName}</td>
+                                    <td>{officer.email}</td>
+                                    <td>
+                                        <span className={`${styles.statusBadge} ${styles[officer.status]}`}>
+                                            {officer.status}
+                                        </span>
+                                    </td>
+                                    <td>{officer.registeredCount || 0}</td>
+                                    <td>{officer.votedCount || 0}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                ) : (
+                    <p className={styles.emptyState}>No polling officers yet. <a href="/polling-officer-management">Create one</a></p>
                 )}
             </div>
-            <Footer />
-        </>
+        </div>
+    );
+
+    const renderMessages = () => (
+        <div className={styles.section}>
+            <h2 className={styles.sectionTitle}>Messages & Feedback</h2>
+
+            <div className={styles.filterBar}>
+                <label htmlFor="categorySelect">Filter by Category:</label>
+                <select
+                    id="categorySelect"
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    className={styles.selectInput}
+                >
+                    <option value="all">All Categories</option>
+                    <option value="feedback">Feedback</option>
+                    <option value="suggestion">Suggestion</option>
+                    <option value="complaint">Complaint</option>
+                    <option value="praise">Praise</option>
+                    <option value="prayer">Prayer</option>
+                    <option value="technical">Technical</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            {messages.length === 0 ? (
+                <p className={styles.emptyState}>No messages yet.</p>
+            ) : (
+                <div className={styles.messagesGrid}>
+                    {messages
+                        .filter(msg => selectedCategory === 'all' || msg.category === selectedCategory)
+                        .map((msg) => (
+                        <div key={msg._id} className={styles.messageCard}>
+                            <div className={styles.messageHeader}>
+                                <span className={styles.categoryBadge}>{msg.category}</span>
+                                <span className={styles.timestamp}>
+                                    {new Date(msg.timestamp).toLocaleDateString()} {new Date(msg.timestamp).toLocaleTimeString()}
+                                </span>
+                            </div>
+                            <h4 className={styles.messageSubject}>{msg.subject}</h4>
+                            <p className={styles.messageContent}>{msg.message}</p>
+                            <div className={styles.messageFooter}>
+                                {msg.isAnonymous ? (
+                                    <span className={styles.anonymousBadge}>Anonymous</span>
+                                ) : (
+                                    <span className={styles.senderInfo}>
+                                        From: {msg.senderInfo?.username || 'Unknown'}
+                                        {msg.senderInfo?.email && ` (${msg.senderInfo.email})`}
+                                    </span>
+                                )}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+
+    const renderMinutes = () => (
+        <div className={styles.section}>
+            <h2 className={styles.sectionTitle}>Meeting Minutes</h2>
+            <p className={styles.sectionDescription}>
+                Manage and upload meeting minutes for record keeping.
+                {minutesPinVerified && <span style={{ color: '#28a745', marginLeft: '8px' }}>(Unlocked)</span>}
+            </p>
+            <button
+                className={styles.primaryButton}
+                onClick={handleMinutesAccess}
+            >
+                {minutesPinVerified ? 'Open Minutes Manager' : 'Unlock Minutes'}
+            </button>
+        </div>
+    );
+
+    const renderDocuments = () => (
+        <div className={styles.section}>
+            <h2 className={styles.sectionTitle}>Document Management</h2>
+            <p className={styles.sectionDescription}>
+                Access the document dashboard to manage all uploaded documents.
+            </p>
+            <a href="/admin/documents" className={styles.primaryButton}>
+                Go to Document Dashboard
+            </a>
+        </div>
+    );
+
+    const renderActiveSection = () => {
+        switch (activeSection) {
+            case 'dashboard':
+                return renderDashboard();
+            case 'students':
+                return renderStudents();
+            case 'polling':
+                return renderPolling();
+            case 'messages':
+                return renderMessages();
+            case 'minutes':
+                return renderMinutes();
+            case 'documents':
+                return renderDocuments();
+            default:
+                return renderDashboard();
+        }
+    };
+
+    if (loading) {
+        return (
+            <>
+                <UniversalHeader />
+                <div className={styles.loadingContainer}>
+                    <p>Loading...</p>
+                </div>
+            </>
+        );
+    }
+
+    if (error) {
+        return (
+            <>
+                <UniversalHeader />
+                <div className={styles.errorContainer}>
+                    <p>{error}</p>
+                </div>
+            </>
+        );
+    }
+
+    return (
+        <div className={styles.pageWrapper}>
+            <UniversalHeader />
+            <div className={styles.adminLayout}>
+                <AdminSidebar
+                    activeSection={activeSection}
+                    onSectionChange={setActiveSection}
+                    isOpen={sidebarOpen}
+                    onToggle={() => setSidebarOpen(!sidebarOpen)}
+                />
+                <main className={styles.mainContent}>
+                    {renderActiveSection()}
+                </main>
+            </div>
+            <footer className={styles.footerWrapper}>
+                <Footer />
+            </footer>
+
+            {/* Confirmation Dialog */}
+            {showResetConfirm && (
+                <div className={styles.modalOverlay}>
+                    <div className={styles.modalContent}>
+                        <h3>Reset Polling Data?</h3>
+                        <p>
+                            This will reset all voting records back to zero. All users will be marked as "not voted".
+                            This action is meant for starting a new election period.
+                        </p>
+                        <p className={styles.warningText}>
+                            <strong>Warning:</strong> This action cannot be undone!
+                        </p>
+                        <div className={styles.modalActions}>
+                            <button
+                                className={styles.secondaryButton}
+                                onClick={() => setShowResetConfirm(false)}
+                                disabled={isResetting}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                className={styles.dangerButton}
+                                onClick={handleResetPolling}
+                                disabled={isResetting}
+                            >
+                                {isResetting ? 'Resetting...' : 'Yes, Reset'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Document Upload Modal */}
+            {showDocUploadModal && selectedUserForDocUpload && (
+                <div className={styles.modalOverlay}>
+                    <DocumentUploader
+                        userId={selectedUserForDocUpload._id}
+                        userName={selectedUserForDocUpload.username}
+                        onClose={() => {
+                            setShowDocUploadModal(false);
+                            setSelectedUserForDocUpload(null);
+                        }}
+                        onUploadSuccess={() => {
+                            setShowDocUploadModal(false);
+                            setSelectedUserForDocUpload(null);
+                        }}
+                    />
+                </div>
+            )}
+
+            {/* Minutes Manager Modal */}
+            {showMinutesManager && (
+                <div className={styles.modalOverlay}>
+                    <div className={styles.modalWrapper}>
+                        <MinutesManager
+                            onClose={() => setShowMinutesManager(false)}
+                        />
+                    </div>
+                </div>
+            )}
+
+            {/* PIN Entry Modal */}
+            {showPinEntry && (
+                <PinEntry
+                    onSubmit={handlePinSubmit}
+                    onCancel={handlePinCancel}
+                    isSetup={pinNeedsSetup}
+                    error={pinError}
+                    loading={pinLoading}
+                />
+            )}
+        </div>
     );
 };
 
 export default SuperAdmin;
-

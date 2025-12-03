@@ -53,26 +53,11 @@
     border-bottom: 1px solid #e5e7eb;
 }
 
-.header.info {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border-bottom: none;
-}
-
-.header.warning {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    color: white;
-    border-bottom: none;
-}
-
-.header.danger {
-    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-    color: white;
-    border-bottom: none;
-}
-
+.header.info,
+.header.warning,
+.header.danger,
 .header.success {
-    background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
+    background: #17a2b8;
     color: white;
     border-bottom: none;
 }
@@ -155,20 +140,18 @@
     border: none;
 }
 
-.confirmBtn.info {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.confirmBtn.warning {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-}
-
-.confirmBtn.danger {
-    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-}
-
+.confirmBtn.info,
+.confirmBtn.warning,
+.confirmBtn.danger,
 .confirmBtn.success {
-    background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
+    background: #17a2b8;
+}
+
+.confirmBtn.info:hover,
+.confirmBtn.warning:hover,
+.confirmBtn.danger:hover,
+.confirmBtn.success:hover {
+    background: #138496;
 }
 
 .confirmBtn:hover {

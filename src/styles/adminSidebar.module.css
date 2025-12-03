@@ -1,0 +1,258 @@
+/* Mobile Toggle Button */
+.mobileToggle {
+  display: none;
+  position: fixed;
+  top: 80px;
+  left: 16px;
+  z-index: 1001;
+  background: #00c6ff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: background-color 0.2s;
+}
+
+.mobileToggle:hover {
+  background: #0099cc;
+}
+
+/* Overlay for mobile */
+.overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 998;
+}
+
+/* Sidebar */
+.sidebar {
+  position: sticky;
+  top: 70px;
+  left: 0;
+  width: 250px;
+  min-width: 250px;
+  height: calc(100vh - 70px);
+  background: #ffffff;
+  border-right: 1px solid #e0e0e0;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease;
+  overflow-y: auto;
+}
+
+.sidebarHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.sidebarTitle {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #00c6ff;
+}
+
+.closeButton {
+  display: none;
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.closeButton:hover {
+  background: #f0f0f0;
+}
+
+/* Navigation */
+.nav {
+  flex: 1;
+  padding: 16px 0;
+}
+
+.menuList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 14px 20px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #333;
+  font-size: 15px;
+  text-align: left;
+  transition: all 0.2s;
+  gap: 12px;
+}
+
+.menuItem:hover {
+  background: #e6f7ff;
+  color: #00c6ff;
+}
+
+.menuItem.active {
+  background: #00c6ff;
+  color: white;
+}
+
+.menuItem.active .menuIcon {
+  color: white;
+}
+
+.menuIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  transition: color 0.2s;
+}
+
+.menuItem:hover .menuIcon {
+  color: #00c6ff;
+}
+
+.menuLabel {
+  font-weight: 500;
+}
+
+/* Tablet - Collapsed sidebar */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .sidebar {
+    width: 60px;
+    min-width: 60px;
+    overflow: visible;
+  }
+
+  .sidebarHeader {
+    padding: 16px 10px;
+    justify-content: center;
+  }
+
+  .sidebarTitle {
+    display: none;
+  }
+
+  .menuItem {
+    padding: 14px;
+    justify-content: center;
+  }
+
+  .menuLabel {
+    display: none;
+  }
+
+  .menuIcon {
+    font-size: 20px;
+  }
+
+  /* Tooltip on hover */
+  .menuItem {
+    position: relative;
+  }
+
+  .menuItem::after {
+    content: attr(data-label);
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #333;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s, visibility 0.2s;
+    margin-left: 8px;
+    z-index: 1000;
+  }
+
+  .menuItem:hover::after {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+/* Mobile - Hidden sidebar with slide animation */
+@media (max-width: 768px) {
+  .mobileToggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .overlay {
+    display: block;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+  }
+
+  .sidebar.open + .overlay,
+  .overlay {
+    /* This won't work, we handle it via JS */
+  }
+
+  .sidebar {
+    top: 0;
+    height: 100vh;
+    width: 80%;
+    max-width: 300px;
+    transform: translateX(-100%);
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .sidebarHeader {
+    padding: 20px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .closeButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .menuItem {
+    padding: 16px 20px;
+    min-height: 44px;
+  }
+
+  .menuLabel {
+    display: inline;
+  }
+}
+
+/* When sidebar is open on mobile, show overlay */
+@media (max-width: 768px) {
+  .sidebar.open ~ .overlay {
+    opacity: 1;
+    visibility: visible;
+  }
+}

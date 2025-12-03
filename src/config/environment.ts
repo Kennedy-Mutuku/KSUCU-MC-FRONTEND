@@ -84,6 +84,9 @@ interface ApiConfig {
     updateDocumentStatus: string;
     archiveDocument: string;
     minutes: string;
+    minutesPinStatus: string;
+    minutesPinSetup: string;
+    minutesPinVerify: string;
   };
 }
 
@@ -174,7 +177,10 @@ const developmentConfig: ApiConfig = {
     getDocumentsDashboard: '/documents/admin/dashboard',
     updateDocumentStatus: '/documents/admin/:documentId/status',
     archiveDocument: '/documents/admin/:documentId/archive',
-    minutes: '/minutes'
+    minutes: '/minutes',
+    minutesPinStatus: '/minutes/pin/status',
+    minutesPinSetup: '/minutes/pin/setup',
+    minutesPinVerify: '/minutes/pin/verify'
   }
 };
 
@@ -263,7 +269,10 @@ const productionConfig: ApiConfig = {
     getDocumentsDashboard: '/documents/admin/dashboard',
     updateDocumentStatus: '/documents/admin/:documentId/status',
     archiveDocument: '/documents/admin/:documentId/archive',
-    minutes: '/minutes'
+    minutes: '/minutes',
+    minutesPinStatus: '/minutes/pin/status',
+    minutesPinSetup: '/minutes/pin/setup',
+    minutesPinVerify: '/minutes/pin/verify'
   }
 };
 

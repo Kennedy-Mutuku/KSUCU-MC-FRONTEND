@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { getApiUrl } from '../config/environment';
 import styles from '../styles/minutesManager.module.css';
+import ConfirmDialog from './ConfirmDialog';
 
 interface Minute {
   _id: string;
@@ -33,7 +34,7 @@ const MinutesManager: React.FC<MinutesManagerProps> = ({ onClose, onUploadSucces
 
   // Upload form state
   const [uploadTitle, setUploadTitle] = useState('');
-  const [uploadDate, setUploadDate] = useState('');
+  const [uploadDate, setUploadDate] = useState(new Date().toISOString().split('T')[0]);
   const [uploadDescription, setUploadDescription] = useState('');
   const [uploadFile, setUploadFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -42,14 +43,17 @@ const MinutesManager: React.FC<MinutesManagerProps> = ({ onClose, onUploadSucces
   const [filterStartDate, setFilterStartDate] = useState('');
   const [filterEndDate, setFilterEndDate] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('active');
+
+  // Delete confirmation dialog state
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [minuteToDelete, setMinuteToDelete] = useState<Minute | null>(null);
 
   const apiUrl = getApiUrl('minutes').replace('/login', '');
 
   // Fetch minutes on component mount and when filters change
   useEffect(() => {
     fetchMinutes();
-  }, [filterStartDate, filterEndDate, statusFilter, searchTerm]);
+  }, [filterStartDate, filterEndDate, searchTerm]);
 
   const fetchMinutes = async () => {
     setLoading(true);
@@ -58,7 +62,6 @@ const MinutesManager: React.FC<MinutesManagerProps> = ({ onClose, onUploadSucces
       let url = `${apiUrl}?`;
       if (filterStartDate) url += `startDate=${filterStartDate}&`;
       if (filterEndDate) url += `endDate=${filterEndDate}&`;
-      if (statusFilter) url += `status=${statusFilter}&`;
       if (searchTerm) url += `search=${searchTerm}&`;
 
       const response = await axios.get(url, { withCredentials: true });
@@ -124,7 +127,7 @@ const MinutesManager: React.FC<MinutesManagerProps> = ({ onClose, onUploadSucces
 
       setSuccessMessage('Minutes uploaded successfully!');
       setUploadTitle('');
-      setUploadDate('');
+      setUploadDate(new Date().toISOString().split('T')[0]);
       setUploadDescription('');
       setUploadFile(null);
 
@@ -168,30 +171,30 @@ const MinutesManager: React.FC<MinutesManagerProps> = ({ onClose, onUploadSucces
     }
   };
 
-  const handleDelete = async (minuteId: string) => {
-    if (!window.confirm('Are you sure you want to delete this minute?')) {
-      return;
-    }
+  const handleDeleteClick = (minute: Minute) => {
+    setMinuteToDelete(minute);
+    setShowDeleteConfirm(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!minuteToDelete) return;
 
     try {
-      await axios.delete(`${apiUrl}/${minuteId}`, { withCredentials: true });
+      await axios.delete(`${apiUrl}/${minuteToDelete._id}`, { withCredentials: true });
       setSuccessMessage('Minutes deleted successfully');
       await fetchMinutes();
     } catch (err: any) {
       console.error('Error deleting minute:', err);
       setError(err.response?.data?.error || 'Failed to delete minute');
+    } finally {
+      setShowDeleteConfirm(false);
+      setMinuteToDelete(null);
     }
   };
 
-  const handleArchive = async (minuteId: string) => {
-    try {
-      await axios.post(`${apiUrl}/${minuteId}/archive`, {}, { withCredentials: true });
-      setSuccessMessage('Minutes archived successfully');
-      await fetchMinutes();
-    } catch (err: any) {
-      console.error('Error archiving minute:', err);
-      setError(err.response?.data?.error || 'Failed to archive minute');
-    }
+  const handleDeleteCancel = () => {
+    setShowDeleteConfirm(false);
+    setMinuteToDelete(null);
   };
 
   const formatFileSize = (bytes: number) => {
@@ -237,7 +240,7 @@ const MinutesManager: React.FC<MinutesManagerProps> = ({ onClose, onUploadSucces
               type="text"
               value={uploadTitle}
               onChange={(e) => setUploadTitle(e.target.value)}
-              placeholder="e.g., Board Meeting - November 2024"
+              placeholder="e.g., Exec Meeting - November 2024"
               maxLength={255}
               required
             />
@@ -327,18 +330,6 @@ const MinutesManager: React.FC<MinutesManagerProps> = ({ onClose, onUploadSucces
             />
           </div>
 
-          <div className={styles.filterGroup}>
-            <label htmlFor="statusFilter">Status</label>
-            <select
-              id="statusFilter"
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-            >
-              <option value="active">Active</option>
-              <option value="archived">Archived</option>
-              <option value="">All</option>
-            </select>
-          </div>
         </div>
       </div>
 
@@ -383,18 +374,9 @@ const MinutesManager: React.FC<MinutesManagerProps> = ({ onClose, onUploadSucces
                       >
                         ⬇ Download
                       </button>
-                      {minute.status === 'active' && (
-                        <button
-                          className={`${styles.actionButton} ${styles.archiveButton}`}
-                          onClick={() => handleArchive(minute._id)}
-                          title="Archive"
-                        >
-                          📦 Archive
-                        </button>
-                      )}
                       <button
                         className={`${styles.actionButton} ${styles.deleteButton}`}
-                        onClick={() => handleDelete(minute._id)}
+                        onClick={() => handleDeleteClick(minute)}
                         title="Delete"
                       >
                         🗑 Delete
@@ -407,6 +389,18 @@ const MinutesManager: React.FC<MinutesManagerProps> = ({ onClose, onUploadSucces
           </div>
         )}
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={showDeleteConfirm}
+        title="Delete Minutes"
+        message={`Are you sure you want to delete "${minuteToDelete?.title}"? This action cannot be undone.`}
+        onConfirm={handleDeleteConfirm}
+        onCancel={handleDeleteCancel}
+        confirmText="Delete"
+        cancelText="Cancel"
+        type="danger"
+      />
     </div>
   );
 };

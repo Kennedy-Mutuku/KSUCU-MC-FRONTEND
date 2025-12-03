@@ -5,11 +5,12 @@ import cuLogo from '../assets/cuLogoUAR.png';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import loadingAnime from '../assets/Animation - 1716747954931.gif';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faUserLock } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faUserLock, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import CommunityChat from './CommunityChat';
 
 const UniversalHeader: React.FC = () => {
   const [userData, setUserData] = useState<{ username: string; email: string; yos: number; phone: string; et: string; ministry: string } | null>(null);
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
   const [error, setError] = useState('');
   const [generalLoading, setgeneralLoading] = useState(false);
   const navigate = useNavigate();
@@ -22,13 +23,19 @@ const UniversalHeader: React.FC = () => {
   useEffect(() => {
     // Skip fetching user data if on polling officer routes
     const isPollingOfficerRoute = location.pathname.startsWith('/polling-officer');
+    const isAdminRoute = location.pathname === '/admin' || location.pathname.startsWith('/admin/');
 
-    if (!isPollingOfficerRoute) {
+    if (isAdminRoute) {
+      // Check for super admin session
+      checkSuperAdminSession();
+    } else if (!isPollingOfficerRoute) {
       fetchUserData();
     }
 
     const handleFocus = () => {
-      if (!isPollingOfficerRoute) {
+      if (isAdminRoute) {
+        checkSuperAdminSession();
+      } else if (!isPollingOfficerRoute) {
         fetchUserData();
       }
     };
@@ -39,6 +46,22 @@ const UniversalHeader: React.FC = () => {
       window.removeEventListener('focus', handleFocus);
     };
   }, [location.pathname]);
+
+  const checkSuperAdminSession = async () => {
+    try {
+      const apiUrl = getApiUrl('superAdmin').replace('/login', '');
+      const response = await fetch(`${apiUrl}/verify`, {
+        credentials: 'include'
+      });
+
+      if (response.ok) {
+        setIsSuperAdmin(true);
+        setUserData({ username: 'Admin', email: '', yos: 0, phone: '', et: '', ministry: '' });
+      }
+    } catch (error) {
+      console.error('Error checking super admin session:', error);
+    }
+  };
 
   const fetchUserData = async () => {
     console.log('🏠 Header: Fetching user data...');
@@ -117,6 +140,24 @@ const UniversalHeader: React.FC = () => {
     navigate('/');
   }
 
+  const handleSuperAdminLogout = async () => {
+    try {
+      const apiUrl = getApiUrl('superAdmin').replace('/login', '');
+      const response = await fetch(`${apiUrl}/logout`, {
+        method: 'POST',
+        credentials: 'include'
+      });
+
+      if (response.ok) {
+        setIsSuperAdmin(false);
+        setUserData(null);
+        navigate('/');
+      }
+    } catch (error) {
+      console.error('Error logging out super admin:', error);
+    }
+  }
+
   return (
     <>
       {generalLoading && (
@@ -141,18 +182,29 @@ const UniversalHeader: React.FC = () => {
 
               {/* Desktop navigation - simplified without Back/Home buttons */}
               <div className={styles['nav-one--hidden']}>
-                <div className={styles['About-btn']}>
-                  <Link to="/#about" className={styles['nav-link']}>
-                    About us
-                  </Link>
-                </div>
+                {!isSuperAdmin && (
+                  <div className={styles['About-btn']}>
+                    <Link to="/#about" className={styles['nav-link']}>
+                      About us
+                    </Link>
+                  </div>
+                )}
 
-                <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', minWidth: '80px', minHeight: '50px', justifyContent: 'center'}} onClick={userData ? handleRedirectToUserInfo : handleRedirectToLogin}>
-                  <FontAwesomeIcon className={`${styles['user-icon']} `} icon={userData ? faUser : faUserLock} />
-                  <span style={{color: '#ffffff', fontSize: '12px', marginTop: '3px', fontWeight: '600', textShadow: '0 1px 3px rgba(0,0,0,0.5)', whiteSpace: 'nowrap', backgroundColor: 'rgba(0,0,0,0.4)', padding: '1px 4px', borderRadius: '3px', maxWidth: '70px', overflow: 'hidden', textOverflow: 'ellipsis'}}>
-                    {userData ? userData.username || 'User' : 'Log In'}
-                  </span>
-                </div>
+                {isSuperAdmin ? (
+                  <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', minWidth: '80px', minHeight: '50px', justifyContent: 'center'}} onClick={handleSuperAdminLogout}>
+                    <FontAwesomeIcon className={`${styles['user-icon']} `} icon={faSignOutAlt} />
+                    <span style={{color: '#ffffff', fontSize: '12px', marginTop: '3px', fontWeight: '600', textShadow: '0 1px 3px rgba(0,0,0,0.3)', whiteSpace: 'nowrap'}}>
+                      Logout
+                    </span>
+                  </div>
+                ) : (
+                  <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', minWidth: '80px', minHeight: '50px', justifyContent: 'center'}} onClick={userData ? handleRedirectToUserInfo : handleRedirectToLogin}>
+                    <FontAwesomeIcon className={`${styles['user-icon']} `} icon={userData ? faUser : faUserLock} />
+                    <span style={{color: '#ffffff', fontSize: '12px', marginTop: '3px', fontWeight: '600', textShadow: '0 1px 3px rgba(0,0,0,0.3)', whiteSpace: 'nowrap'}}>
+                      {userData ? userData.username || 'User' : 'Log In'}
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -163,12 +215,21 @@ const UniversalHeader: React.FC = () => {
             </div>
 
             <div className={`${styles['user-icon-container']} `}>
-              <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', minWidth: '60px', minHeight: '45px', justifyContent: 'center'}} onClick={userData ? handleRedirectToUserInfo : handleRedirectToLogin}>
-                <FontAwesomeIcon className={`${styles['user-icon']} `} icon={userData ? faUser : faUserLock} />
-                <span style={{color: '#ffffff', fontSize: '10px', marginTop: '2px', fontWeight: '600', textShadow: '0 1px 3px rgba(0,0,0,0.5)', whiteSpace: 'nowrap', backgroundColor: 'rgba(0,0,0,0.4)', padding: '1px 3px', borderRadius: '3px', maxWidth: '55px', overflow: 'hidden', textOverflow: 'ellipsis'}}>
-                  {userData ? userData.username || 'User' : 'Log In'}
-                </span>
-              </div>
+              {isSuperAdmin ? (
+                <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', minWidth: '60px', minHeight: '45px', justifyContent: 'center'}} onClick={handleSuperAdminLogout}>
+                  <FontAwesomeIcon className={`${styles['user-icon']} `} icon={faSignOutAlt} />
+                  <span style={{color: '#ffffff', fontSize: '10px', marginTop: '2px', fontWeight: '600', textShadow: '0 1px 3px rgba(0,0,0,0.3)', whiteSpace: 'nowrap'}}>
+                    Logout
+                  </span>
+                </div>
+              ) : (
+                <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', minWidth: '60px', minHeight: '45px', justifyContent: 'center'}} onClick={userData ? handleRedirectToUserInfo : handleRedirectToLogin}>
+                  <FontAwesomeIcon className={`${styles['user-icon']} `} icon={userData ? faUser : faUserLock} />
+                  <span style={{color: '#ffffff', fontSize: '10px', marginTop: '2px', fontWeight: '600', textShadow: '0 1px 3px rgba(0,0,0,0.3)', whiteSpace: 'nowrap'}}>
+                    {userData ? userData.username || 'User' : 'Log In'}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
         </div>
