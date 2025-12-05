@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import styles from '../styles/superAdmin.module.css';
-import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
+import { LogOut, Menu, X } from 'lucide-react';
 import { getApiUrl } from '../config/environment';
 import letterhead from '../assets/letterhead.png';
 import DocumentUploader from '../components/DocumentUploader';
@@ -46,6 +47,7 @@ interface PollingOfficer {
 }
 
 const SuperAdmin: React.FC = () => {
+    const navigate = useNavigate();
     const [userCount, setUserCount] = useState<number>(0);
     const [usersByYos, setUsersByYos] = useState<{ [key: string]: number }>({});
     const [messages, setMessages] = useState<Message[]>([]);
@@ -75,6 +77,20 @@ const SuperAdmin: React.FC = () => {
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
 
     const backEndURL = getApiUrl('superAdmin').replace('/login', '');
+
+    const handleLogout = async () => {
+        try {
+            const response = await fetch(`${backEndURL}/logout`, {
+                method: 'POST',
+                credentials: 'include'
+            });
+            if (response.ok) {
+                navigate('/');
+            }
+        } catch (error) {
+            console.error('Error logging out:', error);
+        }
+    };
 
     useEffect(() => {
         fetchUserData();
@@ -620,29 +636,31 @@ const SuperAdmin: React.FC = () => {
 
     if (loading) {
         return (
-            <>
-                <UniversalHeader />
-                <div className={styles.loadingContainer}>
-                    <p>Loading...</p>
-                </div>
-            </>
+            <div className={styles.loadingContainer}>
+                <p>Loading...</p>
+            </div>
         );
     }
 
     if (error) {
         return (
-            <>
-                <UniversalHeader />
-                <div className={styles.errorContainer}>
-                    <p>{error}</p>
-                </div>
-            </>
+            <div className={styles.errorContainer}>
+                <p>{error}</p>
+            </div>
         );
     }
 
     return (
         <div className={styles.pageWrapper}>
-            <UniversalHeader />
+            <header className={styles.adminHeader}>
+                <button className={styles.menuButton} onClick={() => setSidebarOpen(!sidebarOpen)}>
+                    {sidebarOpen ? <X size={22} /> : <Menu size={22} />}
+                </button>
+                <h1 className={styles.adminHeaderTitle}>Admin Dashboard</h1>
+                <button className={styles.logoutButton} onClick={handleLogout}>
+                    Logout
+                </button>
+            </header>
             <div className={styles.adminLayout}>
                 <AdminSidebar
                     activeSection={activeSection}

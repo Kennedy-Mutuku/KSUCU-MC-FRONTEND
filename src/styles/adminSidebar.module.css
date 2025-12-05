@@ -1,22 +1,6 @@
-/* Mobile Toggle Button */
+/* Mobile Toggle Button - Hidden, using header menu button instead */
 .mobileToggle {
-  display: none;
-  position: fixed;
-  top: 80px;
-  left: 16px;
-  z-index: 1001;
-  background: #00c6ff;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 10px;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  transition: background-color 0.2s;
-}
-
-.mobileToggle:hover {
-  background: #0099cc;
+  display: none !important;
 }
 
 /* Overlay for mobile */
@@ -34,11 +18,11 @@
 /* Sidebar */
 .sidebar {
   position: sticky;
-  top: 70px;
+  top: 0;
   left: 0;
   width: 250px;
   min-width: 250px;
-  height: calc(100vh - 70px);
+  height: 100vh;
   background: #ffffff;
   border-right: 1px solid #e0e0e0;
   z-index: 999;
@@ -197,12 +181,6 @@
 
 /* Mobile - Hidden sidebar with slide animation */
 @media (max-width: 768px) {
-  .mobileToggle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
   .overlay {
     display: block;
     opacity: 0;
@@ -216,7 +194,9 @@
   }
 
   .sidebar {
+    position: fixed;
     top: 0;
+    left: 0;
     height: 100vh;
     width: 80%;
     max-width: 300px;
