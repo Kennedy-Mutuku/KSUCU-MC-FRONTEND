@@ -5,7 +5,7 @@ import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import styles from '../styles/superAdmin.module.css';
 import Footer from '../components/footer';
-import { LogOut, Menu, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { getApiUrl } from '../config/environment';
 import letterhead from '../assets/letterhead.png';
 import DocumentUploader from '../components/DocumentUploader';
