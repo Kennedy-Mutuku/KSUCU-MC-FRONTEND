@@ -1,0 +1,121 @@
+.imageUploaderContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 0 auto;
+    margin-bottom: 50px;
+  }
+  
+  .uploadTitle {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .fileInput {
+    display: none;
+  }
+  
+  .fileInputLabel {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #00c6ff;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .fileInputLabel:hover {
+    background-color: #0056b3;
+  }
+  
+  .cropContainer {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .cropContainer h5 {
+    font-size: 1.2rem;
+    color: #555;
+    margin-bottom: 10px;
+  }
+  
+  .cropImage {
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+  }
+  
+  .cropImage:hover {
+    transform: scale(1.02);
+  }
+
+  .previewContainerDiv{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .previewContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 150px; /* Fixed preview size */
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid #00c6ff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    background: #eee;
+  }
+  
+  .previewContainer h5 {
+    font-size: 1.2rem;
+    color: #555;
+    margin-bottom: 10px;
+  }
+  
+  .croppedImage img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+  }
+  
+  .croppedImage:hover {
+    transform: scale(1.02);
+  }
+  
+  /* Loading spinner */
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .loadingSpinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-left-color: #00c6ff;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+  }

@@ -1,0 +1,401 @@
+.container {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  max-width: 1200px;
+  margin: 20px auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  border-bottom: 3px solid #00bcd4;
+  padding-bottom: 15px;
+}
+
+.header h2 {
+  margin: 0;
+  color: #333;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+  color: #666;
+  padding: 0;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.closeButton:hover {
+  background: #f0f0f0;
+  color: #000;
+}
+
+/* Messages */
+.errorMessage {
+  background: #ffebee;
+  color: #c62828;
+  padding: 15px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  border-left: 4px solid #c62828;
+}
+
+.successMessage {
+  background: #e8f5e9;
+  color: #2e7d32;
+  padding: 15px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  border-left: 4px solid #2e7d32;
+}
+
+/* Upload Section */
+.uploadSection {
+  background: #f5f5f5;
+  padding: 25px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  border: 2px solid #e0e0e0;
+}
+
+.uploadSection h3 {
+  margin: 0 0 20px 0;
+  color: #00bcd4;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.uploadForm {
+  display: grid;
+  gap: 20px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.formGroup label {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.formGroup input[type="text"],
+.formGroup input[type="date"],
+.formGroup input[type="file"],
+.formGroup textarea {
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: inherit;
+  transition: border-color 0.3s;
+}
+
+.formGroup input[type="text"]:focus,
+.formGroup input[type="date"]:focus,
+.formGroup input[type="file"]:focus,
+.formGroup textarea:focus {
+  outline: none;
+  border-color: #00bcd4;
+  box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.1);
+}
+
+.formGroup textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.fileName {
+  color: #666;
+  font-size: 12px;
+  margin-top: 8px;
+}
+
+.uploadButton {
+  background: linear-gradient(135deg, #00bcd4, #0097a7);
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  align-self: flex-start;
+}
+
+.uploadButton:hover:not(:disabled) {
+  background: linear-gradient(135deg, #0097a7, #00796b);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 152, 167, 0.3);
+}
+
+.uploadButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Filter Section */
+.filterSection {
+  background: #f9f9f9;
+  padding: 25px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  border: 1px solid #e0e0e0;
+}
+
+.filterSection h3 {
+  margin: 0 0 20px 0;
+  color: #333;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.filterGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.filterGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.filterGroup label {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+.filterGroup input[type="text"],
+.filterGroup input[type="date"],
+.filterGroup select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.filterGroup input[type="text"]:focus,
+.filterGroup input[type="date"]:focus,
+.filterGroup select:focus {
+  outline: none;
+  border-color: #00bcd4;
+  box-shadow: 0 0 0 2px rgba(0, 188, 212, 0.1);
+}
+
+/* List Section */
+.listSection {
+  background: white;
+  padding: 25px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+.listSection h3 {
+  margin: 0 0 20px 0;
+  color: #333;
+  font-size: 18px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.loading {
+  color: #00bcd4;
+  font-size: 14px;
+  font-weight: normal;
+}
+
+.noData {
+  color: #999;
+  text-align: center;
+  padding: 40px 20px;
+  font-size: 16px;
+}
+
+/* Table */
+.minutesTable {
+  overflow-x: auto;
+}
+
+.minutesTable table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.minutesTable thead {
+  background: #f5f5f5;
+  border-bottom: 2px solid #ddd;
+}
+
+.minutesTable th {
+  padding: 15px;
+  text-align: left;
+  font-weight: 600;
+  color: #333;
+  white-space: nowrap;
+}
+
+.minutesTable td {
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+  color: #555;
+}
+
+.minutesTable tbody tr:hover {
+  background: #f9f9f9;
+  transition: background 0.2s;
+}
+
+.titleCell {
+  font-weight: 500;
+  color: #00bcd4;
+  max-width: 250px;
+  word-break: break-word;
+}
+
+.centerCell {
+  text-align: center;
+}
+
+/* Actions */
+.actionsCell {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.actionButton {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.actionButton {
+  background: #00bcd4;
+  color: white;
+}
+
+.actionButton:hover {
+  background: #0097a7;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 152, 167, 0.3);
+}
+
+.archiveButton {
+  background: #ff9800;
+  color: white;
+}
+
+.archiveButton:hover {
+  background: #f57c00;
+  box-shadow: 0 2px 8px rgba(255, 152, 0, 0.3);
+}
+
+.deleteButton {
+  background: #f44336;
+  color: white;
+}
+
+.deleteButton:hover {
+  background: #d32f2f;
+  box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: 20px;
+    margin: 10px;
+  }
+
+  .header {
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+  }
+
+  .header h2 {
+    font-size: 22px;
+  }
+
+  .filterGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .minutesTable table {
+    font-size: 12px;
+  }
+
+  .minutesTable th,
+  .minutesTable td {
+    padding: 10px;
+  }
+
+  .actionsCell {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .actionButton {
+    width: 100%;
+    text-align: center;
+    padding: 10px 8px;
+  }
+
+  .uploadForm {
+    gap: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 15px;
+  }
+
+  .header h2 {
+    font-size: 18px;
+  }
+
+  .minutesTable table {
+    font-size: 11px;
+  }
+
+  .minutesTable th,
+  .minutesTable td {
+    padding: 8px;
+  }
+
+  .uploadButton {
+    width: 100%;
+  }
+}

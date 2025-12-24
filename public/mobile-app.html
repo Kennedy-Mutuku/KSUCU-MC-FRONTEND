@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#730051">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="KSUCU-MC">
+    <title>KSUCU-MC - Mobile App</title>
+
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/logo192.png">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            overflow: hidden;
+            background: linear-gradient(135deg, #730051, #8e1a6b, #00c6ff);
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* Splash Screen */
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #730051, #8e1a6b, #00c6ff);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        #splash-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .logo {
+            width: 150px;
+            height: 150px;
+            background: white;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            font-weight: bold;
+            color: #730051;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            animation: logoEntrance 1s ease-out;
+        }
+
+        @keyframes logoEntrance {
+            0% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .app-name {
+            margin-top: 24px;
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+            letter-spacing: 1px;
+            animation: slideUp 0.8s ease-out 0.3s both;
+        }
+
+        .tagline {
+            margin-top: 8px;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.9);
+            animation: slideUp 0.8s ease-out 0.5s both;
+        }
+
+        @keyframes slideUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .loading-bar {
+            width: 200px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+            margin-top: 60px;
+            overflow: hidden;
+            animation: fadeIn 0.6s ease-out 0.7s both;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        .loading-bar-fill {
+            height: 100%;
+            background: white;
+            border-radius: 2px;
+            animation: loading 2s ease-in-out infinite;
+        }
+
+        @keyframes loading {
+            0%, 100% {
+                width: 0%;
+                transform: translateX(0%);
+            }
+            50% {
+                width: 100%;
+                transform: translateX(0%);
+            }
+        }
+
+        .version {
+            position: absolute;
+            bottom: 24px;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Main App Container */
+        #app-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+        }
+
+        #app-container.visible {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* WebView */
+        #webview {
+            flex: 1;
+            width: 100%;
+            border: none;
+            background: white;
+        }
+
+        /* No Internet Screen */
+        #no-internet {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 32px;
+            text-align: center;
+            z-index: 1000;
+        }
+
+        #no-internet.visible {
+            display: flex;
+        }
+
+        .no-internet-icon {
+            font-size: 80px;
+            color: #730051;
+            opacity: 0.6;
+            margin-bottom: 24px;
+        }
+
+        .no-internet-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #212121;
+            margin-bottom: 8px;
+        }
+
+        .no-internet-message {
+            font-size: 14px;
+            color: #757575;
+            margin-bottom: 24px;
+        }
+
+        .retry-button {
+            background: linear-gradient(135deg, #730051, #8e1a6b);
+            color: white;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(115, 0, 81, 0.3);
+            transition: transform 0.2s;
+        }
+
+        .retry-button:active {
+            transform: scale(0.95);
+        }
+
+        /* Loading Indicator */
+        #loading-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: #730051;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+            z-index: 9998;
+        }
+
+        #loading-bar.loading {
+            animation: loadProgress 2s ease infinite;
+        }
+
+        @keyframes loadProgress {
+            0% {
+                transform: scaleX(0);
+                transform-origin: left;
+            }
+            50% {
+                transform: scaleX(1);
+                transform-origin: left;
+            }
+            51% {
+                transform: scaleX(1);
+                transform-origin: right;
+            }
+            100% {
+                transform: scaleX(0);
+                transform-origin: right;
+            }
+        }
+
+        /* Pull to Refresh Indicator */
+        #pull-to-refresh {
+            position: fixed;
+            top: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: top 0.3s ease;
+            z-index: 9997;
+            font-size: 14px;
+            color: #730051;
+        }
+
+        #pull-to-refresh.visible {
+            top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div id="splash-screen">
+        <div class="logo">KC</div>
+        <div class="app-name">KSUCU-MC</div>
+        <div class="tagline">Kisii University Christian Union</div>
+        <div class="loading-bar">
+            <div class="loading-bar-fill"></div>
+        </div>
+        <div class="version">Version 1.0.0</div>
+    </div>
+
+    <!-- Loading Bar -->
+    <div id="loading-bar"></div>
+
+    <!-- Pull to Refresh Indicator -->
+    <div id="pull-to-refresh">↓ Pull to refresh</div>
+
+    <!-- Main App Container -->
+    <div id="app-container">
+        <iframe id="webview" src="/"></iframe>
+    </div>
+
+    <!-- No Internet Screen -->
+    <div id="no-internet">
+        <div class="no-internet-icon">📡</div>
+        <div class="no-internet-title">No Internet Connection</div>
+        <div class="no-internet-message">Please check your internet connection and try again.</div>
+        <button class="retry-button" onclick="retryConnection()">Retry</button>
+    </div>
+
+    <script>
+        const splashScreen = document.getElementById('splash-screen');
+        const appContainer = document.getElementById('app-container');
+        const webview = document.getElementById('webview');
+        const noInternet = document.getElementById('no-internet');
+        const loadingBar = document.getElementById('loading-bar');
+        const pullToRefresh = document.getElementById('pull-to-refresh');
+
+        // Check if online
+        function isOnline() {
+            return navigator.onLine;
+        }
+
+        // Show/hide screens
+        function showSplash() {
+            splashScreen.classList.remove('hidden');
+        }
+
+        function hideSplash() {
+            splashScreen.classList.add('hidden');
+        }
+
+        function showApp() {
+            appContainer.classList.add('visible');
+            noInternet.classList.remove('visible');
+        }
+
+        function showNoInternet() {
+            appContainer.classList.remove('visible');
+            noInternet.classList.add('visible');
+        }
+
+        function showLoading() {
+            loadingBar.classList.add('loading');
+        }
+
+        function hideLoading() {
+            loadingBar.classList.remove('loading');
+        }
+
+        // Initialize app
+        function initApp() {
+            if (isOnline()) {
+                loadWebsite();
+            } else {
+                hideSplash();
+                showNoInternet();
+            }
+        }
+
+        // Load website
+        function loadWebsite() {
+            showLoading();
+            webview.src = window.location.origin;
+
+            // Hide splash after 3 seconds
+            setTimeout(() => {
+                hideSplash();
+                showApp();
+                hideLoading();
+            }, 3000);
+        }
+
+        // Retry connection
+        function retryConnection() {
+            if (isOnline()) {
+                showSplash();
+                loadWebsite();
+            } else {
+                alert('Still no internet connection. Please check your network settings.');
+            }
+        }
+
+        // Listen for iframe load
+        webview.addEventListener('load', () => {
+            hideLoading();
+        });
+
+        // Listen for online/offline events
+        window.addEventListener('online', () => {
+            console.log('Online');
+            if (!appContainer.classList.contains('visible')) {
+                initApp();
+            }
+        });
+
+        window.addEventListener('offline', () => {
+            console.log('Offline');
+            showNoInternet();
+        });
+
+        // Pull to refresh
+        let touchStartY = 0;
+        let touchEndY = 0;
+        let isPulling = false;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartY = e.touches[0].clientY;
+        });
+
+        document.addEventListener('touchmove', (e) => {
+            touchEndY = e.touches[0].clientY;
+            const pullDistance = touchEndY - touchStartY;
+
+            if (pullDistance > 100 && window.scrollY === 0 && !isPulling) {
+                pullToRefresh.classList.add('visible');
+                isPulling = true;
+            }
+        });
+
+        document.addEventListener('touchend', () => {
+            if (isPulling) {
+                pullToRefresh.classList.remove('visible');
+                isPulling = false;
+                webview.contentWindow.location.reload();
+            }
+            touchStartY = 0;
+            touchEndY = 0;
+        });
+
+        // Prevent default pull-to-refresh on some browsers
+        document.body.addEventListener('touchmove', (e) => {
+            if (e.touches[0].clientY > touchStartY) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        // Initialize app on load
+        window.addEventListener('load', initApp);
+
+        // Register Service Worker for PWA
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js')
+                .then(reg => console.log('Service Worker registered', reg))
+                .catch(err => console.log('Service Worker registration failed', err));
+        }
+
+        // Prompt to install app
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+
+            // Show install prompt after 10 seconds
+            setTimeout(() => {
+                if (deferredPrompt && confirm('Install KSUCU-MC app on your device?')) {
+                    deferredPrompt.prompt();
+                    deferredPrompt.userChoice.then((choiceResult) => {
+                        if (choiceResult.outcome === 'accepted') {
+                            console.log('User accepted the install prompt');
+                        }
+                        deferredPrompt = null;
+                    });
+                }
+            }, 10000);
+        });
+    </script>
+</body>
+</html>

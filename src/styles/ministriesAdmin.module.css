@@ -1,0 +1,999 @@
+/* MinistriesAdmin.module.css */
+
+:root {
+    --primary-color: #730051;
+    --primary-hover-color: #4e0037;
+    --secondary-color: #00c6ff;
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --error-color: #ef4444;
+    --background-color: #f9fafb;
+    --surface-color: #ffffff;
+    --border-color: #d1d5db;
+    --text-color: #1f2937;
+    --text-muted-color: #6b7280;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --radius: 8px;
+}
+
+.container {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Authentication Screen */
+.authContainer {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+.authCard {
+    background: var(--surface-color);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 2.5rem;
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+}
+
+.lockIcon {
+    font-size: 3rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.authTitle {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+}
+
+.authSubtitle {
+    color: var(--text-muted-color);
+    margin-bottom: 2rem;
+}
+
+.inputGroup {
+    margin-bottom: 1.5rem;
+}
+
+.passwordInput {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+.passwordInput:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(115, 0, 81, 0.1);
+}
+
+.authButton {
+    width: 100%;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius);
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.authButton:hover {
+    background-color: var(--primary-hover-color);
+}
+
+.errorMessage {
+    color: var(--error-color);
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    background-color: rgba(239, 68, 68, 0.1);
+    border-radius: var(--radius);
+}
+
+/* Admin Interface */
+.adminContainer {
+    flex: 1;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.adminHeader {
+    margin-bottom: 2rem;
+}
+
+.adminTitle {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.message {
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius);
+    font-weight: 500;
+    margin-bottom: 1rem;
+}
+
+.message.success {
+    background-color: rgba(16, 185, 129, 0.1);
+    color: var(--success-color);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.message.error {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: var(--error-color);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.controlPanel {
+    background: var(--surface-color);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    align-items: end;
+}
+
+.ministrySelector {
+    flex: 1;
+    min-width: 250px;
+}
+
+.selectorLabel {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+}
+
+.select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    font-size: 1rem;
+    background-color: white;
+    cursor: pointer;
+}
+
+.select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(115, 0, 81, 0.1);
+}
+
+.viewModeSelector {
+    flex: 1;
+    min-width: 300px;
+}
+
+.tabButtons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.tabButton {
+    padding: 0.75rem 1.5rem;
+    border: 1px solid var(--border-color);
+    background-color: white;
+    color: var(--text-muted-color);
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    flex: 1;
+}
+
+.tabButton:hover {
+    background-color: var(--background-color);
+    border-color: var(--primary-color);
+}
+
+.tabButton.active {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.contentArea {
+    background: var(--surface-color);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+.sectionHeader {
+    background: var(--primary-color);
+    color: white;
+    padding: 1.5rem;
+}
+
+.sectionTitle {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.loading {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-muted-color);
+    font-size: 0.95rem;
+}
+
+.noData {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-muted-color);
+    font-size: 0.95rem;
+}
+
+.commitmentsList {
+    padding: 1.5rem;
+}
+
+.commitmentCard {
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    margin-bottom: 1.5rem;
+    padding: 1.5rem;
+    background: white;
+    transition: box-shadow 0.2s;
+}
+
+.commitmentCard:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.commitmentHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 1rem;
+}
+
+.commitmentInfo {
+    flex: 1;
+}
+
+.commitmentName {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem 0;
+    color: var(--text-color);
+}
+
+.commitmentDetails {
+    color: var(--text-muted-color);
+    margin: 0;
+    font-size: 0.8rem;
+}
+
+.statusBadge {
+    padding: 0.4rem 0.8rem;
+    border-radius: 16px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.statusBadge.pending {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.statusBadge.approved {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.statusBadge.revoked {
+    background-color: #fef2f2;
+    color: #dc2626;
+}
+
+.commitmentMeta {
+    margin-bottom: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.commitmentMeta p {
+    margin: 0.25rem 0;
+    color: var(--text-muted-color);
+    font-size: 0.8rem;
+}
+
+.commitmentActions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.actionButton {
+    padding: 0.4rem 0.8rem;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.actionButton.approve {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.actionButton.approve:hover {
+    background-color: #059669;
+}
+
+.actionButton.revoke {
+    background-color: var(--error-color);
+    color: white;
+}
+
+.actionButton.revoke:hover {
+    background-color: #dc2626;
+}
+
+.actionButton.download {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+.actionButton.download:hover {
+    background-color: #0891b2;
+}
+
+/* Attendance Styles */
+.sessionControls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.sessionActions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.sessionInfo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: var(--background-color);
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius);
+}
+
+.sessionStatus {
+    padding: 0.25rem 0.65rem;
+    border-radius: 16px;
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+.sessionStatus.active {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.sessionStatus.ended {
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+.sessionTime {
+    color: var(--text-muted-color);
+    font-size: 0.8rem;
+}
+
+.startSession {
+    background-color: var(--success-color);
+}
+
+.startSession:hover {
+    background-color: #059669;
+}
+
+.endSession {
+    background-color: var(--error-color);
+}
+
+.endSession:hover {
+    background-color: #dc2626;
+}
+
+.resetSession {
+    background-color: var(--warning-color);
+}
+
+.resetSession:hover {
+    background-color: #d97706;
+}
+
+.attendanceContent {
+    padding: 1.5rem;
+}
+
+.attendanceStats {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.statCard {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    text-align: center;
+    min-width: 150px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.statIcon {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.statNumber {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin: 0.5rem 0;
+}
+
+.statLabel {
+    font-size: 0.8rem;
+    color: var(--text-muted-color);
+}
+
+.attendanceList {
+    background: var(--surface-color);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.listTitle {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.attendeeGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+}
+
+.attendeeCard {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--background-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    transition: all 0.2s;
+}
+
+.attendeeCard:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.attendeeNumber {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.attendeeInfo {
+    flex: 1;
+}
+
+.attendeeName {
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 0.25rem;
+    font-size: 0.9rem;
+}
+
+.attendeeEmail {
+    font-size: 0.8rem;
+    color: var(--text-muted-color);
+    margin-bottom: 0.25rem;
+}
+
+.attendeeTime {
+    font-size: 0.7rem;
+    color: var(--text-muted-color);
+}
+
+.noDataIcon {
+    font-size: 3rem;
+    color: var(--text-muted-color);
+    margin-bottom: 1rem;
+}
+
+.noDataSubtext {
+    font-size: 0.8rem;
+    color: var(--text-muted-color);
+    margin-top: 0.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 767px) {
+    .adminContainer {
+        padding: 1rem;
+    }
+
+    .adminTitle {
+        font-size: 1.8rem;
+    }
+
+    .controlPanel {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    .ministrySelector {
+        grid-column: 1 / -1; /* Full width for ministry selector */
+        min-width: auto;
+    }
+
+    .viewModeSelector {
+        grid-column: 1 / -1; /* Full width for view mode selector */
+        min-width: auto;
+    }
+
+    .tabButtons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+    }
+
+    .tabButton {
+        flex: none;
+        text-align: center;
+        font-size: 0.75rem;
+        padding: 0.4rem 0.6rem;
+    }
+
+    .commitmentHeader {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .commitmentActions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+    }
+
+    .actionButton {
+        justify-content: center;
+        font-size: 0.75rem;
+        padding: 0.35rem 0.7rem;
+    }
+
+    .actionButton.download {
+        grid-column: 1 / -1; /* Download button takes full width */
+    }
+}
+
+/* Extra small screens */
+@media (max-width: 767px) {
+    .adminContainer {
+        padding: 0.5rem;
+    }
+
+    .controlPanel {
+        padding: 0.75rem;
+        gap: 0.75rem;
+    }
+
+    .tabButton {
+        font-size: 0.7rem;
+        padding: 0.35rem 0.45rem;
+    }
+
+    .commitmentActions {
+        grid-template-columns: 1fr;
+        gap: 0.4rem;
+    }
+
+    .actionButton.download {
+        grid-column: auto; /* Reset to single column on very small screens */
+    }
+
+    .commitmentCard {
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .commitmentName {
+        font-size: 0.95rem;
+    }
+
+    .commitmentDetails {
+        font-size: 0.75rem;
+    }
+    
+    .sessionControls {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .sessionInfo {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .attendeeGrid {
+        grid-template-columns: 1fr;
+    }
+    
+    .attendanceStats {
+        flex-direction: column;
+    }
+    
+    .statCard {
+        width: 100%;
+    }
+}
+
+/* Leadership Role Selection Styles */
+.leadershipSelection {
+    background: var(--surface-color);
+    border-radius: var(--radius);
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow);
+    border: 2px solid var(--primary-color);
+}
+
+.leadershipTitle {
+    color: var(--primary-color);
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.leadershipDescription {
+    color: var(--text-muted-color);
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.leadershipRoleGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.leadershipRoleButton {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-hover-color));
+    color: white;
+    border: none;
+    padding: 1rem 1.5rem;
+    border-radius: var(--radius);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.leadershipRoleButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(115, 0, 81, 0.3);
+    background: linear-gradient(135deg, var(--primary-hover-color), var(--primary-color));
+}
+
+.leadershipRoleButton:active {
+    transform: translateY(0);
+}
+
+.sectionDivider {
+    text-align: center;
+    margin: 2rem 0;
+    position: relative;
+}
+
+.sectionDivider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--border-color);
+    transform: translateY(-50%);
+}
+
+.dividerText {
+    background: var(--background-color);
+    padding: 0 1rem;
+    color: var(--text-muted-color);
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+/* Forms Management Styles */
+.sectionDescription {
+    color: var(--text-muted-color);
+    font-size: 0.9rem;
+    margin: 0.5rem 0 1.5rem 0;
+    font-style: italic;
+}
+
+.leaderRoleSelector {
+    margin-bottom: 2rem;
+}
+
+.formsList {
+    width: 100%;
+}
+
+.formsHeader {
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.formsHeader h3 {
+    color: var(--primary-color);
+    font-size: 1.3rem;
+    margin: 0 0 0.5rem 0;
+}
+
+.formsHeader p {
+    color: var(--text-muted-color);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.formsGrid {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: 1fr;
+}
+
+.formCard {
+    background: var(--surface-color);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.formCard:hover {
+    box-shadow: 0 8px 25px rgba(115, 0, 81, 0.15);
+    transform: translateY(-2px);
+}
+
+.formHeader {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.formNumber {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-hover-color));
+    color: white;
+    border-radius: 50%;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.formInfo {
+    flex: 1;
+}
+
+.formTitle {
+    color: var(--text-color);
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+}
+
+.formMeta {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.formType, .formCount {
+    background: rgba(0, 198, 255, 0.1);
+    color: #0066cc;
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.formDetails {
+    background: rgba(245, 245, 245, 0.5);
+    border-radius: var(--radius);
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.formDetails p {
+    margin: 0.5rem 0;
+    font-size: 0.9rem;
+    color: var(--text-color);
+}
+
+.formDetails strong {
+    color: var(--primary-color);
+}
+
+.formActions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+}
+
+.generate {
+    background: linear-gradient(135deg, #ff6b35, #f7931e);
+    color: white;
+}
+
+.generate:hover {
+    background: linear-gradient(135deg, #e55a2b, #d4831a);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+}
+
+.delete {
+    background: linear-gradient(135deg, #ff4757, #ff3742);
+    color: white;
+}
+
+.delete:hover {
+    background: linear-gradient(135deg, #e84054, #e53935);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 71, 87, 0.4);
+}
+
+.generateFormSection {
+    margin-top: 1.5rem;
+    text-align: center;
+    padding: 1rem;
+    background: rgba(255, 107, 53, 0.05);
+    border-radius: var(--radius);
+    border: 1px solid rgba(255, 107, 53, 0.2);
+}
+
+/* Responsive Design for Leadership Interface */
+@media (max-width: 767px) {
+    .leadershipRoleGrid {
+        grid-template-columns: 1fr;
+    }
+    
+    .leadershipRoleButton {
+        padding: 0.875rem 1.25rem;
+        font-size: 0.85rem;
+    }
+    
+    .leadershipSelection {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 767px) {
+    .leadershipRoleGrid {
+        gap: 0.75rem;
+    }
+    
+    .leadershipRoleButton {
+        padding: 0.75rem 1rem;
+        font-size: 0.8rem;
+    }
+    
+    .leadershipTitle {
+        font-size: 1.1rem;
+    }
+    
+    .formsGrid {
+        gap: 1rem;
+    }
+    
+    .formCard {
+        padding: 1.25rem;
+    }
+    
+    .formHeader {
+        flex-direction: column;
+        gap: 0.75rem;
+        align-items: flex-start;
+    }
+    
+    .formNumber {
+        align-self: flex-start;
+    }
+    
+    .formActions {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .formActions .actionButton {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .generateFormSection {
+        margin-top: 1rem;
+        padding: 0.75rem;
+    }
+    
+    .formMeta {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: flex-start;
+    }
+}

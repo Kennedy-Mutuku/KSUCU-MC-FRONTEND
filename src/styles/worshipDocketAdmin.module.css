@@ -1,0 +1,990 @@
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+/* Dashboard Overview */
+.dashboardOverview {
+    text-align: center;
+    margin: 2rem 0;
+    padding: 2rem;
+    background: linear-gradient(135deg, #730051, #8e1a6b);
+    color: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(115, 0, 81, 0.3);
+}
+
+.dashboardOverview h2 {
+    font-size: 2.2rem;
+    margin-bottom: 1rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.dashboardOverview p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    margin: 0;
+}
+
+/* Admin Functions Grid */
+.adminFunctionsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+    margin: 2rem auto;
+    justify-content: center;
+    width: 100%;
+    max-width: 1200px;
+}
+
+.functionCard {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    border: 2px solid rgba(115, 0, 81, 0.05);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.functionCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    border-color: rgba(115, 0, 81, 0.2);
+}
+
+.functionNumber {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #ff6b35, #f7931e);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
+    z-index: 2;
+}
+
+.functionContent {
+    position: relative;
+    z-index: 1;
+}
+
+.functionContent h3 {
+    color: #730051;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-right: 2rem;
+}
+
+.functionContent p {
+    color: #666;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.functionButton {
+    width: 100%;
+    background: linear-gradient(135deg, #730051, #5a003d);
+    color: white;
+    border: none;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 20px rgba(115, 0, 81, 0.3);
+}
+
+.functionButton:hover {
+    background: linear-gradient(135deg, #5a003d, #730051);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(115, 0, 81, 0.4);
+}
+
+/* Specific card colors */
+.functionCard:nth-child(1) .functionNumber {
+    background: linear-gradient(135deg, #ff6b35, #f7931e);
+}
+
+.functionCard:nth-child(2) .functionNumber {
+    background: linear-gradient(135deg, #6f42c1, #5a3aa7);
+}
+
+.functionCard:nth-child(3) .functionNumber {
+    background: linear-gradient(135deg, #28a745, #218838);
+}
+
+.functionCard:nth-child(4) .functionNumber {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+}
+
+/* Special styling for leadership card */
+.functionCard:nth-child(4) {
+    grid-column: 1 / -1;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border: 2px solid rgba(0, 123, 255, 0.1);
+}
+
+.functionCard:nth-child(4):hover {
+    border-color: rgba(0, 123, 255, 0.3);
+    background: linear-gradient(135deg, #e9ecef, #f8f9fa);
+}
+
+.newsManagementButton {
+    width: 100%;
+    background: linear-gradient(135deg, #ff6b35, #f7931e);
+    color: white;
+    border: none;
+    padding: 1.5rem 2rem;
+    border-radius: 15px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    box-shadow: 0 8px 25px rgba(255, 107, 53, 0.3);
+}
+
+.newsManagementButton:hover {
+    background: linear-gradient(135deg, #e85a30, #e6831a);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(255, 107, 53, 0.4);
+}
+
+.mediaManagementButton {
+    width: 100%;
+    background: linear-gradient(135deg, #6f42c1, #5a3aa7);
+    color: white;
+    border: none;
+    padding: 1.5rem 2rem;
+    border-radius: 15px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    box-shadow: 0 8px 25px rgba(111, 66, 193, 0.3);
+}
+
+.mediaManagementButton:hover {
+    background: linear-gradient(135deg, #5a3aa7, #4a328a);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(111, 66, 193, 0.4);
+}
+
+.requisitionsManagementButton {
+    width: 100%;
+    background: linear-gradient(135deg, #28a745, #218838);
+    color: white;
+    border: none;
+    padding: 1.5rem 2rem;
+    border-radius: 15px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    box-shadow: 0 8px 25px rgba(40, 167, 69, 0.3);
+}
+
+.requisitionsManagementButton:hover {
+    background: linear-gradient(135deg, #218838, #1e7e34);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(40, 167, 69, 0.4);
+}
+
+/* Login Section */
+.loginCard {
+    background: linear-gradient(135deg, #730051, #5a003d);
+    border-radius: 20px;
+    padding: 50px 40px;
+    text-align: center;
+    box-shadow: 0 15px 35px rgba(115, 0, 81, 0.4);
+    color: white;
+    max-width: 500px;
+    margin: 50px auto;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.loginCard::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #ff6b35, #f7931e, #ffaa00);
+    animation: shimmer 2s infinite;
+}
+
+
+.loginCard h2 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.loginCard p {
+    margin-bottom: 30px;
+    opacity: 0.9;
+    font-size: 1.1rem;
+}
+
+.loginForm,
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    width: 100%;
+}
+
+.passwordInput {
+    padding: 15px 20px;
+    border: none;
+    border-radius: 25px;
+    font-size: 1rem;
+    width: 100%;
+    max-width: 300px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.95);
+    color: #333;
+    transition: all 0.3s ease;
+}
+
+.passwordInput:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.3);
+    transform: translateY(-2px);
+}
+
+.loginButton {
+    background: linear-gradient(45deg, #ff6b35, #f7931e);
+    color: white;
+    border: none;
+    padding: 15px 40px;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.loginButton:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(255, 107, 53, 0.5);
+}
+
+.error {
+    background: rgba(244, 67, 54, 0.2);
+    border: 1px solid rgba(244, 67, 54, 0.4);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 15px;
+    color: #ffcdd2;
+}
+
+/* Admin Interface */
+.adminHeader {
+    text-align: center;
+    margin-bottom: 40px;
+    color: #333;
+}
+
+.adminHeader h1 {
+    font-size: 2.5rem;
+    color: #730051;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.adminHeader p {
+    font-size: 1.1rem;
+    color: #666;
+}
+
+.message {
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    color: white;
+    padding: 15px 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-weight: 500;
+}
+
+/* Ministry Selection Section */
+.ministrySelectionSection {
+    margin-bottom: 40px;
+}
+
+.selectionCard {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    border: 2px solid rgba(115, 0, 81, 0.05);
+}
+
+.selectionCard h2 {
+    color: #730051;
+    font-size: 1.8rem;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.selectionControls {
+    display: flex;
+    gap: 20px;
+    align-items: end;
+    flex-wrap: wrap;
+}
+
+.controlGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+    min-width: 200px;
+}
+
+.controlGroup label {
+    font-weight: 600;
+    color: #333;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.ministrySelect,
+.dateInput {
+    padding: 12px 15px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    font-size: 1rem;
+    background: white;
+    transition: all 0.3s ease;
+}
+
+.ministrySelect:focus,
+.dateInput:focus {
+    outline: none;
+    border-color: #730051;
+    box-shadow: 0 0 0 3px rgba(115, 0, 81, 0.1);
+}
+
+.refreshButton {
+    padding: 12px 25px;
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: fit-content;
+}
+
+.refreshButton:hover {
+    background: linear-gradient(135deg, #20c997, #17a2b8);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+}
+
+/* Attendance Section */
+.attendanceSection {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.5s ease;
+}
+
+.attendanceHeader {
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 20px;
+    margin-bottom: 25px;
+}
+
+.attendanceHeader h2 {
+    color: #730051;
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.attendanceInfo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.dateDisplay {
+    color: #666;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.countBadge {
+    background: linear-gradient(135deg, #730051, #8e1a6b);
+    color: white;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgba(115, 0, 81, 0.3);
+}
+
+/* Download Section */
+.downloadSection {
+    margin: 25px 0;
+    text-align: center;
+}
+
+.downloadPdfButton {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    border: none;
+    padding: 15px 35px;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 6px 20px rgba(0, 123, 255, 0.3);
+}
+
+.downloadPdfButton:hover {
+    background: linear-gradient(135deg, #0056b3, #003d82);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 123, 255, 0.4);
+}
+
+/* Attendance Table */
+.attendanceList {
+    overflow-x: auto;
+    margin-top: 20px;
+}
+
+.attendanceTable {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.attendanceTable thead {
+    background: linear-gradient(135deg, #730051, #8e1a6b);
+}
+
+.attendanceTable th {
+    color: white;
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+}
+
+.attendanceTable tbody tr {
+    border-bottom: 1px solid #f0f0f0;
+    transition: all 0.3s ease;
+}
+
+.attendanceTable tbody tr:hover {
+    background: #f8f9fa;
+    transform: translateX(2px);
+}
+
+.attendanceTable td {
+    padding: 14px 15px;
+    color: #333;
+}
+
+.numberCell {
+    font-weight: 700;
+    color: #730051;
+    text-align: center;
+    width: 60px;
+}
+
+.nameCell {
+    font-weight: 600;
+    color: #333;
+}
+
+.regCell {
+    font-family: monospace;
+    color: #007bff;
+    font-weight: 500;
+}
+
+.yearCell {
+    color: #28a745;
+    font-weight: 500;
+}
+
+.timeCell {
+    color: #666;
+    font-size: 0.95rem;
+}
+
+/* No Attendance */
+.noAttendance {
+    text-align: center;
+    padding: 60px 20px;
+    color: #999;
+}
+
+.noAttendance svg {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    color: #ddd;
+}
+
+.noAttendance p {
+    font-size: 1.3rem;
+    color: #666;
+    margin: 10px 0;
+}
+
+.noAttendance small {
+    color: #999;
+    font-style: italic;
+    display: block;
+    margin-top: 10px;
+}
+
+/* Animations */
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 767px) {
+    .container {
+        padding: 15px;
+    }
+    
+    .loginCard {
+        padding: 30px 20px;
+        margin: 20px auto;
+    }
+    
+    .adminHeader h1 {
+        font-size: 2rem;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    /* Dashboard Overview Mobile */
+    .dashboardOverview {
+        padding: 1.5rem;
+        margin: 1rem 0;
+    }
+    
+    .dashboardOverview h2 {
+        font-size: 1.8rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .dashboardOverview p {
+        font-size: 1rem;
+    }
+    
+    /* Admin Functions Grid Mobile */
+    .adminFunctionsGrid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        margin: 1.5rem 0;
+    }
+    
+    .functionCard {
+        padding: 1.5rem;
+        border-radius: 15px;
+    }
+    
+    .functionNumber {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+        top: -8px;
+        right: -8px;
+    }
+    
+    .functionContent h3 {
+        font-size: 1.3rem;
+        padding-right: 1.5rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .functionContent p {
+        font-size: 0.95rem;
+        margin-bottom: 1.25rem;
+    }
+    
+    .functionButton {
+        padding: 0.875rem 1.25rem;
+        font-size: 1rem;
+    }
+    
+    /* Special mobile styling for leadership card */
+    .functionCard:nth-child(4) {
+        grid-column: 1;
+    }
+    
+    .selectionControls {
+        flex-direction: column;
+    }
+    
+    .controlGroup {
+        width: 100%;
+    }
+    
+    .attendanceInfo {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .attendanceTable {
+        font-size: 0.9rem;
+    }
+    
+    .attendanceTable th,
+    .attendanceTable td {
+        padding: 10px 8px;
+    }
+}
+
+@media (max-width: 767px) {
+    .attendanceTable {
+        font-size: 0.85rem;
+    }
+    
+    .attendanceTable th,
+    .attendanceTable td {
+        padding: 8px 5px;
+    }
+    
+    .downloadPdfButton {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Session Control Styles */
+.sessionControlSection {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    margin: 20px 0;
+    box-shadow: 0 8px 32px rgba(115, 0, 81, 0.1);
+    border: 1px solid rgba(115, 0, 81, 0.1);
+}
+
+.sessionTitle {
+    color: #730051;
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sessionButtons {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.sessionButton {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    min-width: 150px;
+    justify-content: center;
+}
+
+.sessionButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.sessionButton:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.sessionStatus {
+    background: #f8f9fa;
+    border-left: 4px solid #730051;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 15px;
+}
+
+.sessionStatus p {
+    margin: 5px 0;
+    color: #555;
+}
+
+/* Leadership Role Selection Styles */
+.leadershipSelection {
+    margin-bottom: 2rem;
+}
+
+.leadershipDescription {
+    color: #666;
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+    text-align: center;
+}
+
+.leadershipRoleGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.leadershipRoleButton {
+    background: linear-gradient(135deg, #730051, #5a003d);
+    color: white;
+    border: none;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(115, 0, 81, 0.2);
+}
+
+.leadershipRoleButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(115, 0, 81, 0.35);
+    background: linear-gradient(135deg, #5a003d, #730051);
+}
+
+.leadershipRoleButton:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(115, 0, 81, 0.3);
+}
+
+.leadershipRoleButton:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+.arrowIcon {
+    margin-left: 0.5rem;
+    transition: transform 0.3s ease;
+}
+
+.leadershipRoleButton:hover .arrowIcon {
+    transform: translateX(5px);
+}
+
+.loadingSection {
+    background: white;
+    border-radius: 12px;
+    padding: 3rem;
+    text-align: center;
+    margin-top: 2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.loadingMessage h3 {
+    color: #730051;
+    margin: 1rem 0;
+}
+
+.loadingMessage p {
+    color: #666;
+    margin: 0;
+}
+
+.loadingIcon {
+    font-size: 3rem;
+    color: #730051;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+}
+
+/* News Display Section */
+.newsDisplaySection {
+    margin: 40px auto 0;
+    text-align: center;
+    width: 100%;
+    max-width: 1200px;
+}
+
+.newsDisplayCard {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    border: 2px solid rgba(115, 0, 81, 0.05);
+}
+
+.newsDisplayCard h2 {
+    color: #730051;
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.newsDescription {
+    color: #666;
+    margin-bottom: 25px;
+    font-size: 1.1rem;
+}
+
+.newsDisplayContainer {
+    margin: 0 auto;
+    max-width: 100%;
+}
+
+.sectionDivider {
+    text-align: center;
+    margin: 2.5rem 0;
+    position: relative;
+}
+
+.sectionDivider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #ccc, transparent);
+    transform: translateY(-50%);
+}
+
+.dividerText {
+    background: white;
+    padding: 0 1.5rem;
+    color: #666;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+}
+
+@media (max-width: 767px) {
+    .sessionButtons {
+        flex-direction: column;
+    }
+    
+    .sessionButton {
+        width: 100%;
+        min-width: auto;
+    }
+    
+    .leadershipRoleGrid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+    
+    .leadershipRoleButton {
+        padding: 0.875rem 1.25rem;
+        font-size: 0.9rem;
+    }
+    
+    .leadershipDescription {
+        font-size: 0.95rem;
+        margin-bottom: 1.25rem;
+    }
+}

@@ -1,0 +1,356 @@
+/* Polling Officer Management Styles */
+.container {
+    max-width: 1400px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.container h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+    font-size: 28px;
+}
+
+.container h4 {
+    color: #444;
+    margin-top: 25px;
+    margin-bottom: 15px;
+    font-size: 20px;
+}
+
+/* Create Section */
+.createSection {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.createBtn {
+    padding: 12px 25px;
+    background: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+    transition: background 0.3s;
+}
+
+.createBtn:hover {
+    background: #45a049;
+}
+
+.createForm {
+    margin-top: 20px;
+    padding: 25px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    border: 2px solid #ddd;
+}
+
+.createForm h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.formHint {
+    margin: 0 0 20px 0;
+    padding: 12px;
+    background: #e3f2fd;
+    border-left: 4px solid #2196f3;
+    border-radius: 4px;
+    color: #1565c0;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.emailPreview {
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: #f0f9ff;
+    border-radius: 4px;
+    color: #0369a1;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.emailPreview strong {
+    color: #0c4a6e;
+}
+
+.copyBtnSmall {
+    background: #0c4a6e;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.copyBtnSmall:hover {
+    background: #075985;
+    transform: scale(1.05);
+}
+
+.copyBtnSmall svg {
+    display: block;
+}
+
+/* Email cell with copy button */
+.emailCell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: space-between;
+}
+
+.copyBtn {
+    background: #4caf50;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.copyBtn:hover {
+    background: #45a049;
+    transform: scale(1.1);
+}
+
+.copyBtn svg {
+    display: block;
+}
+
+.formGroup {
+    margin-bottom: 20px;
+}
+
+.formGroup label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #555;
+}
+
+.formGroup input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.formGroup input:focus {
+    outline: none;
+    border-color: #4caf50;
+}
+
+/* Password Input with Eye Toggle */
+.passwordInputWrapper {
+    position: relative;
+    width: 100%;
+}
+
+.passwordInputWrapper input {
+    width: 100%;
+    padding-right: 45px; /* Make room for the eye icon */
+}
+
+.passwordToggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    transition: color 0.3s;
+}
+
+.passwordToggle:hover {
+    color: #4caf50;
+}
+
+.passwordToggle svg {
+    width: 20px;
+    height: 20px;
+}
+
+.submitBtn {
+    padding: 12px 30px;
+    background: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+    transition: background 0.3s;
+}
+
+.submitBtn:hover {
+    background: #45a049;
+}
+
+/* Table Section */
+.tableSection {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.noOfficers {
+    text-align: center;
+    color: #999;
+    font-size: 16px;
+    padding: 40px 0;
+}
+
+.officerTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.officerTable th,
+.officerTable td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.officerTable th {
+    background: #00c6ff;
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 13px;
+}
+
+.officerTable tbody tr:hover {
+    background: #f5f5f5;
+}
+
+/* Status Badges */
+.statusBadge {
+    padding: 5px 12px;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.statusBadge.active {
+    background: #4caf50;
+    color: white;
+}
+
+.statusBadge.suspended {
+    background: #ff9800;
+    color: white;
+}
+
+.statusBadge.deleted {
+    background: #f44336;
+    color: white;
+}
+
+/* Action Buttons */
+.actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.actions button {
+    padding: 6px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+.suspendBtn {
+    background: #ff9800;
+    color: white;
+}
+
+.suspendBtn:hover {
+    background: #e68900;
+}
+
+.activateBtn {
+    background: #4caf50;
+    color: white;
+}
+
+.activateBtn:hover {
+    background: #45a049;
+}
+
+.deleteBtn {
+    background: #f44336;
+    color: white;
+}
+
+.deleteBtn:hover {
+    background: #d32f2f;
+}
+
+.error {
+    color: #f44336;
+    text-align: center;
+    padding: 20px;
+    font-size: 16px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .officerTable {
+        font-size: 12px;
+    }
+
+    .officerTable th,
+    .officerTable td {
+        padding: 8px;
+    }
+
+    .actions {
+        flex-direction: column;
+    }
+
+    .actions button {
+        width: 100%;
+    }
+}

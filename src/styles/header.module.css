@@ -1,0 +1,325 @@
+@import url(index.module.css);
+
+/* Header Container */
+.header {
+    background: #00c6ff;
+    color: #000;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    overflow: visible;
+}
+
+
+.flex-title-phone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    background: #00c6ff;
+}
+
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1200px;
+    min-width: 0;
+}
+
+/* Logo Section */
+.logo-section {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+}
+
+.logo-image {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    transition: all 0.3s ease;
+}
+
+/* Title Section */
+.title-section {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.title-text {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0;
+    text-align: center;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+    color: #000;
+}
+
+.short-title {
+    display: none;
+}
+
+.full-title {
+    display: inline;
+}
+
+/* Navigation Section */
+.nav-section {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    min-width: 0;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.nav-item:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.nav-text {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #000;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.nav-text:hover {
+    color: #333;
+    text-decoration: none;
+}
+
+/* User Section */
+.user-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    min-width: 70px;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.user-section:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.user-icon {
+    color: #000;
+    flex-shrink: 0;
+}
+
+.user-text {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #000;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 80px;
+}
+
+/* Desktop view (768px and above) */
+@media (min-width: 768px) {
+    .flex-title-phone {
+        padding: 20px 30px;
+        background: #00c6ff;
+    }
+    
+    .container {
+        max-width: 1400px;
+        padding: 0 20px;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .logo-section {
+        flex-shrink: 0;
+    }
+    
+    .logo-image {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .title-section {
+        flex: 1;
+        text-align: center;
+    }
+    
+    .title-text {
+        font-size: 1.4rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: #000;
+    }
+    
+    .full-title {
+        display: inline;
+    }
+    
+    .short-title {
+        display: none;
+    }
+    
+    .nav-section {
+        gap: 30px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+    }
+    
+    .nav-item {
+        padding: 12px 16px;
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .nav-text {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #000;
+    }
+    
+    .user-section {
+        padding: 12px 16px;
+        border-radius: 8px;
+        min-width: 90px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+    }
+    
+    .user-icon {
+        width: 28px;
+        height: 28px;
+        color: #000;
+    }
+    
+    .user-text {
+        font-size: 0.85rem;
+        font-weight: 600;
+        max-width: 100px;
+        color: #000;
+        text-align: center;
+    }
+}
+
+
+/* Mobile view (anything up to 767px) */
+@media (max-width: 767px) {
+    .flex-title-phone {
+        padding: 10px 15px;
+        background: #00c6ff;
+    }
+    
+    .container {
+        padding: 0 10px;
+        gap: 8px;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .logo-section {
+        flex-shrink: 0;
+    }
+    
+    .logo-image {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .title-section {
+        flex: 1;
+        text-align: center;
+        min-width: 0;
+    }
+    
+    .title-text {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #000;
+    }
+    
+    .full-title {
+        display: none;
+    }
+    
+    .short-title {
+        display: inline;
+    }
+    
+    .nav-section {
+        gap: 8px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+    }
+    
+    .nav-item {
+        padding: 6px 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-width: 50px;
+    }
+    
+    .nav-text {
+        font-size: 0.7rem;
+        color: #000;
+        text-align: center;
+    }
+    
+    .user-section {
+        padding: 6px 8px;
+        min-width: 50px;
+        gap: 2px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .user-icon {
+        width: 20px;
+        height: 20px;
+        color: #000;
+    }
+    
+    .user-text {
+        font-size: 0.65rem;
+        color: #000;
+        max-width: 60px;
+        text-align: center;
+    }
+}

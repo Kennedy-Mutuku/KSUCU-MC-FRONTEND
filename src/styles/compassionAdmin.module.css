@@ -1,0 +1,1484 @@
+/* Compassion & Counseling Admin Styles */
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+  background: #f8f9fa;
+  min-height: 100vh;
+}
+
+/* Header */
+.header {
+  background: linear-gradient(135deg, #730051 0%, #00c6ff 100%);
+  color: white;
+  text-align: center;
+  padding: 40px 20px;
+  border-radius: 15px;
+  margin-bottom: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.headerIcon {
+  width: 50px;
+  height: 50px;
+  margin-bottom: 15px;
+  opacity: 0.9;
+}
+
+.header h1 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.header p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+/* Message Display */
+.message {
+  padding: 16px 24px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  font-weight: 600;
+  text-align: center;
+  animation: slideDown 0.4s ease-out;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  position: relative;
+  z-index: 1000;
+  font-size: 1.05rem;
+  line-height: 1.4;
+  border: 2px solid transparent;
+  backdrop-filter: blur(10px);
+}
+
+.message.success {
+  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+  color: #0f5132;
+  border-color: #198754;
+  box-shadow: 0 6px 25px rgba(25, 135, 84, 0.4);
+}
+
+.message.error {
+  background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+  color: #721c24;
+  border-color: #dc3545;
+  box-shadow: 0 6px 25px rgba(220, 53, 69, 0.4);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Tab Navigation */
+.tabNavigation {
+  display: flex;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+  overflow: hidden;
+}
+
+.tabButton {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 20px;
+  background: white;
+  border: none;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tabButton:hover {
+  background: #f8f9fa;
+  color: #730051;
+}
+
+.tabButton.active {
+  background: linear-gradient(135deg, #730051, #00c6ff);
+  color: white;
+}
+
+.tabIcon {
+  width: 20px;
+  height: 20px;
+}
+
+/* Filters Section */
+.filtersSection {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.searchFilter,
+.statusFilter,
+.urgencyFilter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.filterIcon {
+  width: 18px;
+  height: 18px;
+  color: #730051;
+}
+
+.searchFilter input,
+.statusFilter select,
+.urgencyFilter select {
+  flex: 1;
+  padding: 10px 12px;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.searchFilter input:focus,
+.statusFilter select:focus,
+.urgencyFilter select:focus {
+  outline: none;
+  border-color: #00c6ff;
+  box-shadow: 0 0 0 3px rgba(0, 198, 255, 0.1);
+}
+
+/* Lists */
+.requestsList,
+.donationsList {
+  background: white;
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.requestsList h2,
+.donationsList h2 {
+  color: #730051;
+  margin-bottom: 25px;
+  font-size: 1.8rem;
+  text-align: center;
+}
+
+.loading,
+.emptyState {
+  text-align: center;
+  padding: 60px 20px;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+/* Grids */
+.requestsGrid,
+.donationsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 25px;
+}
+
+/* Cards */
+.requestCard,
+.donationCard {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  border-left: 4px solid transparent;
+}
+
+.requestCard:hover,
+.donationCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.urgencyIndicator,
+.donationType {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.urgencyIcon,
+.donationIcon {
+  width: 16px;
+  height: 16px;
+}
+
+.statusBadge {
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.urgencyBadge {
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-left: 8px;
+}
+
+.cardBody h3 {
+  color: #730051;
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+}
+
+.helpType {
+  background: #e3f2fd;
+  color: #1976d2;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+.amount {
+  background: #e8f5e8;
+  color: #2e7d32;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+.description,
+.message {
+  color: #666;
+  line-height: 1.5;
+  margin-bottom: 15px;
+}
+
+.contactInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+.contactItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.contactIcon {
+  width: 14px;
+  height: 14px;
+  color: #730051;
+}
+
+.timestamp {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  color: #999;
+  font-size: 0.85rem;
+  margin-bottom: 15px;
+}
+
+.timestampIcon {
+  width: 12px;
+  height: 12px;
+}
+
+.cardActions {
+  display: flex;
+  gap: 10px;
+}
+
+.viewButton,
+.callButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.viewButton {
+  background: #730051;
+  color: white;
+  flex: 1;
+}
+
+.viewButton:hover {
+  background: #5a003d;
+  transform: translateY(-1px);
+}
+
+.callButton {
+  background: #28a745;
+  color: white;
+  flex: 1;
+}
+
+.callButton:hover {
+  background: #218838;
+  transform: translateY(-1px);
+}
+
+.buttonIcon {
+  width: 14px;
+  height: 14px;
+}
+
+/* Modal Styles */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modalContent {
+  background: white;
+  border-radius: 15px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 30px;
+  border-bottom: 1px solid #e9ecef;
+  background: linear-gradient(135deg, #730051, #00c6ff);
+  color: white;
+  border-radius: 15px 15px 0 0;
+}
+
+.modalHeader h3 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.modalHeader button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.modalHeader button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.modalBody {
+  padding: 30px;
+}
+
+.requestDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.detailItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.detailItem .icon {
+  width: 18px;
+  height: 18px;
+  color: #730051;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.detailItem > div {
+  flex: 1;
+}
+
+.detailItem strong {
+  color: #333;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.detailItem .callButton {
+  margin-left: 10px;
+  padding: 4px 8px;
+  font-size: 0.8rem;
+}
+
+.descriptionSection {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.descriptionSection strong {
+  color: #730051;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.descriptionSection p {
+  color: #666;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.statusActions {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.statusActions strong {
+  color: #730051;
+  display: block;
+  margin-bottom: 15px;
+}
+
+.statusButtons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.statusButton {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex: 1;
+  min-width: 120px;
+}
+
+.statusButton:hover {
+  transform: translateY(-1px);
+  opacity: 0.9;
+}
+
+/* Settings Styles */
+.settingsContainer {
+  background: white;
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.settingsContainer h2 {
+  color: #730051;
+  margin-bottom: 30px;
+  font-size: 1.8rem;
+  text-align: center;
+}
+
+.settingsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+
+.settingsSection h3 {
+  color: #730051;
+  margin-bottom: 20px;
+  font-size: 1.4rem;
+  border-bottom: 2px solid #e9ecef;
+  padding-bottom: 10px;
+}
+
+.settingsItems {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.settingItem {
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 20px;
+  border-left: 4px solid #730051;
+  transition: all 0.3s ease;
+}
+
+.settingItem:hover {
+  box-shadow: 0 4px 15px rgba(115, 0, 81, 0.1);
+}
+
+.settingHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.settingHeader h4 {
+  color: #730051;
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.statusBadge.active {
+  background: #28a745;
+}
+
+.statusBadge.inactive {
+  background: #6c757d;
+}
+
+.settingDetails {
+  margin-bottom: 15px;
+}
+
+.settingDetails p {
+  margin: 5px 0;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.settingDetails strong {
+  color: #333;
+}
+
+.settingActions {
+  display: flex;
+  gap: 10px;
+}
+
+.toggleButton {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: #730051;
+  color: white;
+}
+
+.toggleButton:hover {
+  background: #5a003d;
+  transform: translateY(-1px);
+}
+
+.addMethodSection,
+.addContactSection {
+  background: #e3f2fd;
+  border-radius: 10px;
+  padding: 20px;
+  border: 2px dashed #00c6ff;
+}
+
+.addMethodSection h4,
+.addContactSection h4 {
+  color: #730051;
+  margin-bottom: 15px;
+  font-size: 1.1rem;
+}
+
+.quickAddButtons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.quickAddButton {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #730051, #00c6ff);
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.quickAddButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(115, 0, 81, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: 5px;
+  }
+  
+  .header {
+    padding: 10px 5px;
+    margin-bottom: 8px;
+  }
+  
+  .header h1 {
+    font-size: 1.3rem;
+    margin-bottom: 4px;
+  }
+  
+  .header p {
+    font-size: 0.8rem;
+  }
+  
+  .headerIcon {
+    width: 24px;
+    height: 24px;
+    margin-bottom: 5px;
+  }
+  
+  .tabNavigation {
+    margin-bottom: 8px;
+    gap: 4px;
+  }
+  
+  .tabButton {
+    padding: 8px 6px;
+    font-size: 0.8rem;
+    flex-direction: column;
+    gap: 3px;
+  }
+  
+  .tabIcon {
+    width: 12px;
+    height: 12px;
+  }
+  
+  .filtersSection {
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px;
+    margin-bottom: 8px;
+  }
+  
+  .searchFilter,
+  .statusFilter,
+  .urgencyFilter {
+    min-width: 100%;
+  }
+  
+  .searchFilter input,
+  .statusFilter select,
+  .urgencyFilter select {
+    padding: 6px 8px;
+    font-size: 14px;
+  }
+  
+  .requestsList,
+  .donationsList {
+    padding: 8px;
+  }
+  
+  .requestsList h2,
+  .donationsList h2 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+  }
+  
+  .requestsGrid,
+  .donationsGrid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  
+  .requestCard,
+  .donationCard {
+    padding: 8px;
+    border-radius: 6px;
+  }
+  
+  .cardHeader {
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+    gap: 4px;
+    align-items: center;
+  }
+  
+  .urgencyIndicator,
+  .donationType {
+    font-size: 0.7rem;
+  }
+  
+  .urgencyIcon,
+  .donationIcon {
+    width: 10px;
+    height: 10px;
+  }
+  
+  .statusBadge {
+    padding: 2px 6px;
+    font-size: 0.65rem;
+  }
+  
+  .cardBody h3 {
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+  }
+  
+  .helpType {
+    font-size: 0.8rem;
+    padding: 3px 6px;
+    margin-bottom: 8px;
+  }
+  
+  .amount {
+    font-size: 1rem;
+    padding: 4px 8px;
+    margin-bottom: 8px;
+  }
+  
+  .description,
+  .message {
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin-bottom: 10px;
+  }
+  
+  .contactInfo {
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  
+  .contactItem {
+    font-size: 0.85rem;
+  }
+  
+  .contactIcon {
+    width: 12px;
+    height: 12px;
+  }
+  
+  .timestamp {
+    gap: 10px;
+    font-size: 0.8rem;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  
+  .timestampIcon {
+    width: 10px;
+    height: 10px;
+  }
+  
+  .cardActions {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .viewButton,
+  .callButton {
+    padding: 6px 10px;
+    font-size: 0.85rem;
+  }
+  
+  .buttonIcon {
+    width: 12px;
+    height: 12px;
+  }
+  
+  .modalContent {
+    margin: 5px;
+    max-height: 98vh;
+    border-radius: 10px;
+  }
+  
+  .modalHeader {
+    padding: 15px;
+  }
+  
+  .modalHeader h3 {
+    font-size: 1.2rem;
+  }
+  
+  .modalBody {
+    padding: 15px;
+  }
+  
+  .detailItem {
+    padding: 10px;
+    gap: 8px;
+  }
+  
+  .detailItem .icon {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .detailItem strong {
+    font-size: 0.9rem;
+  }
+  
+  .detailItem .callButton {
+    margin-left: 8px;
+    padding: 3px 6px;
+    font-size: 0.75rem;
+  }
+  
+  .descriptionSection {
+    padding: 10px;
+  }
+  
+  .statusActions {
+    padding: 15px;
+  }
+  
+  .statusButtons {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .statusButton {
+    min-width: 100%;
+    padding: 8px 12px;
+    font-size: 0.85rem;
+  }
+  
+  .loading,
+  .emptyState {
+    padding: 40px 15px;
+    font-size: 1rem;
+  }
+  
+  .settingsContainer {
+    padding: 15px;
+  }
+  
+  .settingsContainer h2 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+  }
+  
+  .settingsGrid {
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
+  
+  .settingsSection h3 {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+  }
+  
+  .settingItem {
+    padding: 15px;
+  }
+  
+  .settingHeader h4 {
+    font-size: 1rem;
+  }
+  
+  .addMethodSection,
+  .addContactSection {
+    padding: 15px;
+  }
+  
+  .quickAddButtons {
+    flex-direction: column;
+  }
+  
+  .quickAddButton {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 5px;
+  }
+  
+  .header {
+    padding: 15px 8px;
+    margin-bottom: 10px;
+  }
+  
+  .header h1 {
+    font-size: 1.5rem;
+    margin-bottom: 6px;
+  }
+  
+  .header p {
+    font-size: 0.9rem;
+  }
+  
+  .headerIcon {
+    width: 30px;
+    height: 30px;
+    margin-bottom: 8px;
+  }
+  
+  .tabNavigation {
+    flex-direction: column;
+    margin-bottom: 10px;
+  }
+  
+  .tabButton {
+    padding: 12px 8px;
+    font-size: 0.9rem;
+    flex-direction: row;
+    gap: 6px;
+    justify-content: center;
+  }
+  
+  .tabIcon {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .filtersSection {
+    gap: 10px;
+    padding: 12px;
+    margin-bottom: 10px;
+  }
+  
+  .filterIcon {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .searchFilter input,
+  .statusFilter select,
+  .urgencyFilter select {
+    padding: 6px 8px;
+    font-size: 14px;
+  }
+  
+  .requestsList,
+  .donationsList {
+    padding: 12px;
+  }
+  
+  .requestsList h2,
+  .donationsList h2 {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+  }
+  
+  .requestsGrid,
+  .donationsGrid {
+    gap: 12px;
+  }
+  
+  .requestCard,
+  .donationCard {
+    padding: 10px;
+  }
+  
+  .cardHeader {
+    margin-bottom: 8px;
+    gap: 6px;
+  }
+  
+  .urgencyIndicator,
+  .donationType {
+    font-size: 0.75rem;
+    gap: 4px;
+  }
+  
+  .urgencyIcon,
+  .donationIcon {
+    width: 12px;
+    height: 12px;
+  }
+  
+  .statusBadge {
+    padding: 3px 6px;
+    font-size: 0.65rem;
+  }
+  
+  .cardBody h3 {
+    font-size: 1rem;
+    margin-bottom: 6px;
+  }
+  
+  .helpType {
+    font-size: 0.75rem;
+    padding: 2px 4px;
+    margin-bottom: 6px;
+  }
+  
+  .amount {
+    font-size: 0.9rem;
+    padding: 3px 6px;
+    margin-bottom: 6px;
+  }
+  
+  .description,
+  .message {
+    font-size: 0.85rem;
+    line-height: 1.3;
+    margin-bottom: 8px;
+  }
+  
+  .contactInfo {
+    gap: 4px;
+    margin-bottom: 8px;
+  }
+  
+  .contactItem {
+    font-size: 0.8rem;
+    gap: 6px;
+  }
+  
+  .contactIcon {
+    width: 10px;
+    height: 10px;
+  }
+  
+  .timestamp {
+    flex-direction: column;
+    gap: 3px;
+    align-items: flex-start;
+    font-size: 0.75rem;
+    margin-bottom: 8px;
+  }
+  
+  .timestampIcon {
+    width: 8px;
+    height: 8px;
+  }
+  
+  .cardActions {
+    gap: 6px;
+  }
+  
+  .viewButton,
+  .callButton {
+    padding: 5px 8px;
+    font-size: 0.8rem;
+  }
+  
+  .buttonIcon {
+    width: 10px;
+    height: 10px;
+  }
+  
+  .modalContent {
+    margin: 2px;
+    max-height: 99vh;
+    border-radius: 8px;
+  }
+  
+  .modalHeader {
+    padding: 12px;
+  }
+  
+  .modalHeader h3 {
+    font-size: 1.1rem;
+  }
+  
+  .modalHeader button {
+    width: 25px;
+    height: 25px;
+    font-size: 1.2rem;
+  }
+  
+  .modalBody {
+    padding: 12px;
+  }
+  
+  .detailItem {
+    padding: 8px;
+    gap: 6px;
+  }
+  
+  .detailItem .icon {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .detailItem strong {
+    font-size: 0.85rem;
+  }
+  
+  .detailItem .callButton {
+    margin-left: 6px;
+    padding: 2px 4px;
+    font-size: 0.7rem;
+  }
+  
+  .descriptionSection {
+    padding: 8px;
+  }
+  
+  .descriptionSection strong {
+    font-size: 0.9rem;
+  }
+  
+  .descriptionSection p {
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+  
+  .statusActions {
+    padding: 12px;
+  }
+  
+  .statusActions strong {
+    font-size: 0.9rem;
+  }
+  
+  .statusButtons {
+    gap: 6px;
+  }
+  
+  .statusButton {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+  
+  .loading,
+  .emptyState {
+    padding: 30px 10px;
+    font-size: 0.9rem;
+  }
+  
+  .settingsContainer {
+    padding: 12px;
+  }
+  
+  .settingsContainer h2 {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+  }
+  
+  .settingsGrid {
+    gap: 20px;
+  }
+  
+  .settingsSection h3 {
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+  }
+  
+  .settingItem {
+    padding: 12px;
+  }
+  
+  .settingHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .settingHeader h4 {
+    font-size: 0.95rem;
+  }
+  
+  .settingDetails p {
+    font-size: 0.85rem;
+    margin: 3px 0;
+  }
+  
+  .addMethodSection,
+  .addContactSection {
+    padding: 12px;
+  }
+  
+  .addMethodSection h4,
+  .addContactSection h4 {
+    font-size: 1rem;
+    margin-bottom: 10px;
+  }
+  
+  .quickAddButton {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+  
+  .toggleButton {
+    padding: 4px 8px;
+    font-size: 0.8rem;
+  }
+}
+
+/* Form Styles */
+.addForm {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 15px;
+}
+
+.formGroup {
+  margin-bottom: 15px;
+}
+
+.formGroup label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.formGroup input,
+.formGroup select,
+.formGroup textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  transition: border-color 0.3s ease;
+}
+
+.formGroup input:focus,
+.formGroup select:focus,
+.formGroup textarea:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.detailsSection {
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  padding: 15px;
+  background: #fff;
+}
+
+.detailsSection label {
+  font-weight: 600;
+  margin-bottom: 10px;
+  display: block;
+  color: #333;
+}
+
+.detailRow {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  align-items: center;
+}
+
+.detailRow input {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.removeDetailButton {
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  width: 30px;
+  height: 38px;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+}
+
+.removeDetailButton:hover {
+  background: #c82333;
+}
+
+.addDetailButton {
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
+}
+
+.addDetailButton:hover {
+  background: #218838;
+}
+
+.formActions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  justify-content: flex-end;
+}
+
+.saveButton {
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.saveButton:hover:not(:disabled) {
+  background: #0056b3;
+}
+
+.saveButton:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+}
+
+.cancelButton {
+  background: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.cancelButton:hover {
+  background: #545b62;
+}
+
+/* Mobile responsive styles for forms */
+@media (max-width: 768px) {
+  .addForm {
+    padding: 15px;
+  }
+  
+  /* Enhanced mobile message styles for tablets */
+  .message {
+    padding: 15px 20px;
+    font-size: 1rem;
+    margin-bottom: 16px;
+    position: sticky;
+    top: 10px;
+    z-index: 1001;
+  }
+  
+  .detailRow {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .removeDetailButton {
+    width: 100%;
+    height: 35px;
+  }
+  
+  .formActions {
+    flex-direction: column;
+  }
+  
+  .saveButton,
+  .cancelButton {
+    width: 100%;
+    padding: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .formGroup input,
+  .formGroup select,
+  .formGroup textarea {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+  
+  .addForm {
+    padding: 12px;
+  }
+  
+  .detailsSection {
+    padding: 12px;
+  }
+  
+  /* Enhanced mobile message styles */
+  .message {
+    padding: 14px 20px;
+    font-size: 0.95rem;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    position: sticky;
+    top: 5px;
+    z-index: 1001;
+  }
+  
+  .message.success {
+    box-shadow: 0 4px 20px rgba(25, 135, 84, 0.5);
+  }
+  
+  .message.error {
+    box-shadow: 0 4px 20px rgba(220, 53, 69, 0.5);
+  }
+}
