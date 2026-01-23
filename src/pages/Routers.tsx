@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
-import LandingPage from "./landing";
+import LandingPage from "./LandingPageNew";
 import FinancialsPage from "./Financials";
 import MinistriesPage from "./Ministries";
 import Etpage from "./Et";
