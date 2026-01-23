@@ -20,16 +20,16 @@ const activities: Activity[] = [
 
 const WeeklyActivities = () => {
   return (
-    <section className="py-16 md:py-20 bg-background">
+    <section className="py-16 md:py-20 bg-gray-50">
       <div className="max-w-6xl mx-auto px-4 md:px-6">
         <div className="text-center mb-12">
-          <span className="inline-block px-3 py-1 bg-secondary-100 text-secondary-700 text-sm font-medium rounded-full mb-4">
+          <span className="inline-block px-3 py-1 bg-purple-100 text-[#730051] text-sm font-medium rounded-full mb-4">
             Weekly Schedule
           </span>
-          <h2 className="text-3xl md:text-4xl font-bold text-text-primary mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
             Our Weekly Activities
           </h2>
-          <p className="text-text-secondary max-w-2xl mx-auto">
+          <p className="text-gray-600 max-w-2xl mx-auto">
             Join us throughout the week for various fellowship activities and grow together in faith.
           </p>
         </div>
@@ -38,28 +38,28 @@ const WeeklyActivities = () => {
           {activities.map((activity, index) => (
             <div
               key={index}
-              className={`relative p-5 rounded-xl border transition-all duration-300 hover:shadow-card hover:-translate-y-1 ${
+              className={`relative p-5 rounded-xl border transition-all duration-300 hover:shadow-lg hover:-translate-y-1 ${
                 activity.highlight
-                  ? 'bg-gradient-to-br from-primary-50 to-secondary-50 border-primary-200'
-                  : 'bg-white border-border'
+                  ? 'bg-gradient-to-br from-purple-50 to-cyan-50 border-purple-200'
+                  : 'bg-white border-gray-200'
               }`}
             >
               {activity.highlight && (
-                <span className="absolute -top-2 -right-2 px-2 py-1 bg-primary text-white text-xs font-medium rounded-full">
+                <span className="absolute -top-2 -right-2 px-2 py-1 bg-[#730051] text-white text-xs font-medium rounded-full">
                   Special
                 </span>
               )}
 
               <div className="flex items-center gap-2 mb-3">
-                <Calendar size={16} className="text-primary" />
-                <span className="text-sm font-semibold text-primary">{activity.day}</span>
+                <Calendar size={16} className="text-[#730051]" />
+                <span className="text-sm font-semibold text-[#730051]">{activity.day}</span>
               </div>
 
-              <h3 className="text-lg font-semibold text-text-primary mb-3">
+              <h3 className="text-lg font-semibold text-gray-800 mb-3">
                 {activity.event}
               </h3>
 
-              <div className="space-y-2 text-sm text-text-secondary">
+              <div className="space-y-2 text-sm text-gray-600">
                 <div className="flex items-center gap-2">
                   <Clock size={14} className="flex-shrink-0" />
                   <span>{activity.time}</span>

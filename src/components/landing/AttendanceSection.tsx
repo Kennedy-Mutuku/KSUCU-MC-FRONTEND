@@ -39,7 +39,6 @@ const AttendanceSection = () => {
   const [attendanceData, setAttendanceData] = useState<AttendanceData>(initialAttendanceData);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  // Check for active session
   const checkActiveSession = async (retryCount = 0) => {
     try {
       const timestamp = Date.now();
@@ -86,7 +85,6 @@ const AttendanceSection = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Close form if session ends
   useEffect(() => {
     if (showForm && (!activeSession || !activeSession.isActive)) {
       setShowForm(false);
@@ -94,7 +92,6 @@ const AttendanceSection = () => {
     }
   }, [activeSession, showForm]);
 
-  // Initialize canvas drawing
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -126,7 +123,7 @@ const AttendanceSection = () => {
 
       ctx.lineWidth = 2;
       ctx.lineCap = 'round';
-      ctx.strokeStyle = '#2D3748';
+      ctx.strokeStyle = '#374151';
       ctx.beginPath();
       ctx.moveTo(lastX, lastY);
       ctx.lineTo(currentX, currentY);
@@ -256,12 +253,11 @@ const AttendanceSection = () => {
     <section className="py-12 md:py-16 bg-white">
       <div className="max-w-xl mx-auto px-4 md:px-6">
         <div className="text-center mb-8">
-          <h2 className="text-2xl md:text-3xl font-bold text-text-primary mb-2">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">
             Sign Attendance
           </h2>
         </div>
 
-        {/* Session Status */}
         {activeSession?.isActive ? (
           <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl">
             <div className="flex items-center gap-3">
@@ -276,14 +272,13 @@ const AttendanceSection = () => {
             </div>
           </div>
         ) : (
-          <div className="mb-6 p-4 bg-gray-50 border border-border rounded-xl">
-            <p className="text-text-secondary text-center">
+          <div className="mb-6 p-4 bg-gray-50 border border-gray-200 rounded-xl">
+            <p className="text-gray-600 text-center">
               No attendance session is currently open.
             </p>
           </div>
         )}
 
-        {/* Sign Button */}
         {!showForm && (
           <button
             onClick={() => {
@@ -294,192 +289,178 @@ const AttendanceSection = () => {
                 alert('No active session. Please wait for a leader to open attendance.');
               }
             }}
-            className="w-full py-3 bg-secondary text-white font-semibold rounded-xl shadow-button hover:bg-secondary-600 transition-all duration-300 disabled:opacity-50"
+            className="w-full py-3 bg-[#730051] text-white font-semibold rounded-xl shadow-md hover:bg-[#5a0040] transition-all duration-300 disabled:opacity-50"
             disabled={!activeSession?.isActive}
           >
             Sign Attendance
           </button>
         )}
 
-        {/* Attendance Form */}
+        {/* Modal Popup */}
         {showForm && activeSession?.isActive && (
-          <div className="bg-surface p-6 rounded-2xl border border-border shadow-card animate-fade-in">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold text-text-primary">Sign Your Attendance</h3>
-              <button
-                onClick={() => setShowForm(false)}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-              >
-                <X size={18} className="text-text-secondary" />
-              </button>
-            </div>
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            {/* Backdrop */}
+            <div
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              onClick={() => setShowForm(false)}
+            />
 
-            {success && (
-              <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg flex items-start gap-2">
-                <CheckCircle size={18} className="text-green-600 flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-green-800">{success}</p>
-              </div>
-            )}
-
-            {error && (
-              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2">
-                <AlertCircle size={18} className="text-red-600 flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-red-800">{error}</p>
-              </div>
-            )}
-
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Full Name */}
-              <div>
-                <label className="block text-sm font-medium text-text-primary mb-1">
-                  Full Name *
-                </label>
-                <input
-                  type="text"
-                  value={attendanceData.fullName}
-                  onChange={(e) => setAttendanceData((prev) => ({ ...prev, fullName: e.target.value }))}
-                  placeholder="Enter your full name"
-                  className="w-full px-4 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-secondary-200 focus:border-secondary outline-none transition-all"
-                  required
-                  disabled={loading}
-                />
-              </div>
-
-              {/* User Type */}
-              <div>
-                <label className="block text-sm font-medium text-text-primary mb-1">
-                  I am a *
-                </label>
-                <select
-                  value={attendanceData.userType}
-                  onChange={(e) => setAttendanceData((prev) => ({ ...prev, userType: e.target.value }))}
-                  className="w-full px-4 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-secondary-200 focus:border-secondary outline-none transition-all bg-white"
-                  required
+            {/* Modal Content */}
+            <div className="relative bg-white w-full max-w-md max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl">
+              <div className="sticky top-0 bg-white px-3 py-4 border-b border-gray-100 flex items-center justify-between z-10">
+                <h3 className="text-lg font-semibold text-gray-800">Sign Your Attendance</h3>
+                <button
+                  onClick={() => setShowForm(false)}
+                  className="p-2 hover:bg-gray-100 rounded-full transition-colors"
                 >
-                  <option value="student">Student</option>
-                  <option value="visitor">Visitor</option>
-                </select>
+                  <X size={18} className="text-gray-500" />
+                </button>
               </div>
 
-              {/* Student Fields */}
-              {attendanceData.userType === 'student' && (
-                <>
+              <div className="px-3 py-4">
+                {success && (
+                  <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg flex items-start gap-2">
+                    <CheckCircle size={18} className="text-green-600 flex-shrink-0 mt-0.5" />
+                    <p className="text-sm text-green-800">{success}</p>
+                  </div>
+                )}
+
+                {error && (
+                  <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2">
+                    <AlertCircle size={18} className="text-red-600 flex-shrink-0 mt-0.5" />
+                    <p className="text-sm text-red-800">{error}</p>
+                  </div>
+                )}
+
+                <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-text-primary mb-1">
-                      Registration Number *
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
                     <input
                       type="text"
-                      value={attendanceData.registrationNumber}
-                      onChange={(e) =>
-                        setAttendanceData((prev) => ({ ...prev, registrationNumber: e.target.value }))
-                      }
-                      placeholder="e.g., IN16/00014/22"
-                      className="w-full px-4 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-secondary-200 focus:border-secondary outline-none transition-all"
+                      value={attendanceData.fullName}
+                      onChange={(e) => setAttendanceData((prev) => ({ ...prev, fullName: e.target.value }))}
+                      placeholder="Enter your full name"
+                      className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-200 focus:border-[#730051] outline-none transition-all"
                       required
                       disabled={loading}
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-text-primary mb-1">
-                      Course *
-                    </label>
-                    <input
-                      type="text"
-                      value={attendanceData.course}
-                      onChange={(e) => setAttendanceData((prev) => ({ ...prev, course: e.target.value }))}
-                      placeholder="e.g., Computer Science"
-                      className="w-full px-4 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-secondary-200 focus:border-secondary outline-none transition-all"
-                      required
-                      disabled={loading}
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-text-primary mb-1">
-                      Year of Study *
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">I am a *</label>
                     <select
-                      value={attendanceData.yearOfStudy}
-                      onChange={(e) =>
-                        setAttendanceData((prev) => ({ ...prev, yearOfStudy: e.target.value }))
-                      }
-                      className="w-full px-4 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-secondary-200 focus:border-secondary outline-none transition-all bg-white"
+                      value={attendanceData.userType}
+                      onChange={(e) => setAttendanceData((prev) => ({ ...prev, userType: e.target.value }))}
+                      className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-200 focus:border-[#730051] outline-none transition-all bg-white"
                       required
                     >
-                      <option value="">Select Year</option>
-                      {[1, 2, 3, 4, 5, 6].map((yr) => (
-                        <option key={yr} value={yr}>
-                          Year {yr}
-                        </option>
-                      ))}
+                      <option value="student">Student</option>
+                      <option value="visitor">Visitor</option>
                     </select>
                   </div>
-                </>
-              )}
 
-              {/* Phone Number */}
-              <div>
-                <label className="block text-sm font-medium text-text-primary mb-1">
-                  Phone Number *
-                </label>
-                <input
-                  type="tel"
-                  value={attendanceData.phoneNumber}
-                  onChange={(e) => setAttendanceData((prev) => ({ ...prev, phoneNumber: e.target.value }))}
-                  placeholder="e.g., +254712345678"
-                  className="w-full px-4 py-2.5 border border-border rounded-lg focus:ring-2 focus:ring-secondary-200 focus:border-secondary outline-none transition-all"
-                  required
-                />
-              </div>
+                  {attendanceData.userType === 'student' && (
+                    <>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Registration Number *</label>
+                        <input
+                          type="text"
+                          value={attendanceData.registrationNumber}
+                          onChange={(e) => setAttendanceData((prev) => ({ ...prev, registrationNumber: e.target.value }))}
+                          placeholder="e.g., IN16/00014/22"
+                          className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-200 focus:border-[#730051] outline-none transition-all"
+                          required
+                          disabled={loading}
+                        />
+                      </div>
 
-              {/* Signature */}
-              <div>
-                <label className="block text-sm font-medium text-text-primary mb-1">
-                  Digital Signature *
-                </label>
-                <div className="border border-border rounded-lg p-3 bg-gray-50">
-                  <canvas
-                    ref={canvasRef}
-                    width={350}
-                    height={80}
-                    className="w-full h-20 bg-white border border-border rounded cursor-crosshair touch-none"
-                  />
-                  <div className="flex items-center justify-between mt-2">
-                    <span className="text-xs text-text-secondary flex items-center gap-1">
-                      <Pencil size={12} />
-                      Draw signature above
-                    </span>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Course *</label>
+                        <input
+                          type="text"
+                          value={attendanceData.course}
+                          onChange={(e) => setAttendanceData((prev) => ({ ...prev, course: e.target.value }))}
+                          placeholder="e.g., Computer Science"
+                          className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-200 focus:border-[#730051] outline-none transition-all"
+                          required
+                          disabled={loading}
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Year of Study *</label>
+                        <select
+                          value={attendanceData.yearOfStudy}
+                          onChange={(e) => setAttendanceData((prev) => ({ ...prev, yearOfStudy: e.target.value }))}
+                          className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-200 focus:border-[#730051] outline-none transition-all bg-white"
+                          required
+                        >
+                          <option value="">Select Year</option>
+                          {[1, 2, 3, 4, 5, 6].map((yr) => (
+                            <option key={yr} value={yr}>Year {yr}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </>
+                  )}
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
+                    <input
+                      type="tel"
+                      value={attendanceData.phoneNumber}
+                      onChange={(e) => setAttendanceData((prev) => ({ ...prev, phoneNumber: e.target.value }))}
+                      placeholder="e.g., +254712345678"
+                      className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-200 focus:border-[#730051] outline-none transition-all"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Digital Signature *</label>
+                    <div className="border border-gray-300 rounded-lg p-3 bg-gray-50">
+                      <canvas
+                        ref={canvasRef}
+                        width={350}
+                        height={80}
+                        className="w-full h-20 bg-white border border-gray-200 rounded cursor-crosshair"
+                        style={{ touchAction: 'none' }}
+                      />
+                      <div className="flex items-center justify-between mt-2">
+                        <span className="text-xs text-gray-500 flex items-center gap-1">
+                          <Pencil size={12} />
+                          Draw signature above
+                        </span>
+                        <button
+                          type="button"
+                          onClick={clearCanvas}
+                          className="text-xs px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded transition-colors"
+                        >
+                          Clear
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-3 pt-2">
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className="flex-1 py-3 bg-[#730051] text-white font-semibold rounded-lg hover:bg-[#5a0040] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {loading ? 'Submitting...' : 'Submit'}
+                    </button>
                     <button
                       type="button"
-                      onClick={clearCanvas}
-                      className="text-xs px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded transition-colors"
+                      onClick={() => setShowForm(false)}
+                      className="flex-1 py-3 bg-gray-100 text-gray-600 font-semibold rounded-lg hover:bg-gray-200 transition-colors"
                     >
-                      Clear
+                      Cancel
                     </button>
                   </div>
-                </div>
+                </form>
               </div>
-
-              {/* Submit Buttons */}
-              <div className="flex gap-3 pt-2">
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="flex-1 py-3 bg-secondary text-white font-semibold rounded-lg hover:bg-secondary-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {loading ? 'Submitting...' : 'Submit'}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowForm(false)}
-                  className="flex-1 py-3 bg-gray-100 text-text-secondary font-semibold rounded-lg hover:bg-gray-200 transition-colors"
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
+            </div>
           </div>
         )}
       </div>

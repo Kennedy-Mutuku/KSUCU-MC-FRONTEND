@@ -5,14 +5,14 @@
   right: 20px;
   width: 60px;
   height: 60px;
-  background: #00c6ff;
+  background: #730051;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   color: white;
-  box-shadow: 0 4px 15px rgba(0, 198, 255, 0.4);
+  box-shadow: 0 4px 15px rgba(115, 0, 81, 0.4);
   z-index: 2147483647; /* Maximum z-index to ensure it's above everything */
   transition: all 0.3s ease;
   border: 2px solid white;
@@ -20,8 +20,8 @@
 
 .chatIcon:hover {
   transform: scale(1.1);
-  box-shadow: 0 6px 20px rgba(0, 198, 255, 0.6);
-  background: #0099cc;
+  box-shadow: 0 6px 20px rgba(115, 0, 81, 0.6);
+  background: #5a0040;
 }
 
 .onlineIndicator {

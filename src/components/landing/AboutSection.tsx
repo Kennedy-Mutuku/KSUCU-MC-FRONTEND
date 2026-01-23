@@ -1,4 +1,4 @@
-import { Target, Eye, CheckCircle, BookOpen, Users, Heart, Award } from 'lucide-react';
+import { Target, Eye, BookOpen, Users, Heart, Award, CheckCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const objectives = [
@@ -26,51 +26,48 @@ const objectives = [
 
 const AboutSection = () => {
   return (
-    <section id="about" className="py-16 md:py-20 bg-gradient-to-b from-background to-white">
+    <section id="about" className="py-16 md:py-20 bg-gradient-to-b from-gray-50 to-white">
       <div className="max-w-6xl mx-auto px-4 md:px-6">
-        {/* Section Header */}
         <div className="text-center mb-12">
-          <span className="inline-block px-3 py-1 bg-primary-100 text-primary-700 text-sm font-medium rounded-full mb-4">
+          <span className="inline-block px-3 py-1 bg-purple-100 text-[#730051] text-sm font-medium rounded-full mb-4">
             Who We Are
           </span>
-          <h2 className="text-3xl md:text-4xl font-bold text-text-primary mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
             About Us
           </h2>
         </div>
 
-        {/* Mission & Vision Cards */}
         <div className="grid md:grid-cols-2 gap-6 mb-12">
-          <div className="bg-white p-6 md:p-8 rounded-2xl shadow-soft border border-border">
+          <div className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-200">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 flex items-center justify-center bg-primary-100 rounded-lg">
-                <Target size={20} className="text-primary" />
+              <div className="w-10 h-10 flex items-center justify-center bg-purple-100 rounded-lg">
+                <Target size={20} className="text-[#730051]" />
               </div>
-              <h3 className="text-xl font-bold text-text-primary">Our Mission</h3>
+              <h3 className="text-xl font-bold text-gray-800">Our Mission</h3>
             </div>
-            <p className="text-text-secondary leading-relaxed">
+            <p className="text-gray-600 leading-relaxed">
               To impact Christian core values and skills to students through equipping,
               empowering, and offering a conducive environment for effective living in
               and out of campus.
             </p>
           </div>
 
-          <div className="bg-white p-6 md:p-8 rounded-2xl shadow-soft border border-border">
+          <div className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-200">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 flex items-center justify-center bg-secondary-100 rounded-lg">
-                <Eye size={20} className="text-secondary" />
+              <div className="w-10 h-10 flex items-center justify-center bg-cyan-100 rounded-lg">
+                <Eye size={20} className="text-cyan-600" />
               </div>
-              <h3 className="text-xl font-bold text-text-primary">Our Vision</h3>
+              <h3 className="text-xl font-bold text-gray-800">Our Vision</h3>
             </div>
-            <p className="text-text-secondary leading-relaxed">
+            <p className="text-gray-600 leading-relaxed">
               A relevant and effective Christian to the church and society, equipped
               to make a lasting impact in every sphere of influence.
             </p>
           </div>
         </div>
 
-        {/* Objectives */}
-        <div className="bg-white p-6 md:p-8 rounded-2xl shadow-soft border border-border">
-          <h3 className="text-xl font-bold text-text-primary mb-6 text-center">
+        <div className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-200">
+          <h3 className="text-xl font-bold text-gray-800 mb-6 text-center">
             Our Objectives
           </h3>
 
@@ -79,14 +76,14 @@ const AboutSection = () => {
               const Icon = objective.icon;
               return (
                 <div key={index} className="flex gap-4">
-                  <div className="w-10 h-10 flex-shrink-0 flex items-center justify-center bg-primary-50 rounded-lg">
-                    <Icon size={20} className="text-primary" />
+                  <div className="w-10 h-10 flex-shrink-0 flex items-center justify-center bg-purple-50 rounded-lg">
+                    <Icon size={20} className="text-[#730051]" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-text-primary mb-1">
+                    <h4 className="font-semibold text-gray-800 mb-1">
                       {objective.title}
                     </h4>
-                    <p className="text-sm text-text-secondary">
+                    <p className="text-sm text-gray-600">
                       {objective.description}
                     </p>
                   </div>
@@ -95,22 +92,21 @@ const AboutSection = () => {
             })}
           </div>
 
-          {/* CTA */}
-          <div className="mt-8 pt-6 border-t border-border text-center">
-            <p className="text-text-secondary mb-4">
+          <div className="mt-8 pt-6 border-t border-gray-200 text-center">
+            <p className="text-gray-600 mb-4">
               Ready to grow in faith and join our community?
             </p>
             <div className="flex flex-wrap gap-3 justify-center">
               <Link
                 to="/Bs"
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-white font-medium rounded-lg hover:bg-primary-600 transition-colors"
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#730051] text-white font-medium rounded-lg hover:bg-[#5a0040] transition-colors"
               >
                 <CheckCircle size={18} />
                 Register for Bible Study
               </Link>
               <Link
                 to="/signUp"
-                className="inline-flex items-center gap-2 px-5 py-2.5 border border-primary text-primary font-medium rounded-lg hover:bg-primary-50 transition-colors"
+                className="inline-flex items-center gap-2 px-5 py-2.5 border border-[#730051] text-[#730051] font-medium rounded-lg hover:bg-purple-50 transition-colors"
               >
                 Join KSUCU
               </Link>

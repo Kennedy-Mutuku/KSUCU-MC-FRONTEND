@@ -193,9 +193,7 @@ const SignIn: React.FC = () => {
                 withCredentials: true, // Include cookies in the request
                 timeout: 30000, // 30 second timeout
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Cache-Control': 'no-cache',
-                    'User-Agent': navigator.userAgent // Help backend identify device
+                    'Content-Type': 'application/json'
                 }
             });
     

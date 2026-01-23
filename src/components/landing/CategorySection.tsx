@@ -17,17 +17,17 @@ const CategorySection = ({ title, items, defaultOpen = false }: CategorySectionP
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
   return (
-    <div className="bg-white rounded-xl shadow-soft border border-border overflow-hidden transition-all duration-300 hover:shadow-card">
+    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-md">
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="w-full flex items-center justify-between p-4 md:p-5 text-left hover:bg-gray-50 transition-colors"
       >
-        <h3 className="text-base md:text-lg font-semibold text-text-primary">
+        <h3 className="text-base md:text-lg font-semibold text-gray-800">
           {title}
         </h3>
         <ChevronDown
           size={20}
-          className={`text-text-secondary transition-transform duration-300 ${
+          className={`text-gray-500 transition-transform duration-300 ${
             isOpen ? 'rotate-180' : ''
           }`}
         />
@@ -43,7 +43,7 @@ const CategorySection = ({ title, items, defaultOpen = false }: CategorySectionP
             <li key={index}>
               <Link
                 to={item.href}
-                className="block py-2.5 px-4 rounded-lg text-text-secondary hover:text-primary hover:bg-primary-50 transition-all duration-200"
+                className="block py-2.5 px-4 rounded-lg text-gray-600 hover:text-[#730051] hover:bg-purple-50 transition-all duration-200"
               >
                 {item.label}
               </Link>

@@ -13,6 +13,91 @@ export default defineConfig({
     },
     hmr: {
       overlay: true
+    },
+    proxy: {
+      '/users': {
+        target: 'https://ksucu-mc.co.ke',
+        changeOrigin: true,
+        secure: true,
+        cookieDomainRewrite: 'localhost',
+        configure: (proxy) => {
+          proxy.on('proxyReq', (proxyReq, req) => {
+            // Remove problematic headers
+            proxyReq.removeHeader('origin');
+            proxyReq.removeHeader('referer');
+          });
+        }
+      },
+      '/news': {
+        target: 'https://ksucu-mc.co.ke',
+        changeOrigin: true,
+        secure: true
+      },
+      '/attendance': {
+        target: 'https://ksucu-mc.co.ke',
+        changeOrigin: true,
+        secure: true
+      },
+      '/api': {
+        target: 'https://ksucu-mc.co.ke',
+        changeOrigin: true,
+        secure: true
+      },
+      '/adminnews': {
+        target: 'https://ksucu-mc.co.ke',
+        changeOrigin: true,
+        secure: true
+      },
+      '/adminmission': {
+        target: 'https://ksucu-mc.co.ke',
+        changeOrigin: true,
+        secure: true
+      },
+      '/adminBs': {
+        target: 'https://ksucu-mc.co.ke',
+        changeOrigin: true,
+        secure: true
+      },
+      '/sadmin': {
+        target: 'https://ksucu-mc.co.ke',
+        changeOrigin: true,
+        secure: true
+      },
+      '/admissionadmin': {
+        target: 'https://ksucu-mc.co.ke',
+        changeOrigin: true,
+        secure: true
+      },
+      '/polling-officer': {
+        target: 'https://ksucu-mc.co.ke',
+        changeOrigin: true,
+        secure: true
+      },
+      '/documents': {
+        target: 'https://ksucu-mc.co.ke',
+        changeOrigin: true,
+        secure: true
+      },
+      '/minutes': {
+        target: 'https://ksucu-mc.co.ke',
+        changeOrigin: true,
+        secure: true
+      },
+      '/commitmentForm': {
+        target: 'https://ksucu-mc.co.ke',
+        changeOrigin: true,
+        secure: true
+      },
+      '/chat': {
+        target: 'https://ksucu-mc.co.ke',
+        changeOrigin: true,
+        secure: true
+      },
+      '/messages': {
+        target: 'https://ksucu-mc.co.ke',
+        changeOrigin: true,
+        secure: true
+      }
     }
   },
   css: {

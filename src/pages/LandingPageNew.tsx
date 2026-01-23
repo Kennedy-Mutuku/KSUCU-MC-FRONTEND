@@ -1,5 +1,3 @@
-import { useState, useEffect } from 'react';
-import { getApiUrl } from '../config/environment';
 import Header from '../components/landing/Header';
 import {
   HeroSection,
@@ -8,11 +6,10 @@ import {
   ForumsSection,
   AboutSection,
   AttendanceSection,
-  QuickLinksSidebar,
+  QuickLinksButton,
   Footer,
 } from '../components/landing';
 
-// Category data
 const boardsItems = [
   { label: 'ICT Board', href: '/boards' },
   { label: 'Editorial Board', href: '/boards' },
@@ -49,46 +46,29 @@ const fellowshipsItems = [
 ];
 
 const LandingPageNew = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  useEffect(() => {
-    // Check if user is logged in
-    const checkAuth = async () => {
-      try {
-        const response = await fetch(getApiUrl('users'), { credentials: 'include' });
-        setIsLoggedIn(response.ok);
-      } catch {
-        setIsLoggedIn(false);
-      }
-    };
-    checkAuth();
-  }, []);
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
+    <div className="min-h-screen bg-gray-50">
       <Header />
-
-      {/* Hero Section */}
       <HeroSection />
 
       {/* Call to Action */}
-      <section className="py-8 bg-primary-50 border-y border-primary-100">
+      <section className="py-8 bg-purple-50 border-y border-purple-100">
         <div className="max-w-4xl mx-auto px-4 text-center">
-          <p className="text-primary-700 font-medium text-lg md:text-xl">
+          <p className="text-gray-700 font-medium text-lg md:text-xl">
             Join a non-denominational Christian student association
           </p>
         </div>
       </section>
 
       {/* Categories Section */}
-      <section className="py-12 md:py-16 bg-background">
+      <section className="py-12 md:py-16 bg-gray-50">
         <div className="max-w-6xl mx-auto px-4 md:px-6">
           <div className="text-center mb-10">
-            <span className="inline-block px-3 py-1 bg-secondary-100 text-secondary-700 text-sm font-medium rounded-full mb-4">
+            <span className="inline-block px-3 py-1 bg-purple-100 text-[#730051] text-sm font-medium rounded-full mb-4">
               Explore
             </span>
-            <h2 className="text-2xl md:text-3xl font-bold text-text-primary">
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-800">
               Our Organization
             </h2>
           </div>
@@ -102,23 +82,12 @@ const LandingPageNew = () => {
         </div>
       </section>
 
-      {/* Attendance Section */}
       <AttendanceSection />
-
-      {/* Weekly Activities */}
       <WeeklyActivities />
-
-      {/* Forums Section */}
       <ForumsSection />
-
-      {/* About Section */}
       <AboutSection />
-
-      {/* Quick Links Sidebar (Desktop only) */}
-      <QuickLinksSidebar isLoggedIn={isLoggedIn} />
-
-      {/* Footer */}
       <Footer />
+      <QuickLinksButton />
     </div>
   );
 };

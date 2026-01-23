@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-export default {
+module.exports = {
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
@@ -36,11 +36,9 @@ export default {
         surface: '#FFFFFF',
         background: '#FAFAFA',
         border: '#E2E8F0',
-        text: {
-          primary: '#2D3748',
-          secondary: '#718096',
-          muted: '#A0AEC0'
-        }
+        'text-primary': '#2D3748',
+        'text-secondary': '#718096',
+        'text-muted': '#A0AEC0',
       },
       zIndex: {
         'dropdown': '100',

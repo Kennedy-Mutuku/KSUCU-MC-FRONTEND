@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Menu, X, User, ChevronDown } from 'lucide-react';
 import { getApiUrl } from '../../config/environment';
+import cuLogo from '../../assets/cuLogoUAR.png';
 
 interface UserData {
   username: string;
@@ -10,12 +11,31 @@ interface UserData {
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [userData, setUserData] = useState<UserData | null>(null);
   const [showQuickLinks, setShowQuickLinks] = useState(false);
   const navigate = useNavigate();
 
-  // Handle scroll effect
+  // Handle menu open/close with animation
+  const openMenu = () => {
+    setIsMenuVisible(true);
+    setTimeout(() => setIsMenuOpen(true), 10);
+  };
+
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+    setTimeout(() => setIsMenuVisible(false), 300);
+  };
+
+  const toggleMenu = () => {
+    if (isMenuOpen) {
+      closeMenu();
+    } else {
+      openMenu();
+    }
+  };
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -24,7 +44,6 @@ const Header = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Fetch user data
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -41,9 +60,8 @@ const Header = () => {
     fetchUser();
   }, []);
 
-  // Close menu on body overflow
   useEffect(() => {
-    if (isMenuOpen) {
+    if (isMenuVisible) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
@@ -51,7 +69,7 @@ const Header = () => {
     return () => {
       document.body.style.overflow = '';
     };
-  }, [isMenuOpen]);
+  }, [isMenuVisible]);
 
   const quickLinks = [
     { label: 'Boards', href: '/boards' },
@@ -63,28 +81,26 @@ const Header = () => {
   ];
 
   return (
+    <>
     <header
-      className={`fixed top-0 left-0 right-0 z-sticky transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? 'bg-white/95 backdrop-blur-md shadow-soft'
-          : 'bg-transparent'
+          ? 'bg-white shadow-md'
+          : 'bg-white/95 backdrop-blur-sm'
       }`}
     >
       <div className="max-w-6xl mx-auto px-4 md:px-6">
         <div className="flex items-center justify-between h-16 md:h-20">
-          {/* Logo */}
+          {/* Logo and Title */}
           <Link to="/" className="flex items-center gap-3">
             <img
-              src="/images/logo.png"
+              src={cuLogo}
               alt="KSUCU Logo"
-              className="w-10 h-10 md:w-12 md:h-12 rounded-lg object-contain"
-              onError={(e) => {
-                (e.target as HTMLImageElement).style.display = 'none';
-              }}
+              className="w-12 h-12 md:w-14 md:h-14 object-contain"
             />
-            <div className={`font-bold transition-colors ${isScrolled ? 'text-text-primary' : 'text-white'}`}>
+            <div className="font-bold text-gray-800">
               <span className="hidden md:inline text-lg">Kisii University CU</span>
-              <span className="md:hidden text-base">KSUCU</span>
+              <span className="md:hidden text-base">KSUCU-MC</span>
             </div>
           </Link>
 
@@ -92,24 +108,15 @@ const Header = () => {
           <nav className="hidden md:flex items-center gap-1">
             <Link
               to="/"
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                isScrolled
-                  ? 'text-text-primary hover:bg-gray-100'
-                  : 'text-white hover:bg-white/10'
-              }`}
+              className="px-4 py-2 rounded-lg font-medium text-gray-700 hover:bg-gray-100 transition-colors"
             >
               Home
             </Link>
 
-            {/* Quick Links Dropdown */}
             <div className="relative">
               <button
                 onClick={() => setShowQuickLinks(!showQuickLinks)}
-                className={`flex items-center gap-1 px-4 py-2 rounded-lg font-medium transition-colors ${
-                  isScrolled
-                    ? 'text-text-primary hover:bg-gray-100'
-                    : 'text-white hover:bg-white/10'
-                }`}
+                className="flex items-center gap-1 px-4 py-2 rounded-lg font-medium text-gray-700 hover:bg-gray-100 transition-colors"
               >
                 Quick Links
                 <ChevronDown size={16} className={`transition-transform ${showQuickLinks ? 'rotate-180' : ''}`} />
@@ -118,15 +125,15 @@ const Header = () => {
               {showQuickLinks && (
                 <>
                   <div
-                    className="fixed inset-0 z-dropdown"
+                    className="fixed inset-0 z-40"
                     onClick={() => setShowQuickLinks(false)}
                   />
-                  <div className="absolute top-full right-0 mt-2 w-48 bg-white rounded-xl shadow-card border border-border py-2 z-dropdown animate-slide-down">
+                  <div className="absolute top-full right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50">
                     {quickLinks.map((link, index) => (
                       <Link
                         key={index}
                         to={link.href}
-                        className="block px-4 py-2.5 text-text-secondary hover:text-primary hover:bg-primary-50 transition-colors"
+                        className="block px-4 py-2.5 text-gray-600 hover:text-[#730051] hover:bg-purple-50 transition-colors"
                         onClick={() => setShowQuickLinks(false)}
                       >
                         {link.label}
@@ -139,24 +146,15 @@ const Header = () => {
 
             <a
               href="#about"
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                isScrolled
-                  ? 'text-text-primary hover:bg-gray-100'
-                  : 'text-white hover:bg-white/10'
-              }`}
+              className="px-4 py-2 rounded-lg font-medium text-gray-700 hover:bg-gray-100 transition-colors"
             >
               About
             </a>
 
-            {/* User / Auth */}
             {userData ? (
               <button
                 onClick={() => navigate('/home')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
-                  isScrolled
-                    ? 'text-text-primary hover:bg-gray-100'
-                    : 'text-white hover:bg-white/10'
-                }`}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-gray-700 hover:bg-gray-100 transition-colors"
               >
                 <User size={18} />
                 {userData.username}
@@ -164,7 +162,7 @@ const Header = () => {
             ) : (
               <Link
                 to="/signIn"
-                className="ml-2 px-5 py-2 bg-primary text-white font-medium rounded-lg hover:bg-primary-600 transition-colors"
+                className="ml-2 px-5 py-2 bg-[#730051] text-white font-medium rounded-lg hover:bg-[#5a0040] transition-colors"
               >
                 Sign In
               </Link>
@@ -173,74 +171,137 @@ const Header = () => {
 
           {/* Mobile Menu Button */}
           <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className={`md:hidden p-2 rounded-lg transition-colors ${
-              isScrolled ? 'text-text-primary' : 'text-white'
-            }`}
+            onClick={toggleMenu}
+            className="md:hidden p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
             aria-label="Toggle menu"
           >
-            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            {isMenuVisible ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
       </div>
-
-      {/* Mobile Menu */}
-      {isMenuOpen && (
-        <div className="md:hidden fixed inset-0 top-16 bg-white z-fixed animate-fade-in">
-          <nav className="flex flex-col p-4 space-y-1">
-            <Link
-              to="/"
-              className="px-4 py-3 text-text-primary font-medium rounded-lg hover:bg-gray-100"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Home
-            </Link>
-
-            {quickLinks.map((link, index) => (
-              <Link
-                key={index}
-                to={link.href}
-                className="px-4 py-3 text-text-secondary rounded-lg hover:bg-gray-100"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {link.label}
-              </Link>
-            ))}
-
-            <a
-              href="#about"
-              className="px-4 py-3 text-text-primary font-medium rounded-lg hover:bg-gray-100"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              About
-            </a>
-
-            <div className="pt-4 mt-4 border-t border-border">
-              {userData ? (
-                <button
-                  onClick={() => {
-                    navigate('/home');
-                    setIsMenuOpen(false);
-                  }}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-primary-50 text-primary font-medium rounded-lg"
-                >
-                  <User size={18} />
-                  {userData.username}
-                </button>
-              ) : (
-                <Link
-                  to="/signIn"
-                  className="block w-full text-center px-4 py-3 bg-primary text-white font-medium rounded-lg"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Sign In
-                </Link>
-              )}
-            </div>
-          </nav>
-        </div>
-      )}
     </header>
+
+    {/* Mobile Menu - Outside header to escape backdrop-blur stacking context */}
+    {isMenuVisible && (
+      <div
+        style={{
+          position: 'fixed',
+          top: '64px',
+          left: 0,
+          right: 0,
+          zIndex: 999999,
+          backgroundColor: '#ffffff',
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
+          borderBottomLeftRadius: '16px',
+          borderBottomRightRadius: '16px',
+          maxHeight: 'calc(100vh - 80px)',
+          overflowY: 'auto',
+          opacity: isMenuOpen ? 1 : 0,
+          transform: isMenuOpen ? 'translateY(0)' : 'translateY(-20px)',
+          transition: 'opacity 0.3s ease, transform 0.3s ease',
+        }}
+      >
+        <nav
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            padding: '16px',
+            gap: '4px',
+            backgroundColor: '#ffffff',
+          }}
+        >
+          <Link
+            to="/"
+            style={{
+              padding: '12px 16px',
+              color: '#1f2937',
+              fontWeight: 500,
+              borderRadius: '8px',
+              backgroundColor: '#ffffff',
+            }}
+            onClick={closeMenu}
+          >
+            Home
+          </Link>
+
+          {quickLinks.map((link, index) => (
+            <Link
+              key={index}
+              to={link.href}
+              style={{
+                padding: '12px 16px',
+                color: '#4b5563',
+                borderRadius: '8px',
+                backgroundColor: '#ffffff',
+              }}
+              onClick={closeMenu}
+            >
+              {link.label}
+            </Link>
+          ))}
+
+          <a
+            href="#about"
+            style={{
+              padding: '12px 16px',
+              color: '#1f2937',
+              fontWeight: 500,
+              borderRadius: '8px',
+              backgroundColor: '#ffffff',
+            }}
+            onClick={closeMenu}
+          >
+            About
+          </a>
+
+          <div style={{ paddingTop: '16px', marginTop: '16px', borderTop: '1px solid #e5e7eb' }}>
+            {userData ? (
+              <button
+                onClick={() => {
+                  navigate('/home');
+                  closeMenu();
+                }}
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  padding: '12px 16px',
+                  backgroundColor: '#f3f4f6',
+                  color: '#374151',
+                  fontWeight: 500,
+                  borderRadius: '8px',
+                  border: 'none',
+                  cursor: 'pointer',
+                }}
+              >
+                <User size={18} />
+                {userData.username}
+              </button>
+            ) : (
+              <Link
+                to="/signIn"
+                style={{
+                  display: 'block',
+                  width: '100%',
+                  textAlign: 'center',
+                  padding: '12px 16px',
+                  backgroundColor: '#730051',
+                  color: 'white',
+                  fontWeight: 500,
+                  borderRadius: '8px',
+                }}
+                onClick={closeMenu}
+              >
+                Sign In
+              </Link>
+            )}
+          </div>
+        </nav>
+      </div>
+    )}
+    </>
   );
 };
 

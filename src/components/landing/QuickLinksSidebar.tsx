@@ -80,17 +80,17 @@ const QuickLinksSidebar = ({ isLoggedIn = false }: QuickLinksSidebarProps) => {
   ];
 
   return (
-    <div className="fixed right-4 top-1/2 -translate-y-1/2 z-fixed hidden lg:flex flex-col gap-2">
+    <div className="fixed right-4 top-1/2 -translate-y-1/2 z-50 hidden lg:flex flex-col gap-2">
       {quickLinks.map((link, index) => {
         const Icon = link.icon;
         return (
           <button
             key={index}
             onClick={link.action}
-            className="group relative w-11 h-11 flex items-center justify-center bg-white rounded-xl shadow-soft border border-border hover:border-primary-200 hover:shadow-card transition-all duration-300"
+            className="group relative w-11 h-11 flex items-center justify-center bg-white rounded-xl shadow-md border border-gray-200 hover:border-purple-300 hover:shadow-lg transition-all duration-300"
             aria-label={link.label}
           >
-            <Icon size={18} className="text-text-secondary group-hover:text-primary transition-colors" />
+            <Icon size={18} className="text-gray-500 group-hover:text-[#730051] transition-colors" />
 
             {/* Tooltip */}
             <span className="absolute right-full mr-3 px-3 py-1.5 bg-gray-900 text-white text-xs font-medium rounded-lg whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none">

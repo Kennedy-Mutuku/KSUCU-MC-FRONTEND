@@ -9,6 +9,31 @@ html{
     scroll-behavior:smooth;
 }
 
+/* Modern thin scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c4c4c4;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a0a0a0;
+}
+
+/* Firefox scrollbar */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #c4c4c4 transparent;
+}
+
 *,*::before,*::after{
     box-sizing: border-box;
     -webkit-user-drag: none;

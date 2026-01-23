@@ -4,6 +4,6 @@ export { default as WeeklyActivities } from './WeeklyActivities';
 export { default as ForumsSection } from './ForumsSection';
 export { default as AboutSection } from './AboutSection';
 export { default as AttendanceSection } from './AttendanceSection';
-export { default as QuickLinksSidebar } from './QuickLinksSidebar';
+export { default as QuickLinksButton } from './QuickLinksButton';
 export { default as Footer } from './Footer';
 export { default as Header } from './Header';
