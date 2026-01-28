@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
@@ -12,7 +12,8 @@ import {
     faNewspaper,
     faBox,
     faBookOpen,
-    faHeart
+    faHeart,
+    faSignOutAlt
 } from '@fortawesome/free-solid-svg-icons';
 
 const WorshipDocketAdmin: React.FC = () => {
@@ -23,17 +24,36 @@ const WorshipDocketAdmin: React.FC = () => {
     const [message, setMessage] = useState('');
     const [selectedRole, setSelectedRole] = useState<string>('');
 
+    // Check for existing session login on mount
+    useEffect(() => {
+        const storedAuth = sessionStorage.getItem('adminAuth');
+        if (storedAuth === 'Overseer') {
+            setAuthenticated(true);
+        }
+    }, []);
+
     const handleLogin = () => {
         if (password === 'Overseer') {
             setAuthenticated(true);
             setAuthError('');
             setMessage('Successfully logged in to Leadership Admin');
+
+            // Persist login for this session
+            sessionStorage.setItem('adminAuth', 'Overseer');
+
             setTimeout(() => setMessage(''), 3000);
         } else {
             setAuthError('Invalid password');
             setTimeout(() => setAuthError(''), 3000);
         }
         setPassword('');
+    };
+
+    const handleLogout = () => {
+        setAuthenticated(false);
+        sessionStorage.removeItem('adminAuth');
+        setMessage('Logged out successfully');
+        setTimeout(() => setMessage(''), 3000);
     };
 
     const leadershipRoles = [
@@ -106,11 +126,34 @@ const WorshipDocketAdmin: React.FC = () => {
             <UniversalHeader />
             <div className={styles.container}>
                 <div className={styles.adminHeader}>
-                    <h1>
-                        <FontAwesomeIcon icon={faUsers} />
-                        Leadership Attendance Administration
-                    </h1>
-                    <p>Select your leadership role to manage centralized attendance</p>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+                        <div>
+                            <h1>
+                                <FontAwesomeIcon icon={faUsers} />
+                                Leadership Attendance Administration
+                            </h1>
+                            <p>Select your leadership role to manage centralized attendance</p>
+                        </div>
+                        <button
+                            onClick={handleLogout}
+                            title="Sign out of admin session"
+                            style={{
+                                background: 'transparent',
+                                border: '1px solid #730051',
+                                color: '#730051',
+                                padding: '8px 15px',
+                                borderRadius: '5px',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                                fontSize: '14px'
+                            }}
+                        >
+                            <FontAwesomeIcon icon={faSignOutAlt} />
+                            Log Out
+                        </button>
+                    </div>
                 </div>
 
                 {message && (
