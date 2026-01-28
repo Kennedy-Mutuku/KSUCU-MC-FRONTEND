@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
 import ModernNewsDisplay from '../components/ModernNewsDisplay';
 import styles from '../styles/worshipDocketAdmin.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-    faUsers, 
+import {
+    faUsers,
     faCheckCircle,
     faArrowRight,
     faNewspaper,
@@ -15,6 +16,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 const WorshipDocketAdmin: React.FC = () => {
+    const navigate = useNavigate();
     const [authenticated, setAuthenticated] = useState(false);
     const [password, setPassword] = useState('');
     const [authError, setAuthError] = useState('');
@@ -37,7 +39,7 @@ const WorshipDocketAdmin: React.FC = () => {
     const leadershipRoles = [
         'Chairperson',
         'Vice Chairperson',
-        'Secretary', 
+        'Secretary',
         'Treasurer',
         'Publicity Secretary',
         'Worship Coordinator',
@@ -56,7 +58,7 @@ const WorshipDocketAdmin: React.FC = () => {
             sessionStorage.setItem('adminAuth', 'Overseer');
             sessionStorage.setItem('leadershipRole', role);
             // This will redirect to the session management page
-            window.location.href = `/attendance-session-management?role=${encodeURIComponent(role)}`;
+            navigate(`/attendance-session-management?role=${encodeURIComponent(role)}`);
         }, 1500);
     };
 
@@ -68,13 +70,13 @@ const WorshipDocketAdmin: React.FC = () => {
                     <div className={styles.loginCard}>
                         <h2>Leadership Admin</h2>
                         <p>Enter admin password to access leadership attendance management</p>
-                        
+
                         {authError && (
                             <div className={styles.error}>
                                 {authError}
                             </div>
                         )}
-                        
+
                         <div className={styles.inputGroup}>
                             <input
                                 type="password"
@@ -85,8 +87,8 @@ const WorshipDocketAdmin: React.FC = () => {
                                 onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
                             />
                         </div>
-                        
-                        <button 
+
+                        <button
                             className={styles.loginButton}
                             onClick={handleLogin}
                         >
@@ -101,7 +103,7 @@ const WorshipDocketAdmin: React.FC = () => {
 
     return (
         <>
-                  <UniversalHeader />
+            <UniversalHeader />
             <div className={styles.container}>
                 <div className={styles.adminHeader}>
                     <h1>
@@ -126,7 +128,7 @@ const WorshipDocketAdmin: React.FC = () => {
 
                 {/* Main Admin Functions Grid */}
                 <div className={styles.adminFunctionsGrid}>
-                    
+
                     {/* 1. News Administration */}
                     <div className={styles.functionCard}>
                         <div className={styles.functionNumber}>1</div>
@@ -136,12 +138,12 @@ const WorshipDocketAdmin: React.FC = () => {
                                 News Administration
                             </h3>
                             <p>Update news, manage events with countdown timers, and add photos</p>
-                            <button 
+                            <button
                                 className={styles.functionButton}
                                 onClick={() => {
                                     // Store authentication state
                                     sessionStorage.setItem('adminAuth', 'Overseer');
-                                    window.location.href = '/news-admin';
+                                    navigate('/news-admin');
                                 }}
                             >
                                 News Admin
@@ -159,12 +161,12 @@ const WorshipDocketAdmin: React.FC = () => {
                                 Media Management
                             </h3>
                             <p>Manage photos and media for the KSUCU website gallery</p>
-                            <button 
+                            <button
                                 className={styles.functionButton}
                                 onClick={() => {
                                     // Store authentication state  
                                     sessionStorage.setItem('adminAuth', 'Overseer');
-                                    window.location.href = '/media-admin';
+                                    navigate('/media-admin');
                                 }}
                             >
                                 Manage Media Gallery
@@ -182,12 +184,12 @@ const WorshipDocketAdmin: React.FC = () => {
                                 Requisitions Management
                             </h3>
                             <p>View, approve, and manage equipment requisition requests from members</p>
-                            <button 
+                            <button
                                 className={styles.functionButton}
                                 onClick={() => {
                                     // Store authentication state
                                     sessionStorage.setItem('adminAuth', 'Overseer');
-                                    window.location.href = '/requisitions-admin';
+                                    navigate('/requisitions-admin');
                                 }}
                             >
                                 Manage Requisitions
@@ -205,12 +207,12 @@ const WorshipDocketAdmin: React.FC = () => {
                                 Bible Study Administration
                             </h3>
                             <p>Manage Bible study registrations, residences, and create balanced groups</p>
-                            <button 
+                            <button
                                 className={styles.functionButton}
                                 onClick={() => {
                                     // Store authentication state
                                     sessionStorage.setItem('adminAuth', 'Overseer');
-                                    window.location.href = '/adminBs';
+                                    navigate('/adminBs');
                                 }}
                             >
                                 Bible Study Admin
@@ -228,12 +230,12 @@ const WorshipDocketAdmin: React.FC = () => {
                                 Compassion & Counseling Administration
                             </h3>
                             <p>Manage help requests, donations, and support those in need</p>
-                            <button 
+                            <button
                                 className={styles.functionButton}
                                 onClick={() => {
                                     // Store authentication state
                                     sessionStorage.setItem('adminAuth', 'Overseer');
-                                    window.location.href = '/compassion-counseling-admin';
+                                    navigate('/compassion-counseling-admin');
                                 }}
                             >
                                 Compassion Admin
@@ -253,7 +255,7 @@ const WorshipDocketAdmin: React.FC = () => {
                             <p>Select your leadership role to access centralized attendance management</p>
                             <div className={styles.leadershipRoleGrid}>
                                 {leadershipRoles.map((role) => (
-                                    <button 
+                                    <button
                                         key={role}
                                         className={styles.leadershipRoleButton}
                                         onClick={() => handleRoleSelection(role)}

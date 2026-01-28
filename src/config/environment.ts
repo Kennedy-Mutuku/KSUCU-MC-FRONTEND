@@ -14,6 +14,7 @@ interface ApiConfig {
     usersUpdate: string;
     usersBibleStudy: string;
     usersCountSaved: string;
+    usersSearch: string;
     newsAdmin: string;
     newsAdminUpload: string;
     newsAdminLogout: string;
@@ -109,6 +110,7 @@ const developmentConfig: ApiConfig = {
     usersUpdate: '/users/update',
     usersBibleStudy: '/users/bibleStudy',
     usersCountSaved: '/users/countSaved',
+    usersSearch: '/users/search',
     newsAdmin: '/adminnews/login',
     newsAdminUpload: '/adminnews/upload',
     newsAdminLogout: '/adminnews/logout',
@@ -202,6 +204,7 @@ const productionConfig: ApiConfig = {
     usersUpdate: '/users/update',
     usersBibleStudy: '/users/bibleStudy',
     usersCountSaved: '/users/countSaved',
+    usersSearch: '/users/search',
     newsAdmin: '/adminnews/login',
     newsAdminUpload: '/adminnews/upload',
     newsAdminLogout: '/adminnews/logout',
@@ -283,7 +286,7 @@ export const config = isDevelopment ? developmentConfig : productionConfig;
 
 export const getApiUrl = (endpoint: keyof ApiConfig['endpoints'] | string, queryParams?: string): string => {
   // Handle both predefined endpoints and custom paths
-  const path = (endpoint in config.endpoints) 
+  const path = (endpoint in config.endpoints)
     ? config.endpoints[endpoint as keyof ApiConfig['endpoints']]
     : `/${endpoint}`;
   const url = `${config.baseUrl}${path}`;
@@ -296,15 +299,15 @@ export const getBaseUrl = (): string => {
 
 export const getImageUrl = (imagePath: string): string => {
   if (!imagePath) return '';
-  
+
   // If it's already a full URL, return as is
   if (imagePath.startsWith('http')) return imagePath;
-  
+
   // If it starts with /, treat as relative to base URL
   if (imagePath.startsWith('/')) {
     return `${config.baseUrl}${imagePath}`;
   }
-  
+
   // Otherwise, prepend uploads path
   return `${config.baseUrl}/uploads/${imagePath}`;
 };

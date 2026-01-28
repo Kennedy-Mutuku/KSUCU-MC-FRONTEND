@@ -5,8 +5,8 @@ import styles from '../styles/attendanceSession.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getApiUrl } from '../config/environment';
 import { formatDateTime, getTimeAgo, formatSessionDuration, isRecentTime } from '../utils/timeUtils';
-import { 
-    faUsers, 
+import {
+    faUsers,
     faPlay,
     faStop,
     faRedo,
@@ -42,7 +42,7 @@ const AttendanceSessionManagement: React.FC = () => {
     const [leadershipRole, setLeadershipRole] = useState<string>('');
     const [attendanceSession, setAttendanceSession] = useState<AttendanceSession | null>(null);
     const [attendanceRecords, setAttendanceRecords] = useState<AttendanceRecord[]>([]);
-    const [globalActiveSession, setGlobalActiveSession] = useState<{leadershipRole: string; isActive: boolean; startTime?: string; sessionId?: string} | null>(null);
+    const [globalActiveSession, setGlobalActiveSession] = useState<{ leadershipRole: string; isActive: boolean; startTime?: string; sessionId?: string } | null>(null);
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState('');
 
@@ -50,39 +50,39 @@ const AttendanceSessionManagement: React.FC = () => {
         // Get role from URL params
         const urlParams = new URLSearchParams(window.location.search);
         const role = urlParams.get('role');
-        
+
         if (!role) {
             setMessage('No leadership role provided in URL. Please access through admin dashboard.');
             return;
         }
 
-        const decodedRole = decodeURIComponent(role);
+        const decodedRole = decodeURIComponent(role).trim();
         console.log('Role from URL:', role);
         console.log('Decoded role:', decodedRole);
-        
+
         // For now, allow ANY non-empty role to access - we'll validate on the backend
-        if (!decodedRole || decodedRole.trim() === '') {
+        if (!decodedRole || decodedRole === '') {
             setMessage('Empty leadership role provided. Please access through admin dashboard.');
             return;
         }
-        
+
         // Set the leadership role and initialize
         setLeadershipRole(decodedRole);
-        
+
         // Clear any existing messages immediately
         setMessage('');
-        
+
         console.log('✅ Successfully initialized with role:', decodedRole);
         console.log('✅ Loading session data...');
-        
+
         loadSessionData(decodedRole);
-        
+
         // Set up periodic refresh for attendance records every 2 seconds for real-time updates
         const refreshInterval = setInterval(() => {
             console.log('Auto-refreshing session data...');
             loadSessionData(decodedRole);
         }, 2000); // Reduced to 2 seconds for faster updates
-        
+
         return () => clearInterval(refreshInterval);
     }, []);
 
@@ -101,7 +101,7 @@ const AttendanceSessionManagement: React.FC = () => {
                     'Cache-Control': 'no-cache'
                 }
             });
-            
+
             if (response.ok) {
                 const data = await response.json();
                 if (data.session) {
@@ -112,21 +112,22 @@ const AttendanceSessionManagement: React.FC = () => {
                         startTime: data.session.startTime,
                         sessionId: data.session._id
                     });
-                    
+
                     // Check if this admin owns the current session using backend response
                     const ownsSession = data.session.isOwnedByRequester === true;
                     console.log(`Session ownership check: isOwnedByRequester = ${data.session.isOwnedByRequester}`, ownsSession);
+
                     if (ownsSession) {
                         console.log(`${role} owns the current session - loading records`);
                         // This admin owns the session - load their records
                         setAttendanceSession(data.session);
-                        
+
                         if (data.session._id) {
                             try {
                                 // Force fresh data by adding timestamp and no-cache headers
                                 const recordsUrl = `${getApiUrl('attendanceRecords')}/${data.session._id}?t=${timestamp}&refresh=${Math.random()}&role=${encodeURIComponent(role)}`;
                                 console.log(`Fetching attendance records from: ${recordsUrl}`);
-                                
+
                                 const recordsResponse = await fetch(recordsUrl, {
                                     method: 'GET',
                                     credentials: 'include',
@@ -136,17 +137,12 @@ const AttendanceSessionManagement: React.FC = () => {
                                         'Expires': '0'
                                     }
                                 });
-                                
+
                                 if (recordsResponse.ok) {
                                     const recordsData = await recordsResponse.json();
                                     const records = recordsData.records || [];
                                     console.log(`${role} loaded ${records.length} attendance records from session ${data.session._id}`);
-                                    console.log('Records data:', recordsData);
-                                    console.log('Individual records:', records);
-                                    console.log('Record IDs:', records.map((r: { _id: string }) => r._id));
-                                    
-                                    // Always update records to ensure we have the latest data
-                                    // Force React to update by creating completely new array with mapped objects
+
                                     const processedRecords = records.map((record: AttendanceRecord) => ({
                                         _id: record._id,
                                         userName: record.userName,
@@ -157,29 +153,14 @@ const AttendanceSessionManagement: React.FC = () => {
                                         signedAt: record.signedAt,
                                         signature: record.signature || ''
                                     }));
-                                    
-                                    console.log('Updating attendance records state with', processedRecords.length, 'records');
-                                    console.log('Processed records:', processedRecords);
-                                    
-                                    // Force a state update with a completely new reference
-                                    setAttendanceRecords(prevRecords => {
-                                        console.log('Previous records:', prevRecords.length);
-                                        console.log('New records:', processedRecords.length);
-                                        return processedRecords;
-                                    });
-                                    
-                                    // Update the session with actual record count
+
+                                    setAttendanceRecords(processedRecords);
                                     setAttendanceSession({
                                         ...data.session,
                                         attendanceCount: records.length,
                                         totalAttendees: records.length
                                     });
-                                    
-                                    console.log('State update complete. Records should now display.');
                                 } else {
-                                    console.error(`Failed to load records for ${role}:`, recordsResponse.status, recordsResponse.statusText);
-                                    const errorText = await recordsResponse.text();
-                                    console.error('Error response:', errorText);
                                     setAttendanceRecords([]);
                                 }
                             } catch (error) {
@@ -189,10 +170,13 @@ const AttendanceSessionManagement: React.FC = () => {
                         }
                     } else {
                         console.log(`${role} does NOT own the session - session belongs to ${data.session.leadershipRole}`);
-                        // Another admin owns the session
+                        // Another admin owns the session - WE MUST STILL SHOW THIS STATE
+                        // Instead of setting session to null, we keep it null but verify globalActiveSession is set
+                        // The UI will look at globalActiveSession to show the "Force Close" screen
                         setAttendanceSession(null);
                         setAttendanceRecords([]);
-                        setMessage(`${data.session.leadershipRole} currently has an active session. You cannot see their attendance list. You must wait for them to close it, or force close it to start your own session.`);
+                        // Clear message - the UI block will explain what's happening
+                        setMessage('');
                     }
                 } else {
                     console.log('No active session - admin can start new session');
@@ -216,7 +200,7 @@ const AttendanceSessionManagement: React.FC = () => {
         setLoading(true);
         try {
             console.log('Starting session via backend API...');
-            
+
             // Call backend API to start session
             const response = await fetch(getApiUrl('attendanceSessionOpen'), {
                 method: 'POST',
@@ -225,7 +209,7 @@ const AttendanceSessionManagement: React.FC = () => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    leadershipRole: leadershipRole,
+                    leadershipRole: leadershipRole.trim(),
                     ministry: 'General'
                 })
             });
@@ -233,7 +217,7 @@ const AttendanceSessionManagement: React.FC = () => {
             if (response.ok) {
                 const data = await response.json();
                 console.log('Session started successfully:', data);
-                
+
                 const newSession: AttendanceSession = {
                     _id: data.session._id || Date.now().toString(),
                     leadershipRole,
@@ -241,9 +225,9 @@ const AttendanceSessionManagement: React.FC = () => {
                     startTime: data.session.startTime || new Date().toISOString(),
                     totalAttendees: 0
                 };
-                
+
                 // Backend-only mode - no localStorage backup needed for cross-device functionality
-                
+
                 setAttendanceSession(newSession);
                 setGlobalActiveSession({
                     leadershipRole,
@@ -251,12 +235,19 @@ const AttendanceSessionManagement: React.FC = () => {
                     startTime: newSession.startTime,
                     sessionId: newSession._id
                 });
+
+                // Slight delay to ensure DB propagation before reload
+                setTimeout(() => {
+                    console.log('Reloading session data after start...');
+                    loadSessionData(leadershipRole);
+                }, 500);
+
                 setMessage('Attendance session opened - Users across all devices can now sign attendance');
                 setTimeout(() => setMessage(''), 5000);
             } else {
                 const errorData = await response.json();
                 console.error('Failed to start session:', errorData);
-                
+
                 if (response.status === 409) {
                     // Session conflict
                     setMessage(`Cannot open session: ${errorData.activeSession?.leadershipRole || 'Another leader'} already has an active session. Please coordinate with them to close their session first.`);
@@ -276,13 +267,13 @@ const AttendanceSessionManagement: React.FC = () => {
 
     const closeSession = async () => {
         if (!attendanceSession) return;
-        
+
         if (!confirm('Are you sure you want to close the attendance session?')) return;
-        
+
         setLoading(true);
         try {
             console.log('Closing session via backend API...');
-            
+
             // Close session via backend API
             try {
                 const response = await fetch(getApiUrl('attendanceSessionClose'), {
@@ -292,7 +283,7 @@ const AttendanceSessionManagement: React.FC = () => {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        leadershipRole: leadershipRole,
+                        leadershipRole: leadershipRole.trim(),
                         totalAttendees: attendanceRecords.length
                     })
                 });
@@ -300,16 +291,16 @@ const AttendanceSessionManagement: React.FC = () => {
                 if (response.ok) {
                     const data = await response.json();
                     console.log('Session closed successfully via backend:', data);
-                    
+
                     const updatedSession = {
                         ...attendanceSession,
                         isActive: false,
                         endTime: data.session.endTime || new Date().toISOString(),
                         totalAttendees: attendanceRecords.length
                     };
-                    
+
                     // Backend-only mode - session closed centrally
-                    
+
                     setAttendanceSession(updatedSession);
                     setGlobalActiveSession(null);
                     setMessage('Attendance session closed - No longer accepting new attendance across all devices');
@@ -335,11 +326,11 @@ const AttendanceSessionManagement: React.FC = () => {
 
     const resetSession = async () => {
         if (!confirm('⚠️ RESET WARNING!\n\nThis will permanently DELETE ALL attendance records from all sessions and create a fresh start.\n\nThis action cannot be undone!\n\nAre you sure you want to proceed?')) return;
-        
+
         setLoading(true);
         try {
             console.log('🔄 RESETTING entire attendance system...');
-            
+
             // Call the dedicated reset endpoint that clears everything
             const response = await fetch(getApiUrl('attendanceSessionReset'), {
                 method: 'POST',
@@ -348,15 +339,15 @@ const AttendanceSessionManagement: React.FC = () => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    leadershipRole: leadershipRole
+                    leadershipRole: leadershipRole.trim()
                 })
-            
+
             });
 
             if (response.ok) {
                 const data = await response.json();
                 console.log('✅ System reset completed:', data);
-                
+
                 const newSession: AttendanceSession = {
                     _id: data.session._id,
                     leadershipRole,
@@ -364,7 +355,7 @@ const AttendanceSessionManagement: React.FC = () => {
                     startTime: data.session.startTime,
                     totalAttendees: 0
                 };
-                
+
                 // Clear all local state
                 setAttendanceRecords([]);
                 setAttendanceSession(newSession);
@@ -374,10 +365,10 @@ const AttendanceSessionManagement: React.FC = () => {
                     startTime: newSession.startTime,
                     sessionId: newSession._id
                 });
-                
+
                 setMessage(`🔄 Complete system reset successful! Cleared ${data.recordsCleared} attendance records and created fresh session.`);
                 setTimeout(() => setMessage(''), 8000);
-                
+
                 // Refresh data from backend to confirm clean state
                 setTimeout(() => {
                     loadSessionData(leadershipRole);
@@ -409,7 +400,7 @@ const AttendanceSessionManagement: React.FC = () => {
         setLoading(true);
         try {
             console.log(`🚨 Force closing session owned by ${globalActiveSession.leadershipRole}`);
-            
+
             const response = await fetch(getApiUrl('attendanceSessionForceClose'), {
                 method: 'POST',
                 credentials: 'include',
@@ -417,22 +408,22 @@ const AttendanceSessionManagement: React.FC = () => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    newLeadershipRole: leadershipRole
+                    newLeadershipRole: leadershipRole.trim()
                 })
             });
 
             if (response.ok) {
                 const data = await response.json();
                 console.log('✅ Session forcefully closed:', data);
-                
+
                 // Clear current session data
                 setAttendanceSession(null);
                 setGlobalActiveSession(null);
                 setAttendanceRecords([]);
-                
+
                 setMessage(`🔄 ${data.closedSession.leadershipRole}'s session has been forcefully closed. You can now start your own session.`);
                 setTimeout(() => setMessage(''), 8000);
-                
+
                 // Refresh data to show updated state
                 loadSessionData(leadershipRole);
             } else {
@@ -462,7 +453,7 @@ const AttendanceSessionManagement: React.FC = () => {
             // Normalize userType (handle undefined/null cases)
             const aIsVisitor = a.userType === 'visitor' || (a.regNo && a.regNo.startsWith('VISITOR-'));
             const bIsVisitor = b.userType === 'visitor' || (b.regNo && b.regNo.startsWith('VISITOR-'));
-            
+
             // First sort by user type: visitors first
             if (aIsVisitor !== bIsVisitor) {
                 return aIsVisitor ? -1 : 1;
@@ -588,9 +579,9 @@ const AttendanceSessionManagement: React.FC = () => {
                     </thead>
                     <tbody>
                         ${sortedRecords.map((record, index) => {
-                            // Detect if this is a visitor record
-                            const isVisitor = record.userType === 'visitor' || (record.regNo && record.regNo.startsWith('VISITOR-'));
-                            return `
+            // Detect if this is a visitor record
+            const isVisitor = record.userType === 'visitor' || (record.regNo && record.regNo.startsWith('VISITOR-'));
+            return `
                             <tr>
                                 <td class="number-col">${index + 1}</td>
                                 <td class="name-col">${record.userName}</td>
@@ -601,13 +592,13 @@ const AttendanceSessionManagement: React.FC = () => {
                                 <td>${record.phoneNumber || 'N/A'}</td>
                                 <td>${formatDateTime(record.signedAt, { format: 'short', includeSeconds: false })}</td>
                                 <td style="height: 30px; border: 1px solid #ccc; padding: 2px; text-align: center;">
-                                    ${record.signature && record.signature.startsWith('data:image') ? 
-                                        `<img src="${record.signature}" style="max-width: 100%; max-height: 26px; object-fit: contain;" alt="Signature" />` : 
-                                        '<span style="font-size: 10px; color: #999;">No signature</span>'
-                                    }
+                                    ${record.signature && record.signature.startsWith('data:image') ?
+                    `<img src="${record.signature}" style="max-width: 100%; max-height: 26px; object-fit: contain;" alt="Signature" />` :
+                    '<span style="font-size: 10px; color: #999;">No signature</span>'
+                }
                                 </td>
                             </tr>`;
-                        }).join('')}
+        }).join('')}
                     </tbody>
                 </table>
 
@@ -658,7 +649,7 @@ const AttendanceSessionManagement: React.FC = () => {
                     <button onClick={goBack} className={styles.backButton}>
                         <FontAwesomeIcon icon={faArrowLeft} /> Back to Leadership Selection
                     </button>
-                    
+
                     {/* Active Leadership Role Indicator */}
                     <div className={styles.activeRoleIndicator}>
                         <span className={styles.activeRoleIcon}>👑</span>
@@ -666,7 +657,7 @@ const AttendanceSessionManagement: React.FC = () => {
                             <strong>{leadershipRole}</strong> Control Active
                         </div>
                     </div>
-                    
+
                     <h1>
                         <FontAwesomeIcon icon={faUsers} />
                         Centralized Attendance Management
@@ -682,10 +673,10 @@ const AttendanceSessionManagement: React.FC = () => {
 
                 {/* Debug Info - Remove in production */}
                 <div style={{ background: '#f0f0f0', padding: '10px', margin: '10px 0', fontSize: '12px', fontFamily: 'monospace' }}>
-                    <strong>🔧 DEBUG INFO:</strong><br/>
-                    <strong>Current Role:</strong> {leadershipRole}<br/>
-                    <strong>Global Active Session:</strong> {globalActiveSession ? `${globalActiveSession.leadershipRole} (${globalActiveSession.isActive ? 'active' : 'inactive'})` : 'None'}<br/>
-                    <strong>Should Show Force Close:</strong> {!!(globalActiveSession && globalActiveSession.leadershipRole !== leadershipRole) ? 'YES' : 'NO'}<br/>
+                    <strong>🔧 DEBUG INFO:</strong><br />
+                    <strong>Current Role:</strong> {leadershipRole}<br />
+                    <strong>Global Active Session:</strong> {globalActiveSession ? `${globalActiveSession.leadershipRole} (${globalActiveSession.isActive ? 'active' : 'inactive'})` : 'None'}<br />
+                    <strong>Should Show Force Close:</strong> {!!(globalActiveSession && globalActiveSession.leadershipRole !== leadershipRole) ? 'YES' : 'NO'}<br />
                     <strong>Comparison:</strong> "{globalActiveSession?.leadershipRole}" !== "{leadershipRole}" = {globalActiveSession?.leadershipRole !== leadershipRole ? 'TRUE' : 'FALSE'}
                 </div>
 
@@ -715,7 +706,7 @@ const AttendanceSessionManagement: React.FC = () => {
                             🔄 Refresh
                         </button>
                     </div>
-                    
+
                     <div className={styles.sessionStatus}>
                         {attendanceSession && attendanceSession.isActive ? (
                             <div className={`${styles.statusCard} ${styles.active}`}>
@@ -754,23 +745,18 @@ const AttendanceSessionManagement: React.FC = () => {
 
                     <div className={styles.controlButtons}>
                         {/* Show different UI based on session ownership */}
-                        {globalActiveSession && globalActiveSession.leadershipRole !== leadershipRole ? (
+                        {globalActiveSession && globalActiveSession.isActive && globalActiveSession.leadershipRole !== leadershipRole ? (
                             // Another admin has an active session
                             <>
-                                <div className={styles.blockedSessionInfo}>
-                                    <p><strong>Session Blocked</strong></p>
-                                    <p><strong>{globalActiveSession.leadershipRole}</strong> has an active session</p>
-                                    <p>Started: {formatDateTime(globalActiveSession.startTime || '', { format: 'medium', includeSeconds: true })} ({getTimeAgo(globalActiveSession.startTime || '')})</p>
-                                </div>
-                                
                                 <button
                                     onClick={forceCloseSession}
                                     disabled={loading}
-                                    className={`${styles.controlButton} ${styles.forceButton}`}
+                                    className={`${styles.controlButton} ${styles.forceButton} ${styles.fullWidth}`}
                                     title={`Force close ${globalActiveSession.leadershipRole}'s session`}
+                                    style={{ backgroundColor: '#dc3545', color: 'white' }}
                                 >
                                     <FontAwesomeIcon icon={faStop} />
-                                    Force Close Their Session
+                                    Force Close {globalActiveSession.leadershipRole}'s Session
                                 </button>
                             </>
                         ) : (
@@ -784,16 +770,16 @@ const AttendanceSessionManagement: React.FC = () => {
                                     <FontAwesomeIcon icon={faPlay} />
                                     Open Session
                                 </button>
-                                
+
                                 <button
                                     onClick={resetSession}
-                                    disabled={loading || !attendanceSession?.isActive}
+                                    disabled={loading}
                                     className={`${styles.controlButton} ${styles.resetButton}`}
                                 >
                                     <FontAwesomeIcon icon={faRedo} />
                                     Reset Attendance
                                 </button>
-                                
+
                                 <button
                                     onClick={closeSession}
                                     disabled={loading || !attendanceSession?.isActive}
@@ -842,17 +828,17 @@ const AttendanceSessionManagement: React.FC = () => {
                                                 const isVisitor = record.userType === 'visitor' || (record.regNo && record.regNo.startsWith('VISITOR-'));
                                                 return isVisitor ? (
                                                     <p>
-                                                        <strong>{record.userName}</strong> (Visitor) | 
-                                                        <strong>Phone:</strong> {record.phoneNumber || 'Not provided'} | 
+                                                        <strong>{record.userName}</strong> (Visitor) |
+                                                        <strong>Phone:</strong> {record.phoneNumber || 'Not provided'} |
                                                         <strong>Signed:</strong> {formatDateTime(record.signedAt, { format: 'medium', includeSeconds: true })} ({getTimeAgo(record.signedAt)})
                                                     </p>
                                                 ) : (
                                                     <p>
-                                                        <strong>{record.userName}</strong> (Student) | 
-                                                        <strong>Reg:</strong> {record.regNo} | 
-                                                        <strong>Course:</strong> {record.course || record.ministry} | 
-                                                        <strong>Year:</strong> {record.year} | 
-                                                        <strong>Phone:</strong> {record.phoneNumber || 'Not provided'} | 
+                                                        <strong>{record.userName}</strong> (Student) |
+                                                        <strong>Reg:</strong> {record.regNo} |
+                                                        <strong>Course:</strong> {record.course || record.ministry} |
+                                                        <strong>Year:</strong> {record.year} |
+                                                        <strong>Phone:</strong> {record.phoneNumber || 'Not provided'} |
                                                         <strong>Signed:</strong> {formatDateTime(record.signedAt, { format: 'medium', includeSeconds: true })} ({getTimeAgo(record.signedAt)})
                                                     </p>
                                                 );
@@ -868,7 +854,7 @@ const AttendanceSessionManagement: React.FC = () => {
                             <FontAwesomeIcon icon={faUsers} className={styles.noRecordsIcon} />
                             <h3>No attendance records yet</h3>
                             <p>
-                                {attendanceSession?.isActive 
+                                {attendanceSession?.isActive
                                     ? 'Session is open - waiting for users to sign attendance...'
                                     : 'Open a session to start collecting attendance'
                                 }
