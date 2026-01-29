@@ -50,13 +50,15 @@ const AttendanceSection = () => {
           headers: {
             'Content-Type': 'application/json',
             'Cache-Control': 'no-cache, no-store, must-revalidate',
-            Pragma: 'no-cache',
+            'Pragma': 'no-cache',
+            'Expires': '0'
           },
         }
       );
 
       if (response.ok) {
         const data = await response.json();
+        // console.log('Session Polling Data:', data);
         if (data.session && data.session.isActive) {
           setActiveSession({
             leadershipRole: data.session.leadershipRole || 'Leader',

@@ -1,7 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from '../styles/attendanceSignin.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheckCircle, faExclamationTriangle, faClock, faUsers } from '@fortawesome/free-solid-svg-icons';
+import {
+    faCheckCircle,
+    faExclamationTriangle,
+    faClock,
+    faUsers,
+    faSearch,
+    faUserCheck,
+    faTimes,
+    faSignature
+} from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import { getApiUrl } from '../config/environment';
 import { formatDateTime, getTimeAgo, isRecentTime } from '../utils/timeUtils';
@@ -12,6 +21,16 @@ interface AttendanceSession {
     isActive: boolean;
     startTime: string;
     endTime?: string;
+    leadershipRole?: string;
+}
+
+interface UserSearchResult {
+    _id: string;
+    username: string;
+    reg: string;
+    course: string;
+    yos: string;
+    phone: string;
 }
 
 interface AttendanceSigninProps {
@@ -27,9 +46,16 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
     const [attendanceFormData, setAttendanceFormData] = useState({ name: '', regNo: '', course: '', year: '', phoneNumber: '', signature: '', userType: 'student' });
     const [deviceAttendance, setDeviceAttendance] = useState<any[]>([]);
 
+    // Quick Search State
+    const [searchQuery, setSearchQuery] = useState('');
+    const [searchResults, setSearchResults] = useState<UserSearchResult[]>([]);
+    const [isSearching, setIsSearching] = useState(false);
+    const [selectedUser, setSelectedUser] = useState<UserSearchResult | null>(null);
+    const searchTimeoutRef = useRef<any>(null);
+
     useEffect(() => {
         checkActiveSession();
-        
+
         // Check for session updates every 10 seconds for cross-device sync
         const interval = setInterval(() => {
             checkActiveSession();
@@ -61,12 +87,12 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
     const checkActiveSession = async () => {
         try {
             console.log('🔍 Checking for active attendance session...');
-            
+
             // Add cache-busting parameters for real-time sync
             const timestamp = Date.now();
             const sessionResponse = await axios.get(
                 `${getApiUrl('attendanceSessionStatus')}?t=${timestamp}&refresh=${Math.random()}`,
-                { 
+                {
                     withCredentials: true,
                     headers: {
                         'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -75,7 +101,7 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
                     }
                 }
             );
-            
+
             if (sessionResponse.data.session) {
                 const sessionData = sessionResponse.data.session;
                 console.log('✅ Active session found:', {
@@ -84,15 +110,15 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
                     leader: sessionData.leadershipRole,
                     isActive: sessionData.isActive
                 });
-                
+
                 // Set session regardless of ministry - global attendance
                 setSession(sessionData);
-                
+
                 // Load current signed attendees for this device
                 try {
                     const recordsResponse = await axios.get(
                         `${getApiUrl('attendanceRecords')}/${sessionData._id}?t=${timestamp}`,
-                        { 
+                        {
                             withCredentials: true,
                             headers: {
                                 'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -126,6 +152,59 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
         }
     };
 
+    // Handle Search Logic
+    const handleSearch = (value: string) => {
+        setSearchQuery(value);
+        if (value.length < 3) {
+            setSearchResults([]);
+            return;
+        }
+
+        if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
+
+        searchTimeoutRef.current = setTimeout(async () => {
+            setIsSearching(true);
+            try {
+                const response = await axios.get(`${getApiUrl('usersSearch')}?query=${encodeURIComponent(value)}`, {
+                    withCredentials: true
+                });
+                setSearchResults(response.data);
+            } catch (err) {
+                console.error('Search error:', err);
+            } finally {
+                setIsSearching(false);
+            }
+        }, 500);
+    };
+
+    const handleSelectUser = (user: UserSearchResult) => {
+        setSelectedUser(user);
+        setAttendanceFormData({
+            name: user.username,
+            regNo: user.reg,
+            course: user.course,
+            year: user.yos,
+            phoneNumber: user.phone,
+            signature: '',
+            userType: 'student'
+        });
+        setSearchQuery('');
+        setSearchResults([]);
+    };
+
+    const resetSelection = () => {
+        setSelectedUser(null);
+        setAttendanceFormData({
+            name: '',
+            regNo: '',
+            course: '',
+            year: '',
+            phoneNumber: '',
+            signature: '',
+            userType: 'student'
+        });
+    };
+
     const signAttendance = async () => {
         // Validate form data based on user type
         if (!attendanceFormData.name || !attendanceFormData.phoneNumber || !attendanceFormData.signature) {
@@ -133,7 +212,7 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
             setTimeout(() => setError(''), 3000);
             return;
         }
-        
+
         // Student-specific validation
         if (attendanceFormData.userType === 'student') {
             if (!attendanceFormData.regNo || !attendanceFormData.course || !attendanceFormData.year) {
@@ -142,7 +221,7 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
                 return;
             }
         }
-        
+
         // Validate phone number (minimum 10 digits)
         const phoneDigits = attendanceFormData.phoneNumber.replace(/\D/g, ''); // Remove all non-digits
         if (phoneDigits.length < 10) {
@@ -161,9 +240,9 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
             const timestamp = Date.now();
             const sessionResponse = await axios.get(
                 `${getApiUrl('attendanceSessionStatus')}?t=${timestamp}&refresh=${Math.random()}`,
-                { 
+                {
                     withCredentials: true,
-                    headers: { 
+                    headers: {
                         'Cache-Control': 'no-cache, no-store, must-revalidate',
                         'Pragma': 'no-cache',
                         'Expires': '0'
@@ -172,7 +251,7 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
             );
 
             const latestSession = sessionResponse.data.session;
-            
+
             if (!latestSession) {
                 setError('No active session found. Please wait for admin to open a session.');
                 setLoading(false);
@@ -227,25 +306,26 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
             );
 
             console.log('✅ Attendance signed successfully:', response.data);
-            
+
             // Update local state with the new record
             const newRecord = response.data.record;
             console.log('✅ New attendance record created:', newRecord);
-            
+
             // Store the name for success message before clearing form
             const signedName = attendanceFormData.name.trim();
             const signedRegNo = attendanceFormData.regNo.trim().toUpperCase();
-            
+
             // Add to local device attendance list
             setDeviceAttendance(prev => {
                 const updated = [...prev, newRecord];
                 console.log(`Device attendance updated: ${updated.length} total records`);
                 return updated;
             });
-            
+
             // Clear form after successful submission for next person
             setAttendanceFormData({ name: '', regNo: '', course: '', year: '', phoneNumber: '', signature: '', userType: 'student' });
-            
+            setSelectedUser(null);
+
             // Clear canvas signature
             const canvas = document.querySelector('canvas') as HTMLCanvasElement;
             if (canvas) {
@@ -254,12 +334,12 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
                 }
             }
-            
+
             // Show success message with accurate timestamp
             const now = new Date();
             const timeString = formatDateTime(now, { format: 'short', includeSeconds: true, includeDate: false });
             setSuccess(`✅ ${signedName} (${signedRegNo}) successfully signed attendance at ${timeString}! Ready for next person.`);
-            
+
             // Clear success message after 4 seconds
             setTimeout(() => {
                 setSuccess('');
@@ -267,105 +347,38 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
 
         } catch (error: any) {
             console.error('Error during attendance signing:', error);
-            
+
             let errorMessage = 'Error signing attendance. Please try again.';
-            
-            // Handle different error response formats (development vs production)
+
             if (error.response) {
-                console.log('🔍 Full error response received:', {
-                    status: error.response.status,
-                    data: error.response.data,
-                    headers: error.response.headers
-                });
-                
                 if (error.response.status === 400) {
-                    // Extract error message from different possible formats
-                    // Check both 'message' and 'error' fields for consistency
-                    errorMessage = error.response.data?.message || 
-                                  error.response.data?.error || 
-                                  error.response.data || 
-                                  'Invalid attendance data';
-                    
-                    console.log('🔍 Extracted error message:', errorMessage);
-                    
-                    // Convert to string if it's not already
-                    if (typeof errorMessage !== 'string') {
-                        try {
-                            errorMessage = JSON.stringify(errorMessage);
-                        } catch {
-                            errorMessage = String(errorMessage);
-                        }
-                    }
-                    
-                    // Check for duplicate registration number VERY specifically
+                    errorMessage = error.response.data?.message ||
+                        error.response.data?.error ||
+                        error.response.data ||
+                        'Invalid attendance data';
+
                     const regNoUpper = attendanceFormData.regNo.trim().toUpperCase();
-                    
-                    console.log('🔍 Checking if error is duplicate-related:', {
-                        errorMessage: errorMessage,
-                        regNoUpper: regNoUpper,
-                        errorMessageLower: errorMessage.toLowerCase()
-                    });
-                    
-                    // Only treat as duplicate if it EXPLICITLY mentions the exact registration number
+
                     const isDuplicateError = (
                         (errorMessage.toLowerCase().includes('already signed attendance') && errorMessage.includes(regNoUpper)) ||
                         (errorMessage.toLowerCase().includes('already been used for attendance') && errorMessage.includes(regNoUpper)) ||
                         (errorMessage.toLowerCase().includes('has already signed') && errorMessage.includes(regNoUpper)) ||
                         (errorMessage.toLowerCase().includes('duplicate') && errorMessage.includes(regNoUpper))
                     );
-                    
-                    console.log('🔍 Is duplicate error?', isDuplicateError);
-                    
+
                     if (isDuplicateError) {
-                        // Extract just the registration number from the error for cleaner display
                         const cleanMessage = `❌ Registration Number ${regNoUpper} Already Used! This registration number has already been used for attendance in this session. Please use a different registration number.`;
-                        console.log('🔍 Showing duplicate error message:', cleanMessage);
                         setError(cleanMessage);
                         setTimeout(() => setError(''), 8000);
-                        
-                        // Clear only the registration number field to allow correction
-                        setAttendanceFormData(prev => ({
-                            ...prev,
-                            regNo: ''
-                        }));
-                        
-                        // Focus on the registration number input for easy correction
-                        const regNoInput = document.querySelector('input[placeholder*="IN16"]') as HTMLInputElement;
-                        if (regNoInput) {
-                            regNoInput.focus();
-                        }
-                        
+                        setAttendanceFormData(prev => ({ ...prev, regNo: '' }));
                         setLoading(false);
                         return;
-                    } else {
-                        // Not a duplicate error - show the original error message
-                        console.log('🔍 Not a duplicate error - showing original message:', errorMessage);
-                        setError(`❌ ${errorMessage}`);
-                        setTimeout(() => setError(''), 6000);
                     }
-                } else if (error.response.status === 404) {
-                    errorMessage = error.response.data?.message || 
-                                  error.response.data?.error ||
-                                  'Session not found. Please refresh and try again.';
-                    setError(`❌ ${errorMessage}`);
-                    setTimeout(() => setError(''), 6000);
-                } else {
-                    // Handle other HTTP error statuses
-                    errorMessage = error.response.data?.message || 
-                                  error.response.data?.error ||
-                                  `Server error (${error.response.status}). Please try again.`;
-                    setError(`❌ ${errorMessage}`);
-                    setTimeout(() => setError(''), 6000);
                 }
-            } else if (error.request) {
-                // Network error
-                errorMessage = 'Network error. Please check your internet connection and try again.';
                 setError(`❌ ${errorMessage}`);
                 setTimeout(() => setError(''), 6000);
             } else {
-                // Other error
-                errorMessage = error.message || 'Unexpected error occurred.';
-                setError(`❌ ${errorMessage}`);
+                setError(`❌ ${error.message || 'Unexpected error'}`);
                 setTimeout(() => setError(''), 6000);
             }
         } finally {
@@ -396,18 +409,18 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
         <div className={`${styles.attendanceContainer} ${isSessionClosed ? styles.closedSession : ''}`}>
             <div className={styles.attendanceCard}>
                 <div className={styles.header}>
-                    <FontAwesomeIcon 
-                        icon={isSessionClosed ? faClock : faCheckCircle} 
+                    <FontAwesomeIcon
+                        icon={isSessionClosed ? faClock : faCheckCircle}
                         className={`${styles.icon} ${isSessionClosed ? styles.clockIcon : styles.checkIcon}`}
                     />
                     <h3 className={styles.title}>
-                        {isSessionClosed 
-                            ? 'Attendance Session Closed' 
+                        {isSessionClosed
+                            ? 'Attendance Session Closed'
                             : `${session.ministry || 'General'} Ministry Attendance`}
                     </h3>
                     {!isSessionClosed && (
                         <p className={styles.sessionInfo}>
-                            <strong>Started:</strong> {formatDateTime(session.startTime, { format: 'medium', includeSeconds: true })}
+                            <strong>Leader:</strong> {session.leadershipRole || 'Loading...'} • {formatDateTime(session.startTime, { format: 'medium', includeSeconds: true })}
                             {isRecentTime(session.startTime, 10) && <span className={styles.recentIndicator}> • Just opened</span>}
                         </p>
                     )}
@@ -434,132 +447,153 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
                             </div>
                         )}
 
-
-                        {/* Show attendance count and recent signups */}
-                        {deviceAttendance.length > 0 && (
-                            <div className={styles.attendanceCount}>
-                                <FontAwesomeIcon icon={faUsers} className={styles.usersIcon} />
-                                <p>
-                                    <strong>{deviceAttendance.length}</strong> total attendee{deviceAttendance.length !== 1 ? 's' : ''} in this session
-                                </p>
-                                <div className={styles.usersList}>
-                                    <h4 className={styles.recentTitle}>Recent Attendees:</h4>
-                                    {deviceAttendance.slice(0, 5).map((record: any, index: number) => (
-                                        <span key={record._id || `${record.regNo}-${index}`} className={styles.userBadge}>
-                                            {record.userName || record.name} ({record.regNo})
-                                        </span>
-                                    ))}
-                                    {deviceAttendance.length > 5 && (
-                                        <span className={styles.moreIndicator}>
-                                            ... and {deviceAttendance.length - 5} more
-                                        </span>
-                                    )}
+                        {/* Quick Search Section */}
+                        {!selectedUser && (
+                            <div className={styles.searchSection}>
+                                <div className={styles.searchInputWrapper}>
+                                    <FontAwesomeIcon icon={faSearch} className={styles.searchIcon} />
+                                    <input
+                                        type="text"
+                                        placeholder="🔍 Search by Name or Reg No (e.g., IN16...)"
+                                        value={searchQuery}
+                                        onChange={(e) => handleSearch(e.target.value)}
+                                        className={styles.searchInput}
+                                        disabled={loading}
+                                    />
+                                    {isSearching && <div className={styles.searchLoader}></div>}
                                 </div>
+                                {searchResults.length > 0 && (
+                                    <div className={styles.searchResults}>
+                                        {searchResults.map(user => (
+                                            <div
+                                                key={user._id}
+                                                className={styles.searchResultItem}
+                                                onClick={() => handleSelectUser(user)}
+                                            >
+                                                <span className={styles.resultName}>{user.username}</span>
+                                                <span className={styles.resultReg}>{user.reg} • {user.course}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                         )}
 
-                        {/* Attendance Form - Always visible when session is active */}
+                        {/* Selected User Quick Sign Card */}
+                        {selectedUser && (
+                            <div className={styles.userFoundCard}>
+                                <div className={styles.userInfo}>
+                                    <h4><FontAwesomeIcon icon={faUserCheck} /> {selectedUser.username}</h4>
+                                    <p>{selectedUser.reg} • Year {selectedUser.yos}</p>
+                                </div>
+                                <button className={styles.resetButton} onClick={resetSelection} title="Change person">
+                                    <FontAwesomeIcon icon={faTimes} />
+                                </button>
+                            </div>
+                        )}
+
+                        {/* Attendance Form */}
                         <div className={styles.attendanceForm}>
-                            <h4 className={styles.formTitle}>Enter Your Details to Sign Attendance</h4>
-                            
-                            <div className={styles.formGroup}>
-                                <label className={styles.formLabel}>Full Name *</label>
-                                <input
-                                    type="text"
-                                    placeholder="Enter your full name"
-                                    value={attendanceFormData.name}
-                                    onChange={(e) => setAttendanceFormData({...attendanceFormData, name: e.target.value})}
-                                    className={styles.formInput}
-                                    disabled={loading}
-                                />
-                            </div>
+                            {!selectedUser ? (
+                                <>
+                                    <h4 className={styles.formTitle}>...or Enter Details Manually</h4>
 
-                            <div className={styles.formGroup}>
-                                <label className={styles.formLabel}>I am a *</label>
-                                <select
-                                    value={attendanceFormData.userType || 'student'}
-                                    onChange={(e) => {
-                                        setAttendanceFormData({...attendanceFormData, userType: e.target.value});
-                                        // Force re-render by changing a visible element
-                                        const regField = document.querySelector('[placeholder*="C025"]') as HTMLInputElement;
-                                        if (regField) {
-                                            regField.style.display = e.target.value === 'student' ? 'block' : 'none';
-                                        }
-                                    }}
-                                    className={styles.formSelect}
-                                    disabled={loading}
-                                    style={{backgroundColor: 'yellow', border: '3px solid red'}}
-                                >
-                                    <option value="student">Student</option>
-                                    <option value="visitor">Visitor</option>
-                                </select>
-                            </div>
-                            
-                            <div className={styles.formGroup}>
-                                <label className={styles.formLabel}>Registration Number *</label>
-                                <input
-                                    type="text"
-                                    placeholder="🚨 VISITOR SELECTOR ABOVE THIS FIELD! 🚨"
-                                    value={attendanceFormData.regNo}
-                                    onChange={(e) => setAttendanceFormData({...attendanceFormData, regNo: e.target.value.toUpperCase()})}
-                                    className={styles.formInput}
-                                    disabled={loading}
-                                />
-                            </div>
+                                    <div className={styles.formGroup}>
+                                        <label className={styles.formLabel}>Full Name *</label>
+                                        <input
+                                            type="text"
+                                            placeholder="Enter your full name"
+                                            value={attendanceFormData.name}
+                                            onChange={(e) => setAttendanceFormData({ ...attendanceFormData, name: e.target.value })}
+                                            className={styles.formInput}
+                                            disabled={loading}
+                                        />
+                                    </div>
 
-                            {attendanceFormData.userType === 'student' && (
-                                <div className={styles.formGroup}>
-                                    <label className={styles.formLabel}>Course *</label>
-                                    <input
-                                        type="text"
-                                        placeholder="e.g., Computer Science"
-                                        value={attendanceFormData.course}
-                                        onChange={(e) => setAttendanceFormData({...attendanceFormData, course: e.target.value})}
-                                        className={styles.formInput}
-                                        disabled={loading}
-                                    />
+                                    <div className={styles.formGroup}>
+                                        <label className={styles.formLabel}>I am a *</label>
+                                        <select
+                                            value={attendanceFormData.userType || 'student'}
+                                            onChange={(e) => setAttendanceFormData({ ...attendanceFormData, userType: e.target.value })}
+                                            className={styles.formSelect}
+                                            disabled={loading}
+                                        >
+                                            <option value="student">Student</option>
+                                            <option value="visitor">Visitor</option>
+                                        </select>
+                                    </div>
+
+                                    <div className={styles.formGroup}>
+                                        <label className={styles.formLabel}>Registration Number *</label>
+                                        <input
+                                            type="text"
+                                            placeholder="Enter Reg No (e.g., IN16/0000/21)"
+                                            value={attendanceFormData.regNo}
+                                            onChange={(e) => setAttendanceFormData({ ...attendanceFormData, regNo: e.target.value.toUpperCase() })}
+                                            className={styles.formInput}
+                                            disabled={loading || attendanceFormData.userType === 'visitor'}
+                                        />
+                                    </div>
+
+                                    {attendanceFormData.userType === 'student' && (
+                                        <div className={styles.formGroup}>
+                                            <label className={styles.formLabel}>Course *</label>
+                                            <input
+                                                type="text"
+                                                placeholder="e.g., Computer Science"
+                                                value={attendanceFormData.course}
+                                                onChange={(e) => setAttendanceFormData({ ...attendanceFormData, course: e.target.value })}
+                                                className={styles.formInput}
+                                                disabled={loading}
+                                            />
+                                        </div>
+                                    )}
+
+                                    {attendanceFormData.userType === 'student' && (
+                                        <div className={styles.formGroup}>
+                                            <label className={styles.formLabel}>Year of Study *</label>
+                                            <select
+                                                value={attendanceFormData.year}
+                                                onChange={(e) => setAttendanceFormData({ ...attendanceFormData, year: e.target.value })}
+                                                className={styles.formSelect}
+                                                disabled={loading}
+                                            >
+                                                <option value="">Select Year</option>
+                                                <option value="1">Year 1</option>
+                                                <option value="2">Year 2</option>
+                                                <option value="3">Year 3</option>
+                                                <option value="4">Year 4</option>
+                                                <option value="5">Year 5</option>
+                                                <option value="6">Year 6</option>
+                                            </select>
+                                        </div>
+                                    )}
+
+                                    <div className={styles.formGroup}>
+                                        <label className={styles.formLabel}>Phone Number *</label>
+                                        <input
+                                            type="tel"
+                                            placeholder="e.g., 0712345678"
+                                            value={attendanceFormData.phoneNumber}
+                                            onChange={(e) => setAttendanceFormData({ ...attendanceFormData, phoneNumber: e.target.value })}
+                                            className={styles.formInput}
+                                            disabled={loading}
+                                        />
+                                    </div>
+                                </>
+                            ) : (
+                                <div style={{ textAlign: 'center', marginBottom: '15px', padding: '10px', background: 'rgba(255,255,255,0.05)', borderRadius: '10px' }}>
+                                    <p style={{ margin: 0, fontSize: '0.9rem', color: '#4CAF50' }}><FontAwesomeIcon icon={faCheckCircle} /> Details Verified! Just sign below to finish.</p>
                                 </div>
                             )}
-                            
-                            {attendanceFormData.userType === 'student' && (
-                                <div className={styles.formGroup}>
-                                    <label className={styles.formLabel}>Year of Study *</label>
-                                    <select
-                                        value={attendanceFormData.year}
-                                        onChange={(e) => setAttendanceFormData({...attendanceFormData, year: e.target.value})}
-                                        className={styles.formSelect}
-                                        disabled={loading}
-                                    >
-                                        <option value="">Select Year</option>
-                                        <option value="1">Year 1</option>
-                                        <option value="2">Year 2</option>
-                                        <option value="3">Year 3</option>
-                                        <option value="4">Year 4</option>
-                                        <option value="5">Year 5</option>
-                                        <option value="6">Year 6</option>
-                                    </select>
-                                </div>
-                            )}
-                            
+
                             <div className={styles.formGroup}>
-                                <label className={styles.formLabel}>Phone Number *</label>
-                                <input
-                                    type="tel"
-                                    placeholder="e.g., +254712345678"
-                                    value={attendanceFormData.phoneNumber}
-                                    onChange={(e) => setAttendanceFormData({...attendanceFormData, phoneNumber: e.target.value})}
-                                    className={styles.formInput}
-                                    disabled={loading}
-                                />
-                            </div>
-                            
-                            <div className={styles.formGroup}>
-                                <label className={styles.formLabel}>Digital Signature *</label>
+                                <label className={styles.formLabel}><FontAwesomeIcon icon={faSignature} /> Digital Signature *</label>
                                 <div style={{
-                                    border: '2px solid rgba(255, 255, 255, 0.3)',
-                                    borderRadius: '10px',
-                                    padding: '10px',
-                                    background: 'rgba(255, 255, 255, 0.1)'
+                                    border: '2px solid rgba(0, 198, 255, 0.3)',
+                                    borderRadius: '12px',
+                                    padding: '8px',
+                                    background: 'rgba(255, 255, 255, 0.05)'
                                 }}>
                                     <canvas
                                         ref={(canvas) => {
@@ -588,57 +622,45 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
                                                     const currentX = clientX - rect.left;
                                                     const currentY = clientY - rect.top;
 
-                                                    ctx.lineWidth = 2;
+                                                    ctx.lineWidth = 2.5;
                                                     ctx.lineCap = 'round';
-                                                    ctx.strokeStyle = '#fff';
+                                                    ctx.strokeStyle = '#00c6ff';
+                                                    ctx.shadowBlur = 1;
+                                                    ctx.shadowColor = '#00c6ff';
                                                     ctx.beginPath();
                                                     ctx.moveTo(lastX, lastY);
                                                     ctx.lineTo(currentX, currentY);
                                                     ctx.stroke();
-                                                    
+
                                                     lastX = currentX;
                                                     lastY = currentY;
-                                                    
-                                                    // Update signature data
-                                                    setAttendanceFormData(prev => ({...prev, signature: canvas.toDataURL()}));
+
+                                                    setAttendanceFormData(prev => ({ ...prev, signature: canvas.toDataURL() }));
                                                 };
 
-                                                const stopDrawing = () => {
-                                                    isDrawing = false;
-                                                };
+                                                const stopDrawing = () => isDrawing = false;
 
-                                                // Mouse events
                                                 canvas.addEventListener('mousedown', startDrawing);
                                                 canvas.addEventListener('mousemove', draw);
-                                                canvas.addEventListener('mouseup', stopDrawing);
-                                                
-                                                // Touch events for mobile
-                                                canvas.addEventListener('touchstart', startDrawing, {passive: false});
-                                                canvas.addEventListener('touchmove', draw, {passive: false});
-                                                canvas.addEventListener('touchend', stopDrawing);
+                                                window.addEventListener('mouseup', stopDrawing);
+                                                canvas.addEventListener('touchstart', startDrawing, { passive: false });
+                                                canvas.addEventListener('touchmove', draw, { passive: false });
+                                                window.addEventListener('touchend', stopDrawing);
                                             }
                                         }}
                                         width={400}
-                                        height={120}
+                                        height={140}
                                         style={{
                                             width: '100%',
-                                            height: '120px',
-                                            border: '1px solid rgba(255, 255, 255, 0.3)',
-                                            borderRadius: '5px',
+                                            height: '140px',
+                                            borderRadius: '8px',
                                             background: 'rgba(0, 0, 0, 0.2)',
                                             cursor: 'crosshair',
                                             touchAction: 'none'
                                         }}
                                     />
-                                    <div style={{
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'center',
-                                        marginTop: '8px'
-                                    }}>
-                                        <small style={{color: 'rgba(255, 255, 255, 0.7)', fontSize: '0.8rem'}}>
-                                            ✍️ Draw your signature above
-                                        </small>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '8px' }}>
+                                        <small style={{ color: 'rgba(255, 255, 255, 0.6)' }}>✍️ Please sign in the box</small>
                                         <button
                                             type="button"
                                             disabled={loading}
@@ -647,42 +669,43 @@ const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
                                                 const canvas = target.parentElement?.parentElement?.querySelector('canvas') as HTMLCanvasElement;
                                                 if (canvas) {
                                                     const ctx = canvas.getContext('2d');
-                                                    if (ctx) {
-                                                        ctx.clearRect(0, 0, canvas.width, canvas.height);
-                                                    }
+                                                    if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
                                                 }
-                                                setAttendanceFormData(prev => ({...prev, signature: ''}));
+                                                setAttendanceFormData(prev => ({ ...prev, signature: '' }));
                                             }}
-                                            style={{
-                                                padding: '4px 8px',
-                                                background: '#6c757d',
-                                                color: 'white',
-                                                border: 'none',
-                                                borderRadius: '4px',
-                                                fontSize: '0.75rem',
-                                                cursor: loading ? 'not-allowed' : 'pointer',
-                                                opacity: loading ? 0.6 : 1
-                                            }}
+                                            style={{ padding: '5px 12px', background: 'rgba(255,255,255,0.1)', color: 'white', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '15px', fontSize: '0.75rem', cursor: 'pointer' }}
                                         >
-                                            🔄 Clear
+                                            Clear Signature
                                         </button>
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <button
                                 onClick={signAttendance}
                                 disabled={loading || !session?.isActive}
                                 className={`${styles.signButton} ${loading ? styles.loading : ''}`}
                             >
-                                {loading ? 'Signing Attendance...' : 'Sign Attendance'}
+                                {loading ? 'Processing...' : selectedUser ? 'Complete Check-in' : 'Sign Attendance'}
                             </button>
-                            
-                            <p className={styles.formNote}>
-                                💡 <strong>Note:</strong> Each registration number can only be used once per session. 
-                                After signing, you can immediately sign for another person.
-                            </p>
                         </div>
+
+                        {/* Recent History Display (Optional/Scrollable) */}
+                        {deviceAttendance.length > 0 && (
+                            <div className={styles.attendanceCount}>
+                                <p style={{ margin: '0 0 10px 0', fontSize: '0.9rem', opacity: 0.8 }}>
+                                    <FontAwesomeIcon icon={faUsers} /> Signed on this device: <strong>{deviceAttendance.length}</strong>
+                                </p>
+                                <div className={styles.usersList}>
+                                    {deviceAttendance.slice(0, 3).map((record, idx) => (
+                                        <span key={idx} className={styles.userBadge}>
+                                            {record.userName}
+                                        </span>
+                                    ))}
+                                    {deviceAttendance.length > 3 && <span style={{ fontSize: '0.8rem' }}>+{deviceAttendance.length - 3} more</span>}
+                                </div>
+                            </div>
+                        )}
                     </>
                 )}
             </div>
