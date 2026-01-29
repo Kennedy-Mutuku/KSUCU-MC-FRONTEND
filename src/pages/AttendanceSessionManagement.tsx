@@ -12,8 +12,11 @@ import {
     faStop,
     faDownload,
     faCalendar,
-    faArrowLeft
+    faArrowLeft,
+    faSync
 } from '@fortawesome/free-solid-svg-icons';
+import { io } from 'socket.io-client';
+import { getBaseUrl } from '../config/environment';
 
 interface AttendanceRecord {
     _id: string;
@@ -60,6 +63,26 @@ const AttendanceSessionManagement: React.FC = () => {
         const refreshInterval = setInterval(() => loadSessionData(decodedRole), 5000);
         return () => clearInterval(refreshInterval);
     }, []);
+
+    // Socket.IO for real-time updates
+    useEffect(() => {
+        if (!attendanceSession?._id) return;
+
+        const socket = io(getBaseUrl(), { withCredentials: true });
+
+        socket.on('newAttendance', (data: { record: AttendanceRecord, sessionId: string }) => {
+            if (data.sessionId === attendanceSession._id) {
+                setAttendanceRecords(prev => {
+                    if (prev.find(r => r._id === data.record._id)) return prev;
+                    return [data.record, ...prev];
+                });
+            }
+        });
+
+        return () => {
+            socket.disconnect();
+        };
+    }, [attendanceSession?._id]);
 
     const loadSessionData = async (role: string) => {
         try {
@@ -159,8 +182,31 @@ const AttendanceSessionManagement: React.FC = () => {
         }
     };
 
-    const handleDownloadPDF = () => {
-        downloadAttendancePDF(attendanceRecords, leadershipRole, attendanceSession);
+    const handleDownloadPDF = async () => {
+        if (!attendanceSession?._id) return;
+
+        setLoading(true);
+        setMessage('⚙️ Preparing PDF (fetching high-quality signature data)...');
+
+        try {
+            // Fetch records WITH signatures only when needed
+            const response = await fetch(`${getApiUrl('attendanceRecords')}/${attendanceSession._id}?signatures=true&role=${encodeURIComponent(leadershipRole)}`, {
+                credentials: 'include'
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                downloadAttendancePDF(data.records || [], leadershipRole, attendanceSession);
+                setMessage('✅ PDF Generated!');
+            } else {
+                setMessage('❌ Error fetching full signature data');
+            }
+        } catch (err) {
+            setMessage('❌ Network error generating PDF');
+        } finally {
+            setLoading(false);
+            setTimeout(() => setMessage(''), 3000);
+        }
     };
 
     return (

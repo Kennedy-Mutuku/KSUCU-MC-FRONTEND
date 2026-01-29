@@ -314,21 +314,21 @@ const AttendanceSection = () => {
 
         <div className="max-w-xl mx-auto">
           {activeSession?.isActive ? (
-            <div className="relative group p-8 bg-white border border-gray-100 rounded-[2.5rem] shadow-2xl shadow-purple-900/5 hover:shadow-purple-900/10 transition-all duration-500">
-              <div className="absolute top-0 right-0 -mt-2 -mr-2 w-16 h-16 bg-[#00c6ff]/10 rounded-full blur-2xl group-hover:bg-[#00c6ff]/20 transition-all" />
-              <div className="absolute bottom-0 left-0 -mb-2 -ml-2 w-24 h-24 bg-[#730051]/5 rounded-full blur-3xl group-hover:bg-[#730051]/10 transition-all" />
+            <div className="relative group p-6 bg-white border border-gray-100 rounded-[1.5rem] shadow-xl shadow-purple-900/5 hover:shadow-purple-900/10 transition-all duration-500">
+              <div className="absolute top-0 right-0 -mt-2 -mr-2 w-12 h-12 bg-[#00c6ff]/10 rounded-full blur-xl group-hover:bg-[#00c6ff]/20 transition-all" />
+              <div className="absolute bottom-0 left-0 -mb-2 -ml-2 w-16 h-16 bg-[#730051]/5 rounded-full blur-3xl group-hover:bg-[#730051]/10 transition-all" />
 
               <div className="relative">
-                <div className="flex items-center gap-4 mb-8 p-4 bg-green-50/50 border border-green-100 rounded-2xl">
+                <div className="flex items-center gap-3 mb-6 p-3 bg-green-50/50 border border-green-100 rounded-xl">
                   <div className="relative flex-shrink-0">
-                    <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center text-green-600">
-                      <CheckCircle size={28} />
+                    <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center text-green-600">
+                      <CheckCircle size={24} />
                     </div>
-                    <div className="absolute top-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white animate-pulse" />
+                    <div className="absolute top-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-white animate-pulse" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-gray-900 text-lg">Live Session Active</h4>
-                    <p className="text-sm text-gray-600">
+                    <h4 className="font-bold text-gray-900 text-base">Live Session Active</h4>
+                    <p className="text-xs text-gray-600">
                       {activeSession.leadershipRole} • Started {new Date(activeSession.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </p>
                   </div>
@@ -340,24 +340,24 @@ const AttendanceSection = () => {
                       setShowForm(true);
                       setCurrentStep('search');
                     }}
-                    className="group relative w-full py-5 bg-gradient-to-r from-[#730051] to-[#9d176e] text-white font-bold rounded-2xl shadow-lg shadow-purple-900/20 hover:scale-[1.02] active:scale-[0.98] transition-all overflow-hidden"
+                    className="group relative w-full py-4 bg-gradient-to-r from-[#730051] to-[#9d176e] text-white font-bold rounded-xl shadow-lg shadow-purple-900/20 hover:scale-[1.01] active:scale-[0.99] transition-all overflow-hidden"
                   >
                     <div className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-                    <span className="relative flex items-center justify-center gap-3 text-lg">
+                    <span className="relative flex items-center justify-center gap-2 text-base">
                       Sign Attendance Now
-                      <ArrowLeft size={20} className="rotate-180" />
+                      <ArrowLeft size={18} className="rotate-180" />
                     </span>
                   </button>
                 )}
               </div>
             </div>
           ) : (
-            <div className="p-10 bg-gray-50 border border-gray-100 rounded-[2.5rem] text-center border-dashed">
-              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6 text-gray-400">
-                <AlertCircle size={32} />
+            <div className="p-8 bg-gray-50 border border-gray-100 rounded-[1.5rem] text-center border-dashed">
+              <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400">
+                <AlertCircle size={24} />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">No Active Session</h3>
-              <p className="text-gray-500">Wait for a leader to open an attendance session</p>
+              <h3 className="text-lg font-bold text-gray-900 mb-1">No Active Session</h3>
+              <p className="text-sm text-gray-500">Wait for a leader to open an attendance session</p>
             </div>
           )}
         </div>
