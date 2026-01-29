@@ -11,6 +11,10 @@ import {
   DollarSign,
   GraduationCap,
   MessageCircleHeart,
+  Award,
+  Users,
+  Scroll,
+  School,
 } from 'lucide-react';
 
 interface QuickLink {
@@ -29,6 +33,11 @@ const quickLinks: QuickLink[] = [
   { icon: DollarSign, label: 'Financials', href: '/financial' },
   { icon: GraduationCap, label: 'Bible Study', href: '/Bs' },
   { icon: MessageCircleHeart, label: 'Compassion', href: '/compassion-counseling' },
+  { icon: Award, label: 'Best-P', href: '/bestpClass' },
+  { icon: Users, label: 'Brothers', href: '/brothersfellowship' },
+  { icon: Users, label: 'Sisters', href: '/sistersfellowship' },
+  { icon: Scroll, label: 'Discipleship', href: '/discipleship' },
+  { icon: School, label: 'Classes', href: '/classFellowship' },
 ];
 
 const QuickLinksButton = () => {

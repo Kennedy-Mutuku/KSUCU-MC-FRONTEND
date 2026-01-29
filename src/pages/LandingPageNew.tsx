@@ -38,11 +38,11 @@ const ministriesItems = [
 ];
 
 const fellowshipsItems = [
-  { label: 'Best-P Classes', href: '/fellowshipsandclasses' },
-  { label: 'Class Fellowships', href: '/fellowshipsandclasses' },
-  { label: 'Sisters Fellowship', href: '/fellowshipsandclasses' },
-  { label: 'Brothers Fellowship', href: '/fellowshipsandclasses' },
-  { label: 'Discipleship Classes', href: '/fellowshipsandclasses' },
+  { label: 'Best-P Classes', href: '/bestpClass' },
+  { label: 'Class Fellowships', href: '/classFellowship' },
+  { label: 'Sisters Fellowship', href: '/sistersfellowship' },
+  { label: 'Brothers Fellowship', href: '/brothersfellowship' },
+  { label: 'Discipleship Classes', href: '/discipleship' },
 ];
 
 const LandingPageNew = () => {

@@ -52,6 +52,11 @@ import PollingOfficerDashboard from "./PollingOfficerDashboard";
 import PollingOfficerManagement from "./PollingOfficerManagement";
 import MyDocs from "./MyDocs";
 import SuperAdminDocumentDashboard from "./superAdminDocumentDashboard";
+import SistersFellowship from "./sistersFellowship";
+import BrothersFellowship from "./brothersFellowship";
+import DiscipleshipClass from "./discipleshipClass";
+import BestpClass from "./bestpClass";
+import ClassFellowship from "./classFellowship";
 
 export const router = createBrowserRouter([
     {
@@ -69,6 +74,11 @@ export const router = createBrowserRouter([
             {path: "/save", element: <SavedSouls />},
             {path: "/forgotPassword", element: <Forgotpassword />},
             {path: "/fellowshipsandclasses", element: <ClassesSection />},
+            {path: "/brothersfellowship", element: <BrothersFellowship />},
+            {path: "/sistersfellowship", element: <SistersFellowship />},
+            {path: "/bestpClass", element: <BestpClass />},
+            {path: "/discipleship", element: <DiscipleshipClass />},
+            {path: "/classFellowship", element: <ClassFellowship />},
             {path: "/boards", element: <BoardsPage />},
             {path: "/changeDetails", element: <ChangeDetails />},
             {path: "/news", element: <NewsPage />},
