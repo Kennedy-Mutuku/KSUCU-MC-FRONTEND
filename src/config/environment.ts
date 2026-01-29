@@ -92,10 +92,15 @@ interface ApiConfig {
   };
 }
 
-const isDevelopment = import.meta.env.MODE === 'development' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const isDevelopment = import.meta.env.MODE === 'development' ||
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1' ||
+  window.location.hostname.startsWith('192.168.') ||
+  window.location.hostname.startsWith('10.') ||
+  window.location.hostname.endsWith('.local');
 
 const developmentConfig: ApiConfig = {
-  baseUrl: '',  // Empty = uses Vite proxy (see vite.config.ts) to bypass CORS in dev mode
+  baseUrl: 'http://localhost:3000',  // Point directly to local backend to avoid proxy issues
   endpoints: {
     news: '/news/news',
     newsUpdate: '/news/news',
