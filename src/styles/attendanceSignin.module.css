@@ -482,3 +482,132 @@
     50% { opacity: 0.7; }
     100% { opacity: 1; }
 }
+
+/* Search Styles */
+.searchSection {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.searchInputWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.searchIcon {
+    position: absolute;
+    left: 12px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.searchInput {
+    width: 100%;
+    padding: 10px 10px 10px 35px;
+    border: 2px solid rgba(0, 198, 255, 0.3);
+    border-radius: 25px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.searchInput:focus {
+    outline: none;
+    border-color: #00c6ff;
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 15px rgba(0, 198, 255, 0.3);
+}
+
+.searchResults {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #730051;
+    border: 1px solid rgba(0, 198, 255, 0.3);
+    border-radius: 12px;
+    margin-top: 8px;
+    z-index: 10;
+    max-height: 250px;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    animation: slideIn 0.3s ease-out;
+}
+
+.searchResultItem {
+    padding: 12px 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.searchResultItem:last-child {
+    border-bottom: none;
+}
+
+.searchResultItem:hover {
+    background: rgba(0, 198, 255, 0.2);
+}
+
+.resultName {
+    display: block;
+    font-weight: 600;
+    color: white;
+}
+
+.resultReg {
+    display: block;
+    font-size: 0.85rem;
+    color: #00c6ff;
+}
+
+/* User Found Card */
+.userFoundCard {
+    background: rgba(0, 198, 255, 0.15);
+    border: 2px solid #00c6ff;
+    border-radius: 15px;
+    padding: 15px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.userInfo h4 {
+    margin: 0;
+    color: white;
+    font-size: 1.1rem;
+}
+
+.userInfo p {
+    margin: 5px 0 0 0;
+    color: #00c6ff;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.resetButton {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.resetButton:hover {
+    background: #ff5252;
+    transform: rotate(90deg);
+}

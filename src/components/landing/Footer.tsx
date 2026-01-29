@@ -128,7 +128,15 @@ const Footer = () => {
       <div className="border-t border-purple-400/30">
         <div className="max-w-6xl mx-auto px-4 py-4">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-sm text-purple-200">
-            <p>Kisii University Christian Union {currentYear}</p>
+            <p>
+              Kisii University Christian Union {currentYear}
+              <Link
+                to="/worship-docket-admin"
+                style={{ marginLeft: '10px', fontSize: '12px', color: 'rgba(255,255,255,0.7)', fontWeight: 'bold', textDecoration: 'none' }}
+              >
+                Admin
+              </Link>
+            </p>
             <p className="text-xs">Established 2002</p>
           </div>
         </div>
