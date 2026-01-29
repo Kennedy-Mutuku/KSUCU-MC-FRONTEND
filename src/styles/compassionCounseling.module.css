@@ -115,17 +115,23 @@
 
 /* Hero Section */
 .heroSection {
-  background: linear-gradient(135deg, #730051 0%, #00c6ff 100%);
+  background:  #00c6ff;
   color: white;
   text-align: center;
   padding: 60px 20px;
   border-radius: 15px;
   margin-bottom: 30px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transition-duration: 0.5s;
+}
+
+.heroSection:hover{
+    background:  #39a6c4;
+    transition-duration: 0.5s;
 }
 
 .heroContent {
-  max-width: 600px;
+  max-width: 700px;
   margin: 0 auto;
 }
 
@@ -137,15 +143,15 @@
 }
 
 .title {
-  font-size: 2.5rem;
+  font-size: 3.5rem;
   font-weight: 700;
   margin-bottom: 15px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .subtitle {
-  font-size: 1.2rem;
-  opacity: 0.9;
+  font-size: 1.5rem;  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  font-weight: bold;
+  opacity: none;
   line-height: 1.6;
 }
 
@@ -747,12 +753,15 @@
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
+
+
 .contactSection h2 {
   text-align: center;
   color: #730051;
   margin-bottom: 30px;
   font-size: 2rem;
 }
+
 
 .contactInfo {
   display: grid;
@@ -795,6 +804,29 @@
   font-size: 0.9rem;
 }
 
+.joinUs{
+  background: white;
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.joinUS h2{
+  text-align: center;
+  color: #730051;
+  margin-bottom: 30px;
+  font-size: 2rem;
+  margin: 10px;
+}
+
+.joinUS p{
+  font-size: 0.9rem;
+  line-break: auto;
+  font-style: oblique;
+}
+.join strong{
+  display: flex;
+}
 /* Responsive Design */
 @media (max-width: 768px) {
   .container {
