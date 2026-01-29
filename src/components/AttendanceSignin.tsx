@@ -39,7 +39,6 @@ const AttendanceSignin: React.FC = () => {
     const [message, setMessage] = useState('');
     const [success, setSuccess] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
-    const [searchResults, setSearchResults] = useState<User[]>([]);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
     const [showForm, setShowForm] = useState(false);
     const [attendanceFormData, setAttendanceFormData] = useState({
@@ -83,8 +82,8 @@ const AttendanceSignin: React.FC = () => {
 
     const handleSearch = async (query: string) => {
         setSearchQuery(query);
-        if (query.length < 3) {
-            setSearchResults([]);
+        if (query.length < 4) {
+            if (selectedUser) resetUserSelection();
             return;
         }
 
@@ -94,14 +93,24 @@ const AttendanceSignin: React.FC = () => {
             });
             if (response.ok) {
                 const data = await response.json();
-                // Map API response fields to expected component interface if necessary
                 const mappedUsers = (data || []).map((user: any) => ({
                     _id: user._id,
                     username: user.username,
                     registrationNumber: user.reg || '',
                     phoneNumber: user.phone || ''
                 }));
-                setSearchResults(mappedUsers);
+
+                // Auto-select if there is an exact match for registration number
+                const exactMatch = mappedUsers.find(
+                    (user: User) => user.registrationNumber.toUpperCase() === query.toUpperCase()
+                );
+
+                if (exactMatch) {
+                    handleSelectUser(exactMatch);
+                } else if (selectedUser) {
+                    // Clear selection if they change the reg no and it no longer matches
+                    resetUserSelection();
+                }
             }
         } catch (err) {
             console.error('Search error:', err);
@@ -113,10 +122,8 @@ const AttendanceSignin: React.FC = () => {
         setAttendanceFormData(prev => ({
             ...prev,
             phoneNumber: user.phoneNumber || '',
-            registrationNumber: user.registrationNumber || ''
+            registrationNumber: user.username // Use name as registration identity for sign-in payload if needed
         }));
-        setSearchQuery('');
-        setSearchResults([]);
     };
 
     const resetUserSelection = () => {
@@ -238,84 +245,101 @@ const AttendanceSignin: React.FC = () => {
 
                         <form onSubmit={handleSignin}>
                             <div className={styles.searchWrapper}>
-                                <label className={styles.formLabel}>Find Your Name</label>
+                                <label className={styles.formLabel}>Registration Number</label>
                                 <div style={{ position: 'relative' }}>
                                     <FontAwesomeIcon icon={faSearch} className={styles.searchIcon} />
                                     <input
                                         type="text"
                                         className={`${styles.formInput} ${styles.searchInput}`}
-                                        placeholder="Type name or registration number..."
+                                        placeholder="Enter Registration Number (e.g., IN16/...)"
                                         value={searchQuery}
-                                        onChange={(e) => handleSearch(e.target.value)}
-                                        disabled={signing || !!selectedUser}
+                                        onChange={(e) => {
+                                            const val = e.target.value.toUpperCase();
+                                            setSearchQuery(val);
+                                            handleSearch(val);
+                                        }}
+                                        onBlur={() => {
+                                            // Handle case where they stop typing and we haven't found anyone
+                                            if (!selectedUser && searchQuery.length > 5) {
+                                                setAttendanceFormData(prev => ({ ...prev, registrationNumber: searchQuery }));
+                                            }
+                                        }}
+                                        disabled={signing}
                                     />
                                 </div>
-                                {searchResults.length > 0 && (
-                                    <div className={styles.searchResults}>
-                                        {searchResults.map(user => (
-                                            <div
-                                                key={user._id}
-                                                className={styles.resultItem}
-                                                onClick={() => handleSelectUser(user)}
-                                            >
-                                                <span className={styles.resultName}>{user.username}</span>
-                                                <span className={styles.resultMeta}>{user.registrationNumber || 'No Reg No.'}</span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
                             </div>
 
-                            {selectedUser && (
-                                <div className={styles.selectedUserBar}>
-                                    <div className={styles.selectedInfo}>
-                                        <h4>{selectedUser.username}</h4>
-                                        <p>{selectedUser.registrationNumber}</p>
+                            {selectedUser ? (
+                                <div className={styles.userFoundAlert}>
+                                    <div className={styles.userFoundContent}>
+                                        <div className={styles.userFoundIcon}>
+                                            <FontAwesomeIcon icon={faUserCheck} />
+                                        </div>
+                                        <div>
+                                            <h4 className={styles.welcomeText}>Welcome back, {selectedUser.username}!</h4>
+                                            <p className={styles.foundMeta}>Reg No: {selectedUser.registrationNumber}</p>
+                                        </div>
                                     </div>
                                     <button
                                         type="button"
                                         className={styles.clearBtn}
                                         onClick={resetUserSelection}
-                                        title="Clear selection"
+                                        title="Not you?"
                                     >
                                         <FontAwesomeIcon icon={faTimes} />
                                     </button>
                                 </div>
-                            )}
-
-                            {!selectedUser && (
-                                <div className={styles.formGroup}>
-                                    <label className={styles.formLabel}>Manual Entry (If not found)</label>
-                                    <input
-                                        type="text"
-                                        className={styles.formInput}
-                                        placeholder="Full Name / Reg Number"
-                                        value={attendanceFormData.registrationNumber}
-                                        onChange={(e) => setAttendanceFormData({ ...attendanceFormData, registrationNumber: e.target.value })}
-                                        required
-                                    />
+                            ) : searchQuery.length >= 4 && (
+                                <div className={styles.manualEntrySection}>
+                                    <p className={styles.manualEntryHint}>Not recognized? Please enter your details manually:</p>
+                                    <div className={styles.formGroup}>
+                                        <label className={styles.formLabel}>Full Name</label>
+                                        <input
+                                            type="text"
+                                            className={styles.formInput}
+                                            placeholder="Enter your full name"
+                                            value={attendanceFormData.registrationNumber}
+                                            onChange={(e) => setAttendanceFormData({ ...attendanceFormData, registrationNumber: e.target.value })}
+                                            required
+                                        />
+                                    </div>
+                                    <div className={styles.formGroup}>
+                                        <label className={styles.formLabel}>Phone Number (Optional)</label>
+                                        <input
+                                            type="tel"
+                                            className={styles.formInput}
+                                            placeholder="Enter phone number"
+                                            value={attendanceFormData.phoneNumber}
+                                            onChange={(e) => setAttendanceFormData({ ...attendanceFormData, phoneNumber: e.target.value })}
+                                        />
+                                    </div>
                                 </div>
                             )}
 
-                            <div className={styles.formGroup}>
-                                <SignaturePad
-                                    onSignatureChange={signatureUpdateCallback}
-                                    loading={signing}
-                                />
-                            </div>
+                            {(selectedUser || (searchQuery.length >= 4)) && (
+                                <>
+                                    <div className={styles.formGroup}>
+                                        <label className={styles.formLabel}>Sign Here</label>
+                                        <SignaturePad
+                                            onSignatureChange={signatureUpdateCallback}
+                                            loading={signing}
+                                        />
+                                    </div>
 
-                            <button
-                                type="submit"
-                                className={styles.primaryCta}
-                                disabled={signing}
-                                style={{ marginTop: '10px' }}
-                            >
-                                {signing ? (
-                                    <><FontAwesomeIcon icon={faSpinner} spin /> Recording...</>
-                                ) : (
-                                    <>Confirm Participation <FontAwesomeIcon icon={faUserCheck} /></>
-                                )}
-                            </button>
+                                    <button
+                                        type="submit"
+                                        className={styles.primaryCta}
+                                        disabled={signing}
+                                        style={{ marginTop: '10px' }}
+                                    >
+                                        {signing ? (
+                                            <><FontAwesomeIcon icon={faSpinner} spin /> Recording...</>
+                                        ) : (
+                                            <>Confirm Participation <FontAwesomeIcon icon={faUserCheck} /></>
+                                        )}
+                                    </button>
+                                </>
+                            )}
                         </form>
                     </div>
                 )}
