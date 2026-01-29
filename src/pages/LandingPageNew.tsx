@@ -18,11 +18,11 @@ const boardsItems = [
 ];
 
 const evangelisticTeamsItems = [
-  { label: 'CET - Campus Evangelistic Team', href: '/ets#cet' },
-  { label: 'NET - National Evangelistic Team', href: '/ets#net' },
-  { label: 'ESET - Estate Evangelistic Team', href: '/ets#eset' },
-  { label: 'RIVET - Rural & Interior Village ET', href: '/ets#rivet' },
-  { label: 'WESO - World Evangelism Support Org', href: '/ets#weso' },
+  { label: 'CET - Campus Evangelistic Team', href: '/ets/cet' },
+  { label: 'NET - National Evangelistic Team', href: '/ets/net' },
+  { label: 'ESET - Estate Evangelistic Team', href: '/ets/eset' },
+  { label: 'RIVET - Rural & Interior Village ET', href: '/ets/rivet' },
+  { label: 'WESO - World Evangelism Support Org', href: '/ets/weso' },
 ];
 
 const ministriesItems = [
