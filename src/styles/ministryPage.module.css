@@ -1,6 +1,7 @@
 @import url(global.css);
 
-.container {
+
+/*.container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0;
@@ -375,6 +376,7 @@
 }
 
 /* Responsive Design */
+/*
 @media (max-width: 767px) {
   .heroSection {
     flex-direction: column;
@@ -478,5 +480,387 @@
     max-width: 280px;
     font-size: 0.95rem;
     padding: 16px 25px;
+  }
+}*/
+/* ministryPage.module.css - Enhanced with animations and interactions */
+
+/* ministryPage.module.css - Fixed Version with Immediate Visibility */
+
+/* ministryPage.module.css - Enhanced with animations and interactions */
+
+/* Global styles and animations */
+/* Container & Global Setup */
+.container {
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+  background: #ffffff; /* Body background changed to white */
+  color: #333333;
+  overflow-x: hidden;
+}
+
+/* Hero Section: 70vh and New Gradient */
+.heroSection {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  height: 70vh; 
+  padding: 0 10%;
+  gap: 40px;
+  background: linear-gradient(135deg, #730051 0%, #980000 100%);
+  color: #ffffff;
+  position: relative;
+  clip-path: ellipse(150% 100% at 50% 0%); /* Subtle curve at bottom */
+}
+
+.title {
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: 15px;
+  animation: fadeInDown 0.8s ease;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  opacity: 0.9;
+  margin-bottom: 25px;
+}
+
+.heroImage {
+  background: rgba(255, 255, 255, 0.15);
+  padding: 10px;
+  border-radius: 30px;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  animation: zoomIn 1s ease;
+}
+
+.heroImage img {
+  width: 100%;
+  border-radius: 20px;
+  display: block;
+}
+
+/* Content Sections */
+.contentSection {
+  padding: 80px 10%;
+}
+
+.contentSection h2, 
+.contentSection h3 {
+  color: #730051; /* Your requested purple */
+  font-weight: 700;
+  margin-bottom: 25px;
+}
+
+/* What We Do - Card Grid */
+.activitiesList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  list-style: none;
+  padding: 0;
+  margin-top: 30px;
+}
+
+.activitiesList li {
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  border-bottom: 4px solid #730051;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.activitiesList li:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 40px rgba(115, 0, 81, 0.15);
+}
+
+.activitiesList li::before {
+  content: attr(data-number);
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #730051;
+  opacity: 0.2;
+  margin-bottom: 10px;
+}
+/* Schedule Section Layout */
+.schedule {
+  margin-top: 60px;
+  text-align: center;
+}
+
+.schedule h3 {
+  font-size: 2rem;
+  margin-bottom: 30px;
+  color: #730051;
+}
+
+/* Force Single Row on Desktop */
+.scheduleGrid {
+  display: flex;
+  flex-direction: row; /* Horizontal layout */
+  justify-content: center;
+  gap: 20px;
+  padding: 10px;
+  width: 100%;
+}
+
+/* Individual Schedule Card */
+.scheduleItem {
+  flex: 1; /* Ensures all cards take equal width */
+  min-width: 200px;
+  background: #ffffff;
+  padding: 30px 20px;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(115, 0, 81, 0.08); /* Subtle purple shadow */
+  border: 1px solid rgba(115, 0, 81, 0.1);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.scheduleItem:hover {
+  transform: translateY(-8px);
+  background: linear-gradient(180deg, #ffffff 0%, #fff0f9 100%);
+  border-color: #730051;
+  box-shadow: 0 15px 35px rgba(115, 0, 81, 0.15);
+}
+
+.scheduleItem strong {
+  display: block;
+  font-size: 1.2rem;
+  color: #730051;
+  margin-bottom: 12px;
+  position: relative;
+}
+
+/* Small accent line under the service title */
+.scheduleItem strong::after {
+  content: '';
+  display: block;
+  width: 30px;
+  height: 3px;
+  background: #980000;
+  margin: 8px auto 0;
+  border-radius: 2px;
+}
+
+.scheduleItem p {
+  font-size: 1rem;
+  color: #555;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* Responsive: Stack cards on mobile/tablets */
+@media (max-width: 1024px) {
+  .scheduleGrid {
+    flex-wrap: wrap; /* Allows wrapping if screen is too small */
+  }
+  
+  .scheduleItem {
+    flex: 0 0 calc(50% - 20px); /* 2 cards per row on tablets */
+  }
+}
+
+@media (max-width: 600px) {
+  .scheduleItem {
+    flex: 0 0 100%; /* 1 card per row on mobile */
+  }
+}
+/* Testimonials Section - Distinct from Footer */
+.testimonialsSection {
+  position: relative;
+  /* Complex gradient to add depth compared to the flat hero gradient */
+  background: radial-gradient(circle at top left, #8b0062, transparent),
+              radial-gradient(circle at bottom right, #5e0042, transparent),
+              #730051;
+  padding: 100px;
+   /* Extra bottom padding for the curve */
+  color: white;
+  text-align: center;
+  overflow: hidden;
+}
+
+/* Decorative background shapes for a "modern" feel */
+.testimonialsSection::before {
+  content: "";
+  position: absolute;
+  top: -10%;
+  left: -5%;
+  width: 300px;
+  height: 300px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 50%;
+  z-index: 0;
+}
+
+.testimonialsSection h2 {
+  color: white;
+  font-size: 2.5rem;
+  margin-bottom: 50px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Container for Testimonial Cards */
+.testimonials {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+}
+
+/* Ultra-Modern Glass Card */
+.testimonial {
+  flex: 1;
+  min-width: 300px;
+  max-width: 380px;
+  background: rgba(255, 255, 255, 0.08); /* Transparent white */
+  backdrop-filter: blur(15px) saturate(150%);
+  -webkit-backdrop-filter: blur(15px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 40px 30px;
+  border-radius: 24px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.testimonial:hover {
+  transform: translateY(-15px);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+}
+
+.testimonial p {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  font-style: italic;
+  margin-bottom: 25px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.testimonial span {
+  display: block;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #ffb1e1; /* Light pink/purple for contrast */
+}
+
+/* Subtle separator at the bottom to transition into Footer */
+.testimonialsSection::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 80px;
+  background: #ffffff; /* This matches your white body if the footer is separate */
+}
+
+/* Buttons */
+/* Container for buttons to ensure they are centered */
+/* Container for buttons - ensures they are centered by default */
+.actionButtons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-top: 40px;
+  width: 100%;
+}
+
+/* Base style for both buttons */
+.commitmentButton, 
+.contactButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 220px; /* Consistent width for both */
+  padding: 16px 32px;
+  border-radius: 50px;
+  border: none;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  cursor: pointer;
+  background: linear-gradient(135deg, #730051 0%, #980000 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 15px rgba(115, 0, 81, 0.3);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* --- MOBILE VIEW FIX --- */
+@media (max-width: 600px) {
+  .actionButtons {
+    flex-direction: column; /* Stack vertically */
+    gap: 15px; /* Slightly tighter gap for mobile */
+  }
+
+  .commitmentButton, 
+  .contactButton {
+    width: 90%; /* Take up most of the screen width on mobile */
+    min-width: unset; /* Allow it to shrink if necessary */
+  }
+}
+
+
+/* Hover Effects */
+.commitmentButton:hover,
+.contactButton:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(152, 0, 0, 0.4);
+  /* Subtle shift in gradient on hover */
+  background: linear-gradient(135deg, #980000 0%, #730051 100%);
+}
+
+/* Active/Click Effect */
+.commitmentButton:active,
+.contactButton:active {
+  transform: translateY(0) scale(0.98);
+}
+
+
+.contactButton {
+  background: transparent;
+  border: 2px solid #730051;
+  color: #730051;
+  box-shadow: none;
+}
+
+.contactButton:hover {
+  background: #730051;
+  color: #ffffff;
+}
+/* Animations */
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes zoomIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Responsive Fixes */
+@media (max-width: 968px) {
+  .heroSection {
+    grid-template-columns: 1fr;
+    height: auto;
+    padding: 60px 5%;
+    text-align: center;
   }
 }
