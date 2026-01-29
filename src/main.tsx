@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import { RouterProvider } from 'react-router-dom'
 import { router } from './pages/Routers.tsx'
 import { OfflineWrapper } from './components/OfflineWrapper.tsx'
+import './styles/global.css'
 
 // Force service worker update on page load
 if ('serviceWorker' in navigator) {

@@ -52,7 +52,7 @@ const BackToTopButton: React.FC = () => {
     bottom: isMobile ? '150px' : '180px',
     width: isMobile ? '50px' : '60px',
     height: isMobile ? '50px' : '60px',
-    backgroundColor: '#00c6ff',
+    backgroundColor: '#730051',
     color: 'white',
     borderRadius: '15px',
     display: 'flex',
@@ -60,7 +60,7 @@ const BackToTopButton: React.FC = () => {
     justifyContent: 'center',
     cursor: 'pointer',
     zIndex: 999999,
-    boxShadow: '0 4px 15px rgba(0, 198, 255, 0.4)',
+    boxShadow: '0 4px 15px rgba(115, 0, 81, 0.4)',
     border: '2px solid white',
     transition: 'all 0.3s ease',
     opacity: 1, // Always fully visible
@@ -70,15 +70,15 @@ const BackToTopButton: React.FC = () => {
   };
 
   const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.currentTarget.style.backgroundColor = '#0099cc';
+    e.currentTarget.style.backgroundColor = '#5a0040';
     e.currentTarget.style.transform = 'scale(1.1)';
-    e.currentTarget.style.boxShadow = '0 6px 20px rgba(0, 198, 255, 0.6)';
+    e.currentTarget.style.boxShadow = '0 6px 20px rgba(115, 0, 81, 0.6)';
   };
 
   const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.currentTarget.style.backgroundColor = '#00c6ff';
+    e.currentTarget.style.backgroundColor = '#730051';
     e.currentTarget.style.transform = 'scale(1)';
-    e.currentTarget.style.boxShadow = '0 4px 15px rgba(0, 198, 255, 0.4)';
+    e.currentTarget.style.boxShadow = '0 4px 15px rgba(115, 0, 81, 0.4)';
   };
 
   const handleClick = (e: React.MouseEvent) => {

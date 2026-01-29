@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
-import LandingPage from "./landing";
+import LandingPage from "./LandingPageNew";
 import FinancialsPage from "./Financials";
 import MinistriesPage from "./Ministries";
 import Etpage from "./Et";
@@ -52,6 +52,10 @@ import PollingOfficerDashboard from "./PollingOfficerDashboard";
 import PollingOfficerManagement from "./PollingOfficerManagement";
 import MyDocs from "./MyDocs";
 import SuperAdminDocumentDashboard from "./superAdminDocumentDashboard";
+
+/*newly added Christian Minds*/
+import ChristianMinds from "./christianMinds";
+
 
 export const router = createBrowserRouter([
     {
@@ -110,6 +114,8 @@ export const router = createBrowserRouter([
             {path: "/polling-officer-management", element: <PollingOfficerManagement />},
             {path: "/my-docs", element: <MyDocs />},
             {path: "/admin/documents", element: <SuperAdminDocumentDashboard />},
+            /*newly added Christian Minds*/
+            {path: "/christianminds", element: <ChristianMinds />},
             {path: "*", element: <NoPage />}
         ]
     }

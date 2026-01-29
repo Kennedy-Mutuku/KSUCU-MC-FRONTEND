@@ -1,5 +1,5 @@
 // Safe service worker - minimal interference with API calls
-const CACHE_NAME = 'ksucu-v3';
+const CACHE_NAME = 'ksucu-v4';
 
 // Install event - skip waiting immediately
 self.addEventListener('install', (event) => {
