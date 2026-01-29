@@ -45,6 +45,8 @@ const fellowshipsItems = [
   { label: 'Discipleship Classes', href: '/fellowshipsandclasses' },
 ];
 
+
+
 const LandingPageNew = () => {
 
   return (

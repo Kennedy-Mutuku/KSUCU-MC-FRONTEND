@@ -53,6 +53,10 @@ import PollingOfficerManagement from "./PollingOfficerManagement";
 import MyDocs from "./MyDocs";
 import SuperAdminDocumentDashboard from "./superAdminDocumentDashboard";
 
+/*newly added Christian Minds*/
+import ChristianMinds from "./christianMinds";
+
+
 export const router = createBrowserRouter([
     {
         path: "/",
@@ -110,6 +114,8 @@ export const router = createBrowserRouter([
             {path: "/polling-officer-management", element: <PollingOfficerManagement />},
             {path: "/my-docs", element: <MyDocs />},
             {path: "/admin/documents", element: <SuperAdminDocumentDashboard />},
+            /*newly added Christian Minds*/
+            {path: "/christianminds", element: <ChristianMinds />},
             {path: "*", element: <NoPage />}
         ]
     }
