@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from '../styles/e-library.module.css';
-import { FaYoutube, FaFacebook, FaTiktok, FaArrowLeft } from 'react-icons/fa';
+import { FaArrowLeft, FaSearch } from 'react-icons/fa';
+import Footer from '../components/footer';
 
 interface Book {
   title: string;
@@ -62,51 +63,72 @@ const Library: React.FC = () => {
             <source src="/img/vinda.mp4" type="video/mp4" />
           </video>
         </div>
-        <div className={styles.searchFilter}>
-          <input
-            className={styles.input}
-            type="text"
-            placeholder="Search for books..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-          <select
-            className={styles.select}
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-          >
-            <option value="">Select Categories</option>
-            <option value="Alter">Alter</option>
-            <option value="Faith">Faith</option>
-            <option value="Growth">Growth</option>
-            <option value="Hope">Hope</option>
-            <option value="Leadership">Leadership</option>
-            <option value="Ministry">Ministry</option>
-            <option value="Parenting">Parenting</option>
-            <option value="Prayer">Prayer</option>
-          </select>
+        <div className={styles.controls}>
+          <div className={styles.searchFilter}>
+            <div className={styles.searchRow}>
+              <div className={styles.searchInputWrapper}>
+                <FaSearch className={styles.searchIcon} />
+                <input
+                  className={styles.searchInput}
+                  type="text"
+                  placeholder="Search for books..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              </div>
+              <select
+                className={styles.select}
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+              >
+                <option value="">All Categories</option>
+                <option value="Alter">Alter</option>
+                <option value="Faith">Faith</option>
+                <option value="Growth">Growth</option>
+                <option value="Hope">Hope</option>
+                <option value="Leadership">Leadership</option>
+                <option value="Ministry">Ministry</option>
+                <option value="Parenting">Parenting</option>
+                <option value="Prayer">Prayer</option>
+              </select>
+            </div>
+          </div>
         </div>
-        <div className={styles.categoryNav}>
-          {['Alter', 'Faith', 'Growth', 'Hope', 'Leadership', 'Ministry', 'Parenting', 'Prayer'].map((cat) => (
-            <span
-              key={cat}
-              className={styles.category}
-              onClick={() => setSelectedCategory(cat)}
-            >
-              {cat} ||
-            </span>
-          ))}
-        </div>
-        <div className={styles.books}>
+
+        <div className={styles.booksWrapper}>
+          <div className={styles.books}>
           {filteredBooks.map((book) => (
             <div
               key={book.title}
               className={styles.book}
               onClick={() => openBook(book)}
             >
-              {book.title}
+              <div className={styles.bookInner}>
+                <div className={styles.bookTitle}>{book.title}</div>
+                <div className={styles.bookCategory}>{book.category}</div>
+                <div className={styles.bookActions}>
+                  <a
+                    href={book.path}
+                    className={styles.downloadBtn}
+                    download
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    Download
+                  </a>
+                  <button
+                    className={styles.openBtn}
+                    onClick={(e) => { e.stopPropagation(); openBook(book); }}
+                    type="button"
+                  >
+                    Open
+                  </button>
+                </div>
+              </div>
             </div>
           ))}
+          </div>
         </div>
         {modalBook && (
           <div className={styles.modal} onClick={closeModal}>
@@ -118,25 +140,7 @@ const Library: React.FC = () => {
           </div>
         )}
       </div>
-      <div className={`${styles['footer']} ${styles['home-footer']}`} id='contacts'>
-        <p className={styles['footer--text']}>KISII UNIVERSITY MAIN CAMPUS CHRISTIAN UNION 2024</p>
-
-        <div className={styles['hr']}></div>
-
-        <div className={styles['social--links']}>
-          <div className={styles['youtube']}>
-            <a href="https://www.youtube.com/@KSUCU-MC" className={styles['social-link']}><FaYoutube /></a>
-          </div>
-
-          <div className={styles['facebook']}>
-            <a href="https://www.facebook.com/ksucumc" className={styles['social-link']}><FaFacebook /></a>
-          </div>
-
-          <div className={styles['tiktok']}>
-            <a href="" className={styles['social-link']}><FaTiktok /></a>
-          </div>
-        </div>
-      </div>
+      <Footer />
     </div>
   );
 };
