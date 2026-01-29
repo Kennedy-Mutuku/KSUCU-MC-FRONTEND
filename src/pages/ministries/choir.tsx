@@ -1,11 +1,45 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styles from '../../styles/ministryPage.module.css';
 import UniversalHeader from '../../components/UniversalHeader';
 import Footer from '../../components/footer';
 import { Link } from 'react-router-dom';
 import choirImg from '../../assets/choir.jpg';
+import MinistryRegistrationModal from '../../components/MinistryRegistrationModal';
 
 const ChoirPage: React.FC = () => {
+  const contentRef1 = useRef<HTMLDivElement>(null);
+  const contentRef2 = useRef<HTMLDivElement>(null);
+  const testimonialsRef = useRef<HTMLDivElement>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    // Smooth scroll behavior
+    document.documentElement.style.scrollBehavior = 'smooth';
+
+    // Simple scroll animation observer
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px',
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, observerOptions);
+
+    // Observe elements if they exist
+    if (contentRef1.current) observer.observe(contentRef1.current);
+    if (contentRef2.current) observer.observe(contentRef2.current);
+    if (testimonialsRef.current) observer.observe(testimonialsRef.current);
+
+    return () => {
+      document.documentElement.style.scrollBehavior = 'auto';
+      observer.disconnect();
+    };
+  }, []);
 
   return (
     <>
@@ -16,65 +50,48 @@ const ChoirPage: React.FC = () => {
             <h1 className={styles.title}>Choir Ministry</h1>
             <p className={styles.subtitle}>Voices united in harmony to glorify God</p>
           </div>
+
           <div className={styles.heroImage}>
-            <img src={choirImg} alt="Choir Ministry" />
+            <img src={choirImg} alt="Ushering and Hospitality Ministry" />
           </div>
         </div>
 
-
-        <div className={styles.contentSection}>
+        <div className={`${styles.contentSection} ${styles.animate}`} ref={contentRef1}>
           <div className={styles.description}>
-            <h2>About Our Choir</h2>
+            <h2>About Choir</h2>
             <p>
-              The Choir Ministry in KSUCU-MC is a vibrant team of dedicated vocalists committed to leading the 
-              congregation in worship through song. With a passion for glorifying God through music, the choir 
-              blends voices in harmony to create a powerful and uplifting worship atmosphere.
+              The Choir Ministry in KSUCU-MC is a vibrant team of dedicated vocalists committed to leading the congregation in worship through song. With a passion for glorifying God through music, the choir blends voices in harmony to create a powerful and uplifting worship atmosphere.
             </p>
-            
+
             <p>
-              Through practice, prayer, and dedication, they minister to the hearts of many, drawing people 
-              closer to God with every song they sing. Our choir serves as a vessel for God's love and grace, 
-              touching lives through the beauty of unified worship.
+              Through practice, prayer, and dedication, they minister to the hearts of many, drawing people closer to God with every song they sing. Our choir serves as a vessel for God's love and grace, touching lives through the beauty of unified worship.
             </p>
-            
+
             <h3>Our Mission</h3>
             <p>
-              To worship God through the gift of music, creating harmonious melodies that lift spirits, 
-              inspire faith, and bring glory to our Heavenly Father. We believe in the transformative 
-              power of music to heal, encourage, and unite God's people.
+              To worship God through the gift of music, creating harmonious melodies that lift spirits, inspire faith, and bring glory to our Heavenly Father. We believe in the transformative power of music to heal, encourage, and unite God's people
             </p>
-            
+
             <h3>What We Do</h3>
             <ul className={styles.activitiesList}>
-              <li>Lead congregational singing during worship services</li>
-              <li>Perform special musical presentations and concerts</li>
-              <li>Participate in seasonal celebrations and special events</li>
-              <li>Support community outreach through musical ministry</li>
-              <li>Collaborate with other ministries for combined worship</li>
-              <li>Provide music for weddings, funerals, and special ceremonies</li>
+              <li data-number="01">Lead congregational singing during worship services</li>
+              <li data-number="02">Perform special musical presentations and concerts</li>
+              <li data-number="03">Participate in seasonal celebrations and special events</li>
+              <li data-number="04">Support community outreach through musical ministry</li>
+              <li data-number="05">Collaborate with other ministries for combined worship</li>
+              <li data-number="06">Provide music for weddings, funerals, and special ceremonies</li>
             </ul>
-            
-            <h3>Choir Sections</h3>
-            <div className={styles.instrumentsGrid}>
-              <div className={styles.instrument}>🎵 Soprano</div>
-              <div className={styles.instrument}>🎶 Alto</div>
-              <div className={styles.instrument}>🎼 Tenor</div>
-              <div className={styles.instrument}>🎹 Bass</div>
-              <div className={styles.instrument}>🎤 Lead Vocalists</div>
-              <div className={styles.instrument}>🎧 Section Leaders</div>
-            </div>
+
           </div>
 
           <div className={styles.joinSection}>
             <h2>Join Our Choir Family</h2>
             <p>
-              Whether you're an experienced vocalist or someone who simply loves to sing, our choir welcomes 
-              all who have a heart for worship and a desire to serve God through music. We provide training 
-              and support to help you grow in your musical gifts.
+              Whether you're an experienced vocalist or someone who simply loves to sing, our choir welcomes all who have a heart for worship and a desire to serve God through music. We provide training and support to help you grow in your musical gifts.
             </p>
-            
+
             <div className={styles.requirements}>
-              <h3>Requirements to Join</h3>
+              <h3>Requirements to Join.</h3>
               <ul>
                 <li>Love for Jesus Christ and desire to worship Him</li>
                 <li>Willingness to learn and improve vocal skills</li>
@@ -84,7 +101,8 @@ const ChoirPage: React.FC = () => {
                 <li>Consistent attendance at practices and services</li>
               </ul>
             </div>
-            
+
+
             <div className={styles.schedule}>
               <h3>Choir Schedule</h3>
               <div className={styles.scheduleGrid}>
@@ -106,19 +124,35 @@ const ChoirPage: React.FC = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className={styles.actionButtons}>
-              <Link to="/choir" className={styles.commitmentButton}>
-                Sign Commitment Form
+              <Link to="/contact-us" className={styles.commitmentButton}>
+                Join Choir
               </Link>
               <Link to="/contact-us" className={styles.contactButton}>
-                Contact Coordinator
+                Contact Overseer
               </Link>
             </div>
           </div>
         </div>
 
-        <div className={styles.testimonialsSection}>
+        <div className={`${styles.contentSection} ${styles.animate}`} ref={contentRef1} >
+          <div className={styles.description}>
+            <h3>Our Choir Philosophy</h3>
+            <p>
+              "Sing to the Lord a new song; sing to the Lord, all the earth. Sing to the Lord, praise his name; proclaim his salvation day after day." Psalm 96:1-2
+            </p>
+            <p>
+              We believe that when voices unite in worship, something beautiful happens â€“ hearts are lifted, spirits are encouraged, and God is glorified. Our choir is more than a musical group; we're a community of believers who have found joy in serving God together through song.
+            </p>
+
+            <h3>Training and Development</h3>
+            <p>
+              We provide ongoing vocal training, music theory education, and performance coaching to help every member reach their full potential. Our experienced leaders and guest instructors ensure that each member grows both musically and spiritually.
+            </p>
+          </div>
+        </div>
+        <div className={`${styles.testimonialsSection} ${styles.animate}`} ref={testimonialsRef}>
           <h2>Voices of Joy</h2>
           <div className={styles.testimonials}>
             <div className={styles.testimonial}>
@@ -136,30 +170,15 @@ const ChoirPage: React.FC = () => {
           </div>
         </div>
 
-        <div className={styles.contentSection}>
-          <div className={styles.description}>
-            <h3>Our Choir Philosophy</h3>
-            <p>
-              "Sing to the Lord a new song; sing to the Lord, all the earth. Sing to the Lord, praise his name; 
-              proclaim his salvation day after day." – Psalm 96:1-2
-            </p>
-            <p>
-              We believe that when voices unite in worship, something beautiful happens – hearts are lifted, 
-              spirits are encouraged, and God is glorified. Our choir is more than a musical group; we're a 
-              community of believers who have found joy in serving God together through song.
-            </p>
-            
-            <h3>Training and Development</h3>
-            <p>
-              We provide ongoing vocal training, music theory education, and performance coaching to help 
-              every member reach their full potential. Our experienced leaders and guest instructors ensure 
-              that each member grows both musically and spiritually.
-            </p>
-          </div>
-        </div>
 
       </div>
+
       <Footer />
+      <MinistryRegistrationModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        ministryName="Choir Ministry"
+      />
     </>
   );
 };

@@ -21,11 +21,11 @@
     "jspdf": "^2.5.2",
     "jspdf-autotable": "^3.8.4",
     "lucide-react": "^0.474.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-icons": "^5.0.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-icons": "^5.5.0",
     "react-image-crop": "^11.0.7",
-    "react-router-dom": "^6.22.2",
+    "react-router-dom": "^6.30.3",
     "react-scroll": "^1.9.0",
     "react-signature-canvas": "^1.0.7",
     "react-toastify": "^11.0.5",
@@ -34,7 +34,7 @@
   },
   "devDependencies": {
     "@types/js-cookie": "^3.0.6",
-    "@types/react": "^18.2.56",
+    "@types/react": "^18.3.27",
     "@types/react-dom": "^18.2.19",
     "@types/react-scroll": "^1.8.10",
     "@types/react-signature-canvas": "^1.0.7",
@@ -46,7 +46,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
     "typescript": "^5.2.2",
-    "vite": "^5.1.4"
+    "vite": "^5.4.21"
   },
   "description": "Kisii university Christian union main Campus Website front end",
   "main": "index.js",

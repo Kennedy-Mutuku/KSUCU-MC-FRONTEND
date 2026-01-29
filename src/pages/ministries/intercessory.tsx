@@ -1,11 +1,43 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import styles from '../../styles/ministryPage.module.css';
 import UniversalHeader from '../../components/UniversalHeader';
 import Footer from '../../components/footer';
 import { Link } from 'react-router-dom';
-import intercessoryImg from '../../assets/intersesory.jpg';
+import intercesorryImg from '../../assets/intersesory.jpg';
 
 const IntercessoryPage: React.FC = () => {
+  const contentRef1 = useRef<HTMLDivElement>(null);
+  const contentRef2 = useRef<HTMLDivElement>(null);
+  const testimonialsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Smooth scroll behavior
+    document.documentElement.style.scrollBehavior = 'smooth';
+
+    // Simple scroll animation observer
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px',
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, observerOptions);
+
+    // Observe elements if they exist
+    if (contentRef1.current) observer.observe(contentRef1.current);
+    if (contentRef2.current) observer.observe(contentRef2.current);
+    if (testimonialsRef.current) observer.observe(testimonialsRef.current);
+
+    return () => {
+      document.documentElement.style.scrollBehavior = 'auto';
+      observer.disconnect();
+    };
+  }, []);
 
   return (
     <>
@@ -16,62 +48,46 @@ const IntercessoryPage: React.FC = () => {
             <h1 className={styles.title}>Intercessory Ministry</h1>
             <p className={styles.subtitle}>Standing in the gap through prayer</p>
           </div>
+          
           <div className={styles.heroImage}>
-            <img src={intercessoryImg} alt="Intercessory Ministry" />
+            <img src={intercesorryImg} alt="Ushering and Hospitality Ministry" />
           </div>
         </div>
 
-
-        <div className={styles.contentSection}>
+        <div className={`${styles.contentSection} ${styles.animate}`} ref={contentRef1}>
           <div className={styles.description}>
             <h2>About Intercessory Prayer</h2>
             <p>
-              The Intercessory Ministry is dedicated to standing in the gap through prayer, seeking God's heart, 
-              and lifting the needs of others before Him. Rooted in faith and compassion, this ministry strives 
-              to align with God's will and bring hope, healing, and transformation through the power of prayer.
+              The Intercessory Ministry is dedicated to standing in the gap through prayer, seeking God's heart, and lifting the needs of others before Him. Rooted in faith and compassion, this ministry strives to align with God's will and bring hope, healing, and transformation through the power of prayer.
             </p>
             
             <p>
-              We believe in the importance of interceding for individuals, families, communities, and nations, 
-              trusting in the promises of God to hear and answer our petitions. Our prayer warriors are committed 
-              to creating a spiritual covering, offering support during times of challenge, and celebrating 
-              breakthroughs as God moves.
+              We believe in the importance of interceding for individuals, families, communities, and nations, trusting in the promises of God to hear and answer our petitions. Our prayer warriors are committed to creating a spiritual covering, offering support during times of challenge, and celebrating breakthroughs as God moves.
             </p>
             
             <h3>Our Mission</h3>
             <p>
-              To be a house of prayer for all nations, interceding for the needs of our church, community, and 
-              world. We seek to build a bridge between heaven and earth through persistent, faithful prayer.
+              To be a house of prayer for all nations, interceding for the needs of our church, community, and world. We seek to build a bridge between heaven and earth through persistent, faithful prayer.
             </p>
             
             <h3>What We Do</h3>
             <ul className={styles.activitiesList}>
-              <li>Corporate prayer sessions and prayer meetings</li>
-              <li>Individual prayer requests and follow-up</li>
-              <li>24/7 prayer chain for urgent needs</li>
-              <li>Fasting and prayer retreats</li>
-              <li>Spiritual warfare and deliverance ministry</li>
-              <li>Prayer walks and community intercession</li>
-              <li>Training in prayer principles and techniques</li>
-              <li>Prophetic intercession and listening prayer</li>
+              <li data-number="01">Corporate prayer sessions and prayer meetings</li>
+              <li data-number="02">Individual prayer requests and follow-up</li>
+              <li data-number="03">24/7 prayer chain for urgent needs</li>
+              <li data-number="04">Fasting and prayer retreats</li>
+              <li data-number="05">Spiritual warfare and deliverance ministry</li>
+              <li data-number="06">Prayer walks and community intercession</li>
+              <li data-number="06">Training in prayer principles and techniques</li>
+              <li data-number="06">Prophetic intercession and listening prayer</li>
             </ul>
             
-            <h3>Types of Prayer</h3>
-            <div className={styles.instrumentsGrid}>
-              <div className={styles.instrument}>🙏 Petition Prayer</div>
-              <div className={styles.instrument}>✨ Praise & Worship</div>
-              <div className={styles.instrument}>⚔️ Spiritual Warfare</div>
-              <div className={styles.instrument}>💫 Prophetic Prayer</div>
-              <div className={styles.instrument}>🔄 Healing Prayer</div>
-              <div className={styles.instrument}>🌍 Global Intercession</div>
-            </div>
           </div>
 
           <div className={styles.joinSection}>
             <h2>Join Our Prayer Army</h2>
             <p>
-              Whether you're in need of prayer, feel called to intercede for others, or want to deepen your 
-              connection with God, we welcome you to join us in this vital and impactful ministry.
+             Whether you're in need of prayer, feel called to intercede for others, or want to deepen your connection with God, we welcome you to join us in this vital and impactful ministry.
             </p>
             
             <div className={styles.requirements}>
@@ -86,6 +102,7 @@ const IntercessoryPage: React.FC = () => {
               </ul>
             </div>
             
+
             <div className={styles.schedule}>
               <h3>Prayer Schedule</h3>
               <div className={styles.scheduleGrid}>
@@ -119,7 +136,19 @@ const IntercessoryPage: React.FC = () => {
           </div>
         </div>
 
-        <div className={styles.testimonialsSection}>
+<div className={`${styles.contentSection} ${styles.animate}`} ref={contentRef1} >
+          <div className={styles.description}>
+            <h3>Our Prayer Philosophy</h3>
+            <p>
+              "The prayer of a righteous person is powerful and effective." James 5:1
+            </p>
+            <p>
+             We believe prayer is both a privilege and a responsibility. It's our direct line of communication with our Heavenly Father and the means by which His will is accomplished on earth. Through intercession, we partner with God in His work of transformation and redemption.
+            </p>
+            
+          </div>
+        </div>
+        <div className={`${styles.testimonialsSection} ${styles.animate}`} ref={testimonialsRef}>
           <h2>Testimonies of God's Faithfulness</h2>
           <div className={styles.testimonials}>
             <div className={styles.testimonial}>
@@ -137,20 +166,9 @@ const IntercessoryPage: React.FC = () => {
           </div>
         </div>
 
-        <div className={styles.contentSection}>
-          <div className={styles.description}>
-            <h3>Our Prayer Philosophy</h3>
-            <p>
-              "The prayer of a righteous person is powerful and effective." – James 5:16
-            </p>
-            <p>
-              We believe prayer is both a privilege and a responsibility. It's our direct line of communication 
-              with our Heavenly Father and the means by which His will is accomplished on earth. Through 
-              intercession, we partner with God in His work of transformation and redemption.
-            </p>
-          </div>
-        </div>
+        
       </div>
+      
       <Footer />
     </>
   );

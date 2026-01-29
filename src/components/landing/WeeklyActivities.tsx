@@ -38,11 +38,10 @@ const WeeklyActivities = () => {
           {activities.map((activity, index) => (
             <div
               key={index}
-              className={`relative p-5 rounded-xl border transition-all duration-300 hover:shadow-lg hover:-translate-y-1 ${
-                activity.highlight
-                  ? 'bg-gradient-to-br from-purple-50 to-cyan-50 border-purple-200'
-                  : 'bg-white border-gray-200'
-              }`}
+              className={`relative p-5 rounded-xl border transition-all duration-300 hover:shadow-lg hover:-translate-y-1 ${activity.highlight
+                ? 'bg-gradient-to-br from-purple-50 to-cyan-50 border-purple-200'
+                : 'bg-white border-gray-200'
+                }`}
             >
               {activity.highlight && (
                 <span className="absolute -top-2 -right-2 px-2 py-1 bg-[#730051] text-white text-xs font-medium rounded-full">
