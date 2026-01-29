@@ -1,4 +1,4 @@
-import React, { lazy } from "react";
+import { lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
 
@@ -7,6 +7,11 @@ const LandingPage = lazy(() => import("./LandingPageNew"));
 const FinancialsPage = lazy(() => import("./Financials"));
 const MinistriesPage = lazy(() => import("./Ministries"));
 const Etpage = lazy(() => import("./Et"));
+const RivetPage = lazy(() => import("./ets/Rivet"));
+const NetPage = lazy(() => import("./ets/Net"));
+const EsetPage = lazy(() => import("./ets/Eset"));
+const WesoPage = lazy(() => import("./ets/Weso"));
+const CetPage = lazy(() => import("./ets/Cet"));
 const NoPage = lazy(() => import("./NoPage"));
 const SignIn = lazy(() => import("../components/signin"));
 const SignUp = lazy(() => import("../components/signup"));
@@ -68,6 +73,11 @@ export const router = createBrowserRouter([
             { path: "/financial", element: <FinancialsPage /> },
             { path: "/ministries", element: <MinistriesPage /> },
             { path: "/ets", element: <Etpage /> },
+            { path: "/ets/rivet", element: <RivetPage /> },
+            { path: "/ets/net", element: <NetPage /> },
+            { path: "/ets/eset", element: <EsetPage /> },
+            { path: "/ets/weso", element: <WesoPage /> },
+            { path: "/ets/cet", element: <CetPage /> },
             { path: "/signIn", element: <SignIn /> },
             { path: "/signUp", element: <SignUp /> },
             { path: "/Bs", element: <Bs /> },
