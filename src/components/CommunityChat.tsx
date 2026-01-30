@@ -252,7 +252,7 @@ const CommunityChat: React.FC = () => {
     try {
       console.log('💬 Chat: Loading messages...');
       
-      const apiUrl = `${getApiUrl('chatMessages')}?page=${page}&limit=50`;
+      const apiUrl = `${getApiUrl('chatMessages')}?page=${page}&limit=20`; // Reduced from 50 to 20
       const response = await fetch(apiUrl, {
         credentials: 'include'
       });
@@ -1232,11 +1232,12 @@ const CommunityChat: React.FC = () => {
     );
   }
 
+
   return (
     <div className={styles.chatWindow}>
       <div className={styles.chatHeader}>
         <div className={styles.headerLeft}>
-          <MessageCircle size={20} />
+          <MessageCircle size={24} />
           <span>KSUCU-MC Community Chat</span>
         </div>
         <div className={styles.headerRight}>
@@ -1261,8 +1262,13 @@ const CommunityChat: React.FC = () => {
 
       <div className={styles.messagesContainer} ref={chatWindowRef}>
         {isLoading && messages.length === 0 && (
-          <div style={{ textAlign: 'center', padding: '20px', color: '#9ca3af' }}>
-            <div className={styles.loading}>Loading messages...</div>
+          <div style={{ textAlign: 'center', padding: '40px 20px', color: '#6b7280' }}>
+            <div className={styles.loading} style={{ fontSize: '16px', fontWeight: 500 }}>
+              Loading messages...
+            </div>
+            <div style={{ fontSize: '13px', marginTop: '8px', opacity: 0.7 }}>
+              Please wait
+            </div>
           </div>
         )}
         
@@ -1359,7 +1365,7 @@ const CommunityChat: React.FC = () => {
               handleTyping(false);
             }
           }}
-          placeholder={editingMessage ? "Edit your message..." : "Type a message..."}
+          placeholder={editingMessage ? "Edit your message..." : "Type Message.."}
           className={styles.messageInput}
           disabled={!isConnected || isLoading}
         />
