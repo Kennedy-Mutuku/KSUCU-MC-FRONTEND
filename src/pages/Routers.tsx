@@ -61,64 +61,11 @@ const PollingOfficerManagement = lazy(() => import("./PollingOfficerManagement")
 const MyDocs = lazy(() => import("./MyDocs"));
 const SuperAdminDocumentDashboard = lazy(() => import("./superAdminDocumentDashboard"));
 const ChristianMinds = lazy(() => import("./christianMinds"));
-
-import LandingPage from "./LandingPageNew";
-import FinancialsPage from "./Financials";
-import MinistriesPage from "./Ministries";
-import Etpage from "./Et";
-import NoPage from "./NoPage";
-import SignIn from "../components/signin";
-import SignUp from "../components/signup";
-import Bs from "../components/bibleStudy";
-import SavedSouls from "./savedSouls";
-import Forgotpassword from "../components/forgotPassword";
-import ClassesSection from "./classes";
-import BoardsPage from "./boards";
-import ChangeDetails from "../components/changeDetails";
-import NewsPage from "./NewsPage";
-import PhotoUploadPage from "./newsadminText";
-import PasswordReset from "../components/newPaaswwordInput";
-import SavedSoulsList from "./adminMission";
-import BsMembersList from "./adminBs";
-import Library from "./library";
-import Media from "./media"
-import MediaAdmin from "./MediaAdmin"
-import Elders from "./eldersPage"
-import FeedbackForm from "../components/feedBackForm";
-import SuperAdmin from "./superAdmin";
-import PraiseandWorshipCommitment from "../commitmentForms/praiseandWorship";
-import ChoirCommitment from "../commitmentForms/Choir";
-import InstrumentalistsCommitment from "../commitmentForms/instrumentalists";
-import AdmissionAdmin from "./admissionAdmin";
-import UserProfilePage from "./userProfile";
-import UserManagement from "./userManagement";
-import WorshipDocketAdmin from "./WorshipDocketAdmin";
-import UsheringPage from "./ministries/ushering";
-import CreativityPage from "./ministries/creativity";
-import CompassionPage from "./ministries/compassion";
-import IntercessoryPage from "./ministries/intercessory";
-import HighSchoolPage from "./ministries/highSchool";
-import WananzambePage from "./ministries/wananzambe";
-import ChurchSchoolPage from "./ministries/churchSchool";
-import PraiseAndWorshipPage from "./ministries/praiseAndWorship";
-import ChoirPage from "./ministries/choir";
-import ContactUs from "./ContactUs";
-import MessagesAdmin from "./MessagesAdmin";
-import AttendanceSessionManagement from "./AttendanceSessionManagement";
-import NewsAdmin from "./NewsAdmin";
-import Requisitions from "./Requisitions";
-import RequisitionsAdmin from "./RequisitionsAdmin";
-import CompassionCounselingPage from "./CompassionCounseling";
-import CompassionCounselingAdmin from "./CompassionCounselingAdmin";
-import PollingOfficerDashboard from "./PollingOfficerDashboard";
-import PollingOfficerManagement from "./PollingOfficerManagement";
-import MyDocs from "./MyDocs";
-import SuperAdminDocumentDashboard from "./superAdminDocumentDashboard";
-import SistersFellowship from "./sistersFellowship";
-import BrothersFellowship from "./brothersFellowship";
-import DiscipleshipClass from "./discipleshipClass";
-import BestpClass from "./bestpClass";
-import ClassFellowship from "./classFellowship";
+const SistersFellowship = lazy(() => import("./sistersFellowship"));
+const BrothersFellowship = lazy(() => import("./brothersFellowship"));
+const DiscipleshipClass = lazy(() => import("./discipleshipClass"));
+const BestpClass = lazy(() => import("./bestpClass"));
+const ClassFellowship = lazy(() => import("./classFellowship"));
 
 export const router = createBrowserRouter([
     {
