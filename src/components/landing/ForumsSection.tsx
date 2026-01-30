@@ -45,6 +45,7 @@ const forums: Forum[] = [
     icon: Globe,
     description: 'Missions and world view',
     details: 'The Kairos Course is a missions training program that will expand your worldview and equip you to participate in God\'s global mission. Join us for this transformative experience.',
+    link: '/kairos',
   },
   {
     id: 'christianminds',
@@ -60,6 +61,7 @@ const forums: Forum[] = [
     icon: Rocket,
     description: 'Annual student gatherings',
     details: 'FOCUS conferences bring together Christian students from across the region for worship, teaching, and fellowship. These events are life-changing experiences that strengthen faith and build community.',
+    link: '/focus',
   },
 ];
 

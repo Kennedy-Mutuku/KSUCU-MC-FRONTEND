@@ -153,50 +153,50 @@
         padding: 20px 30px;
         background: #00c6ff;
     }
-    
+
     .container {
         max-width: 1400px;
         padding: 0 20px;
         justify-content: space-between;
         align-items: center;
     }
-    
+
     .logo-section {
         flex-shrink: 0;
     }
-    
+
     .logo-image {
         width: 70px;
         height: 70px;
     }
-    
+
     .title-section {
         flex: 1;
         text-align: center;
     }
-    
+
     .title-text {
         font-size: 1.4rem;
         font-weight: 700;
         letter-spacing: 1px;
         color: #000;
     }
-    
+
     .full-title {
         display: inline;
     }
-    
+
     .short-title {
         display: none;
     }
-    
+
     .nav-section {
         gap: 30px;
         flex-shrink: 0;
         display: flex;
         align-items: center;
     }
-    
+
     .nav-item {
         padding: 12px 16px;
         border-radius: 8px;
@@ -204,13 +204,13 @@
         flex-direction: column;
         align-items: center;
     }
-    
+
     .nav-text {
         font-size: 1rem;
         font-weight: 600;
         color: #000;
     }
-    
+
     .user-section {
         padding: 12px 16px;
         border-radius: 8px;
@@ -220,13 +220,13 @@
         align-items: center;
         gap: 4px;
     }
-    
+
     .user-icon {
         width: 28px;
         height: 28px;
         color: #000;
     }
-    
+
     .user-text {
         font-size: 0.85rem;
         font-weight: 600;
@@ -243,50 +243,50 @@
         padding: 10px 15px;
         background: #00c6ff;
     }
-    
+
     .container {
         padding: 0 10px;
         gap: 8px;
         justify-content: space-between;
         align-items: center;
     }
-    
+
     .logo-section {
         flex-shrink: 0;
     }
-    
+
     .logo-image {
         width: 40px;
         height: 40px;
     }
-    
+
     .title-section {
         flex: 1;
         text-align: center;
         min-width: 0;
     }
-    
+
     .title-text {
         font-size: 0.9rem;
         font-weight: 600;
         color: #000;
     }
-    
+
     .full-title {
         display: none;
     }
-    
+
     .short-title {
         display: inline;
     }
-    
+
     .nav-section {
         gap: 8px;
         flex-shrink: 0;
         display: flex;
         align-items: center;
     }
-    
+
     .nav-item {
         padding: 6px 8px;
         display: flex;
@@ -294,13 +294,13 @@
         align-items: center;
         min-width: 50px;
     }
-    
+
     .nav-text {
         font-size: 0.7rem;
         color: #000;
         text-align: center;
     }
-    
+
     .user-section {
         padding: 6px 8px;
         min-width: 50px;
@@ -309,13 +309,13 @@
         flex-direction: column;
         align-items: center;
     }
-    
+
     .user-icon {
         width: 20px;
         height: 20px;
         color: #000;
     }
-    
+
     .user-text {
         font-size: 0.65rem;
         color: #000;
