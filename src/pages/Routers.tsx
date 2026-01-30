@@ -66,6 +66,8 @@ const BrothersFellowship = lazy(() => import("./brothersFellowship"));
 const DiscipleshipClass = lazy(() => import("./discipleshipClass"));
 const BestpClass = lazy(() => import("./bestpClass"));
 const ClassFellowship = lazy(() => import("./classFellowship"));
+const ChatAdmin = lazy(() => import("./ChatAdmin"));
+
 
 export const router = createBrowserRouter([
     {
@@ -136,6 +138,7 @@ export const router = createBrowserRouter([
             { path: "/bestpClass", element: <BestpClass /> },
             { path: "/discipleship", element: <DiscipleshipClass /> },
             { path: "/classFellowship", element: <ClassFellowship /> },
+            { path: "/chat-admin", element: <ChatAdmin /> },
             { path: "*", element: <NoPage /> }
         ]
     }

@@ -1,0 +1,532 @@
+/* Chat Admin Container */
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+  min-height: calc(100vh - 200px);
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 16px;
+}
+
+.loadingIcon {
+  color: #730051;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Login Prompt */
+.loginPrompt {
+  text-align: center;
+  padding: 60px 20px;
+  background: white;
+  border: 2px solid #f59e0b;
+  border-radius: 12px;
+  max-width: 600px;
+  margin: 40px auto;
+}
+
+.promptIcon {
+  color: #f59e0b;
+  margin-bottom: 24px;
+}
+
+.loginPrompt h2 {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin: 0 0 16px 0;
+}
+
+.loginPrompt p {
+  font-size: 16px;
+  color: #666;
+  margin: 0 0 12px 0;
+  line-height: 1.6;
+}
+
+.promptSubtext {
+  font-size: 14px;
+  color: #999;
+  margin-bottom: 24px;
+}
+
+.loginButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 32px;
+  background: #730051;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.loginButton:hover {
+  background: #5a0040;
+}
+
+
+/* Header */
+.header {
+  margin-bottom: 24px;
+}
+
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: transparent;
+  border: 1px solid #730051;
+  color: #730051;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-bottom: 16px;
+  transition: all 0.2s;
+}
+
+.backButton:hover {
+  background: #730051;
+  color: white;
+}
+
+.headerContent {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.headerIcon {
+  color: #730051;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #666;
+  margin: 4px 0 0 0;
+}
+
+/* Stats Grid */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.statCard {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.statIcon {
+  color: #730051;
+  flex-shrink: 0;
+}
+
+.statInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.statNumber {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+}
+
+.statLabel {
+  font-size: 13px;
+  color: #666;
+}
+
+/* Admin Composer */
+.adminComposer {
+  background: white;
+  border: 2px solid #730051;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(115, 0, 81, 0.1);
+}
+
+.composerTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #730051;
+  margin: 0 0 16px 0;
+}
+
+.replyPreview {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: #f3f4f6;
+  border-left: 3px solid #730051;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: #666;
+}
+
+.cancelReply {
+  margin-left: auto;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #999;
+  cursor: pointer;
+  padding: 0 8px;
+}
+
+.cancelReply:hover {
+  color: #730051;
+}
+
+.composerInput {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.messageInput {
+  flex: 1;
+  padding: 12px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.messageInput:focus {
+  border-color: #730051;
+}
+
+.sendButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: #730051;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.sendButton:hover {
+  background: #5a0040;
+}
+
+.sendButton:disabled {
+  background: #d1d5db;
+  cursor: not-allowed;
+}
+
+/* Messages Section */
+.messagesSection {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.messagesTitle {
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 20px 0;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 60px 20px;
+  color: #999;
+}
+
+.emptyIcon {
+  color: #d1d5db;
+  margin-bottom: 16px;
+}
+
+.emptyState h3 {
+  margin: 0 0 8px 0;
+  color: #666;
+}
+
+.emptyState p {
+  margin: 0;
+  color: #999;
+}
+
+.messagesList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Message Card */
+.messageCard {
+  position: relative;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 16px;
+  transition: box-shadow 0.2s;
+}
+
+.messageCard:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.messageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.messageSender {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.messageSender strong {
+  font-size: 15px;
+  color: #333;
+}
+
+.messageTime {
+  font-size: 12px;
+  color: #999;
+}
+
+.messageActions {
+  display: flex;
+  gap: 8px;
+}
+
+.actionButton {
+  padding: 6px 12px;
+  background: #730051;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  transition: background 0.2s;
+}
+
+.actionButton:hover {
+  background: #5a0040;
+}
+
+.deleteButton {
+  padding: 6px 12px;
+  background: #dc2626;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: background 0.2s;
+}
+
+.deleteButton:hover {
+  background: #b91c1c;
+}
+
+.replyReference {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: white;
+  border-left: 3px solid #730051;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  font-size: 13px;
+  color: #666;
+}
+
+.messageContent {
+  font-size: 15px;
+  color: #333;
+  line-height: 1.5;
+  word-wrap: break-word;
+}
+
+/* Media Preview */
+.mediaPreview {
+  margin-top: 12px;
+  border-radius: 8px;
+  overflow: hidden;
+  max-width: 500px;
+}
+
+.mediaImage {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.mediaVideo {
+  width: 100%;
+  max-height: 400px;
+}
+
+.mediaAudio {
+  width: 100%;
+}
+
+.fileLink {
+  display: inline-block;
+  padding: 10px 16px;
+  background: #730051;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+.fileLink:hover {
+  background: #5a0040;
+}
+
+/* Delete Confirmation Overlay */
+.deleteConfirmOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.98);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 20px;
+  z-index: 10;
+  border: 2px solid #dc2626;
+}
+
+.confirmIcon {
+  color: #dc2626;
+}
+
+.deleteConfirmOverlay p {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.confirmButtons {
+  display: flex;
+  gap: 12px;
+}
+
+.confirmDelete {
+  padding: 10px 20px;
+  background: #dc2626;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.confirmDelete:hover {
+  background: #b91c1c;
+}
+
+.confirmCancel {
+  padding: 10px 20px;
+  background: #e5e7eb;
+  color: #333;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.confirmCancel:hover {
+  background: #d1d5db;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: 12px;
+  }
+
+  .title {
+    font-size: 22px;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .composerInput {
+    flex-direction: column;
+  }
+
+  .sendButton {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .messageHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}

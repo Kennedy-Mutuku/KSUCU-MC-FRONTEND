@@ -13,7 +13,8 @@ import {
     faBox,
     faBookOpen,
     faHeart,
-    faSignOutAlt
+    faSignOutAlt,
+    faComments
 } from '@fortawesome/free-solid-svg-icons';
 
 const WorshipDocketAdmin: React.FC = () => {
@@ -309,6 +310,29 @@ const WorshipDocketAdmin: React.FC = () => {
                                     </button>
                                 ))}
                             </div>
+                        </div>
+                    </div>
+
+                    {/* 7. Community Chat Management */}
+                    <div className={styles.functionCard}>
+                        <div className={styles.functionNumber}>7</div>
+                        <div className={styles.functionContent}>
+                            <h3>
+                                <FontAwesomeIcon icon={faComments} />
+                                Community Chat Management
+                            </h3>
+                            <p>Manage the KSUCU-MC community chat: moderate messages, ban users, and oversee chat activity</p>
+                            <button
+                                className={styles.functionButton}
+                                onClick={() => {
+                                    // Store authentication state
+                                    sessionStorage.setItem('adminAuth', 'Overseer');
+                                    navigate('/chat-admin');
+                                }}
+                            >
+                                Chat Admin
+                                <FontAwesomeIcon icon={faArrowRight} className={styles.arrowIcon} />
+                            </button>
                         </div>
                     </div>
 

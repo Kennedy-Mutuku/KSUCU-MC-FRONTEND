@@ -290,6 +290,15 @@ body{
 
 /* Mobile view (anything up to 767px) */
 @media (max-width: 767px) {
+    /* Critical Fix: Hide desktop nav and show hamburger on mobile */
+    .nav-one--hidden {
+        display: none !important;
+    }
+    
+    .hambuger-div {
+        display: block !important;
+    }
+
     .main-quick--links {
         margin: 6px -2px 4px -2px;
         border-radius: 8px;

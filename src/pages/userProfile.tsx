@@ -73,21 +73,25 @@ const UserProfilePage: React.FC = () => {
 
     const handleLogout = async () => {
         try {
+            // window.alert('Starting logout...'); // Uncomment for debugging
             setLoggingOut(true);
             console.log('Starting logout process...');
             
             // Call logout API
-            const response = await axios.post(getApiUrl('usersLogout'), {}, {
-                withCredentials: true,
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-            
-            console.log('Logout API response:', response);
+            try {
+                const response = await axios.post(getApiUrl('usersLogout'), {}, {
+                    withCredentials: true,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                console.log('Logout API response:', response);
+            } catch (apiError) {
+                console.warn('Logout API failed, proceeding with local cleanup:', apiError);
+            }
             
             // Clear cookies more thoroughly
-            const cookiesToClear = ['loginToken', 'sessionToken', 'authToken', 'token'];
+            const cookiesToClear = ['loginToken', 'sessionToken', 'authToken', 'token', 'socket_token', 'user_s'];
             cookiesToClear.forEach(cookieName => {
                 Cookies.remove(cookieName);
                 Cookies.remove(cookieName, { path: '/' });
@@ -110,39 +114,23 @@ const UserProfilePage: React.FC = () => {
             
             console.log('Logout successful, redirecting to login...');
             
-            // Show success message briefly before redirecting
+            // Show success message
             setSuccessMessage('Successfully logged out!');
+            // window.alert('Logged out successfully!'); // Uncomment for debugging
+            
             setTimeout(() => {
                 navigate('/signIn', { replace: true });
-            }, 1000);
+                // Force reload to ensure clean state
+                window.location.reload();
+            }, 500);
             
         } catch (error: any) {
-            console.error('Logout API error:', error);
-            
-            // Even if API fails, clear local data and redirect
-            const cookiesToClear = ['loginToken', 'sessionToken', 'authToken', 'token'];
-            cookiesToClear.forEach(cookieName => {
-                Cookies.remove(cookieName);
-                Cookies.remove(cookieName, { path: '/' });
-                Cookies.remove(cookieName, { domain: window.location.hostname });
-                Cookies.remove(cookieName, { domain: `.${window.location.hostname}` });
-            });
-            
-            document.cookie.split(";").forEach((cookie) => {
-                const eqPos = cookie.indexOf("=");
-                const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
-                document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
-                document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=${window.location.hostname}`;
-                document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.${window.location.hostname}`;
-            });
-            
+            console.error('Logout script error:', error);
+            // Even on error, force cleanup
             localStorage.clear();
             sessionStorage.clear();
-            
-            setSuccessMessage('Logged out successfully!');
-            setTimeout(() => {
-                navigate('/signIn', { replace: true });
-            }, 1000);
+            navigate('/signIn', { replace: true });
+            window.location.reload();
         } finally {
             setLoggingOut(false);
         }
