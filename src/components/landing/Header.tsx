@@ -72,12 +72,12 @@ const Header = () => {
   }, [isMenuVisible]);
 
   const quickLinks = [
-    { label: 'Boards', href: '/boards' },
-    { label: 'Ministries', href: '/ministries' },
-    { label: 'Evangelical Teams', href: '/ets' },
-    { label: 'Fellowships', href: '/fellowshipsandclasses' },
+    { label: 'Media', href: '/media' },
+    { label: 'Requisitions', href: '/requisitions' },
+    { label: 'Financials', href: '/financial' },
+    { label: 'Compassion', href: '/compassion-counseling' },
     { label: 'Bible Study', href: '/Bs' },
-    { label: 'Library', href: '/library' },
+    { label: 'Feedback', href: '/recomendations' },
   ];
 
   return (
@@ -180,6 +180,21 @@ const Header = () => {
         </div>
       </div>
     </header>
+
+    {/* Mobile Menu Backdrop */}
+    {isMenuVisible && (
+      <div
+        style={{
+          position: 'fixed',
+          inset: 0,
+          zIndex: 999998,
+          backgroundColor: 'rgba(0, 0, 0, 0.3)',
+          opacity: isMenuOpen ? 1 : 0,
+          transition: 'opacity 0.3s ease',
+        }}
+        onClick={closeMenu}
+      />
+    )}
 
     {/* Mobile Menu - Outside header to escape backdrop-blur stacking context */}
     {isMenuVisible && (

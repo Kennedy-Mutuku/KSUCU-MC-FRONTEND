@@ -250,9 +250,9 @@ const AttendanceSection = () => {
   };
 
   return (
-    <section className="py-12 md:py-16 bg-white">
+    <section className="py-6 md:py-16 bg-white">
       <div className="max-w-xl mx-auto px-4 md:px-6">
-        <div className="text-center mb-8">
+        <div className="text-center mb-3 md:mb-8">
           <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">
             Sign Attendance
           </h2>
