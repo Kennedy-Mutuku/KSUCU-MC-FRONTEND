@@ -3,14 +3,18 @@ import { useNavigate } from 'react-router-dom';
 import {
   Plus,
   X,
-  Camera,
   Heart,
   BookOpen,
-  Library,
-  Package,
-  DollarSign,
-  GraduationCap,
-  MessageCircleHeart,
+  Library as LibraryIcon,
+  Building2,
+  Users2,
+  Globe,
+  UsersRound,
+  FileText,
+  Award,
+  Users,
+  Scroll,
+  School,
 } from 'lucide-react';
 
 interface QuickLink {
@@ -21,14 +25,19 @@ interface QuickLink {
 }
 
 const quickLinks: QuickLink[] = [
-  { icon: Camera, label: 'Media', href: '/media', requiresAuth: true },
+  { icon: Building2, label: 'Boards', href: '/boards' },
+  { icon: Users2, label: 'Ministries', href: '/ministries' },
+  { icon: Globe, label: 'E.Ts', href: '/ets' },
+  { icon: UsersRound, label: 'Fellowships', href: '/fellowshipsandclasses' },
+  { icon: FileText, label: 'My Docs', href: '/my-docs' },
   { icon: Heart, label: 'Win a Soul', href: '/save' },
   { icon: BookOpen, label: 'Constitution', href: '/pdfs/constitution.pdf' },
-  { icon: Library, label: 'Library', href: '/library' },
-  { icon: Package, label: 'Requisitions', href: '/requisitions' },
-  { icon: DollarSign, label: 'Financials', href: '/financial' },
-  { icon: GraduationCap, label: 'Bible Study', href: '/Bs' },
-  { icon: MessageCircleHeart, label: 'Compassion', href: '/compassion-counseling' },
+  { icon: LibraryIcon, label: 'Library', href: '/library' },
+  { icon: Award, label: 'Best-P', href: '/bestpClass' },
+  { icon: Users, label: 'Brothers', href: '/brothersfellowship' },
+  { icon: Users, label: 'Sisters', href: '/sistersfellowship' },
+  { icon: Scroll, label: 'Discipleship', href: '/discipleship' },
+  { icon: School, label: 'Classes', href: '/classFellowship' },
 ];
 
 const QuickLinksButton = () => {

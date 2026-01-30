@@ -1,7 +1,15 @@
 import { Target, Eye, BookOpen, Users, Heart, Award, CheckCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-const objectives = [
+interface Objective {
+  title: string;
+  description: string;
+  icon: React.ElementType;
+  link?: string;
+  linkText?: string;
+}
+
+const objectives: Objective[] = [
   {
     title: 'Discipleship',
     description: 'Deepen and strengthen spiritual lives through Bible study, prayers, and Christian fellowship.',
@@ -21,14 +29,16 @@ const objectives = [
     title: 'Leadership Development',
     description: 'Identify and develop Christian leaders through training and experience.',
     icon: Award,
+    link: '/worship-docket-admin',
+    linkText: 'administer',
   },
 ];
 
 const AboutSection = () => {
   return (
-    <section id="about" className="py-16 md:py-20 bg-gradient-to-b from-gray-50 to-white">
+    <section id="about" className="py-6 md:py-20 bg-gradient-to-b from-gray-50 to-white">
       <div className="max-w-6xl mx-auto px-4 md:px-6">
-        <div className="text-center mb-12">
+        <div className="text-center mb-3 md:mb-12">
           <span className="inline-block px-3 py-1 bg-purple-100 text-[#730051] text-sm font-medium rounded-full mb-4">
             Who We Are
           </span>
@@ -37,7 +47,7 @@ const AboutSection = () => {
           </h2>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6 mb-12">
+        <div className="grid md:grid-cols-2 gap-3 md:gap-6 mb-3 md:mb-12">
           <div className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-200">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 flex items-center justify-center bg-purple-100 rounded-lg">
@@ -85,6 +95,17 @@ const AboutSection = () => {
                     </h4>
                     <p className="text-sm text-gray-600">
                       {objective.description}
+                      {objective.link && (
+                        <>
+                          {' '}
+                          <Link
+                            to={objective.link}
+                            className="text-[#730051] hover:text-[#5a0040] underline font-medium transition-colors"
+                          >
+                            {objective.linkText || 'Learn more'}
+                          </Link>
+                        </>
+                      )}
                     </p>
                   </div>
                 </div>

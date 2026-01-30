@@ -615,19 +615,19 @@ const LandingPage = () => {
                 <div className={`${styles['dropdown-content']} ${showEvangelisticTeams ? styles.show : ''}`}>
                   <ol className={`${styles['ET-list']} ${styles['category-list']}`}>
                     <li className={styles['ET-item']}>
-                      <Link to="/ets#cet" className={styles['ET-item--link']}>CET</Link>
+                      <Link to="/ets/cet" className={styles['ET-item--link']}>CET</Link>
                     </li>
                     <li className={styles['ET-item']}>
-                      <Link to="/ets#net" className={styles['ET-item--link']}>NET</Link>
+                      <Link to="/ets/net" className={styles['ET-item--link']}>NET</Link>
                     </li>
                     <li className={styles['ET-item']}>
-                      <Link to="/ets#eset" className={styles['ET-item--link']}>ESET</Link>
+                      <Link to="/ets/eset" className={styles['ET-item--link']}>ESET</Link>
                     </li>
                     <li className={styles['ET-item']}>
-                      <Link to="/ets#rivet" className={styles['ET-item--link']}>RIVET</Link>
+                      <Link to="/ets/rivet" className={styles['ET-item--link']}>RIVET</Link>
                     </li>
                     <li className={styles['ET-item']}>
-                      <Link to="/ets#weso" className={styles['ET-item--link']}>WESO</Link>
+                      <Link to="/ets/weso" className={styles['ET-item--link']}>WESO</Link>
                     </li>
                   </ol>
                 </div>
@@ -720,7 +720,7 @@ const LandingPage = () => {
               </div>
 
 
-                  
+
 
             </div>
 

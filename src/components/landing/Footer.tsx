@@ -18,6 +18,7 @@ const socialLinks = [
   { icon: Twitter, href: 'https://twitter.com/ksucumc', label: 'Twitter' },
 ];
 
+
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 

@@ -273,8 +273,12 @@ const Media: React.FC = () => {
         {/* Hero Section */}
         <section className={styles.heroSection}>
           <div className={styles.heroContent}>
-            <h1 className={styles.heroTitle}>KSUCU-MC MEDIA HUB</h1>
+            <h1 className={styles.heroTitle}>WELCOME TO THE <br />KSUCU-MC MEDIA HUB</h1>
             <p className={styles.heroSubtitle}>Stay connected through our digital platforms and explore our content</p>
+
+            <Link to="/" className={styles.backButton}>
+               <p>Back to Home</p> 
+            </Link>
           </div>
         </section>
 
