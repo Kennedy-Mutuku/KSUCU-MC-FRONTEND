@@ -1260,7 +1260,13 @@ const CommunityChat: React.FC = () => {
       )}
 
       <div className={styles.messagesContainer} ref={chatWindowRef}>
-        {hasMore && (
+        {isLoading && messages.length === 0 && (
+          <div style={{ textAlign: 'center', padding: '20px', color: '#9ca3af' }}>
+            <div className={styles.loading}>Loading messages...</div>
+          </div>
+        )}
+        
+        {hasMore && !isLoading && (
           <button 
             className={styles.loadMore}
             onClick={() => {

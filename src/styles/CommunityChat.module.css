@@ -677,12 +677,13 @@
   padding: 16px;
   border-top: 1px solid #e5e7eb;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   gap: 8px;
   background: white;
   position: relative;
   z-index: 100;
   pointer-events: auto; /* Ensure container allows interactions */
+  flex-wrap: nowrap; /* Prevent wrapping to keep everything on one line */
 }
 
 @media (max-width: 768px) {
@@ -696,6 +697,7 @@
 .inputActions {
   display: flex;
   gap: 4px;
+  flex-shrink: 0; /* Prevent media buttons from shrinking */
 }
 
 .inputActions button {
@@ -1219,5 +1221,68 @@
   /* Touch-friendly file type indicators */
   .fileLink::before {
     font-size: 18px;
+  }
+}
+/* ============================================
+   TABLET OPTIMIZATIONS (768px - 1024px)
+   ============================================ */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .chatWindow {
+    width: 420px;
+    height: 550px;
+    bottom: 90px;
+    right: 70px;
+  }
+  
+  .chatIcon {
+    width: 56px;
+    height: 56px;
+    bottom: 90px;
+    right: 25px;
+  }
+  
+  .messageInput {
+    font-size: 15px;
+    padding: 12px 14px;
+  }
+  
+  .inputActions button {
+    padding: 10px;
+  }
+  
+  .message {
+    max-width: 70%;
+  }
+  
+  .messageImage,
+  .messageVideo {
+    max-height: 280px;
+  }
+}
+
+/* ============================================
+   PERFORMANCE OPTIMIZATIONS
+   ============================================ */
+
+/* Hardware acceleration for animations */
+.chatIcon,
+.sendButton,
+.reactionButton {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Smooth scrolling performance */
+.messagesContainer {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Reduce animations on low-end devices */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
