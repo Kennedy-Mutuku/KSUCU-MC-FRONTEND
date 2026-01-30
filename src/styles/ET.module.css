@@ -1,74 +1,309 @@
-@import url(global.css);
-.header{
-    padding-bottom: 30px;
+.etLandingPage {
+    background-color: #fcfcfc;
+    min-height: 100vh;
 }
-.main{
+
+/* Hero Section */
+.hero {
+    position: relative;
+    height: 400px;
+    background-color: #730051;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    padding: 0 20px;
+    overflow: hidden;
+}
+
+.heroContent {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+    animation: fadeInUp 0.8s ease-out;
+}
+
+.heroTitle {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.heroSubtitle {
+    font-size: 1.25rem;
+    font-weight: 400;
+    opacity: 0.9;
+    line-height: 1.6;
+}
+
+.heroOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(115, 0, 81, 0.9) 0%, rgba(44, 62, 80, 0.7) 100%);
+    z-index: 1;
+}
+
+/* Grid Layout */
+.gridContainer {
+    max-width: 1200px;
+    margin: -60px auto 100px;
+    padding: 0 20px;
+    position: relative;
+    z-index: 3;
+}
+
+.teamsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 30px;
+}
+
+/* Team Card */
+.teamCard {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #f0f0f0;
+}
+
+.teamCard:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(115, 0, 81, 0.12);
+}
+
+.cardImageWrapper {
+    height: 200px;
+    overflow: hidden;
+    position: relative;
+}
+
+.cardImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.teamCard:hover .cardImage {
+    transform: scale(1.1);
+}
+
+.cardContent {
+    padding: 25px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.teamName {
+    color: #730051;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.teamDescription {
+    color: #555;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 25px;
+    flex-grow: 1;
+}
+
+.learnMoreBtn {
+    display: inline-block;
+    background-color: #730051;
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    text-align: center;
+    border: 2px solid #730051;
+}
+
+.learnMoreBtn:hover {
+    background-color: transparent;
+    color: #730051;
+}
+
+/* Individual Page Styles Extensions */
+.etPageHero {
+    height: 350px;
+    position: relative;
+    overflow: hidden;
+}
+
+.pageHeroImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.pageHeroContent {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 40px 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
+    color: white;
     text-align: center;
 }
 
-.ET-section{
-    margin: 20px 0;
+.pageContent {
+    max-width: 1000px;
+    margin: 60px auto;
+    padding: 0 20px;
 }
 
-.ET-img{
-    aspect-ratio: 16/9;
-    background: #1d1d1d82;
-    width: 80%;
-    margin: 0 auto;
-}
-.nav{
-    justify-content: center;
-    width: 100%;
-    margin-top: 0px;
+.section {
+    margin-bottom: 60px;
 }
 
-.ET--title{
-    color: #00C6FF;
-    font-weight: 500;
+.sectionTitle {
+    color: #730051;
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 25px;
+    position: relative;
+    padding-bottom: 10px;
 }
 
-.hr-et{
+.sectionTitle::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    background-color: #4A90A4;
+    border-radius: 2px;
+}
+
+.textContent {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #333;
+}
+
+.statsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 30px;
+    margin: 40px 0;
+}
+
+.statCard {
+    background: #fff;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid #f0f0f0;
+}
+
+.statNumber {
     display: block;
-    height: .5px;
-    width: 100%;
-    margin:  0 auto;
-    opacity: .7;
-    background: rgb(53, 53, 53);
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #730051;
+    margin-bottom: 5px;
 }
 
-@media (min-width: 768px){
-    .ET-section{
-        display: flex;
+.statLabel {
+    color: #666;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+}
 
-        margin: 50px 100px;
-    }
-    .ET-img,
-    .ET-section--flex{
-        width: 50%;
-    }
-    .ET-section--reverse{
-        flex-direction: row-reverse;
+.ctaBox {
+    background: linear-gradient(135deg, #730051 0%, #a01a7d 100%);
+    color: white;
+    padding: 50px;
+    border-radius: 20px;
+    text-align: center;
+    margin-top: 80px;
+    box-shadow: 0 15px 35px rgba(115, 0, 81, 0.25);
+}
+
+.ctaTitle {
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin-bottom: 15px;
+}
+
+.ctaText {
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+    opacity: 0.9;
+}
+
+.ctaBtn {
+    display: inline-block;
+    background: white;
+    color: #730051;
+    padding: 15px 35px;
+    border-radius: 40px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.ctaBtn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
     }
 
-    .ET-img{
-        background: #fff;
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .heroTitle {
+        font-size: 2rem;
     }
 
-    .ET-img img{
-        aspect-ratio: 16/9;
-        background: #1d1d1d82;
-        width: 80%;
-        margin: 0 auto;
+    .hero {
+        height: 300px;
     }
 
-    .hr-et{
-        width: 90%;
+    .gridContainer {
+        margin-top: -30px;
     }
 
-    .ET--title{
-        font-size: 2.5rem;
-        font-weight: 900;
-        margin-bottom: 100px;
+    .sectionTitle {
+        font-size: 1.6rem;
     }
 
+    .ctaBox {
+        padding: 30px 20px;
+    }
+
+    .ctaTitle {
+        font-size: 1.6rem;
+    }
 }

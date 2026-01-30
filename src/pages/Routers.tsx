@@ -61,14 +61,14 @@ const PollingOfficerManagement = lazy(() => import("./PollingOfficerManagement")
 const MyDocs = lazy(() => import("./MyDocs"));
 const SuperAdminDocumentDashboard = lazy(() => import("./superAdminDocumentDashboard"));
 const ChristianMinds = lazy(() => import("./christianMinds"));
-
-import SistersFellowship from "./sistersFellowship";
-import BrothersFellowship from "./brothersFellowship";
-import DiscipleshipClass from "./discipleshipClass";
-import BestpClass from "./bestpClass";
-import ClassFellowship from "./classFellowship";
-import Kairos from "./Kairos";
-import Focus from "./Focus";
+const SistersFellowship = lazy(() => import("./sistersFellowship"));
+const BrothersFellowship = lazy(() => import("./brothersFellowship"));
+const DiscipleshipClass = lazy(() => import("./discipleshipClass"));
+const BestpClass = lazy(() => import("./bestpClass"));
+const ClassFellowship = lazy(() => import("./classFellowship"));
+const ChatAdmin = lazy(() => import("./ChatAdmin"));
+const Kairos = lazy(() => import("./Kairos"));
+const Focus = lazy(() => import("./Focus"));
 
 export const router = createBrowserRouter([
     {
@@ -143,7 +143,7 @@ export const router = createBrowserRouter([
             { path: "/bestpClass", element: <BestpClass /> },
             { path: "/discipleship", element: <DiscipleshipClass /> },
             { path: "/classFellowship", element: <ClassFellowship /> },
-
+            { path: "/chat-admin", element: <ChatAdmin /> },
             { path: "*", element: <NoPage /> }
         ]
     }

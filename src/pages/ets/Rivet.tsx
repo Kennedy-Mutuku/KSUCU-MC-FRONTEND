@@ -1,28 +1,105 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import EtHeader from '../../components/EtHeader';
 import EtFooter from '../../components/EtFooter';
 import RIVET_IMG from '../../assets/RIVET.jpg';
 import styles from '../../styles/ET.module.css';
+import { Target, Eye, Activity, Users } from 'lucide-react';
 
 const Rivet: React.FC = () => {
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
     return (
-        <>
+        <div className={styles.etPage}>
             <EtHeader teamName="RIVET" />
-            <div className={styles['main']}>
-                <div className={styles['ET-section']} style={{ minHeight: '60vh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                    <div className={styles['ET-section--flex']}>
-                        <h3 className={styles['ET-name']}>RIVET</h3>
-                        <p className={styles['ET-content']}>
-                            RIVET (Rift Valley Evangelistic Team) is a dedicated evangelistic ministry within KSUCU-MC, focused on spreading the Gospel across the Rift Valley region. The team is committed to equipping believers for evangelism, organizing impactful missions, and fostering spiritual growth through regular fellowships. By actively engaging in outreach and discipleship, RIVET plays a vital role in fulfilling the Great Commission within its designated region.
-                        </p>
-                    </div>
-                    <div className={styles['ET-img']} style={{ maxWidth: '600px', margin: '2rem auto' }}>
-                        <img src={RIVET_IMG} alt="RIVET" style={{ borderRadius: '15px' }} />
-                    </div>
+
+            {/* Hero Banner */}
+            <section className={styles.etPageHero}>
+                <img src={RIVET_IMG} alt="RIVET" className={styles.pageHeroImg} />
+                <div className={styles.pageHeroContent}>
+                    <h1 className={styles.heroTitle}>Rift Valley Evangelistic Team</h1>
                 </div>
+            </section>
+
+            <div className={styles.pageContent}>
+                {/* Mission Section */}
+                <section className={styles.section}>
+                    <h2 className={styles.sectionTitle}>
+                        <Target className="inline-block mr-3 mb-1 text-[#4A90A4]" size={32} />
+                        Our Mission
+                    </h2>
+                    <p className={styles.textContent}>
+                        RIVET is a dedicated evangelistic ministry within KSUCU-MC, focused on spreading the Gospel across the Rift Valley region.
+                        We exist to proclaim the message of Christ, building communities of faith that are rooted in the Word and
+                        driven by the love of God. Our heart is to see every student and resident in the Rift Valley transformed by the truth of Jesus Christ.
+                    </p>
+                </section>
+
+                {/* Vision Section */}
+                <section className={styles.section}>
+                    <h2 className={styles.sectionTitle}>
+                        <Eye className="inline-block mr-3 mb-1 text-[#4A90A4]" size={32} />
+                        Our Vision
+                    </h2>
+                    <p className={styles.textContent}>
+                        To be a catalyst for spiritual awakening in the Rift Valley, raising a generation of believers
+                        who are bold in their witness, compassionate in their service, and unwavering in their commitment to the Great Commission.
+                    </p>
+                </section>
+
+                {/* What We Do Section */}
+                <section className={styles.section}>
+                    <h2 className={styles.sectionTitle}>
+                        <Activity className="inline-block mr-3 mb-1 text-[#4A90A4]" size={32} />
+                        What We Do
+                    </h2>
+                    <div className={styles.textContent}>
+                        <ul className="list-disc pl-5 space-y-4">
+                            <li><strong>Regional Missions:</strong> Organizing annual and short-term missions to various towns and villages in the Rift Valley.</li>
+                            <li><strong>Evangelism Training:</strong> Equipping our members with practical tools and biblical foundations for effective personal and mass evangelism.</li>
+                            <li><strong>Follow-up & Discipleship:</strong> Nurturing new converts and fostering their growth through regular fellowships and mentorship.</li>
+                            <li><strong>Community Outreach:</strong> Engaging in charitable acts and social service projects that demonstrate the love of Christ in tangible ways.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                {/* Stats Section */}
+                <section className={styles.statsGrid}>
+                    <div className={styles.statCard}>
+                        <span className={styles.statNumber}>12+</span>
+                        <span className={styles.statLabel}>Counties Reached</span>
+                    </div>
+                    <div className={styles.statCard}>
+                        <span className={styles.statNumber}>20+</span>
+                        <span className={styles.statLabel}>Missions/Year</span>
+                    </div>
+                    <div className={styles.statCard}>
+                        <span className={styles.statNumber}>1000+</span>
+                        <span className={styles.statLabel}>Lives Impacted</span>
+                    </div>
+                    <div className={styles.statCard}>
+                        <span className={styles.statNumber}>150+</span>
+                        <span className={styles.statLabel}>Active Members</span>
+                    </div>
+                </section>
+
+                {/* CTA Section */}
+                <section className={styles.ctaBox}>
+                    <h2 className={styles.ctaTitle}>Ready to Make an Impact?</h2>
+                    <p className={styles.ctaText}>
+                        Join RIVET today and be part of the movement that is changing lives across the Rift Valley.
+                        Your hands, your voice, and your heart are needed in the harvest field.
+                    </p>
+                    <a href="#" className={styles.ctaBtn}>
+                        <Users className="inline-block mr-2 mb-1" size={20} />
+                        Join the Team
+                    </a>
+                </section>
             </div>
+
             <EtFooter currentTeam="RIVET" />
-        </>
+        </div>
     );
 };
 

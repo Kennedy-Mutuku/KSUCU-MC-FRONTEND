@@ -63,7 +63,6 @@ const AttendanceSection = () => {
 
       if (response.ok) {
         const data = await response.json();
-        // console.log('Session Polling Data:', data);
         if (data.session && data.session.isActive) {
           setActiveSession({
             leadershipRole: data.session.leadershipRole || 'Leader',
@@ -204,7 +203,6 @@ const AttendanceSection = () => {
         });
         setCurrentStep('confirm');
       } else {
-        // Not found - go to manual entry with the reg number pre-filled
         setAttendanceData({
           ...initialAttendanceData,
           registrationNumber: searchQuery.trim().toUpperCase(),
@@ -298,9 +296,9 @@ const AttendanceSection = () => {
   };
 
   return (
-    <section className="py-12 md:py-20 bg-gradient-to-br from-gray-50 to-white overflow-hidden">
+    <section className="py-6 md:py-20 bg-gradient-to-br from-gray-50 to-white overflow-hidden">
       <div className="max-w-4xl mx-auto px-4 md:px-6">
-        <div className="relative z-10 text-center mb-12">
+        <div className="relative z-10 text-center mb-3 md:mb-12">
           <div className="inline-block p-3 bg-purple-100 rounded-2xl mb-4 text-[#730051]">
             <Pencil size={32} />
           </div>
