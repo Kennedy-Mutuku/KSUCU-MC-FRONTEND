@@ -1,11 +1,46 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import styles from '../../styles/ministryPage.module.css';
 import UniversalHeader from '../../components/UniversalHeader';
 import Footer from '../../components/footer';
 import { Link } from 'react-router-dom';
-import pwImg from '../../assets/praise-and-worship.jpg';
+import praiseAndWorshipImg from '../../assets/praise-and-worship.jpg';
+import MinistryRegistrationModal from '../../components/MinistryRegistrationModal';
+import { useState } from 'react';
 
 const PraiseAndWorshipPage: React.FC = () => {
+  const contentRef1 = useRef<HTMLDivElement>(null);
+  const contentRef2 = useRef<HTMLDivElement>(null);
+  const testimonialsRef = useRef<HTMLDivElement>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    // Smooth scroll behavior
+    document.documentElement.style.scrollBehavior = 'smooth';
+
+    // Simple scroll animation observer
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px',
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, observerOptions);
+
+    // Observe elements if they exist
+    if (contentRef1.current) observer.observe(contentRef1.current);
+    if (contentRef2.current) observer.observe(contentRef2.current);
+    if (testimonialsRef.current) observer.observe(testimonialsRef.current);
+
+    return () => {
+      document.documentElement.style.scrollBehavior = 'auto';
+      observer.disconnect();
+    };
+  }, []);
 
   return (
     <>
@@ -16,62 +51,46 @@ const PraiseAndWorshipPage: React.FC = () => {
             <h1 className={styles.title}>Praise and Worship Ministry</h1>
             <p className={styles.subtitle}>Leading hearts into God's presence through worship</p>
           </div>
+
           <div className={styles.heroImage}>
-            <img src={pwImg} alt="Praise and Worship Ministry" />
+            <img src={praiseAndWorshipImg} alt="Ushering and Hospitality Ministry" />
           </div>
         </div>
 
-
-        <div className={styles.contentSection}>
+        <div className={`${styles.contentSection} ${styles.animate}`} ref={contentRef1}>
           <div className={styles.description}>
             <h2>About Praise and Worship</h2>
             <p>
-              The Praise and Worship Ministry exists to lead our congregation into the presence of God through heartfelt worship, 
-              uplifting music, and a lifestyle of praise. We are passionate about glorifying God and creating an atmosphere 
-              where people can encounter Him, experience His love, and respond in worship.
+              The Praise and Worship Ministry exists to lead our congregation into the presence of God through heartfelt worship, uplifting music, and a lifestyle of praise. We are passionate about glorifying God and creating an atmosphere where people can encounter Him, experience His love, and respond in worship.
             </p>
-            
+
             <p>
-              Our ministry is committed to excellence in musicianship, unity in spirit, and authenticity in worship. Whether 
-              through singing, playing instruments, or leading in prayer, our team's mission is to magnify God and inspire 
-              others to do the same.
+              Our ministry is committed to excellence in musicianship, unity in spirit, and authenticity in worship. Whether through singing, playing instruments, or leading in prayer, our team's mission is to magnify God and inspire others to do the same
             </p>
-            
+
             <h3>Our Vision</h3>
             <p>
-              To create transformative worship experiences that draw people closer to God, encouraging every heart to 
-              worship in spirit and truth. We believe worship is not just about music, but about the condition of our 
-              hearts before God.
+              To create transformative worship experiences that draw people closer to God, encouraging every heart to worship in spirit and truth. We believe worship is not just about music, but about the condition of our hearts before God.
             </p>
-            
+
             <h3>What We Do</h3>
             <ul className={styles.activitiesList}>
-              <li>Lead corporate worship during Sunday services</li>
-              <li>Facilitate prayer and worship nights</li>
-              <li>Organize special worship concerts and events</li>
-              <li>Mentor upcoming worship leaders and musicians</li>
-              <li>Participate in community outreach through worship</li>
-              <li>Lead worship during retreats and conferences</li>
+              <li data-number="01">Lead corporate worship during Sunday services</li>
+              <li data-number="02">Facilitate prayer and worship nights</li>
+              <li data-number="03">Organize special worship concerts and events</li>
+              <li data-number="04">Mentor upcoming worship leaders and musicians</li>
+              <li data-number="05">Participate in community outreach through worship</li>
+              <li data-number="06">Lead worship during retreats and conferences</li>
             </ul>
-            
-            <h3>Worship Elements</h3>
-            <div className={styles.instrumentsGrid}>
-              <div className={styles.instrument}>Lead Vocals</div>
-              <div className={styles.instrument}>Harmony Vocals</div>
-              <div className={styles.instrument}>Acoustic Guitar</div>
-              <div className={styles.instrument}>Keyboard</div>
-              <div className={styles.instrument}>Percussion</div>
-              <div className={styles.instrument}>Prayer Leadership</div>
-            </div>
+
           </div>
 
           <div className={styles.joinSection}>
             <h2>Join Our Worship Team</h2>
             <p>
-              If you have a heart for worship and a desire to use your gifts for God's glory, we invite you to join us. 
-              Together, we'll lift up the name of Jesus and create moments that touch heaven and change lives.
+              If you have a heart for worship and a desire to use your gifts for God's glory, we invite you to join us. Together, we'll lift up the name of Jesus and create moments that touch heaven and change lives.
             </p>
-            
+
             <div className={styles.requirements}>
               <h3>Requirements to Join</h3>
               <ul>
@@ -83,13 +102,14 @@ const PraiseAndWorshipPage: React.FC = () => {
                 <li>Team spirit and humble servant's heart</li>
               </ul>
             </div>
-            
+
+
             <div className={styles.schedule}>
               <h3>Our Schedule</h3>
               <div className={styles.scheduleGrid}>
                 <div className={styles.scheduleItem}>
                   <strong>Team Practice</strong>
-                  <p>Saturdays: 3:00 PM - 5:00 PM</p>
+                  <p>Saturdays: 8:00 PM - 4:00 PM</p>
                 </div>
                 <div className={styles.scheduleItem}>
                   <strong>Pre-Service Prep</strong>
@@ -105,19 +125,31 @@ const PraiseAndWorshipPage: React.FC = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className={styles.actionButtons}>
-              <Link to="/p&w" className={styles.commitmentButton}>
-                Sign Commitment Form
+              <Link to="/contact-us" className={styles.commitmentButton}>
+                Join Worship Team
               </Link>
               <Link to="/contact-us" className={styles.contactButton}>
-                Contact Coordinator
+                Contact Worship Coodinator
               </Link>
             </div>
           </div>
         </div>
 
-        <div className={styles.testimonialsSection}>
+        <div className={`${styles.contentSection} ${styles.animate}`} ref={contentRef1} >
+          <div className={styles.description}>
+            <h3>Our Worship Philosophy</h3>
+            <p>
+              "Let everything that has breath praise the Lord. Praise the Lord!" Psalm 150:6
+            </p>
+            <p>
+              We believe that worship is both a privilege and a responsibility. It's our response to who God is and what He has done for us. Our goal is not just to perform music, but to create an environment where every person can encounter the living God and respond with their whole heart.
+            </p>
+
+          </div>
+        </div>
+        <div className={`${styles.testimonialsSection} ${styles.animate}`} ref={testimonialsRef}>
           <h2>Hearts Transformed Through Worship</h2>
           <div className={styles.testimonials}>
             <div className={styles.testimonial}>
@@ -135,22 +167,15 @@ const PraiseAndWorshipPage: React.FC = () => {
           </div>
         </div>
 
-        <div className={styles.contentSection}>
-          <div className={styles.description}>
-            <h3>Our Worship Philosophy</h3>
-            <p>
-              "Let everything that has breath praise the Lord. Praise the Lord!" – Psalm 150:6
-            </p>
-            <p>
-              We believe that worship is both a privilege and a responsibility. It's our response to who God is and what 
-              He has done for us. Our goal is not just to perform music, but to create an environment where every person 
-              can encounter the living God and respond with their whole heart.
-            </p>
-          </div>
-        </div>
+
       </div>
-      
+
       <Footer />
+      <MinistryRegistrationModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        ministryName="Praise and Worship Ministry"
+      />
     </>
   );
 };

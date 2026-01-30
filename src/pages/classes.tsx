@@ -1,10 +1,10 @@
 import React from 'react';
-import styles from '../styles/classes.module.css'; 
+import styles from '../styles/classes.module.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import UniversalHeader from '../components/UniversalHeader';
 import Footer from '../components/footer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFacebook, faTiktok, faXTwitter, faYoutube } from '@fortawesome/free-brands-svg-icons'; 
+import { faFacebook, faTiktok, faXTwitter, faYoutube } from '@fortawesome/free-brands-svg-icons';
 import betPImg from '../assets/Best-p.png'
 import classImg from '../assets/class.png'
 import disciplesipImg from '../assets/discipleship.png'
@@ -61,7 +61,7 @@ const classData: ClassInfo[] = [
 const ClassesSection: React.FC = () => {
   return (
     <section id="Classes" className="">
-          <UniversalHeader />
+      <UniversalHeader />
       <div className={styles.container}>
 
         <div className={styles.title}>
@@ -74,9 +74,8 @@ const ClassesSection: React.FC = () => {
           {classData.map((classInfo, index) => (
             <div
               key={index}
-              className={`col-xs-12 col-sm-6 col-md-3 ${styles.animated} ${
-                index % 2 === 0 ? styles.fadeInDown : styles.fadeInUp
-              }`}
+              className={`col-xs-12 col-sm-6 col-md-3 ${styles.animated} ${index % 2 === 0 ? styles.fadeInDown : styles.fadeInUp
+                }`}
               style={{ animationDelay: classInfo.delay }}
             >
               <div className={styles.classimg}>
@@ -90,7 +89,7 @@ const ClassesSection: React.FC = () => {
                 <ul className={styles.socialLinks}>
                   <li>
                     <a href={classInfo.socialLink}>
-                      <FontAwesomeIcon icon={classInfo.socialIconClass}  />
+                      <FontAwesomeIcon icon={classInfo.socialIconClass} />
                     </a>
                   </li>
                 </ul>

@@ -11,6 +11,10 @@ import {
   Globe,
   UsersRound,
   FileText,
+  Award,
+  Users,
+  Scroll,
+  School,
 } from 'lucide-react';
 
 interface QuickLink {
@@ -29,6 +33,11 @@ const quickLinks: QuickLink[] = [
   { icon: Heart, label: 'Win a Soul', href: '/save' },
   { icon: BookOpen, label: 'Constitution', href: '/pdfs/constitution.pdf' },
   { icon: LibraryIcon, label: 'Library', href: '/library' },
+  { icon: Award, label: 'Best-P', href: '/bestpClass' },
+  { icon: Users, label: 'Brothers', href: '/brothersfellowship' },
+  { icon: Users, label: 'Sisters', href: '/sistersfellowship' },
+  { icon: Scroll, label: 'Discipleship', href: '/discipleship' },
+  { icon: School, label: 'Classes', href: '/classFellowship' },
 ];
 
 const QuickLinksButton = () => {

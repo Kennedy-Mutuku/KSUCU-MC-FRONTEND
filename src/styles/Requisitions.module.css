@@ -9,16 +9,22 @@
 .header {
     text-align: center;
     margin-bottom: 40px;
-    padding: 30px 20px;
-    background: white;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    padding: 30px 40px;
+    background: linear-gradient(135deg, #730051 0%, #00c6ff 100%);
+    border-radius: 25px;
+    box-shadow: 0 5px 15px rgba(115, 0, 81, 0.3);
     max-width: 800px;
     margin: 0 auto 40px;
+    transition: all 0.3s ease;
+}
+
+.header:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(115, 0, 81, 0.4);
 }
 
 .header h1 {
-    color: #730051;
+    color: white;
     font-size: 2.5rem;
     font-weight: 700;
     margin-bottom: 10px;
@@ -29,7 +35,7 @@
 }
 
 .header p {
-    color: #666;
+    color: rgba(255, 255, 255, 0.95);
     font-size: 1.1rem;
     margin: 0;
 }
@@ -126,6 +132,31 @@
 .statusItem span {
     color: #666;
     font-size: 0.8rem;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.downloadButton {
+    background: linear-gradient(135deg, #00c6ff 0%, #00a8d8 100%);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-block;
+    margin-top: 4px;
+}
+
+.downloadButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 198, 255, 0.3);
+}
+
+.downloadButton:active {
+    transform: translateY(0);
 }
 
 /* Alerts */
@@ -298,7 +329,7 @@
 
 .formGroup input {
     padding: 12px 15px;
-    border: 2px solid #e9ecef;
+    border: 2px solid #730051;
     border-radius: 8px;
     font-size: 1rem;
     transition: all 0.3s ease;
@@ -307,19 +338,19 @@
 
 .formGroup input:focus {
     outline: none;
-    border-color: #00c6ff;
-    box-shadow: 0 0 0 3px rgba(0, 198, 255, 0.1);
+    border-color: #730051;
+    box-shadow: 0 0 0 3px rgba(115, 0, 81, 0.1);
 }
 
 .formGroup input:invalid {
-    border-color: #dc3545;
+    border-color: #730051;
 }
 
 /* Items Grid Layout */
 .itemsGrid {
     background: white;
-    border: 1px solid #e9ecef;
-    border-radius: 10px;
+    border: 2px solid #730051;
+    border-radius: 8px;
     overflow: hidden;
     margin-bottom: 20px;
 }
@@ -327,16 +358,28 @@
 .gridHeader {
     display: grid;
     grid-template-columns: 50px 2fr 120px 2fr 80px;
-    background: #730051;
+    background: linear-gradient(90deg, #730051 0%, #00c6ff 100%);
     color: white;
-    font-weight: 600;
+    font-weight: 700;
     font-size: 0.9rem;
+    border-radius: 8px 8px 0 0;
+    transition: all 0.3s ease;
+}
+
+.gridHeader:hover {
+    box-shadow: inset 0 -3px 10px rgba(0, 0, 0, 0.15);
+    transform: scale(1.01);
 }
 
 .gridHeaderCell {
     padding: 15px 10px;
     text-align: center;
-    border-right: 1px solid rgba(255, 255, 255, 0.2);
+    border-right: 2px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+.gridHeaderCell:hover {
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .gridHeaderCell:last-child {
@@ -346,7 +389,7 @@
 .gridRow {
     display: grid;
     grid-template-columns: 50px 2fr 120px 2fr 80px;
-    border-bottom: 1px solid #e9ecef;
+    border-bottom: 2px solid #730051;
     align-items: center;
 }
 
@@ -361,7 +404,7 @@
 .gridCell {
     padding: 12px 10px;
     text-align: center;
-    border-right: 1px solid #e9ecef;
+    border-right: 2px solid #730051;
 }
 
 .gridCell:last-child {
@@ -371,7 +414,7 @@
 .gridInput {
     width: 100%;
     padding: 8px 10px;
-    border: 1px solid #e9ecef;
+    border: 1px solid #730051;
     border-radius: 6px;
     font-size: 0.9rem;
     transition: all 0.3s ease;
@@ -380,8 +423,8 @@
 
 .gridInput:focus {
     outline: none;
-    border-color: #00c6ff;
-    box-shadow: 0 0 0 2px rgba(0, 198, 255, 0.1);
+    border-color: #730051;
+    box-shadow: 0 0 0 2px rgba(115, 0, 81, 0.1);
 }
 
 .itemNumber {
@@ -405,23 +448,24 @@
 }
 
 .addButton {
-    background: #00c6ff;
+    background: linear-gradient(135deg, #730051 0%, #00c6ff 100%);
     color: white;
     border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-size: 0.9rem;
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     gap: 8px;
     transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(115, 0, 81, 0.3);
 }
 
 .addButton:hover {
-    background: #0099cc;
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(115, 0, 81, 0.4);
 }
 
 .removeButton {
@@ -651,17 +695,28 @@
 
     .header {
         margin-bottom: 20px;
-        padding: 20px 15px;
+        padding: 25px 30px;
+        background: linear-gradient(135deg, #730051 0%, #00c6ff 100%);
+        border-radius: 25px;
+        box-shadow: 0 5px 15px rgba(115, 0, 81, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .header:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(115, 0, 81, 0.4);
     }
 
     .header h1 {
         font-size: 1.8rem;
         flex-direction: column;
         gap: 10px;
+        color: white;
     }
 
     .header p {
         font-size: 0.95rem;
+        color: rgba(255, 255, 255, 0.95);
     }
 
     .requisitionForm {
@@ -698,6 +753,20 @@
         font-size: 0.95rem;
         width: 100%;
         box-sizing: border-box;
+        border: 2px solid #730051;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        background: white;
+    }
+
+    .formGroup input:focus {
+        outline: none;
+        border-color: #730051;
+        box-shadow: 0 0 0 3px rgba(115, 0, 81, 0.1);
+    }
+
+    .formGroup input:invalid {
+        border-color: #730051;
     }
 
     /* Items Grid Mobile Layout */
@@ -705,30 +774,44 @@
         margin-bottom: 15px;
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
+        border: 2px solid #730051;
+        border-radius: 8px;
     }
 
     .gridHeader {
         display: grid;
         grid-template-columns: 35px 2fr 70px 1.5fr 50px;
-        background: #730051;
+        background: linear-gradient(90deg, #730051 0%, #00c6ff 100%);
         color: white;
-        font-weight: 600;
+        font-weight: 700;
         font-size: 0.75rem;
         min-width: 320px;
+        border-radius: 8px 8px 0 0;
+        transition: all 0.3s ease;
+    }
+
+    .gridHeader:hover {
+        box-shadow: inset 0 -3px 10px rgba(0, 0, 0, 0.15);
+        transform: scale(1.01);
     }
 
     .gridHeaderCell {
         padding: 10px 6px;
         text-align: center;
-        border-right: 1px solid rgba(255, 255, 255, 0.2);
+        border-right: 2px solid rgba(255, 255, 255, 0.2);
         word-break: break-word;
         line-height: 1.2;
+        transition: all 0.3s ease;
+    }
+
+    .gridHeaderCell:hover {
+        background: rgba(255, 255, 255, 0.1);
     }
 
     .gridRow {
         display: grid;
         grid-template-columns: 35px 2fr 70px 1.5fr 50px;
-        border-bottom: 1px solid #e9ecef;
+        border-bottom: 2px solid #730051;
         align-items: center;
         min-width: 320px;
     }
@@ -740,7 +823,7 @@
     .gridCell {
         padding: 8px 5px;
         text-align: center;
-        border-right: 1px solid #e9ecef;
+        border-right: 2px solid #730051;
     }
 
     .gridCell:last-child {
@@ -752,13 +835,16 @@
         padding: 5px 6px;
         font-size: 0.8rem;
         box-sizing: border-box;
-        border: 1px solid #e9ecef;
-        border-radius: 3px;
+        border: 1px solid #730051;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+        background: white;
     }
 
     .gridInput:focus {
-        border-color: #00c6ff;
-        box-shadow: 0 0 0 1px rgba(0, 198, 255, 0.1);
+        outline: none;
+        border-color: #730051;
+        box-shadow: 0 0 0 2px rgba(115, 0, 81, 0.1);
     }
 
     .itemNumber {
@@ -924,12 +1010,26 @@
     }
 
     .header {
-        padding: 15px 10px;
+        padding: 20px 25px;
         margin: 0 auto 15px;
+        background: linear-gradient(135deg, #730051 0%, #00c6ff 100%);
+        border-radius: 25px;
+        box-shadow: 0 5px 15px rgba(115, 0, 81, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .header:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(115, 0, 81, 0.4);
     }
 
     .header h1 {
         font-size: 1.5rem;
+        color: white;
+    }
+
+    .header p {
+        color: rgba(255, 255, 255, 0.95);
     }
 
     .section {
@@ -938,27 +1038,49 @@
 
     .itemsGrid {
         font-size: 0.8rem;
+        border: 2px solid #730051;
+        border-radius: 8px;
     }
 
     .gridHeader {
         grid-template-columns: 30px 1.8fr 60px 1.2fr 45px;
         font-size: 0.7rem;
         min-width: 280px;
+        background: linear-gradient(90deg, #730051 0%, #00c6ff 100%);
+        border-radius: 8px 8px 0 0;
+        transition: all 0.3s ease;
+    }
+
+    .gridHeader:hover {
+        box-shadow: inset 0 -3px 10px rgba(0, 0, 0, 0.15);
+        transform: scale(1.01);
     }
 
     .gridHeaderCell {
         padding: 8px 4px;
         font-size: 0.65rem;
         line-height: 1.1;
+        border-right: 2px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    .gridHeaderCell:hover {
+        background: rgba(255, 255, 255, 0.1);
     }
 
     .gridRow {
         grid-template-columns: 30px 1.8fr 60px 1.2fr 45px;
         min-width: 280px;
+        border-bottom: 2px solid #730051;
     }
 
     .gridCell {
         padding: 6px 4px;
+        border-right: 2px solid #730051;
+    }
+
+    .gridCell:last-child {
+        border-right: none;
     }
 
     .gridInput {
@@ -984,11 +1106,6 @@
 
     .addButtonContainer {
         margin-top: 10px;
-    }
-
-    .formGroup input {
-        padding: 8px 10px;
-        font-size: 0.9rem;
     }
 
     .termsContent {

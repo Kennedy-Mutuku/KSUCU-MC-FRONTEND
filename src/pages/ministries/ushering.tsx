@@ -1,11 +1,48 @@
-import React from 'react';
+
+import React, { useEffect, useRef } from 'react';
 import styles from '../../styles/ministryPage.module.css';
 import UniversalHeader from '../../components/UniversalHeader';
 import Footer from '../../components/footer';
 import { Link } from 'react-router-dom';
 import usheringImg from '../../assets/ushering.jpg';
+import MinistryRegistrationModal from '../../components/MinistryRegistrationModal';
+
+
 
 const UsheringPage: React.FC = () => {
+  const contentRef1 = useRef<HTMLDivElement>(null);
+  const contentRef2 = useRef<HTMLDivElement>(null);
+
+  const [showModal, setShowModal] = React.useState(false);
+
+  useEffect(() => {
+    // Smooth scroll behavior
+    document.documentElement.style.scrollBehavior = 'smooth';
+
+    // Simple scroll animation observer
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px',
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, observerOptions);
+
+    // Observe elements if they exist
+    if (contentRef1.current) observer.observe(contentRef1.current);
+    if (contentRef2.current) observer.observe(contentRef2.current);
+
+
+    return () => {
+      document.documentElement.style.scrollBehavior = 'auto';
+      observer.disconnect();
+    };
+  }, []);
 
   return (
     <>
@@ -16,66 +53,57 @@ const UsheringPage: React.FC = () => {
             <h1 className={styles.title}>Ushering and Hospitality Ministry</h1>
             <p className={styles.subtitle}>The welcoming heart of our church</p>
           </div>
+
           <div className={styles.heroImage}>
             <img src={usheringImg} alt="Ushering and Hospitality Ministry" />
           </div>
         </div>
 
-
-        <div className={styles.contentSection}>
+        <div className={`${styles.contentSection} ${styles.animate}`} ref={contentRef1}>
           <div className={styles.description}>
             <h2>About Ushering and Hospitality Ministry</h2>
             <p>
-              The Ushering and Hospitality Ministry is the welcoming heart of our church, committed to creating a warm and 
-              inviting atmosphere where everyone feels valued and at home. Our ushers and hospitality team serve as the hands 
-              and feet of Christ, greeting each person with kindness, guiding them with care, and ensuring 
+              The Ushering and Hospitality Ministry is the welcoming heart of our church, committed to creating a warm and
+              inviting atmosphere where everyone feels valued and at home. Our ushers and hospitality team serve as the hands
+              and feet of Christ, greeting each person with kindness, guiding them with care, and ensuring
               that every service runs smoothly and orderly.
             </p>
-            
+
             <p>
-              From welcoming guests at the door to assisting with seating, offering directions, and 
-              facilitating worship elements, the Ushering and Hospitality Ministry plays a vital role in enhancing the 
-              worship experience. Our team is dedicated to embodying hospitality, joy, and excellence, 
+              From welcoming guests at the door to assisting with seating, offering directions, and
+              facilitating worship elements, the Ushering and Hospitality Ministry plays a vital role in enhancing the
+              worship experience. Our team is dedicated to embodying hospitality, joy, and excellence,
               reflecting God's love in every interaction.
             </p>
-            
+
             <h3>Our Mission</h3>
             <p>
-              To create an atmosphere of warmth, welcome, and worship excellence that allows every person 
+              To create an atmosphere of warmth, welcome, and worship excellence that allows every person
               who enters our church to feel the love of God and experience His presence.
             </p>
-            
+
             <h3>What We Do</h3>
             <ul className={styles.activitiesList}>
-              <li>Welcome and greet congregation members and visitors</li>
-              <li>Assist with seating and provide service information</li>
-              <li>Distribute bulletins, programs, and other materials</li>
-              <li>Manage offering collection during services</li>
-              <li>Maintain order and assist with crowd control</li>
-              <li>Provide directions and answer questions</li>
-              <li>Assist elderly, disabled, and families with children</li>
-              <li>Coordinate with other ministries during services</li>
+              <li data-number="01">Welcome and greet congregation members and visitors</li>
+              <li data-number="02">Assist with seating and provide service information</li>
+              <li data-number="03">Distribute bulletins, programs, and other materials</li>
+              <li data-number="04">Manage offering collection during services</li>
+              <li data-number="05">Maintain order and assist with crowd control</li>
+              <li data-number="06">Provide directions and answer questions</li>
+              <li data-number="07">Assist elderly, disabled, and families with children</li>
+              <li data-number="08">Coordinate with other ministries during services</li>
             </ul>
-            
-            <h3>Service Areas</h3>
-            <div className={styles.instrumentsGrid}>
-              <div className={styles.instrument}>Greeting Team</div>
-              <div className={styles.instrument}>Seating Assistance</div>
-              <div className={styles.instrument}>Information Desk</div>
-              <div className={styles.instrument}>Offering Team</div>
-              <div className={styles.instrument}>Program Distribution</div>
-              <div className={styles.instrument}>Special Needs</div>
-            </div>
+
           </div>
 
           <div className={styles.joinSection}>
             <h2>Join Our Hospitality Team</h2>
             <p>
-              If you have a heart for service and a friendly smile, we invite you to join us in making 
-              every worship experience meaningful and memorable. Together, we can help create an environment 
+              If you have a heart for service and a friendly smile, we invite you to join us in making
+              every worship experience meaningful and memorable. Together, we can help create an environment
               where God's presence is felt and His people are blessed.
             </p>
-            
+
             <div className={styles.requirements}>
               <h3>Qualities We Value</h3>
               <ul>
@@ -87,7 +115,8 @@ const UsheringPage: React.FC = () => {
                 <li>Good communication and interpersonal skills</li>
               </ul>
             </div>
-            
+
+
             <div className={styles.schedule}>
               <h3>Service Schedule</h3>
               <div className={styles.scheduleGrid}>
@@ -109,9 +138,9 @@ const UsheringPage: React.FC = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className={styles.actionButtons}>
-              <Link to="/contact-us" className={styles.commitmentButton}>
+              <Link to="/contact-us" className={styles.commitmentButton} onClick={() => setShowModal(true)}>
                 Join Ushering Team
               </Link>
               <Link to="/contact-us" className={styles.contactButton}>
@@ -121,7 +150,28 @@ const UsheringPage: React.FC = () => {
           </div>
         </div>
 
-        <div className={styles.testimonialsSection}>
+        <div className={`${styles.contentSection} ${styles.animate}`} ref={contentRef1} >
+          <div className={styles.description}>
+            <h3>Our Service Philosophy</h3>
+            <p>
+              "Better is one day in your courts than a thousand elsewhere; I would rather be a doorkeeper
+              in the house of my God." – Psalm 84:10
+            </p>
+            <p>
+              We believe that serving as an usher is a sacred privilege. Every person who walks through
+              our doors carries hopes, fears, and needs. Our role is to be Jesus with skin on - to offer
+              the warmth, care, and welcome that reflects God's heart for His people.
+            </p>
+
+            <h3>Training and Development</h3>
+            <p>
+              We provide comprehensive training covering hospitality excellence, crowd management, emergency
+              procedures, and conflict resolution. Regular workshops help our team stay updated on best
+              practices and continue growing in their service skills.
+            </p>
+          </div>
+        </div>
+        <div className={`${styles.testimonialsSection} ${styles.animate}`}>
           <h2>Hearts of Service</h2>
           <div className={styles.testimonials}>
             <div className={styles.testimonial}>
@@ -139,30 +189,15 @@ const UsheringPage: React.FC = () => {
           </div>
         </div>
 
-        <div className={styles.contentSection}>
-          <div className={styles.description}>
-            <h3>Our Service Philosophy</h3>
-            <p>
-              "Better is one day in your courts than a thousand elsewhere; I would rather be a doorkeeper 
-              in the house of my God." – Psalm 84:10
-            </p>
-            <p>
-              We believe that serving as an usher is a sacred privilege. Every person who walks through 
-              our doors carries hopes, fears, and needs. Our role is to be Jesus with skin on - to offer 
-              the warmth, care, and welcome that reflects God's heart for His people.
-            </p>
-            
-            <h3>Training and Development</h3>
-            <p>
-              We provide comprehensive training covering hospitality excellence, crowd management, emergency 
-              procedures, and conflict resolution. Regular workshops help our team stay updated on best 
-              practices and continue growing in their service skills.
-            </p>
-          </div>
-        </div>
+
       </div>
-      
+
       <Footer />
+      <MinistryRegistrationModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        ministryName="Ushering and Hospitality Ministry"
+      />
     </>
   );
 };

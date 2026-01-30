@@ -1,11 +1,43 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import styles from '../../styles/ministryPage.module.css';
 import UniversalHeader from '../../components/UniversalHeader';
 import Footer from '../../components/footer';
 import { Link } from 'react-router-dom';
-import wananzambeImg from '../../assets/wananzambe.jpg';
+import wanazambeImg from '../../assets/wananzambe.jpg';
 
-const WananzambePage: React.FC = () => {
+const WanazambePage: React.FC = () => {
+  const contentRef1 = useRef<HTMLDivElement>(null);
+  const contentRef2 = useRef<HTMLDivElement>(null);
+  const testimonialsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Smooth scroll behavior
+    document.documentElement.style.scrollBehavior = 'smooth';
+
+    // Simple scroll animation observer
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px',
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, observerOptions);
+
+    // Observe elements if they exist
+    if (contentRef1.current) observer.observe(contentRef1.current);
+    if (contentRef2.current) observer.observe(contentRef2.current);
+    if (testimonialsRef.current) observer.observe(testimonialsRef.current);
+
+    return () => {
+      document.documentElement.style.scrollBehavior = 'auto';
+      observer.disconnect();
+    };
+  }, []);
 
   return (
     <>
@@ -16,54 +48,40 @@ const WananzambePage: React.FC = () => {
             <h1 className={styles.title}>Wananzambe (Instrumentalists)</h1>
             <p className={styles.subtitle}>Instrumentalists dedicated to worship excellence</p>
           </div>
+          
           <div className={styles.heroImage}>
-            <img src={wananzambeImg} alt="Wananzambe (Instrumentalists)" />
+            <img src={wanazambeImg} alt="Ushering and Hospitality Ministry" />
           </div>
         </div>
 
-
-        <div className={styles.contentSection}>
+        <div className={`${styles.contentSection} ${styles.animate}`} ref={contentRef1}>
           <div className={styles.description}>
             <h2>About Wananzambe</h2>
             <p>
-              Wananzambe is the instrumentalists' ministry in KSUCU-MC, dedicated to enhancing worship through music. 
-              This ministry consists of skilled musicians who play various instruments to create a powerful and uplifting 
-              worship experience. With a passion for excellence and a heart for service, Wananzambe plays a vital role 
-              in leading the congregation into deep and meaningful worship.
+              Wananzambe is the instrumentalists' ministry in KSUCU-MC, dedicated to enhancing worship through music. This ministry consists of skilled musicians who play various instruments to create a powerful and uplifting worship experience. With a passion for excellence and a heart for service, Wananzambe plays a vital role in leading the congregation into deep and meaningful worship.
             </p>
+            
             
             <h3>Our Mission</h3>
             <p>
-              To glorify God through instrumental worship, creating an atmosphere where hearts are lifted and 
-              souls are touched by His presence. We strive to support the worship experience through skillful 
-              musicianship and devoted hearts.
+              To glorify God through instrumental worship, creating an atmosphere where hearts are lifted and souls are touched by His presence. We strive to support the worship experience through skillful musicianship and devoted hearts.
             </p>
             
             <h3>What We Do</h3>
             <ul className={styles.activitiesList}>
-              <li>Lead instrumental worship during church services</li>
-              <li>Support choir and praise & worship team performances</li>
-              <li>Participate in special events and concerts</li>
-              <li>Conduct music workshops and mentorship programs</li>
-              <li>Organize community outreach through music</li>
+              <li data-number="01">Lead instrumental worship during church services</li>
+              <li data-number="02">Support choir and praise & worship team performances</li>
+              <li data-number="03">Participate in special events and concerts</li>
+              <li data-number="04">Conduct music workshops and mentorship programs</li>
+              <li data-number="05">Organize community outreach through music</li>
             </ul>
             
-            <h3>Instruments We Play</h3>
-            <div className={styles.instrumentsGrid}>
-              <div className={styles.instrument}>🎸 Guitar</div>
-              <div className={styles.instrument}>🎹 Keyboard/Piano</div>
-              <div className={styles.instrument}>🥁 Drums</div>
-              <div className={styles.instrument}>🎺 Brass Instruments</div>
-              <div className={styles.instrument}>🎻 Strings</div>
-              <div className={styles.instrument}>🎷 Woodwinds</div>
-            </div>
           </div>
 
           <div className={styles.joinSection}>
             <h2>Join Wananzambe</h2>
             <p>
-              Do you have a heart for worship and musical talents to share? We welcome musicians of all 
-              skill levels who are passionate about serving God through instrumental worship.
+             Do you have a heart for worship and musical talents to share? We welcome musicians of all skill levels who are passionate about serving God through instrumental worship.
             </p>
             
             <div className={styles.requirements}>
@@ -77,6 +95,7 @@ const WananzambePage: React.FC = () => {
               </ul>
             </div>
             
+
             <div className={styles.schedule}>
               <h3>Practice Schedule</h3>
               <div className={styles.scheduleGrid}>
@@ -85,8 +104,8 @@ const WananzambePage: React.FC = () => {
                   <p>Saturdays: 2:00 PM - 4:00 PM</p>
                 </div>
                 <div className={styles.scheduleItem}>
-                  <strong>Pre-Service Practice</strong>
-                  <p>Sundays: 7:30 AM - 8:30 AM</p>
+                  <strong>Pre-Practice</strong>
+                  <p>Thursday: 5:00 PM - 7:00 PM</p>
                 </div>
                 <div className={styles.scheduleItem}>
                   <strong>Special Events</strong>
@@ -96,22 +115,34 @@ const WananzambePage: React.FC = () => {
             </div>
             
             <div className={styles.actionButtons}>
-              <Link to="/wananzambe" className={styles.commitmentButton}>
-                Sign Commitment Form
+              <Link to="/contact-us" className={styles.commitmentButton}>
+                Join Wanazambe
               </Link>
               <Link to="/contact-us" className={styles.contactButton}>
-                Contact Coordinator
+                Contact Worship Coodinator
               </Link>
             </div>
           </div>
         </div>
 
-        <div className={styles.testimonialsSection}>
+<div className={`${styles.contentSection} ${styles.animate}`} ref={contentRef1} >
+          <div className={styles.description}>
+            <h3>Our Worship Philosophy</h3>
+            <p>
+              "Let everything that has breath praise the Lord. Praise the Lord!" Psalm 150:6
+            </p>
+            <p>
+             We believe that worship is both a privilege and a responsibility. It's our response to who God is and what He has done for us. Our goal is not just to perform music, but to create an environment where every person can encounter the living God and respond with their whole heart.
+            </p>
+            
+          </div>
+        </div>
+        <div className={`${styles.testimonialsSection} ${styles.animate}`} ref={testimonialsRef}>
           <h2>What Our Members Say</h2>
           <div className={styles.testimonials}>
             <div className={styles.testimonial}>
-              <p>"Being part of Wananzambe has deepened my relationship with God and improved my musical skills tremendously."</p>
-              <span>- Sarah, Pianist</span>
+              <p>"I am a vessel of influence for God's kingdom courtesy of wanazambe ministry"</p>
+              <span>- Tonny, Pianist</span>
             </div>
             <div className={styles.testimonial}>
               <p>"The fellowship and growth in this ministry is incredible. We're not just musicians, we're family."</p>
@@ -123,10 +154,13 @@ const WananzambePage: React.FC = () => {
             </div>
           </div>
         </div>
+
+        
       </div>
+      
       <Footer />
     </>
   );
 };
 
-export default WananzambePage;
+export default WanazambePage;

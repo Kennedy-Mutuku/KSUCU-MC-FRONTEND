@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Clock, BookOpen, Trophy, Code, Globe, Rocket, X } from 'lucide-react';
+import { Clock, BookOpen, Trophy, Code, Globe, Rocket, X, Lightbulb } from 'lucide-react';
 
 interface Forum {
   id: string;
@@ -7,6 +7,7 @@ interface Forum {
   icon: React.ElementType;
   description: string;
   details: string;
+  link?: string;
 }
 
 const forums: Forum[] = [
@@ -46,6 +47,14 @@ const forums: Forum[] = [
     details: 'The Kairos Course is a missions training program that will expand your worldview and equip you to participate in God\'s global mission. Join us for this transformative experience.',
   },
   {
+    id: 'christianminds',
+    title: 'Christian Minds',
+    icon: Lightbulb,
+    description: 'Dealing with contemporary issues',
+    details: 'Christian Minds is a forum that addresses contemporary issues from a Christian perspective. Engage in thoughtful discussions and explore how faith intersects with modern challenges.',
+    link: '/christianminds',
+  },
+  {
     id: 'focus',
     title: 'FOCUS Conferences',
     icon: Rocket,
@@ -68,10 +77,13 @@ const ForumsSection = () => {
     };
   }, [selectedForum]);
 
+  // Define base classes for the card to ensure identical styling for both button and link
+  const cardClasses = "block w-full group p-3 md:p-6 bg-gray-50 rounded-xl border border-gray-200 text-left transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-purple-200";
+
   return (
     <section className="py-6 md:py-20 bg-white">
       <div className="max-w-6xl mx-auto px-4 md:px-6">
-        <div className="text-center mb-12">
+        <div className="text-center mb-3 md:mb-12">
           <span className="inline-block px-3 py-1 bg-purple-100 text-[#730051] text-sm font-medium rounded-full mb-4">
             Get Involved
           </span>
@@ -86,12 +98,10 @@ const ForumsSection = () => {
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5 md:gap-6">
           {forums.map((forum) => {
             const Icon = forum.icon;
-            return (
-              <button
-                key={forum.id}
-                onClick={() => setSelectedForum(forum)}
-                className="group p-3 md:p-6 bg-gray-50 rounded-xl border border-gray-200 text-left transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-purple-200"
-              >
+
+            // Render content inside the card
+            const cardContent = (
+              <>
                 <div className="w-8 h-8 md:w-12 md:h-12 flex items-center justify-center bg-purple-100 rounded-lg md:rounded-xl mb-2 md:mb-4 group-hover:bg-[#730051] transition-colors duration-300">
                   <Icon size={16} className="text-[#730051] group-hover:text-white md:hidden" />
                   <Icon size={24} className="text-[#730051] group-hover:text-white hidden md:block" />
@@ -102,6 +112,30 @@ const ForumsSection = () => {
                 <p className="text-[11px] md:text-sm text-gray-600">
                   {forum.description}
                 </p>
+              </>
+            );
+
+            // If a link exists, render an anchor tag
+            if (forum.link) {
+              return (
+                <a
+                  key={forum.id}
+                  href={forum.link}
+                  className={cardClasses}
+                >
+                  {cardContent}
+                </a>
+              );
+            }
+
+            // Otherwise render the button that opens the modal
+            return (
+              <button
+                key={forum.id}
+                onClick={() => setSelectedForum(forum)}
+                className={cardClasses}
+              >
+                {cardContent}
               </button>
             );
           })}
