@@ -15,7 +15,7 @@ const activities: Activity[] = [
   { day: 'Thursday', event: 'ET Fellowship', time: '6:50 PM - 8:50 PM', venue: 'Communicated daily' },
   { day: 'Friday', event: 'Friday Fellowship', time: '6:50 PM - 8:50 PM', venue: 'Communicated daily' },
   { day: 'Saturday', event: 'Class Fellowship', time: '9:00 AM - 12:00 PM', venue: 'Communicated earlier' },
-  { day: 'Sunday', event: 'Services', time: '7:30 AM - 12:45 PM', venue: 'Communicated before service', highlight: true },
+  { day: 'Sunday [Services]', event: '1st & 2nd', time: '7:30 AM - 12:45 PM ', venue: 'Communicated before service', highlight: true },
 ];
 
 const WeeklyActivities = () => {

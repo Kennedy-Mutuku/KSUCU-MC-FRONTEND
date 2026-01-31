@@ -14,12 +14,12 @@ interface Slide {
 const slides: Slide[] = [
   {
     image: gentsImg,
-    title: 'Brothers Fellowship',
+    title: 'ksucu-mc Brothers',
     subtitle: 'Growing together in faith and brotherhood',
   },
   {
     image: ladiesImg,
-    title: 'Sisters Fellowship',
+    title: 'Ksucu-mc Sisters',
     subtitle: 'United in Christ, empowering one another',
   },
   {
