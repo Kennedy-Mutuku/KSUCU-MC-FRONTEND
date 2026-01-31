@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import styles from '../styles/adminSidebar.module.css';
 
-export type AdminSection = 'dashboard' | 'students' | 'polling' | 'messages' | 'minutes' | 'documents';
+export type AdminSection = 'dashboard' | 'students' | 'polling' | 'messages' | 'minutes' | 'documents' | 'committee';
 
 interface AdminSidebarProps {
   activeSection: AdminSection;
@@ -29,6 +29,7 @@ interface MenuItem {
 const menuItems: MenuItem[] = [
   { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
   { id: 'students', label: 'Students', icon: <Users size={20} /> },
+  { id: 'committee', label: 'Committee', icon: <Users size={20} /> }, // Added Committee
   { id: 'polling', label: 'Polling', icon: <Vote size={20} /> },
   { id: 'messages', label: 'Messages', icon: <MessageSquare size={20} /> },
   { id: 'minutes', label: 'Minutes', icon: <FileText size={20} /> },

@@ -1,4 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 @import url(global.css);
+
+/* Force Committee Section to Full Screen */
+#team {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 80px;
+    box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+    #team {
+        justify-content: flex-start;
+        /* Let content flow naturally on mobile */
+        padding-top: 100px;
+        /* More space for header */
+        height: auto;
+        min-height: 100dvh;
+        /* Use dynamic viewport height */
+        padding-bottom: 2rem;
+    }
+}
 
 /*Index.css*/
 :root {
@@ -136,11 +160,368 @@ section {
     border-radius: 2px;
 }
 
-/* Cards Grid */
+/* Cards Grid - Hidden for new slider */
 .cards-grid {
+    display: none;
+}
+
+/* Swiper Container */
+.team-slider-container {
+    width: 100%;
+    padding: 1rem 0;
+    /* Reduced from 3rem */
+    overflow: hidden;
+}
+
+.swiper {
+    width: 100%;
+    padding-bottom: 40px !important;
+    /* Reduced padding */
+    padding-top: 10px !important;
+}
+
+.swiper-slide {
+    background-position: center;
+    background-size: cover;
+    width: 85vw;
+    /* Responsive width for mobile */
+    max-width: 400px;
+    /* Cap width for vertical layout */
+    height: auto;
+}
+
+/* Tablet (Portrait/Small Landscape) - Still Vertical Stack, but wider */
+@media (min-width: 768px) {
+    .swiper-slide {
+        width: 60vw;
+        max-width: 500px;
+    }
+}
+
+/* Desktop - Switch to Horizontal Row Layout */
+@media (min-width: 1024px) {
+    .swiper-slide {
+        width: 900px;
+        /* Wide card */
+        max-width: 90%;
+    }
+
+    .member-card-new {
+        flex-direction: row;
+        min-height: 450px;
+        max-height: 80vh;
+        height: 100%;
+    }
+
+    .member-image-section {
+        flex: 1;
+        /* Adjust ratio for horizontal */
+    }
+
+    .member-details-section {
+        flex: 1.5;
+        text-align: left;
+    }
+}
+
+/* Member Card New Design */
+.member-card-new {
+    display: flex;
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    transition: all 0.3s ease;
+}
+
+/* Active slide styling enhancement if needed */
+.swiper-slide-active .member-card-new {
+    box-shadow: 0 20px 50px rgba(111, 7, 81, 0.2);
+    /* Using primary color shadow */
+    border: 1px solid rgba(111, 7, 81, 0.1);
+}
+
+@media (min-width: 768px) {
+    .member-card-new {
+        flex-direction: row;
+        min-height: 450px;
+        max-height: 80vh;
+        /* Prevent card from being taller than screen */
+        height: 100%;
+    }
+}
+
+/* Avatar Navigation */
+.avatar-nav-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 20;
+    /* Horizontal Scroll for Mobile */
+    max-width: 100%;
+    scrollbar-width: none;
+    /* Hide scrollbar Firefox */
+}
+
+@media (max-width: 768px) {
+    .avatar-nav-container {
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding: 0 1rem;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .avatar-item {
+        flex-shrink: 0;
+        width: 50px;
+        /* Smaller avatars */
+        height: 50px;
+    }
+}
+
+.avatar-item {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    /* overflow: hidden; Removed to allow tooltip to show */
+    cursor: pointer;
+    border: 3px solid transparent;
+    /* Default border */
+    transition: all 0.3s ease;
+    position: relative;
+    opacity: 0.7;
+    filter: grayscale(100%);
+    background: #fff;
+}
+
+.avatar-item.active,
+.avatar-item:hover {
+    transform: scale(1.2);
+    opacity: 1;
+    filter: grayscale(0%);
+    border-color: #6f0751;
+    /* Primary color ring */
+    z-index: 10;
+}
+
+.avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    /* Added to ensure image is round since parent overflow is visible */
+}
+
+/* Tooltip on Hover */
+.avatar-tooltip {
+    position: absolute;
+    bottom: 75px;
+    /* Above the avatar */
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    pointer-events: none;
+    text-align: center;
+}
+
+.avatar-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -6px;
+    border-width: 6px;
+    border-style: solid;
+    border-color: white transparent transparent transparent;
+}
+
+.avatar-item:hover .avatar-tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(-5px);
+}
+
+.tooltip-name {
+    display: block;
+    font-weight: bold;
+    color: #333;
+    font-size: 0.9rem;
+}
+
+.tooltip-role {
+    display: block;
+    font-size: 0.75rem;
+    color: #666;
+}
+
+/* Left Image Section */
+/* Left Image Section */
+.member-image-section {
+    position: relative;
+    background-color: #f0f0f0;
+    overflow: hidden;
+    height: 300px;
+    /* STRICT FIXED HEIGHT FOR MOBILE/TABLET */
+    flex-shrink: 0;
+    /* Don't shrink */
+    width: 100%;
+    /* Full width on vertical stack */
+}
+
+.member-profile-pic {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    /* crucial for tall images */
+    display: block;
+}
+
+
+/* Right Details Section */
+/* Right Details Section */
+.member-details-section {
+    flex: 3;
+    padding: 1.5rem;
+    /* Reduced padding default */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+@media (min-width: 768px) {
+    .member-details-section {
+        padding: 2rem;
+    }
+}
+
+.member-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1rem;
+}
+
+.member-name-new {
+    font-size: 2rem;
+    color: #6f0751;
+    /* Primary */
+    margin: 0;
+    font-weight: 600;
+}
+
+.member-role-new {
+    font-size: 1rem;
+    color: #333;
+    margin: 5px 0 0;
+    font-weight: 500;
+}
+
+.member-year-badge {
+    background: #6f0751;
+    /* Primary */
+    color: white;
+    padding: 10px;
+    text-align: center;
+    min-width: 60px;
+}
+
+.year-label {
+    display: block;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+}
+
+.year-value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.member-bio-new {
+    font-size: 0.95rem;
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+}
+
+.member-info-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 2rem;
+    gap: 1.5rem;
+    border-top: 1px solid #eee;
+    padding-top: 1.5rem;
+}
+
+.info-item {
+    display: flex;
+    /* Or grid with icon */
+    align-items: center;
+    gap: 1rem;
+}
+
+.info-label {
+    font-size: 0.8rem;
+    color: #999;
+    display: block;
+    margin-bottom: 2px;
+}
+
+.info-value {
+    font-size: 1rem;
+    color: #333;
+    font-weight: 500;
+    margin: 0;
+}
+
+/* Navigation Buttons override */
+.custom-nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    background: var(--white);
+    border-radius: 50%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    color: var(--primary);
+    font-weight: bold;
+    font-size: 1.5rem;
+    user-select: none;
+}
+
+.nav-prev {
+    left: 0;
+}
+
+.nav-next {
+    right: 0;
+}
+
+@media (max-width: 768px) {
+    .custom-nav-btn {
+        display: none;
+        /* Hide buttons on mobile, use swipe */
+    }
 }
 
 /*Member Card CSS*/
