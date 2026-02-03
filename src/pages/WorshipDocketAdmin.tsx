@@ -57,30 +57,16 @@ const WorshipDocketAdmin: React.FC = () => {
         setTimeout(() => setMessage(''), 3000);
     };
 
-    const leadershipRoles = [
-        'Chairperson',
-        'Vice Chairperson',
-        'Secretary',
-        'Treasurer',
-        'Publicity Secretary',
-        'Worship Coordinator',
-        'Bible Study Coordinator',
-        'Discipleship Coordinator',
-        'Prayer Coordinator',
-        'Missions Coordinator',
-        'Boards Coordinator'
-    ];
 
-    const handleRoleSelection = (role: string) => {
+    const handleRoleSelection = () => {
+        const role = 'Executive Admin';
         setSelectedRole(role);
-        setMessage(`Selected: ${role} - Redirecting to attendance management...`);
+        setMessage(`Redirecting to attendance management...`);
         setTimeout(() => {
-            // Store authentication state
             sessionStorage.setItem('adminAuth', 'Overseer');
             sessionStorage.setItem('leadershipRole', role);
-            // This will redirect to the session management page
             navigate(`/attendance-session-management?role=${encodeURIComponent(role)}`);
-        }, 1500);
+        }, 800);
     };
 
     if (!authenticated) {
@@ -133,7 +119,7 @@ const WorshipDocketAdmin: React.FC = () => {
                                 <FontAwesomeIcon icon={faUsers} />
                                 Leadership Attendance Administration
                             </h1>
-                            <p>Select your leadership role to manage centralized attendance</p>
+                            <p>Centralized management for all church attendance sessions</p>
                         </div>
                         <button
                             onClick={handleLogout}
@@ -294,22 +280,17 @@ const WorshipDocketAdmin: React.FC = () => {
                         <div className={styles.functionContent}>
                             <h3>
                                 <FontAwesomeIcon icon={faUsers} />
-                                Leadership Attendance Management
+                                Multi-Session Attendance
                             </h3>
-                            <p>Select your leadership role to access centralized attendance management</p>
-                            <div className={styles.leadershipRoleGrid}>
-                                {leadershipRoles.map((role) => (
-                                    <button
-                                        key={role}
-                                        className={styles.leadershipRoleButton}
-                                        onClick={() => handleRoleSelection(role)}
-                                        disabled={selectedRole !== ''}
-                                    >
-                                        {role}
-                                        <FontAwesomeIcon icon={faArrowRight} className={styles.arrowIcon} />
-                                    </button>
-                                ))}
-                            </div>
+                            <p>Create and manage multiple shareable attendance sessions with custom titles and durations.</p>
+                            <button
+                                className={styles.functionButton}
+                                onClick={handleRoleSelection}
+                                disabled={selectedRole !== ''}
+                            >
+                                Open Attendance Manager
+                                <FontAwesomeIcon icon={faArrowRight} className={styles.arrowIcon} />
+                            </button>
                         </div>
                     </div>
 

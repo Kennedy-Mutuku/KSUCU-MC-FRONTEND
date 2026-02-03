@@ -100,7 +100,7 @@ const isDevelopment = import.meta.env.MODE === 'development' ||
   window.location.hostname.endsWith('.local');
 
 const developmentConfig: ApiConfig = {
-  baseUrl: 'http://localhost:3000',  // Point directly to local backend to avoid proxy issues
+  baseUrl: '',  // Use relative paths to leverage Vite proxy and avoid CORS issues
   endpoints: {
     news: '/news/news',
     newsUpdate: '/news/news',

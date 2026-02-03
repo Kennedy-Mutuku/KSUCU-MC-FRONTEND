@@ -25,6 +25,7 @@ interface User {
 
 interface Session {
     _id: string;
+    title: string;
     ministry: string;
     isActive: boolean;
     startTime: string;
@@ -33,7 +34,8 @@ interface Session {
 }
 
 const AttendanceSignin: React.FC = () => {
-    const [attendanceSession, setAttendanceSession] = useState<Session | null>(null);
+    const [attendanceSessions, setAttendanceSessions] = useState<Session[]>([]);
+    const [selectedSession, setSelectedSession] = useState<Session | null>(null);
     const [loading, setLoading] = useState(true);
     const [signing, setSigning] = useState(false);
     const [message, setMessage] = useState('');
@@ -60,12 +62,14 @@ const AttendanceSignin: React.FC = () => {
                 });
                 if (response.ok) {
                     const data = await response.json();
-                    setAttendanceSession(data.session);
-                    if (data.session) {
-                        setAttendanceFormData(prev => ({
-                            ...prev,
-                            ministry: data.session.ministry || ''
-                        }));
+                    setAttendanceSessions(data.sessions || []);
+
+                    // If we have a selected session, keep it updated
+                    if (selectedSession) {
+                        const updated = (data.sessions || []).find((s: Session) => s._id === selectedSession._id);
+                        if (updated) {
+                            setSelectedSession(updated);
+                        }
                     }
                 }
             } catch (err) {
@@ -155,10 +159,10 @@ const AttendanceSignin: React.FC = () => {
 
         try {
             const payload = {
-                sessionId: attendanceSession?._id,
-                registrationNumber: regNo,
+                sessionId: selectedSession?._id,
+                regNo: regNo,
                 phoneNumber: attendanceFormData.phoneNumber,
-                ministry: attendanceFormData.ministry,
+                ministry: selectedSession?.ministry || attendanceFormData.ministry,
                 signature: attendanceFormData.signature,
                 userId: selectedUser?._id,
                 name: selectedUser?.username || regNo
@@ -213,27 +217,49 @@ const AttendanceSignin: React.FC = () => {
                         </div>
                         <h1 className={styles.centerTitle}>Attendance Center</h1>
                         <p className={styles.centerSubtitle}>
-                            Record your participation in our spiritual gatherings quickly and easily.
+                            Select a session below to record your participation.
                         </p>
 
-                        <AttendanceSessionStatus session={attendanceSession} />
-
-                        {attendanceSession?.isActive && (
-                            <button
-                                className={styles.primaryCta}
-                                onClick={() => setShowForm(true)}
-                            >
-                                Sign Attendance Now <FontAwesomeIcon icon={faArrowRight} />
-                            </button>
-                        )}
+                        <div className={styles.sessionList}>
+                            {attendanceSessions.length === 0 ? (
+                                <AttendanceSessionStatus session={null} />
+                            ) : (
+                                attendanceSessions.map(session => (
+                                    <div
+                                        key={session._id}
+                                        className={styles.statusCard}
+                                        onClick={() => {
+                                            setSelectedSession(session);
+                                            setAttendanceFormData(prev => ({ ...prev, ministry: session.ministry || '' }));
+                                            setShowForm(true);
+                                        }}
+                                        style={{ cursor: 'pointer', transition: 'all 0.2s ease', border: '1.5px solid #e1f5eb' }}
+                                    >
+                                        <div className={styles.statusIconWrapper}>
+                                            <FontAwesomeIcon icon={faCheckCircle} />
+                                        </div>
+                                        <div className={styles.statusInfo} style={{ flex: 1 }}>
+                                            <h3>{session.title}</h3>
+                                            <p className={styles.statusDetails}>
+                                                {session.leadershipRole || 'General'} • Click to Sign
+                                            </p>
+                                        </div>
+                                        <FontAwesomeIcon icon={faArrowRight} style={{ color: '#8b005e', opacity: 0.5 }} />
+                                    </div>
+                                ))
+                            )}
+                        </div>
                     </div>
                 ) : (
                     <div className={styles.formView}>
                         <div className={styles.formHeader}>
-                            <button className={styles.backBtn} onClick={() => setShowForm(false)}>
+                            <button className={styles.backBtn} onClick={() => { setShowForm(false); setSelectedSession(null); }}>
                                 <FontAwesomeIcon icon={faArrowLeft} /> Back
                             </button>
-                            <h3 style={{ margin: 0, fontSize: '1.1rem', color: '#0f172a' }}>Sign In</h3>
+                            <div>
+                                <h3 style={{ margin: 0, fontSize: '1.1rem', color: '#0f172a' }}>Sign In</h3>
+                                <p style={{ fontSize: '0.75rem', color: '#8b005e', fontWeight: 700 }}>{selectedSession?.title}</p>
+                            </div>
                         </div>
 
                         {message && (

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import UniversalHeader from "../components/UniversalHeader";
 import Footer from "../components/footer";
@@ -42,6 +43,7 @@ interface RequisitionForm {
 }
 
 const RequisitionsAdmin: React.FC = () => {
+  const navigate = useNavigate();
   const [requisitions, setRequisitions] = useState<RequisitionForm[]>([]);
   const [filteredRequisitions, setFilteredRequisitions] = useState<
     RequisitionForm[]
@@ -348,7 +350,7 @@ const RequisitionsAdmin: React.FC = () => {
               Please access this page through the Password Overseer dashboard.
             </p>
             <button
-              onClick={() => (window.location.href = "/worship-docket-admin")}
+              onClick={() => navigate("/worship-docket-admin")}
               style={{
                 padding: "10px 20px",
                 background: "#730051",
@@ -823,37 +825,37 @@ const RequisitionsAdmin: React.FC = () => {
 
                   {(editingRequisition.status === "approved" ||
                     editingRequisition.status === "rejected") && (
-                    <div className={styles.statusInfo}>
-                      <p>
-                        <strong>Status:</strong>{" "}
-                        {editingRequisition.status.toUpperCase()}
-                      </p>
-                      {editingRequisition.releasedBy && (
+                      <div className={styles.statusInfo}>
                         <p>
-                          <strong>Processed by:</strong>{" "}
-                          {editingRequisition.releasedBy}
+                          <strong>Status:</strong>{" "}
+                          {editingRequisition.status.toUpperCase()}
                         </p>
-                      )}
-                      {editingRequisition.releasedAt && (
-                        <p>
-                          <strong>Date:</strong>{" "}
-                          {new Date(
-                            editingRequisition.releasedAt,
-                          ).toLocaleString()}
-                        </p>
-                      )}
-                      <div className={styles.actionButtons}>
-                        <button
-                          onClick={() =>
-                            handleStatusUpdate(editingRequisition, "pending")
-                          }
-                          className={styles.pendingButton}
-                        >
-                          ↻ Reset to Pending
-                        </button>
+                        {editingRequisition.releasedBy && (
+                          <p>
+                            <strong>Processed by:</strong>{" "}
+                            {editingRequisition.releasedBy}
+                          </p>
+                        )}
+                        {editingRequisition.releasedAt && (
+                          <p>
+                            <strong>Date:</strong>{" "}
+                            {new Date(
+                              editingRequisition.releasedAt,
+                            ).toLocaleString()}
+                          </p>
+                        )}
+                        <div className={styles.actionButtons}>
+                          <button
+                            onClick={() =>
+                              handleStatusUpdate(editingRequisition, "pending")
+                            }
+                            className={styles.pendingButton}
+                          >
+                            ↻ Reset to Pending
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
 
                   <div className={styles.formGroup}>
                     <label>Comments (Optional)</label>

@@ -1,6 +1,6 @@
 import { lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
-import App from "../App";
+import App from "../App.tsx";
 
 // Lazy-loaded components
 const LandingPage = lazy(() => import("./LandingPageNew"));
@@ -69,6 +69,11 @@ const ClassFellowship = lazy(() => import("./classFellowship"));
 const ChatAdmin = lazy(() => import("./ChatAdmin"));
 const Kairos = lazy(() => import("./Kairos"));
 const Focus = lazy(() => import("./Focus"));
+const Leadership = lazy(() => import("../components/Leadership"));
+const OtherCommittees = lazy(() => import("../components/OtherCommittees"));
+const CommitteeAdmin = lazy(() => import("../components/admin"));
+const DirectSignPage = lazy(() => import("./DirectSignPage"));
+
 
 export const router = createBrowserRouter([
     {
@@ -136,6 +141,9 @@ export const router = createBrowserRouter([
             { path: "/christianminds", element: <ChristianMinds /> },
             { path: "/kairos", element: <Kairos /> },
             { path: "/focus", element: <Focus /> },
+            { path: "/leadership", element: <Leadership /> },
+            { path: "/other-committees", element: <OtherCommittees /> },
+            { path: "/committee-admin", element: <CommitteeAdmin /> },
 
             /* Fellowships and Classes */
             { path: "/brothersfellowship", element: <BrothersFellowship /> },
@@ -144,6 +152,7 @@ export const router = createBrowserRouter([
             { path: "/discipleship", element: <DiscipleshipClass /> },
             { path: "/classFellowship", element: <ClassFellowship /> },
             { path: "/chat-admin", element: <ChatAdmin /> },
+            { path: "/sign-attendance/:shortId", element: <DirectSignPage /> },
             { path: "*", element: <NoPage /> }
         ]
     }
