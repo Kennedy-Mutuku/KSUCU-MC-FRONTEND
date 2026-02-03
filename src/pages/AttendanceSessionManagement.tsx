@@ -14,7 +14,10 @@ import {
     faDownload,
     faArrowLeft,
     faLink,
-    faClock
+    faClock,
+    faTrash,
+    faHistory,
+    faRotateRight
 } from '@fortawesome/free-solid-svg-icons';
 import { io } from 'socket.io-client';
 
@@ -57,6 +60,8 @@ const AttendanceSessionManagement: React.FC = () => {
         durationMinutes: 60,
         ministry: 'General'
     });
+    const [allSessions, setAllSessions] = useState<AttendanceSession[]>([]);
+    const [showArchive, setShowArchive] = useState(false);
 
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
@@ -109,7 +114,8 @@ const AttendanceSessionManagement: React.FC = () => {
             if (response.ok) {
                 const data = await response.json();
                 const sessions = data.sessions || [];
-                setActiveSessions(sessions);
+                setAllSessions(sessions);
+                setActiveSessions(sessions.filter((s: AttendanceSession) => s.isActive));
 
                 if (selectedSession) {
                     const updated = sessions.find((s: AttendanceSession) => s._id === selectedSession._id);
@@ -199,6 +205,54 @@ const AttendanceSessionManagement: React.FC = () => {
             }
         } catch (error) {
             setMessage('Error closing session');
+        } finally {
+            setLoading(false);
+            setTimeout(() => setMessage(''), 5000);
+        }
+    };
+
+    const deleteSession = async (sessionId: string) => {
+        if (!confirm('WARNING: This will permanently delete the session and ALL its records. Continue?')) return;
+        setLoading(true);
+        try {
+            const response = await fetch(getApiUrl('attendanceSessionDelete'), {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ sessionId })
+            });
+            if (response.ok) {
+                setMessage('Session and records deleted!');
+                loadSessionData();
+                if (selectedSession?._id === sessionId) {
+                    setSelectedSession(null);
+                    setAttendanceRecords([]);
+                }
+            }
+        } catch (error) {
+            setMessage('Error deleting session');
+        } finally {
+            setLoading(false);
+            setTimeout(() => setMessage(''), 5000);
+        }
+    };
+
+    const reopenSession = async (sessionId: string) => {
+        if (!confirm('Re-open this session for signing?')) return;
+        setLoading(true);
+        try {
+            const response = await fetch(getApiUrl('attendanceSessionReopen'), {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ sessionId })
+            });
+            if (response.ok) {
+                setMessage('Session re-opened!');
+                loadSessionData();
+            }
+        } catch (error) {
+            setMessage('Error re-opening session');
         } finally {
             setLoading(false);
             setTimeout(() => setMessage(''), 5000);
@@ -316,7 +370,16 @@ const AttendanceSessionManagement: React.FC = () => {
                     <div className={styles.sessionsOverview}>
                         <div className={styles.sectionHeader}>
                             <h2>Active Sessions</h2>
-                            <span className={styles.badge}>{activeSessions.length}</span>
+                            <div className={styles.headerActions}>
+                                <span className={styles.badge}>{activeSessions.length}</span>
+                                <button
+                                    className={`${styles.archiveToggle} ${showArchive ? styles.activeToggle : ''}`}
+                                    onClick={() => setShowArchive(!showArchive)}
+                                    title="Session Archive"
+                                >
+                                    <FontAwesomeIcon icon={faHistory} /> {showArchive ? 'Hide Archive' : 'Show Archive'}
+                                </button>
+                            </div>
                         </div>
                         {activeSessions.length === 0 ? (
                             <div className={styles.emptyText}>
@@ -336,18 +399,72 @@ const AttendanceSessionManagement: React.FC = () => {
                                     >
                                         <div className={styles.pillInfo}>
                                             <h4>{session.title}</h4>
-                                            <p>{session.attendanceCount} members signed in</p>
+                                            <div className={styles.pillMeta}>
+                                                <span>{session.attendanceCount} signed in</span>
+                                                <span className={styles.timeTag}>
+                                                    <FontAwesomeIcon icon={faClock} /> {formatDateTime(session.startTime).split(',')[1]}
+                                                </span>
+                                            </div>
                                         </div>
                                         <div className={styles.pillActions}>
                                             <button onClick={(e) => { e.stopPropagation(); copyLink(session.shortId); }} title="Copy Link"><FontAwesomeIcon icon={faLink} /></button>
                                             <button onClick={(e) => { e.stopPropagation(); extendSession(session._id); }} title="Extend Time"><FontAwesomeIcon icon={faClock} /></button>
                                             <button onClick={(e) => { e.stopPropagation(); closeSession(session._id); }} className={styles.stopIcon} title="Close Session"><FontAwesomeIcon icon={faStop} /></button>
+                                            <button onClick={(e) => { e.stopPropagation(); deleteSession(session._id); }} className={styles.deleteIcon} title="Delete Full Session"><FontAwesomeIcon icon={faTrash} /></button>
                                         </div>
                                     </div>
                                 ))}
                             </div>
                         )}
                     </div>
+
+                    {showArchive && (
+                        <div className={styles.archiveSection}>
+                            <div className={styles.sectionHeader}>
+                                <h2>Previous Attendances</h2>
+                                <span className={styles.badge}>{allSessions.filter(s => !s.isActive).length}</span>
+                            </div>
+                            <div className={styles.archiveList}>
+                                {allSessions.filter(s => !s.isActive).length === 0 ? (
+                                    <p className={styles.emptyText}>No historical records found.</p>
+                                ) : (
+                                    allSessions.filter(s => !s.isActive).map(session => (
+                                        <div
+                                            key={session._id}
+                                            className={`${styles.archivePill} ${selectedSession?._id === session._id ? styles.selectedPill : ''}`}
+                                            onClick={() => {
+                                                setSelectedSession(session);
+                                                fetchRecords(session._id);
+                                            }}
+                                        >
+                                            <div className={styles.pillInfo}>
+                                                <h4>{session.title}</h4>
+                                                <div className={styles.pillMeta}>
+                                                    <span>{formatDateTime(session.startTime).split(',')[0]}</span>
+                                                    <span>{session.attendanceCount} members</span>
+                                                </div>
+                                            </div>
+                                            <div className={styles.pillActions}>
+                                                <button onClick={(e) => { e.stopPropagation(); reopenSession(session._id); }} title="Re-open Session"><FontAwesomeIcon icon={faRotateRight} /></button>
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setSelectedSession(session);
+                                                        handleDownloadPDF();
+                                                    }}
+                                                    className={styles.downloadIcon}
+                                                    title="Quick PDF Export"
+                                                >
+                                                    <FontAwesomeIcon icon={faDownload} />
+                                                </button>
+                                                <button onClick={(e) => { e.stopPropagation(); deleteSession(session._id); }} className={styles.deleteIcon} title="Delete Record"><FontAwesomeIcon icon={faTrash} /></button>
+                                            </div>
+                                        </div>
+                                    ))
+                                )}
+                            </div>
+                        </div>
+                    )}
 
                     {selectedSession && (
                         <div className={styles.recordsSection}>
@@ -365,7 +482,9 @@ const AttendanceSessionManagement: React.FC = () => {
                                     <thead>
                                         <tr>
                                             <th>Name</th>
+                                            <th>Type</th>
                                             <th>Reg No</th>
+                                            <th>Course</th>
                                             <th>Time</th>
                                         </tr>
                                     </thead>
@@ -373,13 +492,15 @@ const AttendanceSessionManagement: React.FC = () => {
                                         {attendanceRecords.map(record => (
                                             <tr key={record._id}>
                                                 <td><strong>{record.userName}</strong></td>
+                                                <td><span className={styles.typeBadge}>{record.userType || 'student'}</span></td>
                                                 <td><span className={styles.regBadge}>{record.regNo}</span></td>
-                                                <td className={styles.timeCell}>{formatDateTime(record.signedAt).split(',')[1]}</td>
+                                                <td><span className={styles.courseTag}>{record.course || 'N/A'}</span></td>
+                                                <td className={styles.timeCell}>{record.signedAt ? formatDateTime(record.signedAt).split(',')[1] : 'N/A'}</td>
                                             </tr>
                                         ))}
                                         {attendanceRecords.length === 0 && (
                                             <tr>
-                                                <td colSpan={3} className={styles.noRecords}>No one has signed in yet.</td>
+                                                <td colSpan={5} className={styles.noRecords}>No one has signed in yet.</td>
                                             </tr>
                                         )}
                                     </tbody>
