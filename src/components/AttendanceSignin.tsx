@@ -224,27 +224,22 @@ const AttendanceSignin: React.FC = () => {
                             {attendanceSessions.length === 0 ? (
                                 <AttendanceSessionStatus session={null} />
                             ) : (
-                                attendanceSessions.map(session => (
+                                attendanceSessions.map((session, idx) => (
                                     <div
                                         key={session._id}
-                                        className={styles.statusCard}
+                                        className={styles.compactStatusRow}
                                         onClick={() => {
                                             setSelectedSession(session);
                                             setAttendanceFormData(prev => ({ ...prev, ministry: session.ministry || '' }));
                                             setShowForm(true);
                                         }}
-                                        style={{ cursor: 'pointer', transition: 'all 0.2s ease', border: '1.5px solid #e1f5eb' }}
                                     >
-                                        <div className={styles.statusIconWrapper}>
-                                            <FontAwesomeIcon icon={faCheckCircle} />
+                                        <div className={styles.compactNumber}>{idx + 1}</div>
+                                        <div className={styles.compactInfo}>
+                                            <h3 className={styles.compactTitle}>{session.title}</h3>
+                                            <p className={styles.compactSubtitle}>{session.leadershipRole || 'General'}</p>
                                         </div>
-                                        <div className={styles.statusInfo} style={{ flex: 1 }}>
-                                            <h3>{session.title}</h3>
-                                            <p className={styles.statusDetails}>
-                                                {session.leadershipRole || 'General'} • Click to Sign
-                                            </p>
-                                        </div>
-                                        <FontAwesomeIcon icon={faArrowRight} style={{ color: '#8b005e', opacity: 0.5 }} />
+                                        <button className={styles.compactSignBtn}>Sign</button>
                                     </div>
                                 ))
                             )}

@@ -206,26 +206,23 @@ const AttendanceSection = () => {
                 <p className="text-sm text-gray-400 mt-1">Wait for a leader to start a session.</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-3">
                 {activeSessions.map((s, idx) => (
-                  <div key={s._id} className="flex flex-col p-6 bg-gray-50 rounded-[2rem] hover:shadow-lg hover:shadow-purple-900/5 transition-all border border-transparent hover:border-[#730051]/10 group">
-                    <div className="flex items-start justify-between mb-4">
-                      <span className="w-8 h-8 bg-white rounded-xl flex items-center justify-center text-xs font-black text-[#730051] shadow-sm">
+                  <div key={s._id} className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl border border-transparent hover:border-[#730051]/10 hover:bg-white transition-all group">
+                    <div className="flex items-center gap-4">
+                      <span className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-sm font-black text-[#730051] shadow-sm group-hover:bg-[#730051] group-hover:text-white transition-colors">
                         {idx + 1}
                       </span>
-                      <div className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-[10px] font-black uppercase tracking-widest">
-                        Active
+                      <div>
+                        <h4 className="text-lg font-black text-gray-900 group-hover:text-[#730051] transition-colors">{s.title}</h4>
+                        <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">{s.leadershipRole}</p>
                       </div>
-                    </div>
-                    <div className="mb-6">
-                      <h4 className="text-xl font-black text-gray-900 group-hover:text-[#730051] transition-colors mb-1">{s.title}</h4>
-                      <p className="text-xs text-gray-500 font-bold uppercase tracking-wider">{s.leadershipRole}</p>
                     </div>
                     <button
                       onClick={() => { setSelectedSession(s); setShowForm(true); setCurrentStep('search'); }}
-                      className="w-full py-4 bg-white border-2 border-gray-100 text-[#730051] text-sm font-black rounded-2xl shadow-sm hover:bg-[#730051] hover:text-white hover:border-[#730051] transition-all transform active:scale-[0.98]"
+                      className="px-6 py-2 bg-white border border-gray-100 text-[#730051] text-xs font-black rounded-xl shadow-sm hover:bg-[#730051] hover:text-white transition-all transform active:scale-95"
                     >
-                      Sign Attendance
+                      Sign
                     </button>
                   </div>
                 ))}
