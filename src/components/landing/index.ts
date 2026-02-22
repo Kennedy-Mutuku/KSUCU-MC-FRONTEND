@@ -7,3 +7,4 @@ export { default as AttendanceSection } from './AttendanceSection';
 export { default as QuickLinksButton } from './QuickLinksButton';
 export { default as Footer } from './Footer';
 export { default as Header } from './Header';
+export { default as NavItemRenderer } from './NavItemRenderer';

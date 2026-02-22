@@ -6,46 +6,9 @@ import {
   ForumsSection,
   AboutSection,
   AttendanceSection,
-  QuickLinksButton,
   Footer,
 } from '../components/landing';
-
-const boardsItems = [
-  { label: 'ICT Board', href: '/boards' },
-  { label: 'Editorial Board', href: '/boards' },
-  { label: 'Media Production', href: '/boards' },
-  { label: 'Communication Board', href: '/boards' },
-];
-
-const evangelisticTeamsItems = [
-  { label: 'CET - Campus Evangelistic Team', href: '/ets/cet' },
-  { label: 'NET - National Evangelistic Team', href: '/ets/net' },
-  { label: 'ESET - Estate Evangelistic Team', href: '/ets/eset' },
-  { label: 'RIVET - Rural & Interior Village ET', href: '/ets/rivet' },
-  { label: 'WESO - World Evangelism Support Org', href: '/ets/weso' },
-];
-
-const ministriesItems = [
-  { label: 'Ushering and Hospitality', href: '/ministries/ushering' },
-  { label: 'Creativity', href: '/ministries/creativity' },
-  { label: 'Compassion and Counseling', href: '/ministries/compassion' },
-  { label: 'Intercessory', href: '/ministries/intercessory' },
-  { label: 'High School', href: '/ministries/highSchool' },
-  { label: 'Wananzambe (Instrumentalists)', href: '/ministries/wananzambe' },
-  { label: 'Church School', href: '/ministries/churchSchool' },
-  { label: 'Praise and Worship', href: '/ministries/praiseAndWorship' },
-  { label: 'Choir', href: '/ministries/choir' },
-];
-
-const fellowshipsItems = [
-  { label: 'Best-P Classes', href: '/bestpClass' },
-  { label: 'Class Fellowships', href: '/classFellowship' },
-  { label: 'Sisters Fellowship', href: '/sistersfellowship' },
-  { label: 'Brothers Fellowship', href: '/brothersfellowship' },
-  { label: 'Discipleship Classes', href: '/discipleship' },
-];
-
-
+import { organizationSections } from '../data/navigationData';
 
 const LandingPageNew = () => {
 
@@ -75,11 +38,14 @@ const LandingPageNew = () => {
             </h2>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-2 md:gap-6">
-            <CategorySection title="KSUCU-MC Boards" items={boardsItems} />
-            <CategorySection title="Evangelistic Teams" items={evangelisticTeamsItems} />
-            <CategorySection title="KSUCU-MC Ministries" items={ministriesItems} />
-            <CategorySection title="Classes and Fellowships" items={fellowshipsItems} />
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-6">
+            {organizationSections.map((section) => (
+              <CategorySection
+                key={section.title}
+                title={section.title}
+                items={section.items}
+              />
+            ))}
           </div>
         </div>
       </section>
@@ -89,7 +55,6 @@ const LandingPageNew = () => {
       <ForumsSection />
       <AboutSection />
       <Footer />
-      <QuickLinksButton />
     </div>
   );
 };
