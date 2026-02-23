@@ -369,22 +369,22 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, isManualExpan
                   }} />
                 )}
 
-                <span style={{
-                  fontSize: isExpanded ? '10.5px' : '6px',
-                  lineHeight: 1,
-                  fontWeight: isActive ? 750 : 600,
-                  letterSpacing: '0.05px',
-                  whiteSpace: 'nowrap',
-                  transition: 'all 0.3s ease',
-                }}>
-                  {isUser ? 'Profile' : tab.label}
-                </span>
+                {isExpanded && (
+                  <span style={{
+                    fontSize: '10.5px',
+                    lineHeight: 1,
+                    fontWeight: isActive ? 750 : 600,
+                    letterSpacing: '0.05px',
+                    whiteSpace: 'nowrap',
+                    transition: 'all 0.3s ease',
+                  }}>
+                    {isUser ? 'Profile' : tab.label}
+                  </span>
+                )}
 
-                {hasSections && (
-                  <div style={{ marginLeft: 'auto', marginRight: isExpanded ? '6px' : '0', display: 'flex', alignItems: 'center' }}>
-                    {!isExpanded && !isActive && <ChevronDown size={6} style={{ position: 'absolute', bottom: '3px', right: '4px', opacity: 0.6 }} />}
-                    {!isExpanded && isActive && <ChevronRight size={6} style={{ position: 'absolute', bottom: '3px', right: '3px', color: '#730051', opacity: 0.7 }} />}
-                    {isExpanded && <ChevronDown size={12} style={{ opacity: isActive ? 0.8 : 0.4, transform: isActive ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 0.3s' }} />}
+                {hasSections && isExpanded && (
+                  <div style={{ marginLeft: 'auto', marginRight: '6px', display: 'flex', alignItems: 'center' }}>
+                    <ChevronDown size={12} style={{ opacity: isActive ? 0.8 : 0.4, transform: isActive ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 0.3s' }} />
                   </div>
                 )}
               </button>
