@@ -283,7 +283,7 @@ const getTabSections = (key: string, activeSessions: Session[]): TabSection[] =>
 
 // A single expandable section row inside the flyout panel
 const SectionAccordion = ({ section, onClose }: { section: TabSection; onClose: () => void }) => {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const [expandedChild, setExpandedChild] = useState<string | null>(null);
   const SectionIcon = section.icon;
 
