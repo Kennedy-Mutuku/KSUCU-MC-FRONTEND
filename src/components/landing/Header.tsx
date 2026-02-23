@@ -4,7 +4,7 @@ import {
   User, ChevronDown, ChevronRight, ExternalLink, Menu, X,
   Home, Briefcase, Building2, Info,
   Users, Globe, Music, UsersRound, GraduationCap, Crown, LogIn,
-  AlertCircle, ClipboardList, BookOpen
+  AlertCircle, ClipboardList
 } from 'lucide-react';
 import { getApiUrl } from '../../config/environment';
 import { headerNavGroups, organizationSections, type NavItem, type NavSection } from '../../data/navigationData';
@@ -530,14 +530,6 @@ const Header = () => {
               </button>
             </div>
           ))}
-          <div className="mt-2 pt-2 border-t border-gray-50 px-2 pb-1">
-            <button
-              onClick={() => { navigate('/'); closeDropdown(); setTimeout(() => document.getElementById('attendance-center')?.scrollIntoView({ behavior: 'smooth' }), 100); }}
-              className="w-full py-2 text-[10px] font-black text-[#730051] uppercase tracking-widest hover:bg-purple-50 rounded-md transition-colors"
-            >
-              View Attendance Center
-            </button>
-          </div>
         </div>
       )}
     </div>
@@ -559,19 +551,35 @@ const Header = () => {
               {mobileActiveTab === 'services' ? <X size={22} /> : <Menu size={22} />}
             </button>
 
-            <div className="md:hidden flex-1 text-center">
-              <Link to="/" className="font-bold text-base text-gray-800">KSUCU-MC</Link>
-            </div>
-
-            <Link to="/" className="md:hidden flex-shrink-0">
-              <img src={cuLogo} alt="KSUCU Logo" className="w-10 h-10 object-contain" />
+            <Link to="/" className="md:hidden flex-1 flex items-center justify-center gap-2">
+              <img src={cuLogo} alt="KSUCU Logo" className="w-9 h-9 object-contain" />
+              <div className="flex flex-col items-center">
+                <span className="font-bold text-gray-900 leading-none text-[11px] tracking-tight" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                  KISII UNIVERSITY CHRISTIAN UNION
+                </span>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  <div className="h-[1px] w-3 bg-[#730051]/30"></div>
+                  <span className="text-[#730051] text-[10px] whitespace-nowrap" style={{ fontFamily: 'Satisfy, cursive' }}>
+                    Transforming Campus, Impacting nations
+                  </span>
+                  <div className="h-[1px] w-3 bg-[#730051]/30"></div>
+                </div>
+              </div>
             </Link>
 
-            <Link to="/" className="hidden md:flex items-center gap-2 flex-shrink-0">
-              <img src={cuLogo} alt="KSUCU Logo" className="w-12 h-12 object-contain" />
-              <div className="font-bold text-gray-800 text-sm lg:text-lg whitespace-nowrap">
-                <span className="hidden lg:inline">Kisii University CU</span>
-                <span className="lg:hidden">KSUCU</span>
+            <Link to="/" className="hidden md:flex items-center gap-3 flex-shrink-0">
+              <img src={cuLogo} alt="KSUCU Logo" className="w-12 h-12 lg:w-14 lg:h-14 object-contain" />
+              <div className="flex flex-col">
+                <div className="font-extrabold text-gray-900 leading-none text-xs lg:text-base tracking-tight uppercase" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                  KISII UNIVERSITY CHRISTIAN UNION
+                </div>
+                <div className="flex items-center gap-2 mt-1 lg:mt-1.5 w-full">
+                  <div className="h-[1px] flex-1 bg-[#730051]/30"></div>
+                  <span className="text-[#730051] text-[10px] lg:text-sm whitespace-nowrap px-1" style={{ fontFamily: 'Satisfy, cursive' }}>
+                    Transforming Campus, Impacting nations
+                  </span>
+                  <div className="h-[1px] flex-1 bg-[#730051]/30"></div>
+                </div>
               </div>
             </Link>
 
