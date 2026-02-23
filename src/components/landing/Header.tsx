@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, Fragment } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import {
   User, ChevronDown, ChevronRight, ExternalLink, Menu,
-  Home, Briefcase, Building2, Info, Globe, Music,
+  Home, Building2, Info, Globe, Music,
   UsersRound, GraduationCap, Crown, LogIn,
   ClipboardList, BookOpen, Tv2, FileText, AlertCircle,
   MessageSquare, Coins, Heart, Folder, Book, UserPlus
@@ -308,12 +308,12 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, isManualExpan
       {/* Icon strip / Sidebar */}
       <div style={{
         position: 'fixed', top: '64px', left: 0, bottom: 0,
-        width: isExpanded ? '170px' : '52px',
+        width: isExpanded ? '160px' : '48px',
         backgroundColor: '#730051',
         display: 'flex', flexDirection: 'column', alignItems: isExpanded ? 'flex-start' : 'center',
-        paddingTop: '6px', paddingBottom: '8px',
-        paddingLeft: isExpanded ? '8px' : '0',
-        overflowY: 'auto', gap: '4px', zIndex: 99999,
+        paddingTop: '4px', paddingBottom: '6px',
+        paddingLeft: isExpanded ? '6px' : '0',
+        overflowY: 'auto', gap: '2px', zIndex: 99999,
         transition: 'width 0.3s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s ease',
         boxShadow: isExpanded ? '4px 0 20px rgba(0,0,0,0.3)' : 'none',
       }}>
@@ -333,25 +333,25 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, isManualExpan
                 onClick={() => handleTabClick(tab.key)}
                 title={tab.label}
                 style={{
-                  width: isExpanded ? '154px' : '46px',
-                  minHeight: '46px',
+                  width: isExpanded ? '148px' : '42px',
+                  minHeight: '38px',
                   display: 'flex',
                   flexDirection: isExpanded ? 'row' : 'column',
                   alignItems: 'center',
                   justifyContent: isExpanded ? 'flex-start' : 'center',
-                  paddingLeft: isExpanded ? '12px' : '0',
-                  borderRadius: '10px', border: 'none', cursor: 'pointer',
+                  paddingLeft: isExpanded ? '10px' : '0',
+                  borderRadius: '8px', border: 'none', cursor: 'pointer',
                   backgroundColor: isActive ? 'rgba(255,255,255,0.95)' : 'transparent',
                   color: isActive ? '#730051' : 'rgba(255,255,255,0.85)',
-                  gap: isExpanded ? '12px' : '2px',
+                  gap: isExpanded ? '10px' : '1px',
                   flexShrink: 0, position: 'relative',
                   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                  boxShadow: isActive ? '0 2px 12px rgba(0,0,0,0.15)' : 'none',
+                  boxShadow: isActive ? '0 2px 10px rgba(0,0,0,0.1)' : 'none',
                   transform: isActive ? 'scale(1.02)' : 'scale(1)',
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '20px' }}>
-                  {isUser ? <User size={18} /> : <Icon size={18} />}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '18px' }}>
+                  {isUser ? <User size={15} /> : <Icon size={15} />}
                 </div>
 
                 {isAttendance && hasActiveSessions && (
@@ -368,10 +368,10 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, isManualExpan
                 )}
 
                 <span style={{
-                  fontSize: isExpanded ? '13px' : '7.5px',
+                  fontSize: isExpanded ? '11.5px' : '6.5px',
                   lineHeight: 1,
                   fontWeight: isActive ? 700 : 500,
-                  letterSpacing: '0.2px',
+                  letterSpacing: '0.1px',
                   whiteSpace: 'nowrap',
                   transition: 'all 0.3s ease',
                 }}>
@@ -379,10 +379,10 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, isManualExpan
                 </span>
 
                 {hasSections && (
-                  <div style={{ marginLeft: 'auto', marginRight: isExpanded ? '8px' : '0', display: 'flex', alignItems: 'center' }}>
-                    {!isExpanded && !isActive && <ChevronDown size={7} style={{ position: 'absolute', bottom: '4px', right: '5px', opacity: 0.6 }} />}
-                    {!isExpanded && isActive && <ChevronRight size={7} style={{ position: 'absolute', bottom: '4px', right: '4px', color: '#730051', opacity: 0.7 }} />}
-                    {isExpanded && <ChevronDown size={14} style={{ opacity: isActive ? 0.8 : 0.4, transform: isActive ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 0.3s' }} />}
+                  <div style={{ marginLeft: 'auto', marginRight: isExpanded ? '6px' : '0', display: 'flex', alignItems: 'center' }}>
+                    {!isExpanded && !isActive && <ChevronDown size={6} style={{ position: 'absolute', bottom: '3px', right: '4px', opacity: 0.6 }} />}
+                    {!isExpanded && isActive && <ChevronRight size={6} style={{ position: 'absolute', bottom: '3px', right: '3px', color: '#730051', opacity: 0.7 }} />}
+                    {isExpanded && <ChevronDown size={12} style={{ opacity: isActive ? 0.8 : 0.4, transform: isActive ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 0.3s' }} />}
                   </div>
                 )}
               </button>
