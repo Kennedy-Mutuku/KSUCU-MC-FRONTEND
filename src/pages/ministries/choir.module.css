@@ -26,7 +26,7 @@
   background-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), var(--hero-bg);
   background-size: cover; 
   /* Shifted to keep the faces of the instrumentalists fully visible */
-  background-position: center 45%; 
+  background-position: center 35%; 
   background-repeat: no-repeat;
   color: #ffffff;
   text-align: center;
