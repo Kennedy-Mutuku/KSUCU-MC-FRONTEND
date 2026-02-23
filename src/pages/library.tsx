@@ -98,7 +98,7 @@ const Library: React.FC = () => {
           <FaArrowLeft /> Back
         </button>
         <div className={styles.headerTitle}>
-          <span className={styles.title3d}>KSUCU-MC E-LIBRARY ({filteredBooks.length} Books)</span>
+          <span className={styles.title3d}>KSUCU-MC E-LIBRARY</span>
         </div>
       </header>
       <div className={styles.libraryContainer}>
