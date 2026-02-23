@@ -42,18 +42,14 @@ const PraiseAndWorshipPage: React.FC = () => {
 
   return (
     <>
-      <div className={styles.container}>
-        <div className={styles.heroSection}>
-          <div className={styles.heroContent}>
-            <h1 className={styles.title}>Praise and Worship Ministry</h1>
-            <p className={styles.subtitle}>Leading hearts into God's presence through worship</p>
-          </div>
-
-          <div className={styles.heroImage}>
-            <img src={praiseAndWorshipImg} alt="Ushering and Hospitality Ministry" />
-          </div>
+      <div className={styles.heroSection} style={{ '--hero-bg': `url(${praiseAndWorshipImg})` } as React.CSSProperties}>
+        <div className={styles.heroContent}>
+          <h1 className={styles.title}>Praise and Worship Ministry</h1>
+          <p className={styles.subtitle}>Leading hearts into God's presence through worship</p>
         </div>
+      </div>
 
+      <div className={styles.container}>
         <div className={`${styles.contentSection} ${styles.animate}`} ref={contentRef1}>
           <div className={styles.description}>
             <h2>About Praise and Worship</h2>
@@ -144,23 +140,6 @@ const PraiseAndWorshipPage: React.FC = () => {
               We believe that worship is both a privilege and a responsibility. It's our response to who God is and what He has done for us. Our goal is not just to perform music, but to create an environment where every person can encounter the living God and respond with their whole heart.
             </p>
 
-          </div>
-        </div>
-        <div className={`${styles.testimonialsSection} ${styles.animate}`} ref={testimonialsRef}>
-          <h2>Hearts Transformed Through Worship</h2>
-          <div className={styles.testimonials}>
-            <div className={styles.testimonial}>
-              <p>"Being part of this ministry has taught me that worship is a lifestyle, not just a Sunday activity."</p>
-              <span>- Mary, Worship Leader</span>
-            </div>
-            <div className={styles.testimonial}>
-              <p>"Through this team, I've grown not just as a musician, but as a worshipper who seeks God's heart."</p>
-              <span>- Peter, Guitarist</span>
-            </div>
-            <div className={styles.testimonial}>
-              <p>"The unity and love in this ministry reflects God's heart for His people. It's truly a family."</p>
-              <span>- Ruth, Vocalist</span>
-            </div>
           </div>
         </div>
 

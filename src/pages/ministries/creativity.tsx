@@ -39,18 +39,14 @@ const CreativityPage: React.FC = () => {
 
   return (
     <>
-      <div className={styles.container}>
-        <div className={styles.heroSection}>
-          <div className={styles.heroContent}>
-            <h1 className={styles.title}>Creativity Ministry</h1>
-            <p className={styles.subtitle}>Expressing God's creativity through art and media</p>
-          </div>
-          
-          <div className={styles.heroImage}>
-            <img src={creativityImg} alt="Ushering and Hospitality Ministry" />
-          </div>
+      <div className={styles.heroSection} style={{ '--hero-bg': `url(${creativityImg})` } as React.CSSProperties}>
+        <div className={styles.heroContent}>
+          <h1 className={styles.title}>Creativity Ministry</h1>
+          <p className={styles.subtitle}>Expressing God's creativity through art and media</p>
         </div>
+      </div>
 
+      <div className={styles.container}>
         <div className={`${styles.contentSection} ${styles.animate}`} ref={contentRef1}>
           <div className={styles.description}>
             <h2>About Creativity Ministry</h2>
@@ -151,23 +147,6 @@ const CreativityPage: React.FC = () => {
             <p>
               Our creative works extend beyond church walls to impact the broader community through social media, community events, and collaborative projects that demonstrate God's love and creativity to the world..
             </p>
-          </div>
-        </div>
-        <div className={`${styles.testimonialsSection} ${styles.animate}`} ref={testimonialsRef}>
-          <h2>Creative Testimonies</h2>
-          <div className={styles.testimonials}>
-            <div className={styles.testimonial}>
-              <p>"This ministry has given me a platform to use my artistic gifts for God's glory while growing creatively."</p>
-              <span>- Rachel, Graphic Designer</span>
-            </div>
-            <div className={styles.testimonial}>
-              <p>"Through creative ministry, I've learned that art can be a form of worship and evangelism at the same time."</p>
-              <span>- Mark, Video Producer</span>
-            </div>
-            <div className={styles.testimonial}>
-              <p>"Being part of this team has pushed me to excellence while keeping Christ at the center of my creativity."</p>
-              <span>- Lisa, Photographer</span>
-            </div>
           </div>
         </div>
 

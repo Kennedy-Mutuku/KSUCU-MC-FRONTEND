@@ -41,18 +41,14 @@ const ChoirPage: React.FC = () => {
 
   return (
     <>
-      <div className={styles.container}>
-        <div className={styles.heroSection}>
-          <div className={styles.heroContent}>
-            <h1 className={styles.title}>Choir Ministry</h1>
-            <p className={styles.subtitle}>Voices united in harmony to glorify God</p>
-          </div>
-
-          <div className={styles.heroImage}>
-            <img src={choirImg} alt="Ushering and Hospitality Ministry" />
-          </div>
+      <div className={styles.heroSection} style={{ '--hero-bg': `url(${choirImg})` } as React.CSSProperties}>
+        <div className={styles.heroContent}>
+          <h1 className={styles.title}>Choir Ministry</h1>
+          <p className={styles.subtitle}>Voices united in harmony to glorify God</p>
         </div>
+      </div>
 
+      <div className={styles.container}>
         <div className={`${styles.contentSection} ${styles.animate}`} ref={contentRef1}>
           <div className={styles.description}>
             <h2>About Choir</h2>
@@ -147,23 +143,6 @@ const ChoirPage: React.FC = () => {
             <p>
               We provide ongoing vocal training, music theory education, and performance coaching to help every member reach their full potential. Our experienced leaders and guest instructors ensure that each member grows both musically and spiritually.
             </p>
-          </div>
-        </div>
-        <div className={`${styles.testimonialsSection} ${styles.animate}`} ref={testimonialsRef}>
-          <h2>Voices of Joy</h2>
-          <div className={styles.testimonials}>
-            <div className={styles.testimonial}>
-              <p>"The choir has become my second family. We don't just sing together, we grow in faith together."</p>
-              <span>- Grace, Alto Section</span>
-            </div>
-            <div className={styles.testimonial}>
-              <p>"Through the choir, I've discovered gifts I never knew I had and confidence I never thought possible."</p>
-              <span>- Michael, Tenor Section</span>
-            </div>
-            <div className={styles.testimonial}>
-              <p>"Every rehearsal is a mini worship service. We're blessed even before we bless others."</p>
-              <span>- Sarah, Soprano Section</span>
-            </div>
           </div>
         </div>
 

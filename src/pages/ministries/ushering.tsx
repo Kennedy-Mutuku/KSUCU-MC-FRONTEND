@@ -44,18 +44,14 @@ const UsheringPage: React.FC = () => {
 
   return (
     <>
-      <div className={styles.container}>
-        <div className={styles.heroSection}>
-          <div className={styles.heroContent}>
-            <h1 className={styles.title}>Ushering and Hospitality Ministry</h1>
-            <p className={styles.subtitle}>The welcoming heart of our church</p>
-          </div>
-
-          <div className={styles.heroImage}>
-            <img src={usheringImg} alt="Ushering and Hospitality Ministry" />
-          </div>
+      <div className={styles.heroSection} style={{ '--hero-bg': `url(${usheringImg})` } as React.CSSProperties}>
+        <div className={styles.heroContent}>
+          <h1 className={styles.title}>Ushering and Hospitality Ministry</h1>
+          <p className={styles.subtitle}>The welcoming heart of our church</p>
         </div>
+      </div>
 
+      <div className={styles.container}>
         <div className={`${styles.contentSection} ${styles.animate}`} ref={contentRef1}>
           <div className={styles.description}>
             <h2>About Ushering and Hospitality Ministry</h2>
@@ -166,23 +162,6 @@ const UsheringPage: React.FC = () => {
               procedures, and conflict resolution. Regular workshops help our team stay updated on best
               practices and continue growing in their service skills.
             </p>
-          </div>
-        </div>
-        <div className={`${styles.testimonialsSection} ${styles.animate}`}>
-          <h2>Hearts of Service</h2>
-          <div className={styles.testimonials}>
-            <div className={styles.testimonial}>
-              <p>"Being an usher has taught me that the smallest acts of kindness can have the biggest impact on someone's day."</p>
-              <span>- John, Head Usher</span>
-            </div>
-            <div className={styles.testimonial}>
-              <p>"I love seeing first-time visitors feel welcomed and comfortable. It's a privilege to be their first impression of our church."</p>
-              <span>- Susan, Greeting Team</span>
-            </div>
-            <div className={styles.testimonial}>
-              <p>"This ministry has shown me that serving others is not just a duty, but a joy and a way to worship God."</p>
-              <span>- Peter, Offering Team</span>
-            </div>
           </div>
         </div>
 

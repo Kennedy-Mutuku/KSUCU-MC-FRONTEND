@@ -39,17 +39,14 @@ const CompassionPage: React.FC = () => {
 
   return (
     <>
-      <div className={styles.container}>
-        <div className={styles.heroSection}>
-          <div className={styles.heroContent}>
-            <h1 className={styles.title}>Compassion and Counseling Ministry</h1>
-            <p className={styles.subtitle}>Being the hands and feet of Jesus to those in need</p>
-          </div>
-          
-          <div className={styles.heroImage}>
-            <img src={compassionImg} alt="Ushering and Hospitality Ministry" />
-          </div>
+      <div className={styles.heroSection} style={{ '--hero-bg': `url(${compassionImg})` } as React.CSSProperties}>
+        <div className={styles.heroContent}>
+          <h1 className={styles.title}>Compassion and Counseling Ministry</h1>
+          <p className={styles.subtitle}>Being the hands and feet of Jesus to those in need</p>
         </div>
+      </div>
+
+      <div className={styles.container}>
         <div className={styles.actionButtons}>
               <Link to="/compassion-counseling" className={styles.commitmentButton}>
                 Give support to the ministry
@@ -155,23 +152,6 @@ const CompassionPage: React.FC = () => {
             <p>
               Beyond joining our ministry team, there are many ways to support our work: donate non-perishable food items, contribute gently used clothing, provide financial support for emergency assistance, or simply pray for our ministry and those we serve.
             </p>
-          </div>
-        </div>
-        <div className={`${styles.testimonialsSection} ${styles.animate}`} ref={testimonialsRef}>
-          <h2>Lives Touched by Compassion</h2>
-          <div className={styles.testimonials}>
-            <div className={styles.testimonial}>
-              <p>"Through this ministry, I've learned that serving others is not just about giving, but about receiving God's love in return."</p>
-              <span>- Martha, Volunteer Coordinator</span>
-            </div>
-            <div className={styles.testimonial}>
-              <p>"Being part of Compassion and Counseling Ministry has opened my eyes to the needs around us and the joy of making a difference."</p>
-              <span>- James, Food Bank Volunteer</span>
-            </div>
-            <div className={styles.testimonial}>
-              <p>"Every person we help teaches us something about God's heart for the vulnerable and marginalized."</p>
-              <span>- Ruth, Hospital Visitor</span>
-            </div>
           </div>
         </div>
 

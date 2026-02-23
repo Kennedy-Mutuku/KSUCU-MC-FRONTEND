@@ -39,18 +39,14 @@ const WanazambePage: React.FC = () => {
 
   return (
     <>
-      <div className={styles.container}>
-        <div className={styles.heroSection}>
-          <div className={styles.heroContent}>
-            <h1 className={styles.title}>Wananzambe (Instrumentalists)</h1>
-            <p className={styles.subtitle}>Instrumentalists dedicated to worship excellence</p>
-          </div>
-          
-          <div className={styles.heroImage}>
-            <img src={wanazambeImg} alt="Ushering and Hospitality Ministry" />
-          </div>
+      <div className={styles.heroSection} style={{ '--hero-bg': `url(${wanazambeImg})` } as React.CSSProperties}>
+        <div className={styles.heroContent}>
+          <h1 className={styles.title}>Wananzambe (Instrumentalists)</h1>
+          <p className={styles.subtitle}>Instrumentalists dedicated to worship excellence</p>
         </div>
+      </div>
 
+      <div className={styles.container}>
         <div className={`${styles.contentSection} ${styles.animate}`} ref={contentRef1}>
           <div className={styles.description}>
             <h2>About Wananzambe</h2>
@@ -132,23 +128,6 @@ const WanazambePage: React.FC = () => {
              We believe that worship is both a privilege and a responsibility. It's our response to who God is and what He has done for us. Our goal is not just to perform music, but to create an environment where every person can encounter the living God and respond with their whole heart.
             </p>
             
-          </div>
-        </div>
-        <div className={`${styles.testimonialsSection} ${styles.animate}`} ref={testimonialsRef}>
-          <h2>What Our Members Say</h2>
-          <div className={styles.testimonials}>
-            <div className={styles.testimonial}>
-              <p>"I am a vessel of influence for God's kingdom courtesy of wanazambe ministry"</p>
-              <span>- Tonny, Pianist</span>
-            </div>
-            <div className={styles.testimonial}>
-              <p>"The fellowship and growth in this ministry is incredible. We're not just musicians, we're family."</p>
-              <span>- David, Guitarist</span>
-            </div>
-            <div className={styles.testimonial}>
-              <p>"Through Wananzambe, I've learned that worship is not just about music, but about the heart behind it."</p>
-              <span>- Grace, Violinist</span>
-            </div>
           </div>
         </div>
 

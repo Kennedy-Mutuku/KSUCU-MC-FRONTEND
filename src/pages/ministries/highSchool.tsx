@@ -39,18 +39,14 @@ const HighSchoolPage: React.FC = () => {
 
   return (
     <>
-      <div className={styles.container}>
-        <div className={styles.heroSection}>
-          <div className={styles.heroContent}>
-            <h1 className={styles.title}>High School Ministry</h1>
-            <p className={styles.subtitle}>Empowering youth to live boldly for Christ</p>
-          </div>
-          
-          <div className={styles.heroImage}>
-            <img src={highSchoolImg} alt="Ushering and Hospitality Ministry" />
-          </div>
+      <div className={styles.heroSection} style={{ '--hero-bg': `url(${highSchoolImg})` } as React.CSSProperties}>
+        <div className={styles.heroContent}>
+          <h1 className={styles.title}>High School Ministry</h1>
+          <p className={styles.subtitle}>Empowering youth to live boldly for Christ</p>
         </div>
+      </div>
 
+      <div className={styles.container}>
         <div className={`${styles.contentSection} ${styles.animate}`} ref={contentRef1}>
           <div className={styles.description}>
             <h2>About High School Ministry</h2>
@@ -143,23 +139,6 @@ const HighSchoolPage: React.FC = () => {
              We believe that young people are not just the church of tomorrow - they are the church of today. God has a plan and purpose for every teenager, and our role is to help them discover their identity in Christ and equip them to fulfill their calling.
             </p>
             
-          </div>
-        </div>
-        <div className={`${styles.testimonialsSection} ${styles.animate}`} ref={testimonialsRef}>
-          <h2>Student Voices</h2>
-          <div className={styles.testimonials}>
-            <div className={styles.testimonial}>
-              <p>"This ministry has given me the confidence to share my faith at school and be a light for Jesus."</p>
-              <span>- Alex, Grade 11</span>
-            </div>
-            <div className={styles.testimonial}>
-              <p>"I've found my best friends here and learned what it really means to follow Jesus in everyday life."</p>
-              <span>- Mercy, Grade 12</span>
-            </div>
-            <div className={styles.testimonial}>
-              <p>"The leaders here genuinely care about us and help us through the ups and downs of teenage life."</p>
-              <span>- Kevin, Grade 10</span>
-            </div>
           </div>
         </div>
 

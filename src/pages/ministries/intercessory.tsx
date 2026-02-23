@@ -39,18 +39,14 @@ const IntercessoryPage: React.FC = () => {
 
   return (
     <>
-      <div className={styles.container}>
-        <div className={styles.heroSection}>
-          <div className={styles.heroContent}>
-            <h1 className={styles.title}>Intercessory Ministry</h1>
-            <p className={styles.subtitle}>Standing in the gap through prayer</p>
-          </div>
-          
-          <div className={styles.heroImage}>
-            <img src={intercesorryImg} alt="Ushering and Hospitality Ministry" />
-          </div>
+      <div className={styles.heroSection} style={{ '--hero-bg': `url(${intercesorryImg})` } as React.CSSProperties}>
+        <div className={styles.heroContent}>
+          <h1 className={styles.title}>Intercessory Ministry</h1>
+          <p className={styles.subtitle}>Standing in the gap through prayer</p>
         </div>
+      </div>
 
+      <div className={styles.container}>
         <div className={`${styles.contentSection} ${styles.animate}`} ref={contentRef1}>
           <div className={styles.description}>
             <h2>About Intercessory Prayer</h2>
@@ -143,23 +139,6 @@ const IntercessoryPage: React.FC = () => {
              We believe prayer is both a privilege and a responsibility. It's our direct line of communication with our Heavenly Father and the means by which His will is accomplished on earth. Through intercession, we partner with God in His work of transformation and redemption.
             </p>
             
-          </div>
-        </div>
-        <div className={`${styles.testimonialsSection} ${styles.animate}`} ref={testimonialsRef}>
-          <h2>Testimonies of God's Faithfulness</h2>
-          <div className={styles.testimonials}>
-            <div className={styles.testimonial}>
-              <p>"Through intercession, I've learned that prayer is not just asking, but listening for God's heart and will."</p>
-              <span>- Elizabeth, Prayer Warrior</span>
-            </div>
-            <div className={styles.testimonial}>
-              <p>"This ministry has taught me the power of persistent prayer and how God moves when His people unite in prayer."</p>
-              <span>- Samuel, Intercessor</span>
-            </div>
-            <div className={styles.testimonial}>
-              <p>"Being part of this ministry has deepened my relationship with God and shown me His faithfulness in answering prayer."</p>
-              <span>- Mary, Prayer Team Leader</span>
-            </div>
           </div>
         </div>
 

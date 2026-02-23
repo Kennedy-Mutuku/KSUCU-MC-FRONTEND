@@ -39,18 +39,14 @@ const ChurchSchoolPage: React.FC = () => {
 
   return (
     <>
-      <div className={styles.container}>
-        <div className={styles.heroSection}>
-          <div className={styles.heroContent}>
-            <h1 className={styles.title}>Church School Ministry</h1>
-            <p className={styles.subtitle}>Bridging faith and education</p>
-          </div>
-          
-          <div className={styles.heroImage}>
-            <img src={churshSchoolImg} alt="Ushering and Hospitality Ministry" />
-          </div>
+      <div className={styles.heroSection} style={{ '--hero-bg': `url(${churshSchoolImg})` } as React.CSSProperties}>
+        <div className={styles.heroContent}>
+          <h1 className={styles.title}>Church School Ministry</h1>
+          <p className={styles.subtitle}>Bridging faith and education</p>
         </div>
+      </div>
 
+      <div className={styles.container}>
         <div className={`${styles.contentSection} ${styles.animate}`} ref={contentRef1}>
           <div className={styles.description}>
             <h2>About Church School Ministry</h2>
@@ -146,23 +142,6 @@ const ChurchSchoolPage: React.FC = () => {
             <p>
               Our ministry has touched hundreds of lives through tutoring, mentorship, and support programs. We've seen students improve their grades, gain confidence, and develop positive life goals. Teachers and parents consistently report the positive impact our volunteers have on their students.
             </p>
-          </div>
-        </div>
-        <div className={`${styles.testimonialsSection} ${styles.animate}`} ref={testimonialsRef}>
-          <h2>Transforming Lives Through Education</h2>
-          <div className={styles.testimonials}>
-            <div className={styles.testimonial}>
-              <p>"Seeing a struggling student finally understand a concept and smile with confidence - that's what this ministry is about."</p>
-              <span>- Patricia, Tutor</span>
-            </div>
-            <div className={styles.testimonial}>
-              <p>"This ministry has shown me that education is not just about academics, but about building character and hope."</p>
-              <span>- David, Mentor</span>
-            </div>
-            <div className={styles.testimonial}>
-              <p>"Through this ministry, I've learned that every child has potential - they just need someone who believes in them."</p>
-              <span>- Grace, Volunteer Coordinator</span>
-            </div>
           </div>
         </div>
 
