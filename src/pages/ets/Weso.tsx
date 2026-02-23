@@ -1,6 +1,4 @@
 import React, { useEffect } from 'react';
-import EtHeader from '../../components/EtHeader';
-import EtFooter from '../../components/EtFooter';
 import WESO_IMG from '../../assets/WESO.jpg';
 import styles from '../../styles/ET.module.css';
 import { Target, Eye, Activity, Users } from 'lucide-react';
@@ -12,7 +10,6 @@ const Weso: React.FC = () => {
 
     return (
         <div className={styles.etPage}>
-            <EtHeader teamName="WESO" />
 
             {/* Hero Banner */}
             <section className={styles.etPageHero}>
@@ -97,7 +94,6 @@ const Weso: React.FC = () => {
                 </section>
             </div>
 
-            <EtFooter currentTeam="WESO" />
         </div>
     );
 };

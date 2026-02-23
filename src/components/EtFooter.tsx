@@ -32,7 +32,6 @@ const EtFooter: React.FC<EtFooterProps> = ({ currentTeam }) => {
                     ))}
                 </div>
             </section>
-            <Footer />
         </>
     );
 };

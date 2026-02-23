@@ -1,4 +1,3 @@
-import Header from '../components/landing/Header';
 import {
   HeroSection,
   WeeklyActivities,
@@ -11,9 +10,6 @@ const LandingPageNew = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
-      {/* Spacer for persistent mobile icon sidebar */}
-      <div className="md:hidden w-[52px] fixed top-0 left-0 bottom-0 z-0" />
       <div className="pl-[52px] md:pl-0">
         <HeroSection />
 

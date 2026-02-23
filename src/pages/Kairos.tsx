@@ -1,11 +1,8 @@
-import UniversalHeader from '../components/UniversalHeader';
-import Footer from '../components/footer';
 import kairosBanner from '../assets/kairos_banner.png';
 
 const Kairos = () => {
     return (
         <div className="bg-[#ffffff] min-h-screen text-[#000000] font-sans">
-            <UniversalHeader />
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 {/* Header Section */}
@@ -87,7 +84,6 @@ const Kairos = () => {
                 </div>
 
             </div>
-            <Footer />
         </div>
     );
 };

@@ -1,13 +1,10 @@
 
-import UniversalHeader from '../components/UniversalHeader';
 import sistersImg from '../assets/ladies.jpg';
-import Footer from '../components/footer';
 
 
 const SistersFellowship = () => {
     return (
         <div className="bg-[#ffffff] min-h-screen text-[#000000] font-sans overflow-hidden">
-            <UniversalHeader />
 
             <div className="relative">
                 <div className="max-w-7xl mx-auto px-4 md:px-12">
@@ -87,7 +84,6 @@ const SistersFellowship = () => {
                     </div>
                 </div>
             </div>
-            <Footer />
         </div>
     );
 };

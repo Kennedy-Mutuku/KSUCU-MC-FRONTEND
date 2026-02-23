@@ -1,7 +1,5 @@
 import React, { useEffect, useRef } from 'react';
 import styles from '../../styles/ministryPage.module.css';
-import UniversalHeader from '../../components/UniversalHeader';
-import Footer from '../../components/footer';
 import { Link } from 'react-router-dom';
 import churshSchoolImg from '../../assets/churchschool.jpg';
 
@@ -41,7 +39,6 @@ const ChurchSchoolPage: React.FC = () => {
 
   return (
     <>
-      <UniversalHeader />
       <div className={styles.container}>
         <div className={styles.heroSection}>
           <div className={styles.heroContent}>
@@ -172,7 +169,6 @@ const ChurchSchoolPage: React.FC = () => {
         
       </div>
       
-      <Footer />
     </>
   );
 };

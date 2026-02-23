@@ -1,6 +1,4 @@
 import { useEffect, useState } from 'react';
-import UniversalHeader from '../components/UniversalHeader';
-import Footer from '../components/footer';
 import focusBanner from '../assets/focus_banner.png';
 import { Calendar, MapPin, Users, Heart } from 'lucide-react';
 
@@ -15,7 +13,6 @@ const Focus = () => {
 
     return (
         <div className="bg-[#ffffff] min-h-screen text-[#000000] font-sans overflow-hidden">
-            <UniversalHeader />
 
             <div className="relative">
                 {/* Hero Section */}
@@ -102,7 +99,6 @@ const Focus = () => {
                     </div>
                 </div>
             </div>
-            <Footer />
         </div>
     );
 };

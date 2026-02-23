@@ -2,10 +2,8 @@ import { useRef, useState, useEffect } from 'react';
 import '../styles/christianMinds.css';
 import MemberCard from '../components/memberCard';
 import Section from '../components/section';
-import Header from '../components/landing/Header';
 import Hero from '../components/Hero';
 import AboutChristianMinds from '../components/AboutChristianMinds';
-import Footer from '../components/footer';
 import ValuesBanner from '../components/ValuesBanner';
 import { CommitteeService, CommitteeMember } from '../services/committeeService';
 
@@ -77,7 +75,6 @@ function ChristianMinds() {
 
     return (
         <div className="app">
-            <Header />
             <Hero />
 
             <Section id="team" title="Our Committee" background="gray">
@@ -195,7 +192,6 @@ function ChristianMinds() {
                 </div>
             </Section>
 
-            <Footer />
         </div>
     );
 }

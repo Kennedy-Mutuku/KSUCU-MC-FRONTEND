@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getApiUrl } from '../config/environment';
 import styles from '../styles/compassionCounseling.module.css';
-import UniversalHeader from '../components/UniversalHeader';
-import Footer from '../components/footer';
 import { Heart, Phone, MessageCircle, DollarSign, User, Mail, MapPin, Bell, CheckCircle, Eye, Clock, IdCardIcon } from 'lucide-react';
 import { FaWhatsapp } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
@@ -334,7 +332,6 @@ const CompassionCounselingPage: React.FC = () => {
 
   return (
     <>
-      <UniversalHeader />
       <div className={styles.container}>
         {/* Hero Section */}
         <div className={styles.heroSection}>
@@ -791,7 +788,6 @@ const CompassionCounselingPage: React.FC = () => {
 
       </div>
 
-      <Footer />
     </>
   );
 };

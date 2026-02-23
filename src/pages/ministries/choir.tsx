@@ -1,7 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styles from '../../styles/ministryPage.module.css';
-import UniversalHeader from '../../components/UniversalHeader';
-import Footer from '../../components/footer';
 import { Link } from 'react-router-dom';
 import choirImg from '../../assets/choir.jpg';
 import MinistryRegistrationModal from '../../components/MinistryRegistrationModal';
@@ -43,7 +41,6 @@ const ChoirPage: React.FC = () => {
 
   return (
     <>
-      <UniversalHeader />
       <div className={styles.container}>
         <div className={styles.heroSection}>
           <div className={styles.heroContent}>
@@ -173,7 +170,6 @@ const ChoirPage: React.FC = () => {
 
       </div>
 
-      <Footer />
       <MinistryRegistrationModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

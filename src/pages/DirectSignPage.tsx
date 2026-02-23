@@ -4,8 +4,6 @@ import { CheckCircle, AlertCircle, Search, UserPlus, X } from 'lucide-react';
 import axios from 'axios';
 import { getApiUrl } from '../config/environment';
 import SignaturePad from '../components/attendance/SignaturePad';
-import UniversalHeader from '../components/UniversalHeader';
-import Footer from '../components/footer';
 
 interface Session {
     _id: string;
@@ -164,7 +162,6 @@ const DirectSignPage = () => {
 
     return (
         <div className="min-h-screen bg-gray-50">
-            <UniversalHeader />
 
             <main className="max-w-xl mx-auto px-4 py-12">
                 <div className="relative bg-white rounded-[3rem] shadow-2xl overflow-hidden min-h-[500px] flex flex-col">
@@ -307,7 +304,6 @@ const DirectSignPage = () => {
                 </div>
             </main>
 
-            <Footer />
         </div>
     );
 };

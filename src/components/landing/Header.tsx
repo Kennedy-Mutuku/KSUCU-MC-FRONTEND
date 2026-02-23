@@ -618,7 +618,7 @@ const Header = () => {
               </div>
             </nav>
 
-            <div className="hidden md:flex items-center flex-shrink-0">
+            <div className="hidden md:flex items-center flex-shrink-0 ml-4">
               {userData ? (
                 <button onClick={() => navigate('/home')} className="flex items-center gap-2 px-3 py-2 rounded-lg font-medium text-sm text-gray-700 hover:bg-gray-100 transition-colors">
                   <User size={18} />

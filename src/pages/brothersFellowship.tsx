@@ -1,11 +1,8 @@
 
-import UniversalHeader from '../components/UniversalHeader';
 import brothersImg from '../assets/gents.jpg';
-import Footer from '../components/footer';
 const BrothersFellowship = () => {
     return (
         <div className="bg-[#ffffff] min-h-screen text-[#000000] font-sans overflow-hidden">
-            <UniversalHeader />
 
             <div className="relative">
                 <div className="max-w-7xl mx-auto pb-24 px-4 md:px-12">
@@ -73,7 +70,6 @@ const BrothersFellowship = () => {
                     </div>
                 </div>
             </div>
-            <Footer />
         </div>
     );
 };

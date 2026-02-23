@@ -8,7 +8,6 @@
     --bg-cream: #faf8f4;
     --white: #ffffff;
     --shadow: rgba(0, 0, 0, 0.08);
-    --navbar-bg: #00c6ff;
 }
 
 * {
@@ -150,7 +149,7 @@ nav {
 
 /* Hero Section */
 .hero {
-    margin-top: 90px;
+    margin-top: 80px;
     padding: 4rem 5%;
     background: rgba(255, 255, 255, 0.9);
     text-align: center;

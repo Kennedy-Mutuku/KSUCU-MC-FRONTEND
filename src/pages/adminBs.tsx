@@ -3,8 +3,6 @@ import axios from 'axios';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import styles from '../styles/savedSoulsList.module.css'; 
-import UniversalHeader from '../components/UniversalHeader';
-import Footer from '../components/footer';
 import letterhead from '../assets/letterhead.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faEdit, faTrash, faUsers, faShuffle } from '@fortawesome/free-solid-svg-icons';
@@ -1259,7 +1257,6 @@ const handleExportPdf = () => {
 
   return (
     <> 
-      <UniversalHeader />
       <div className={styles.container}>
         <h4>
           <FontAwesomeIcon icon={faUsers} style={{ marginRight: '10px' }} />
@@ -2124,7 +2121,6 @@ const handleExportPdf = () => {
           </div>
         )}
       </div>
-      <Footer />
     </>
   );
 };

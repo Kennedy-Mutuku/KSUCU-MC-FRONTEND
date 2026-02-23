@@ -1,18 +1,15 @@
 
-import UniversalHeader from '../components/UniversalHeader';
 import discipleshipImg from '../assets/discipleship.png';
-import Footer from '../components/footer';
 
 const DiscipleshipClass = () => {
     return (
         <div className="bg-[#ffffff] min-h-screen text-[#000000] font-sans overflow-hidden">
-            <UniversalHeader />
 
             <div className="relative">
-                <div className="max-w-7xl mx-auto pb-24 px-4 md:px-12">
+                <div className="max-w-7xl mx-auto pt-20 pb-24 px-4 md:px-12">
                     {/* Header Section */}
                     <div className="mb-12 border-b-2 border-[#730051]/20 pb-6">
-                        <h3 className="text-4xl md:text-5xl font-bold text-[#730051] mb-4 pt-12">
+                        <h3 className="text-4xl md:text-5xl font-bold text-[#730051] mb-4">
                             Discipleship Classes
                         </h3>
                         <p className="text-xl md:text-2xl font-light text-[#000000] opacity-80 max-w-3xl">
@@ -83,7 +80,6 @@ const DiscipleshipClass = () => {
                     </div>
                 </div>
             </div>
-            <Footer />
         </div>
     );
 };

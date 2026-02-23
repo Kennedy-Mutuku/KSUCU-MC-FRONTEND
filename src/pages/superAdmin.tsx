@@ -4,7 +4,6 @@ import axios from 'axios';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import styles from '../styles/superAdmin.module.css';
-import Footer from '../components/footer';
 import { Menu, X } from 'lucide-react';
 import { getApiUrl } from '../config/environment';
 import letterhead from '../assets/letterhead.png';
@@ -680,7 +679,6 @@ const SuperAdmin: React.FC = () => {
                 </main>
             </div>
             <footer className={styles.footerWrapper}>
-                <Footer />
             </footer>
 
             {/* Confirmation Dialog */}

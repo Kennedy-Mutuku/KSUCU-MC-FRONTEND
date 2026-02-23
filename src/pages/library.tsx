@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from '../styles/e-library.module.css';
 import { FaArrowLeft, FaSearch } from 'react-icons/fa';
-import Footer from '../components/footer';
 
 interface Book {
   title: string;
@@ -140,7 +139,6 @@ const Library: React.FC = () => {
           </div>
         )}
       </div>
-      <Footer />
     </div>
   );
 };

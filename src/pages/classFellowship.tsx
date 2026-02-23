@@ -1,12 +1,9 @@
 
-import UniversalHeader from '../components/UniversalHeader';
 import classImg from '../assets/class.png';
-import Footer from '../components/footer';
 
 const ClassFellowship = () => {
     return (
         <div className="bg-[#ffffff] min-h-screen text-[#000000] font-sans">
-            <UniversalHeader />
             <div className="max-w-7xl mx-auto pb-24 px-4 md:px-12">
                 {/* Header Section */}
                 <div className="mb-12 border-b-2 border-[#730051]/20 pb-6">
@@ -84,7 +81,6 @@ const ClassFellowship = () => {
                     </div>
                 </div>
             </div>
-            <Footer />
         </div>
     );
 };

@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import io, { Socket } from 'socket.io-client';
 import styles from '../styles/pollingOfficer.module.css';
-import UniversalHeader from '../components/UniversalHeader';
-import Footer from '../components/footer';
 import ConfirmDialog from '../components/ConfirmDialog';
 import ToastContainer from '../components/ToastContainer';
 import { getApiUrl, getBaseUrl } from '../config/environment';
@@ -292,7 +290,6 @@ const PollingOfficerDashboard: React.FC = () => {
 
     return (
         <>
-            <UniversalHeader />
             <ToastContainer toasts={toasts} onClose={removeToast} />
             <ConfirmDialog
                 isOpen={confirmDialog.isOpen}
@@ -501,7 +498,6 @@ const PollingOfficerDashboard: React.FC = () => {
                     )}
                 </div>
             </div>
-            <Footer />
         </>
     );
 };

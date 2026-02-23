@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import UniversalHeader from "../components/UniversalHeader";
-import Footer from "../components/footer";
 import { generateRequisitionPDF } from "../utils/generateRequisitionPDF";
 import styles from "../styles/RequisitionsAdmin.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -342,7 +340,6 @@ const RequisitionsAdmin: React.FC = () => {
   if (!authenticated) {
     return (
       <>
-        <UniversalHeader />
         <div className={styles.container}>
           <div className={styles.header}>
             <h1>Requisitions Admin - Authentication Required</h1>
@@ -364,14 +361,12 @@ const RequisitionsAdmin: React.FC = () => {
             </button>
           </div>
         </div>
-        <Footer />
       </>
     );
   }
 
   return (
     <>
-      <UniversalHeader />
       <div className={styles.container}>
         <div className={styles.header}>
           <h1>
@@ -872,7 +867,6 @@ const RequisitionsAdmin: React.FC = () => {
           </div>
         )}
       </div>
-      <Footer />
     </>
   );
 };

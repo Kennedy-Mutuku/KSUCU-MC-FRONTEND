@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from '../styles/savedSouls.module.css';
-import UniversalHeader from '../components/UniversalHeader';
 import axios from 'axios';
-import Footer from '../components/footer';
 
 const SavedSouls: React.FC = () => {
   const [name, setName] = useState<string>('');
@@ -83,7 +81,6 @@ const SavedSouls: React.FC = () => {
 
   return (
     <>
-          <UniversalHeader />
         <div className={styles.container}>
 
             <h4 className={styles.title}>MISSION DEPARTMENT</h4>
@@ -147,7 +144,6 @@ const SavedSouls: React.FC = () => {
 
         </div>
 
-        <Footer />
     </>
   );
 };

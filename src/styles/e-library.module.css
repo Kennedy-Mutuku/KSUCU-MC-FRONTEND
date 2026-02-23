@@ -1,5 +1,10 @@
 @import url(index.module.css);
 
+/* Body wrapper - offset below the fixed global header (80px) */
+.body {
+    padding-top: 80px;
+}
+
 /* Video background styling */
 .videoBg {
     position: fixed;
@@ -45,8 +50,8 @@
         inset 0 -4px 10px rgba(0, 0, 0, 0.3),
         inset 0 4px 10px rgba(255, 255, 255, 0.2);
     position: sticky;
-    top: 0;
-    z-index: 1000;
+    top: 80px; /* sit just below the global fixed header */
+    z-index: 40;
     border-bottom: 2px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -121,7 +126,7 @@
 /* Search filter styling */
 .controls {
     position: sticky;
-    top: 64px; /* less top offset */
+    top: 148px; /* 80px global header + ~68px library header */
     z-index: 30;
     display: block;
     padding-bottom: 6px;

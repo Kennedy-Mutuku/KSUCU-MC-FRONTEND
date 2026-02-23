@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import UniversalHeader from '../components/UniversalHeader';
-import Footer from '../components/footer';
 import ModernNewsDisplay from '../components/ModernNewsDisplay';
 import styles from '../styles/worshipDocketAdmin.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -72,7 +70,6 @@ const WorshipDocketAdmin: React.FC = () => {
     if (!authenticated) {
         return (
             <>
-                <UniversalHeader />
                 <div className={styles.container}>
                     <div className={styles.loginCard}>
                         <h2>Leadership Admin</h2>
@@ -103,14 +100,12 @@ const WorshipDocketAdmin: React.FC = () => {
                         </button>
                     </div>
                 </div>
-                <Footer />
             </>
         );
     }
 
     return (
         <>
-            <UniversalHeader />
             <div className={styles.container}>
                 <div className={styles.adminHeader}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
@@ -345,7 +340,6 @@ const WorshipDocketAdmin: React.FC = () => {
                     </div>
                 )}
             </div>
-            <Footer />
         </>
     );
 };

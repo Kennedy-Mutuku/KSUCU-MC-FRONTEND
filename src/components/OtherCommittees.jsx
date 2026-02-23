@@ -106,24 +106,6 @@ const OtherCommittees = () => {
 
   return (
     <div className="other-committees-page">
-      {/* Navigation */}
-      <nav>
-        <div className="logo-section">
-          <img src={myPhoto} alt="KSUCU Logo" style={{ height: '50px', width: 'auto' }} />
-          <div className="site-title">Kisii University Christian Union</div>
-        </div>
-        <div className={`hamburger ${menuActive ? 'active' : ''}`} onClick={toggleMenu}>
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-        <div className={`nav-links ${menuActive ? 'active' : ''}`}>
-          <Link to="/">Home</Link>
-          <a href="#about">About Us</a>
-          <a href="#contact">Contact</a>
-        </div>
-      </nav>
-
       {/* Page Content */}
       <div className="page-content">
         {/* Hero Section */}
@@ -156,45 +138,6 @@ const OtherCommittees = () => {
           </div>
         </div>
 
-        {/* Footer */}
-        <footer>
-          <div className="footer-content">
-            <div className="quicklinks-section">
-              <button className="quicklinks-btn" onClick={toggleQuicklinks}>Quick Links</button>
-              <div className={`quicklinks-dropdown ${quicklinksActive ? 'active' : ''}`}>
-                <div className="quicklinks-list">
-                  <a href="#library">Library</a>
-                  <a href="#media">Media</a>
-                  <a href="#requisitions">Requisitions</a>
-                  <a href="#compassion">Compassion & Counselling</a>
-                </div>
-              </div>
-            </div>
-
-                  <div className="social-media">
-                    <a href="your-facebook-link" className="social-icon" target="_blank" rel="noreferrer">
-                      <FaFacebook />
-                    </a>
-                    <a href="your-twitter-link" className="social-icon" target="_blank" rel="noreferrer">
-                      <FaXTwitter />
-                    </a>
-                    <a href="your-instagram-link" className="social-icon" target="_blank" rel="noreferrer">
-                      <FaInstagram />
-                    </a>
-                    <a href="your-youtube-link" className="social-icon" target="_blank" rel="noreferrer">
-                      <FaYoutube />
-                    </a>
-                    <a href="your-whatsapp-link" className="social-icon" target="_blank" rel="noreferrer">
-                      <FaWhatsapp />
-                    </a>
-                  </div>
-
-
-            <div className="footer-bottom">
-              <p>&copy; 2026 Kisii University Christian Union. All rights reserved. | Walking in Faith Together</p>
-            </div>
-          </div>
-        </footer>
       </div>
     </div>
   );

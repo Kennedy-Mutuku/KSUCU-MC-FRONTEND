@@ -1,6 +1,4 @@
 import React, { useEffect } from 'react';
-import EtHeader from '../../components/EtHeader';
-import EtFooter from '../../components/EtFooter';
 import RIVET_IMG from '../../assets/RIVET.jpg';
 import styles from '../../styles/ET.module.css';
 import { Target, Eye, Activity, Users } from 'lucide-react';
@@ -12,7 +10,6 @@ const Rivet: React.FC = () => {
 
     return (
         <div className={styles.etPage}>
-            <EtHeader teamName="RIVET" />
 
             {/* Hero Banner */}
             <section className={styles.etPageHero}>
@@ -98,7 +95,6 @@ const Rivet: React.FC = () => {
                 </section>
             </div>
 
-            <EtFooter currentTeam="RIVET" />
         </div>
     );
 };

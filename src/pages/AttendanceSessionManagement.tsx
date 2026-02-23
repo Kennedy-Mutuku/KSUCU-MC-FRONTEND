@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import UniversalHeader from '../components/UniversalHeader';
-import Footer from '../components/footer';
 import styles from '../styles/attendanceSession.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getApiUrl, getBaseUrl } from '../config/environment';
@@ -313,7 +311,6 @@ const AttendanceSessionManagement: React.FC = () => {
 
     return (
         <>
-            <UniversalHeader />
             <div className={styles.pageWrapper}>
                 <div className={styles.container}>
                     <div className={styles.header}>
@@ -510,7 +507,6 @@ const AttendanceSessionManagement: React.FC = () => {
                     )}
                 </div>
             </div>
-            <Footer />
         </>
     );
 };

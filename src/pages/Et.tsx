@@ -1,7 +1,5 @@
 import React, { useEffect } from 'react';
 import styles from '../styles/ET.module.css';
-import UniversalHeader from '../components/UniversalHeader';
-import Footer from '../components/footer';
 import { Link } from 'react-router-dom';
 import WESO from '../assets/WESO.jpg';
 import RIVET from '../assets/RIVET.jpg';
@@ -60,7 +58,6 @@ const Etpage: React.FC = () => {
 
   return (
     <div className={styles.etLandingPage}>
-      <UniversalHeader />
 
       {/* Hero Section */}
       <section className={styles.hero}>
@@ -94,7 +91,6 @@ const Etpage: React.FC = () => {
         </div>
       </div>
 
-      <Footer />
     </div>
   );
 };

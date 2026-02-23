@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import UniversalHeader from '../components/UniversalHeader';
-import Footer from '../components/footer';
 import styles from '../styles/mediaAdmin.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -382,7 +380,6 @@ const MediaAdmin: React.FC = () => {
     if (!authenticated) {
         return (
             <>
-                <UniversalHeader />
                 <div className={styles.container}>
                     <div className={styles.header}>
                         <h1>Media Admin - Authentication Required</h1>
@@ -437,14 +434,12 @@ const MediaAdmin: React.FC = () => {
                         {mediaItems.length > 3 && <p>...and {mediaItems.length - 3} more items</p>}
                     </div>
                 </div>
-                <Footer />
             </>
         );
     }
 
     return (
         <>
-            <UniversalHeader />
             <div className={styles.container}>
                 <div className={styles.header}>
                     <h1>
@@ -579,7 +574,6 @@ const MediaAdmin: React.FC = () => {
                     </div>
                 </div>
             </div>
-            <Footer />
         </>
     );
 };

@@ -2,8 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getApiUrl } from '../config/environment';
 import styles from '../styles/chatAdmin.module.css';
-import UniversalHeader from '../components/UniversalHeader';
-import Footer from '../components/footer';
 import { 
   MessageCircle, 
   Send, 
@@ -248,7 +246,6 @@ const ChatAdmin: React.FC = () => {
   if (!userAuthenticated) {
     return (
       <>
-        <UniversalHeader />
         <div className={styles.container}>
           <div className={styles.header}>
             <button onClick={() => navigate('/worship-docket-admin')} className={styles.backButton}>
@@ -279,7 +276,6 @@ const ChatAdmin: React.FC = () => {
             </button>
           </div>
         </div>
-        <Footer />
       </>
     );
   }
@@ -288,7 +284,6 @@ const ChatAdmin: React.FC = () => {
 
   return (
     <>
-      <UniversalHeader />
       <div className={styles.container}>
         {/* Header */}
         <div className={styles.header}>
@@ -462,7 +457,6 @@ const ChatAdmin: React.FC = () => {
           )}
         </div>
       </div>
-      <Footer />
     </>
   );
 };
