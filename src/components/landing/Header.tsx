@@ -181,7 +181,8 @@ const mobileNavTabs: { key: string; icon: React.ElementType; label: string; }[] 
   { key: 'biblestudy', icon: BookOpen, label: 'Bible Study' },
   { key: 'classes', icon: GraduationCap, label: 'Classes' },
   { key: 'services', icon: Briefcase, label: 'Services' },
-  { key: 'governance', icon: Crown, label: 'Governance' },
+  { key: 'leadership', icon: Crown, label: 'Leadership' },
+  { key: 'governingdocs', icon: FileText, label: 'Governing Docs' },
   { key: 'mediadesk', icon: Tv2, label: 'Media Desk' },
   { key: 'attendance', icon: ClipboardList, label: 'Attendance' },
   { key: 'about', icon: Info, label: 'About' },
@@ -203,10 +204,8 @@ const getTabSections = (key: string, activeSessions: Session[]): TabSection[] =>
     case 'biblestudy': return [{ title: 'Bible Study', icon: BookOpen, items: [{ label: 'Register for Bible Study', href: '/Bs' }, { label: 'View BS Groups', href: '/Bs' }] }];
     case 'classes': return [{ title: 'Classes', icon: GraduationCap, items: organizationSections[6].items }];
     case 'services': return [{ title: 'Quick Access', icon: Briefcase, items: organizationSections[0].items }];
-    case 'governance': return [
-      { title: 'Leadership', icon: Crown, items: organizationSections[7].items },
-      { title: 'Governing Docs', icon: FileText, items: [{ label: 'Constitution', href: '/pdfs/constitution.pdf', external: true }, { label: 'Financial Policy', href: '#' }, { label: 'Leadership Manual', href: '#' }] },
-    ];
+    case 'leadership': return [{ title: 'Leadership', icon: Crown, items: organizationSections[7].items }];
+    case 'governingdocs': return [{ title: 'Governing Docs', icon: FileText, items: [{ label: 'Constitution', href: '/pdfs/constitution.pdf', external: true }, { label: 'Financial Policy', href: '#' }, { label: 'Leadership Manual', href: '#' }] }];
     case 'mediadesk': return [{
       title: 'Media Desk', icon: Tv2,
       items: [
@@ -506,7 +505,8 @@ const Header = () => {
     if (path.startsWith('/classes') || path.startsWith('/bestpClass')) return 'classes';
     if (path.startsWith('/Bs') || path.startsWith('/biblestudy')) return 'biblestudy';
     if (['/financial', '/compassion', '/requisitions', '/my-docs', '/library', '/save', '/recomendations'].some(p => path.startsWith(p))) return 'services';
-    if (['/leadership', '/other-committees', '/elders', '/pdfs', '/christianminds'].some(p => path.startsWith(p))) return 'governance';
+    if (['/leadership', '/other-committees', '/elders'].some(p => path.startsWith(p))) return 'leadership';
+    if (['/pdfs', '/christianminds', '/governing-docs'].some(p => path.startsWith(p))) return 'governingdocs';
     if (path.startsWith('/attendance') || path.startsWith('/session')) return 'attendance';
     return null;
   };
