@@ -4,8 +4,12 @@ import {
   User, ChevronDown, ChevronRight, ExternalLink, Menu, X,
   Home, Briefcase, Building2, Info,
   Users, Globe, Music, UsersRound, GraduationCap, Crown, LogIn,
-  AlertCircle, ClipboardList
+  AlertCircle, ClipboardList, Mic2, BookOpen, Heart, ShoppingBag,
+  FolderOpen, Tv2, Radio, Share2, FileText, Cross,
+  Newspaper, Image, Landmark, BookMarked,
+  Eye, Shield, Globe2, Layers, Award, Star, Lightbulb, HandHeart
 } from 'lucide-react';
+
 import { getApiUrl } from '../../config/environment';
 import { headerNavGroups, organizationSections, type NavItem, type NavSection } from '../../data/navigationData';
 import cuLogo from '../../assets/cuLogoUAR.png';
@@ -169,52 +173,245 @@ const MobileSidebarItem = ({ item, depth = 0, onClose }: { item: NavItem; depth?
   );
 };
 
+// Icon map for sub-items
+const subItemIcons: Record<string, React.ElementType> = {
+  // Services
+  'Feedback': Heart,
+  'Financials': Landmark,
+  'Compassion': HandHeart,
+  'Requisitions': ShoppingBag,
+  'Bible Study': BookOpen,
+  'File Manager': FolderOpen,
+  'Library': BookMarked,
+  'Win a Soul': Cross,
+  // Boards
+  'ICT Board': Globe2,
+  'Media Board': Tv2,
+  'Communication Board': Radio,
+  'Editorial Board': FileText,
+  // E.Teams
+  'RIVET - Rift Valley Evangelistic Team': Globe,
+  'ESET - Eastern Evangelistic Team': Globe,
+  'WESO - Western Evangelistic Students Outreach': Globe,
+  'NET - Nyanza Evangelistic Team': Globe,
+  'CET - Central Evangelistic Team': Globe,
+  // Ministries
+  'Praise & Worship': Music,
+  'Choir': Mic2,
+  'Instrumentalists (Wananzambe)': Star,
+  'High School': GraduationCap,
+  'Church School': BookOpen,
+  'Intercessory': Eye,
+  'Ushering & Hospitality': Shield,
+  'Creativity': Lightbulb,
+  // Fellowships
+  'Class Fellowships': Users,
+  'Brothers Fellowship': UsersRound,
+  'Sisters Fellowship': UsersRound,
+  // Committees
+  'Sub Executive Committee': Award,
+  'Sub Committee': Layers,
+  'Elders Committee': Crown,
+  'Christian Minds Committee': Lightbulb,
+  // Classes
+  'Best-P Classes': GraduationCap,
+  'Discipleship Class': BookOpen,
+  // Leadership
+  'Executive Committee': Crown,
+  'Other Committees': Users,
+  // Media
+  'News': Newspaper,
+  'Gallery': Image,
+  'Socials': Share2,
+};
+
 // Icon map for mobile sidebar tabs
 const mobileNavTabs: { key: string; icon: React.ElementType; label: string; }[] = [
   { key: 'dashboard', icon: Home, label: 'Home' },
-  { key: 'about', icon: Info, label: 'About' },
+  { key: 'joinus', icon: UsersRound, label: 'Join Us' },
   { key: 'services', icon: Briefcase, label: 'Services' },
-  { key: 'boards', icon: Building2, label: 'Boards' },
-  { key: 'ets', icon: Globe, label: 'E.Teams' },
-  { key: 'ministries', icon: Music, label: 'Ministries' },
-  { key: 'fellowships', icon: UsersRound, label: 'Fellowships' },
-  { key: 'committees', icon: Users, label: 'Committees' },
-  { key: 'classes', icon: GraduationCap, label: 'Classes' },
-  { key: 'leadership', icon: Crown, label: 'Leadership' },
+  { key: 'governance', icon: Crown, label: 'Governance' },
+  { key: 'mediadesk', icon: Tv2, label: 'Media Desk' },
   { key: 'attendance', icon: ClipboardList, label: 'Attendance' },
+  { key: 'about', icon: Info, label: 'About' },
   { key: 'signin', icon: LogIn, label: 'Sign In' },
 ];
 
-const getTabContent = (key: string, activeSessions: Session[] = []): NavItem[] | null => {
+interface TabSection {
+  title: string;
+  icon: React.ElementType;
+  items: { label: string; href?: string; external?: boolean; children?: { label: string; href?: string }[] }[];
+}
+
+const getTabSections = (key: string, activeSessions: Session[]): TabSection[] => {
   switch (key) {
-    case 'services': return organizationSections[0].items;
-    case 'boards': return organizationSections[1].items;
-    case 'ets': return organizationSections[2].items;
-    case 'ministries': return organizationSections[3].items;
-    case 'fellowships': return organizationSections[4].items;
-    case 'committees': return organizationSections[5].items;
-    case 'classes': return organizationSections[6].items;
-    case 'leadership': return organizationSections[7].items;
+    case 'joinus': return [
+      { title: 'Ministries', icon: Music, items: organizationSections[3].items },
+      { title: 'Boards', icon: Building2, items: organizationSections[1].items },
+      { title: 'E. Teams', icon: Globe, items: organizationSections[2].items },
+      { title: 'Fellowships', icon: UsersRound, items: organizationSections[4].items },
+      { title: 'Bible Study', icon: BookOpen, items: [{ label: 'Register for Bible Study', href: '/Bs' }, { label: 'View BS Groups', href: '/Bs' }] },
+      { title: 'Classes', icon: GraduationCap, items: organizationSections[6].items },
+    ];
+    case 'services': return [{ title: 'Quick Access', icon: Briefcase, items: organizationSections[0].items }];
+    case 'governance': return [
+      { title: 'Leadership', icon: Crown, items: organizationSections[7].items },
+      { title: 'Governing Docs', icon: FileText, items: [{ label: 'Constitution', href: '/pdfs/constitution.pdf', external: true }, { label: 'Financial Policy', href: '#' }, { label: 'Leadership Manual', href: '#' }] },
+    ];
+    case 'mediadesk': return [{
+      title: 'Media Desk', icon: Tv2,
+      items: [
+        { label: 'News', href: '/news' },
+        { label: 'Gallery', href: '/media' },
+        {
+          label: 'Socials', children: [
+            { label: 'TikTok', href: 'https://tiktok.com/@ksucu_mc' },
+            { label: 'YouTube', href: 'https://www.youtube.com/@ksucu-mc' },
+            { label: 'Facebook', href: 'https://www.facebook.com/ksucumaincampus' },
+            { label: 'Instagram', href: 'https://www.instagram.com/ksucu_mc' },
+            { label: 'X (Twitter)', href: 'https://twitter.com/ksucumc' },
+          ]
+        },
+      ]
+    }];
     case 'attendance':
-      if (activeSessions.length === 0) return null;
-      return activeSessions.map(s => ({
-        label: s.title,
-        href: `/attendance?session=${s._id}`
-      }));
-    default: return null;
+      if (activeSessions.length === 0) return [];
+      return [{ title: 'Active Sessions', icon: ClipboardList, items: activeSessions.map(s => ({ label: s.title, href: `/attendance?session=${s._id}` })) }];
+    default: return [];
   }
 };
 
-const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, showLabels, setShowLabels, activeTab, setActiveTab }: {
+// A single expandable section row inside the flyout panel
+const SectionAccordion = ({ section, onClose }: { section: TabSection; onClose: () => void }) => {
+  const [open, setOpen] = useState(true);
+  const [expandedChild, setExpandedChild] = useState<string | null>(null);
+  const SectionIcon = section.icon;
+
+  return (
+    <div style={{ borderBottom: '1px solid #f3e8f0', marginBottom: '2px' }}>
+      <button
+        onClick={() => setOpen(o => !o)}
+        style={{
+          width: '100%', display: 'flex', alignItems: 'center', gap: '8px',
+          padding: '9px 12px', background: open ? '#fdf4fb' : 'transparent',
+          border: 'none', cursor: 'pointer', color: '#730051',
+          fontSize: '11px', fontWeight: 700, textTransform: 'uppercase',
+          letterSpacing: '0.5px', borderRadius: '6px 6px 0 0',
+          transition: 'background 0.2s',
+        }}
+      >
+        <SectionIcon size={12} style={{ flexShrink: 0 }} />
+        <span style={{ flex: 1, textAlign: 'left' }}>{section.title}</span>
+        <ChevronDown size={12} style={{ transform: open ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.25s', flexShrink: 0 }} />
+      </button>
+
+      <div style={{
+        maxHeight: open ? '600px' : '0',
+        overflow: 'hidden',
+        transition: 'max-height 0.3s cubic-bezier(0.4,0,0.2,1)',
+        background: '#fff',
+      }}>
+        {section.items.map((item, i) => {
+          const ItemIcon = subItemIcons[item.label] || ChevronRight;
+          const hasChildren = item.children && item.children.length > 0;
+          const isChildOpen = expandedChild === item.label;
+
+          if (hasChildren) {
+            return (
+              <div key={i}>
+                <button
+                  onClick={() => setExpandedChild(isChildOpen ? null : item.label)}
+                  style={{
+                    width: '100%', display: 'flex', alignItems: 'center', gap: '8px',
+                    padding: '8px 14px 8px 16px', background: isChildOpen ? '#fdf4fb' : 'transparent',
+                    border: 'none', cursor: 'pointer', color: '#374151',
+                    fontSize: '12px', fontWeight: 500, textAlign: 'left',
+                    transition: 'all 0.15s',
+                  }}
+                >
+                  <ItemIcon size={12} style={{ color: '#730051', flexShrink: 0 }} />
+                  <span style={{ flex: 1 }}>{item.label}</span>
+                  <ChevronDown size={10} style={{ transform: isChildOpen ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 0.25s', color: '#9ca3af' }} />
+                </button>
+                <div style={{
+                  maxHeight: isChildOpen ? '300px' : '0',
+                  overflow: 'hidden',
+                  transition: 'max-height 0.25s ease',
+                  background: '#fafafa',
+                }}>
+                  {item.children!.map((child, j) => (
+                    <Link
+                      key={j}
+                      to={child.href || '#'}
+                      onClick={onClose}
+                      style={{
+                        display: 'flex', alignItems: 'center', gap: '6px',
+                        padding: '7px 14px 7px 32px',
+                        color: '#6b7280', fontSize: '11px', textDecoration: 'none',
+                        transition: 'color 0.15s, background 0.15s',
+                      }}
+                      onMouseEnter={e => { e.currentTarget.style.color = '#730051'; e.currentTarget.style.background = '#fdf4fb'; }}
+                      onMouseLeave={e => { e.currentTarget.style.color = '#6b7280'; e.currentTarget.style.background = 'transparent'; }}
+                    >
+                      <ChevronRight size={9} style={{ color: '#d1d5db', flexShrink: 0 }} />
+                      {child.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            );
+          }
+
+          return item.external ? (
+            <a
+              key={i}
+              href={item.href || '#'}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={onClose}
+              style={{
+                display: 'flex', alignItems: 'center', gap: '8px',
+                padding: '8px 14px 8px 16px', color: '#374151', fontSize: '12px',
+                textDecoration: 'none', transition: 'all 0.15s',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.color = '#730051'; e.currentTarget.style.background = '#fdf4fb'; }}
+              onMouseLeave={e => { e.currentTarget.style.color = '#374151'; e.currentTarget.style.background = 'transparent'; }}
+            >
+              <ItemIcon size={12} style={{ color: '#730051', flexShrink: 0 }} />
+              <span style={{ flex: 1 }}>{item.label}</span>
+              <ExternalLink size={9} style={{ color: '#9ca3af' }} />
+            </a>
+          ) : (
+            <Link
+              key={i}
+              to={item.href || '#'}
+              onClick={onClose}
+              style={{
+                display: 'flex', alignItems: 'center', gap: '8px',
+                padding: '8px 14px 8px 16px', color: '#374151', fontSize: '12px',
+                textDecoration: 'none', transition: 'all 0.15s',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.color = '#730051'; e.currentTarget.style.background = '#fdf4fb'; }}
+              onMouseLeave={e => { e.currentTarget.style.color = '#374151'; e.currentTarget.style.background = 'transparent'; }}
+            >
+              <ItemIcon size={12} style={{ color: '#730051', flexShrink: 0 }} />
+              {item.label}
+            </Link>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+const MobileSidebarMenu = ({ userData, activeSessions, onNavigate }: {
   userData: UserData | null;
   activeSessions: Session[];
   onNavigate: (path: string) => void;
-  showLabels: boolean;
-  setShowLabels: (v: boolean) => void;
-  activeTab: string | null;
-  setActiveTab: (v: string | null) => void;
 }) => {
-  const isExpanded = showLabels || activeTab !== null;
+  const [activeTab, setActiveTab] = useState<string | null>(null);
+  const [panelTop, setPanelTop] = useState(0);
+  const buttonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
 
   const handleTabClick = (key: string) => {
     if (key === 'dashboard') { setActiveTab(null); onNavigate('/'); return; }
@@ -228,206 +425,161 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, showLabels, s
     }
     if (key === 'signin') {
       setActiveTab(null);
-      if (userData) { onNavigate('/home'); }
-      else { onNavigate('/signIn'); }
+      onNavigate(userData ? '/home' : '/signIn');
       return;
     }
-    setActiveTab(activeTab === key ? null : key);
+    if (activeTab === key) {
+      setActiveTab(null);
+      return;
+    }
+    // Position panel at this button's Y
+    const btn = buttonRefs.current[key];
+    if (btn) {
+      const rect = btn.getBoundingClientRect();
+      setPanelTop(rect.top);
+    }
+    setActiveTab(key);
   };
 
-  const collapsePanel = () => { setActiveTab(null); setShowLabels(false); };
-  const tabContent = activeTab ? getTabContent(activeTab, activeSessions) : null;
-  const activeLabel = mobileNavTabs.find(t => t.key === activeTab)?.label || 'Menu';
+  const closePanel = () => setActiveTab(null);
+
+  const sections = activeTab ? getTabSections(activeTab, activeSessions) : [];
+  const activeTabDef = mobileNavTabs.find(t => t.key === activeTab);
 
   return (
-    <>
-      {isExpanded && (
+    <div className="md:hidden">
+      {/* Backdrop */}
+      {activeTab && (
         <div
-          className="md:hidden"
-          style={{
-            position: 'fixed',
-            inset: 0,
-            zIndex: 99998,
-            backgroundColor: 'rgba(0, 0, 0, 0.3)',
-            backdropFilter: 'blur(1px)',
-          }}
-          onClick={collapsePanel}
+          style={{ position: 'fixed', inset: 0, zIndex: 99997, background: 'rgba(0,0,0,0.25)' }}
+          onClick={closePanel}
         />
       )}
 
-      <div className="flex md:hidden fixed top-16 left-0 bottom-0" style={{ zIndex: 99999 }}>
-        {/* Icon strip */}
-        <div
-          style={{
-            width: '52px',
-            backgroundColor: '#730051',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            paddingTop: '2px',
-            paddingBottom: '6px',
-            overflowY: 'auto',
-            gap: '1px',
-          }}
-        >
-          {mobileNavTabs.map((tab) => {
-            const Icon = tab.icon;
-            const isActive = activeTab === tab.key;
-            const isAttendance = tab.key === 'attendance';
-            const hasActiveSessions = activeSessions.length > 0;
+      {/* Icon strip */}
+      <div style={{
+        position: 'fixed', top: '64px', left: 0, bottom: 0,
+        width: '52px', backgroundColor: '#730051',
+        display: 'flex', flexDirection: 'column', alignItems: 'center',
+        paddingTop: '4px', paddingBottom: '8px',
+        overflowY: 'auto', gap: '2px', zIndex: 99999,
+      }}>
+        {mobileNavTabs.map((tab) => {
+          const Icon = tab.icon;
+          const isActive = activeTab === tab.key;
+          const isAttendance = tab.key === 'attendance';
+          const hasActiveSessions = activeSessions.length > 0;
+          const hasSections = getTabSections(tab.key, activeSessions).length > 0;
 
-            if (tab.key === 'signin' && userData) {
-              return (
-                <button
-                  key={tab.key}
-                  onClick={() => handleTabClick(tab.key)}
-                  style={{
-                    width: '44px',
-                    height: '44px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    borderRadius: '8px',
-                    border: 'none',
-                    cursor: 'pointer',
-                    backgroundColor: 'rgba(255,255,255,0.15)',
-                    color: 'white',
-                    gap: '1px',
-                    flexShrink: 0,
-                  }}
-                  title={userData.username}
-                >
-                  <User size={16} />
-                  <span style={{ fontSize: '7px', lineHeight: 1 }}>Profile</span>
-                </button>
-              );
-            }
+          const isUser = tab.key === 'signin' && userData;
 
-            return (
-              <button
-                key={tab.key}
-                onClick={() => handleTabClick(tab.key)}
-                style={{
-                  width: '44px',
-                  height: '44px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderRadius: '8px',
-                  border: 'none',
-                  cursor: 'pointer',
-                  backgroundColor: isActive ? 'white' : 'transparent',
-                  color: isActive ? '#730051' : 'rgba(255,255,255,0.8)',
-                  gap: '1px',
-                  flexShrink: 0,
-                  transition: 'all 0.2s',
-                  position: 'relative',
-                }}
-                title={tab.label}
-              >
-                <Icon size={16} />
-                {isAttendance && hasActiveSessions && (
-                  <span className="absolute top-2 right-3 w-2 h-2 bg-red-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.8)]" />
-                )}
-                <span style={{ fontSize: '7px', lineHeight: 1, fontWeight: isActive ? 600 : 400 }}>{tab.label}</span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Expanded Panel */}
-        <div
-          style={{
-            width: isExpanded ? 'calc(100vw - 52px)' : '0px',
-            maxWidth: isExpanded ? '240px' : '0px',
-            backgroundColor: '#ffffff',
-            boxShadow: isExpanded ? '4px 0 20px rgba(0,0,0,0.15)' : 'none',
-            overflow: 'hidden',
-            transition: 'width 0.25s ease, max-width 0.25s ease',
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-        >
-          {showLabels && !activeTab && (
-            <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', padding: '4px 6px' }}>
-              {mobileNavTabs.map((tab) => {
-                const Icon = tab.icon;
-                const hasContent = getTabContent(tab.key, activeSessions) !== null;
-                return (
-                  <button
-                    key={tab.key}
-                    onClick={() => handleTabClick(tab.key)}
-                    style={{
-                      width: '100%',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '10px',
-                      padding: '10px 12px',
-                      borderRadius: '8px',
-                      border: 'none',
-                      cursor: 'pointer',
-                      backgroundColor: 'transparent',
-                      color: '#374151',
-                      fontSize: '14px',
-                      textAlign: 'left',
-                      transition: 'background-color 0.15s',
-                    }}
-                  >
-                    <Icon size={18} style={{ flexShrink: 0 }} />
-                    <span style={{ flex: 1 }}>{tab.label}</span>
-                    {hasContent && <ChevronRight size={14} style={{ color: '#9ca3af', flexShrink: 0 }} />}
-                  </button>
-                );
-              })}
-            </div>
-          )}
-
-          {tabContent && (
-            <>
-              <button
-                onClick={() => setActiveTab(null)}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  padding: '10px 14px',
-                  borderBottom: '1px solid #e5e7eb',
-                  fontWeight: 600,
-                  color: '#730051',
-                  fontSize: '14px',
-                  flexShrink: 0,
-                  backgroundColor: 'transparent',
-                  border: 'none',
-                  cursor: 'pointer',
-                  width: '100%',
-                  textAlign: 'left',
-                }}
-              >
-                <ChevronRight size={14} style={{ transform: 'rotate(180deg)' }} />
-                {activeLabel}
-              </button>
-              <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', padding: '6px' }}>
-                {tabContent.map((item, i) => (
-                  <MobileSidebarItem key={i} item={item} depth={0} onClose={collapsePanel} />
-                ))}
-              </div>
-            </>
-          )}
-        </div>
+          return (
+            <button
+              key={tab.key}
+              ref={el => { buttonRefs.current[tab.key] = el; }}
+              onClick={() => handleTabClick(tab.key)}
+              title={tab.label}
+              style={{
+                width: '46px', minHeight: '46px',
+                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                borderRadius: '10px', border: 'none', cursor: 'pointer',
+                backgroundColor: isActive ? 'rgba(255,255,255,0.95)' : 'transparent',
+                color: isActive ? '#730051' : 'rgba(255,255,255,0.85)',
+                gap: '2px', flexShrink: 0, position: 'relative',
+                transition: 'all 0.2s cubic-bezier(0.4,0,0.2,1)',
+                boxShadow: isActive ? '0 2px 12px rgba(0,0,0,0.15)' : 'none',
+                transform: isActive ? 'scale(1.05)' : 'scale(1)',
+              }}
+            >
+              {isUser ? <User size={17} /> : <Icon size={17} />}
+              {isAttendance && hasActiveSessions && (
+                <span style={{
+                  position: 'absolute', top: '6px', right: '6px',
+                  width: '7px', height: '7px',
+                  background: '#ef4444', borderRadius: '50%',
+                  boxShadow: '0 0 8px rgba(239,68,68,0.8)',
+                  animation: 'pulse 2s infinite',
+                }} />
+              )}
+              {hasSections && !isActive && (
+                <ChevronDown size={7} style={{ position: 'absolute', bottom: '4px', right: '5px', opacity: 0.6 }} />
+              )}
+              {isActive && hasSections && (
+                <ChevronRight size={7} style={{ position: 'absolute', bottom: '4px', right: '4px', color: '#730051', opacity: 0.7 }} />
+              )}
+              <span style={{ fontSize: '7px', lineHeight: 1, fontWeight: isActive ? 700 : 400, letterSpacing: '0.2px' }}>
+                {isUser ? 'Profile' : tab.label}
+              </span>
+            </button>
+          );
+        })}
       </div>
-    </>
+
+      {/* Expanding dropdown panel */}
+      {activeTab && sections.length > 0 && (
+        <div
+          style={{
+            position: 'fixed',
+            top: Math.max(64, panelTop),
+            left: '52px',
+            width: 'min(260px, calc(100vw - 52px))',
+            maxHeight: `calc(100vh - ${Math.max(64, panelTop)}px)`,
+            overflowY: 'auto',
+            background: '#ffffff',
+            borderRadius: '0 12px 12px 0',
+            boxShadow: '4px 4px 24px rgba(115,0,81,0.15), 0 2px 8px rgba(0,0,0,0.1)',
+            zIndex: 99998,
+            animation: 'slideInPanel 0.2s cubic-bezier(0.4,0,0.2,1)',
+            borderLeft: '3px solid #730051',
+          }}
+        >
+          {/* Panel header */}
+          <div style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            padding: '10px 12px 8px',
+            borderBottom: '2px solid #f3e8f0',
+            background: 'linear-gradient(135deg, #730051 0%, #9a006c 100%)',
+            borderRadius: '0 12px 0 0',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              {activeTabDef && <activeTabDef.icon size={14} style={{ color: 'rgba(255,255,255,0.9)' }} />}
+              <span style={{ fontSize: '12px', fontWeight: 700, color: 'white', letterSpacing: '0.5px', textTransform: 'uppercase' }}>
+                {activeTabDef?.label}
+              </span>
+            </div>
+            <button
+              onClick={closePanel}
+              style={{ background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: '6px', cursor: 'pointer', padding: '3px', color: 'white', display: 'flex', alignItems: 'center' }}
+            >
+              <X size={14} />
+            </button>
+          </div>
+
+          {/* Content sections */}
+          <div style={{ padding: '4px 4px 8px' }}>
+            {sections.map((section, i) => (
+              <SectionAccordion key={i} section={section} onClose={closePanel} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      <style>{`
+        @keyframes slideInPanel {
+          from { opacity: 0; transform: translateX(-8px); }
+          to   { opacity: 1; transform: translateX(0); }
+        }
+      `}</style>
+    </div>
   );
 };
+
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [userData, setUserData] = useState<UserData | null>(null);
   const [activeSessions, setActiveSessions] = useState<Session[]>([]);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
-  const [showLabels, setShowLabels] = useState(false);
-  const [mobileActiveTab, setMobileActiveTab] = useState<string | null>(null);
   const [signingSession, setSigningSession] = useState<Session | null>(null);
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const navigate = useNavigate();
@@ -436,9 +588,9 @@ const Header = () => {
   // Determine which nav group is active based on current path
   const getActiveNav = (path: string): string | null => {
     if (['/news', '/media'].some(p => path.startsWith(p))) return 'mediaDesk';
-    if (['/ministries', '/ets/', '/brothersfellowship', '/sistersfellowship', '/Bs'].some(p => path.startsWith(p))) return 'joinUs';
-    if (['/financial', '/compassion', '/requisitions', '/my-docs', '/library', '/save', '/recomendations'].some(p => path.startsWith(p))) return 'services';
-    if (['/leadership', '/other-committees', '/bestpClass', '/discipleship', '/elders', '/pdfs', '/christianminds'].some(p => path.startsWith(p))) return 'governance';
+    if (['/ministries', '/ets/', '/brothersfellowship', '/sistersfellowship', '/bestpClass', '/discipleship'].some(p => path.startsWith(p))) return 'joinUs';
+    if (['/financial', '/compassion', '/requisitions', '/my-docs', '/library', '/save', '/recomendations', '/Bs'].some(p => path.startsWith(p))) return 'services';
+    if (['/leadership', '/other-committees', '/elders', '/pdfs', '/christianminds'].some(p => path.startsWith(p))) return 'governance';
     if (path.startsWith('/attendance') || path.startsWith('/session')) return 'attendance';
     return null;
   };
@@ -572,16 +724,13 @@ const Header = () => {
       <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white shadow-md' : 'bg-white/95 backdrop-blur-sm'}`}>
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           <div className="flex items-center h-16 md:h-20 md:pl-0">
-            <button
-              onClick={() => {
-                if (mobileActiveTab === 'services') { setMobileActiveTab(null); setShowLabels(false); }
-                else { setMobileActiveTab('services'); setShowLabels(false); }
-              }}
-              className="md:hidden p-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors flex-shrink-0"
-              aria-label="Toggle menu"
+            <Link
+              to="/"
+              className="md:hidden p-2 rounded-lg flex-shrink-0"
+              aria-label="Go home"
             >
-              {mobileActiveTab === 'services' ? <X size={22} /> : <Menu size={22} />}
-            </button>
+              <Menu size={22} className="text-gray-700" />
+            </Link>
 
             <Link to="/" className="md:hidden flex-1 flex items-center justify-center gap-2">
               <img src={cuLogo} alt="KSUCU Logo" className="w-9 h-9 object-contain" />
@@ -618,15 +767,6 @@ const Header = () => {
             <nav className="hidden md:flex items-center justify-center gap-0.5 lg:gap-1.5 flex-1 min-w-0">
               <Link to="/" className="nav-link-underline px-1.5 lg:px-3 py-2 font-medium text-xs lg:text-sm text-gray-700 whitespace-nowrap">Home</Link>
 
-              {/* Media Desk dropdown */}
-              <div className="relative" onMouseEnter={() => handleMouseEnter('mediaDesk')} onMouseLeave={handleMouseLeave}>
-                <button className={`nav-link-underline flex items-center gap-0.5 lg:gap-1 px-1.5 lg:px-3 py-2 font-medium text-xs lg:text-sm whitespace-nowrap ${activeDropdown === 'mediaDesk' || activeNav === 'mediaDesk' ? 'text-[#730051] nav-link-active' : 'text-gray-700'}`}>
-                  Media Desk
-                  <ChevronDown size={14} className={`transition-transform ${activeDropdown === 'mediaDesk' ? 'rotate-180' : ''}`} />
-                </button>
-                {activeDropdown === 'mediaDesk' && renderMediaDeskPanel()}
-              </div>
-
               {/* Join Us dropdown */}
               <div className="relative" onMouseEnter={() => handleMouseEnter('joinUs')} onMouseLeave={handleMouseLeave}>
                 <button className={`nav-link-underline flex items-center gap-0.5 lg:gap-1 px-1.5 lg:px-3 py-2 font-medium text-xs lg:text-sm whitespace-nowrap ${activeDropdown === 'joinUs' || activeNav === 'joinUs' ? 'text-[#730051] nav-link-active' : 'text-gray-700'}`}>
@@ -650,6 +790,15 @@ const Header = () => {
                   <ChevronDown size={14} className={`transition-transform ${activeDropdown === 'governance' ? 'rotate-180' : ''}`} />
                 </button>
                 {activeDropdown === 'governance' && renderCascadePanel(headerNavGroups.governance, true)}
+              </div>
+
+              {/* Media Desk dropdown */}
+              <div className="relative" onMouseEnter={() => handleMouseEnter('mediaDesk')} onMouseLeave={handleMouseLeave}>
+                <button className={`nav-link-underline flex items-center gap-0.5 lg:gap-1 px-1.5 lg:px-3 py-2 font-medium text-xs lg:text-sm whitespace-nowrap ${activeDropdown === 'mediaDesk' || activeNav === 'mediaDesk' ? 'text-[#730051] nav-link-active' : 'text-gray-700'}`}>
+                  Media Desk
+                  <ChevronDown size={14} className={`transition-transform ${activeDropdown === 'mediaDesk' ? 'rotate-180' : ''}`} />
+                </button>
+                {activeDropdown === 'mediaDesk' && renderMediaDeskPanel()}
               </div>
 
               <div className="relative" onMouseEnter={() => handleMouseEnter('attendance')} onMouseLeave={handleMouseLeave}>
@@ -687,10 +836,6 @@ const Header = () => {
         userData={userData}
         activeSessions={activeSessions}
         onNavigate={(path: string) => navigate(path)}
-        showLabels={showLabels}
-        setShowLabels={setShowLabels}
-        activeTab={mobileActiveTab}
-        setActiveTab={setMobileActiveTab}
       />
 
       {signingSession && (

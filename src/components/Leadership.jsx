@@ -18,12 +18,12 @@ import { FaYoutube, FaInstagram, FaXTwitter, FaTiktok, FaFacebook, FaWhatsapp } 
 const Leadership = () => {
   const [menuActive, setMenuActive] = useState(false);
   const committees = [
-  "Software Development Committee", "Worship Committee", "Prayer Committee",
-  "Discipleship Committee", "Christian Minds", "Best-P",
-  "Bible Study Committee", "Missions Committee", "Accounts Committee",
-  "Development Committee", "Orientation Committee", "Elders Committee",
-  "Strategic Plan Oversight"
-];
+    "Software Development Committee", "Worship Committee", "Prayer Committee",
+    "Discipleship Committee", "Christian Minds", "Best-P",
+    "Bible Study Committee", "Missions Committee", "Accounts Committee",
+    "Development Committee", "Orientation Committee", "Elders Committee",
+    "Strategic Plan Oversight"
+  ];
   const [quicklinksActive, setQuicklinksActive] = useState(false);
 
   const toggleMenu = () => {
@@ -156,50 +156,50 @@ const Leadership = () => {
 
         {/* Main Content */}
         <div className="container">
-          
-  <div className="committees-dropdown-wrapper" style={{ marginBottom: '2rem', textAlign: 'center' }}>
-    <button 
-      onClick={() => setmenuActive(!menuActive)}
-      className="dropdown-toggle-btn"
-      style={{
-        padding: '12px 24px',
-        backgroundColor: '#730051',
-        color: 'white',
-        border: 'none',
-        borderRadius: '5px',
-        cursor: 'pointer',
-        fontSize: '1rem',
-        fontWeight: 'bold'
-      }}
-    >
-      {menuActive ? 'Close Committees List ▲' : 'View Our Committees ▼'}
-    </button>
 
-    {menuActive && (
-      <div className="committees-list" style={{
-        marginTop: '10px',
-        background: 'white',
-        boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
-        borderRadius: '8px',
-        padding: '1rem',
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-        gap: '10px',
-        zIndex: 10
-      }}>
-        {committees.map((item, index) => (
-          <div key={index} style={{
-            padding: '10px',
-            borderBottom: '1px solid #eee',
-            color: '#333',
-            fontSize: '0.9rem'
-          }}>
-            {item}
+          <div className="committees-dropdown-wrapper" style={{ marginBottom: '2rem', textAlign: 'center' }}>
+            <button
+              onClick={() => setMenuActive(!menuActive)}
+              className="dropdown-toggle-btn"
+              style={{
+                padding: '12px 24px',
+                backgroundColor: '#730051',
+                color: 'white',
+                border: 'none',
+                borderRadius: '5px',
+                cursor: 'pointer',
+                fontSize: '1rem',
+                fontWeight: 'bold'
+              }}
+            >
+              {menuActive ? 'Close Committees List ▲' : 'View Our Committees ▼'}
+            </button>
+
+            {menuActive && (
+              <div className="committees-list" style={{
+                marginTop: '10px',
+                background: 'white',
+                boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
+                borderRadius: '8px',
+                padding: '1rem',
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                gap: '10px',
+                zIndex: 10
+              }}>
+                {committees.map((item, index) => (
+                  <div key={index} style={{
+                    padding: '10px',
+                    borderBottom: '1px solid #eee',
+                    color: '#333',
+                    fontSize: '0.9rem'
+                  }}>
+                    {item}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-        ))}
-      </div>
-    )}
-  </div>
 
           {/* Executive Committee Section */}
           <section className="section">
@@ -213,7 +213,7 @@ const Leadership = () => {
                 {executiveCommittee.map((member, index) => (
                   <div key={index} className="profile-card">
                     <img src={member.image} alt={member.title} className="profile-image"
-                     style={{ objectFit: 'cover',   objectPosition: 'top'   }} />
+                      style={{ objectFit: 'cover', objectPosition: 'top' }} />
                     <h3>{member.title}</h3>
                     <p className="profile-name">{member.name}</p>
                     <p className="profile-phone">

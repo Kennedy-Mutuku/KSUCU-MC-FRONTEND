@@ -171,7 +171,6 @@ export const headerNavGroups = {
   ],
   governance: [
     organizationSections[7], // Leadership (now first, includes Other Committees)
-    organizationSections[6], // Classes
     {
       title: 'Governing Docs',
       items: [
@@ -218,12 +217,17 @@ export const headerNavGroups = {
     {
       title: 'Fellowships',
       items: [
-        { label: 'First Years', href: '/classFellowship' },
-        { label: 'Second Years', href: '/classFellowship' },
-        { label: 'Third Years', href: '/classFellowship' },
-        { label: 'Fourth Years', href: '/classFellowship' },
         { label: 'Brothers Fellowship', href: '/brothersfellowship' },
         { label: 'Sisters Fellowship', href: '/sistersfellowship' },
+        {
+          label: 'Class Fellowships',
+          children: [
+            { label: 'First Years', href: '/classFellowship' },
+            { label: 'Second Years', href: '/classFellowship' },
+            { label: 'Third Years', href: '/classFellowship' },
+            { label: 'Fourth Years', href: '/classFellowship' },
+          ],
+        },
       ],
     },
     {
@@ -231,6 +235,13 @@ export const headerNavGroups = {
       items: [
         { label: 'Register for Bible Study', href: '/Bs' },
         { label: 'View Bible Study Groups', href: '/Bs' },
+      ],
+    },
+    {
+      title: 'Classes',
+      items: [
+        { label: 'Best-P Classes', href: '/bestpClass' },
+        { label: 'Discipleship Class', href: '/discipleship' },
       ],
     },
   ],

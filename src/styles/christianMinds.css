@@ -7,7 +7,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding-top: 80px;
+    padding-top: 0;
     box-sizing: border-box;
 }
 
@@ -15,8 +15,8 @@
     #team {
         justify-content: flex-start;
         /* Let content flow naturally on mobile */
-        padding-top: 100px;
-        /* More space for header */
+        padding-top: 0;
+        /* Header offset handled by App.tsx */
         height: auto;
         min-height: 100dvh;
         /* Use dynamic viewport height */
