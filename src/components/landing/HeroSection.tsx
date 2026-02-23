@@ -56,7 +56,7 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="relative h-[40vh] min-h-[250px] md:h-screen md:min-h-[600px] overflow-hidden bg-black">
+    <section className="relative h-[35vh] min-h-[250px] md:h-screen md:min-h-[600px] overflow-hidden bg-black pt-16 md:pt-20">
       {/* Background Images with Smooth Crossfade */}
       {slides.map((slide, index) => {
         const isActive = index === currentSlide;

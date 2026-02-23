@@ -1,20 +1,21 @@
 import Header from '../components/landing/Header';
 import {
   HeroSection,
-  CategorySection,
   WeeklyActivities,
   ForumsSection,
   AboutSection,
   AttendanceSection,
   Footer,
 } from '../components/landing';
-import { organizationSections } from '../data/navigationData';
 
 const LandingPageNew = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
+      {/* Spacer for persistent mobile icon sidebar */}
+      <div className="md:hidden w-[52px] fixed top-0 left-0 bottom-0 z-0" />
+      <div className="pl-[52px] md:pl-0">
       <HeroSection />
 
       {/* Call to Action */}
@@ -26,35 +27,12 @@ const LandingPageNew = () => {
         </div>
       </section>
 
-      {/* Categories Section */}
-      <section className="py-6 md:py-16 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-4 md:px-6">
-          <div className="text-center mb-3 md:mb-10">
-            <span className="inline-block px-3 py-1 bg-purple-100 text-[#730051] text-sm font-medium rounded-full mb-1 md:mb-4">
-              Explore
-            </span>
-            <h2 className="text-xl md:text-3xl font-bold text-gray-800">
-              Our Organization
-            </h2>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-6">
-            {organizationSections.map((section) => (
-              <CategorySection
-                key={section.title}
-                title={section.title}
-                items={section.items}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
-
       <AttendanceSection />
       <WeeklyActivities />
       <ForumsSection />
       <AboutSection />
       <Footer />
+      </div>{/* end pl-[52px] wrapper */}
     </div>
   );
 };
