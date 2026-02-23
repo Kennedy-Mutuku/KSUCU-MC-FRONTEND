@@ -285,7 +285,6 @@ const getTabSections = (key: string, activeSessions: Session[]): TabSection[] =>
 const SectionAccordion = ({ section, onClose }: { section: TabSection; onClose: () => void }) => {
   const [open, setOpen] = useState(false);
   const [expandedChild, setExpandedChild] = useState<string | null>(null);
-  const SectionIcon = section.icon;
 
   return (
     <div style={{ borderBottom: '1px solid #f3e8f0', marginBottom: '2px' }}>
@@ -300,7 +299,6 @@ const SectionAccordion = ({ section, onClose }: { section: TabSection; onClose: 
           transition: 'background 0.2s',
         }}
       >
-        <SectionIcon size={12} style={{ flexShrink: 0 }} />
         <span style={{ flex: 1, textAlign: 'left' }}>{section.title}</span>
         <ChevronDown size={12} style={{ transform: open ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.25s', flexShrink: 0 }} />
       </button>
@@ -312,7 +310,6 @@ const SectionAccordion = ({ section, onClose }: { section: TabSection; onClose: 
         background: '#fff',
       }}>
         {section.items.map((item, i) => {
-          const ItemIcon = subItemIcons[item.label] || ChevronRight;
           const hasChildren = item.children && item.children.length > 0;
           const isChildOpen = expandedChild === item.label;
 
@@ -329,7 +326,6 @@ const SectionAccordion = ({ section, onClose }: { section: TabSection; onClose: 
                     transition: 'all 0.15s',
                   }}
                 >
-                  <ItemIcon size={12} style={{ color: '#730051', flexShrink: 0 }} />
                   <span style={{ flex: 1 }}>{item.label}</span>
                   <ChevronDown size={10} style={{ transform: isChildOpen ? 'rotate(180deg)' : 'rotate(0)', transition: 'transform 0.25s', color: '#9ca3af' }} />
                 </button>
@@ -377,7 +373,6 @@ const SectionAccordion = ({ section, onClose }: { section: TabSection; onClose: 
               onMouseEnter={e => { e.currentTarget.style.color = '#730051'; e.currentTarget.style.background = '#fdf4fb'; }}
               onMouseLeave={e => { e.currentTarget.style.color = '#374151'; e.currentTarget.style.background = 'transparent'; }}
             >
-              <ItemIcon size={12} style={{ color: '#730051', flexShrink: 0 }} />
               <span style={{ flex: 1 }}>{item.label}</span>
               <ExternalLink size={9} style={{ color: '#9ca3af' }} />
             </a>
@@ -394,7 +389,6 @@ const SectionAccordion = ({ section, onClose }: { section: TabSection; onClose: 
               onMouseEnter={e => { e.currentTarget.style.color = '#730051'; e.currentTarget.style.background = '#fdf4fb'; }}
               onMouseLeave={e => { e.currentTarget.style.color = '#374151'; e.currentTarget.style.background = 'transparent'; }}
             >
-              <ItemIcon size={12} style={{ color: '#730051', flexShrink: 0 }} />
               {item.label}
             </Link>
           );
@@ -579,7 +573,6 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, isManualExpan
                 return (
                   <div key={i} style={{ padding: '4px 0 10px' }}>
                     {section.items.map((item, j) => {
-                      const ItemIcon = subItemIcons[item.label] || ChevronRight;
                       return (
                         <Link
                           key={j}
@@ -592,7 +585,6 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, isManualExpan
                             fontWeight: 500
                           }}
                         >
-                          <ItemIcon size={14} style={{ color: '#730051', flexShrink: 0 }} />
                           {item.label}
                         </Link>
                       );
