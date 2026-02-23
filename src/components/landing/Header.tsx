@@ -236,13 +236,19 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, isManualExpan
   setIsManualExpanded: (val: boolean) => void;
 }) => {
   const [activeTab, setActiveTab] = useState<string | null>(null);
+  const [expandedNestedItem, setExpandedNestedItem] = useState<string | null>(null);
   const buttonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
 
   // Expansion happens when any tab is active OR manually toggled via hamburger
   const isExpanded = !!activeTab || isManualExpanded;
 
   const handleTabClick = (key: string) => {
-    if (key === 'dashboard') { setActiveTab(null); onNavigate('/'); return; }
+    if (key === 'dashboard') {
+      setActiveTab(null);
+      setExpandedNestedItem(null);
+      onNavigate('/');
+      return;
+    }
     if (key === 'about') {
       setActiveTab(null);
       setTimeout(() => {
@@ -253,11 +259,13 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, isManualExpan
     }
     if (key === 'signin') {
       setActiveTab(null);
+      setExpandedNestedItem(null);
       onNavigate(userData ? '/home' : '/signIn');
       return;
     }
     if (activeTab === key) {
       setActiveTab(null);
+      setExpandedNestedItem(null);
       return;
     }
     setActiveTab(key);
@@ -266,6 +274,7 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, isManualExpan
 
   const closePanel = () => {
     setActiveTab(null);
+    setExpandedNestedItem(null);
     setIsManualExpanded(false);
   };
 
@@ -401,6 +410,7 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, isManualExpan
                             onClick={(e) => {
                               if (item.children && item.children.length > 0) {
                                 e.preventDefault();
+                                setExpandedNestedItem(expandedNestedItem === item.label ? null : item.label);
                               } else {
                                 closePanel();
                               }
@@ -413,21 +423,37 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, isManualExpan
                             }}
                           >
                             <span style={{ flex: 1 }}>{item.label}</span>
-                            {item.children && <ChevronRight size={10} style={{ opacity: 0.5 }} />}
+                            {item.children && (
+                              <ChevronRight
+                                size={10}
+                                style={{
+                                  opacity: 0.5,
+                                  transform: expandedNestedItem === item.label ? 'rotate(90deg)' : 'rotate(0deg)',
+                                  transition: 'transform 0.2s'
+                                }}
+                              />
+                            )}
                           </Link>
 
                           {/* Nested children if any */}
                           {item.children && (
-                            <div style={{ paddingLeft: '12px', background: '#fafafa' }}>
+                            <div style={{
+                              paddingLeft: '12px',
+                              background: '#fafafa',
+                              maxHeight: expandedNestedItem === item.label ? '500px' : '0',
+                              overflow: 'hidden',
+                              transition: 'all 0.3s ease-in-out'
+                            }}>
                               {item.children.map((child, j) => (
                                 <Link
                                   key={j}
                                   to={child.href || '#'}
                                   onClick={closePanel}
                                   style={{
-                                    display: 'block', padding: '6px 16px',
-                                    color: '#6b7280', fontSize: '10.5px',
-                                    textDecoration: 'none'
+                                    display: 'block', padding: '10px 16px',
+                                    color: '#6b7280', fontSize: '11px',
+                                    textDecoration: 'none',
+                                    fontWeight: 400
                                   }}
                                 >
                                   {child.label}
@@ -445,7 +471,6 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, isManualExpan
           );
         })}
       </div>
-
 
       <style>{`
         @keyframes accordionDown {
