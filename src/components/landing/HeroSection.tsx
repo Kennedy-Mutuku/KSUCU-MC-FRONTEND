@@ -56,7 +56,7 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="relative h-[35vh] min-h-[250px] md:h-screen md:min-h-[600px] overflow-hidden bg-black pt-16 md:pt-20">
+    <section className="relative h-[35vh] min-h-[250px] md:h-screen md:min-h-[600px] overflow-hidden bg-black md:pt-20">
       {/* Background Images with Smooth Crossfade */}
       {slides.map((slide, index) => {
         const isActive = index === currentSlide;
@@ -159,11 +159,10 @@ const HeroSection = () => {
             <button
               key={index}
               onClick={() => goToSlide(index)}
-              className={`w-2 h-2 md:w-3 md:h-3 rounded-full transition-all duration-500 outline-none focus:outline-none ${
-                index === currentSlide
+              className={`w-2 h-2 md:w-3 md:h-3 rounded-full transition-all duration-500 outline-none focus:outline-none ${index === currentSlide
                   ? 'bg-white scale-110'
                   : 'bg-white/40 hover:bg-white/60'
-              }`}
+                }`}
               aria-label={`Go to slide ${index + 1}`}
             />
           ))}

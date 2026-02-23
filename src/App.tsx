@@ -8,7 +8,7 @@ function App() {
   return (
     <>
       <Header />
-      <div className="min-h-screen pt-16 md:pt-20 pl-[52px] md:pl-0">
+      <div className="min-h-screen pt-16 md:pt-20 ml-[52px] md:ml-0">
         <Suspense fallback={
           <div style={{
             display: 'flex',
