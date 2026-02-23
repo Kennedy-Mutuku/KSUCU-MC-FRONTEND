@@ -3,14 +3,13 @@ import {
   WeeklyActivities,
   ForumsSection,
   AboutSection,
-  Footer,
 } from '../components/landing';
 
 const LandingPageNew = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="pl-[52px] md:pl-0">
+      <div>
         <HeroSection />
 
         {/* Call to Action */}
@@ -25,8 +24,7 @@ const LandingPageNew = () => {
         <WeeklyActivities />
         <ForumsSection />
         <AboutSection />
-        <Footer />
-      </div>{/* end pl-[52px] wrapper */}
+      </div>
     </div>
   );
 };

@@ -567,15 +567,15 @@ const Header = () => {
               </div>
             </Link>
 
-            <Link to="/" className="hidden md:flex items-center gap-3 flex-shrink-0">
-              <img src={cuLogo} alt="KSUCU Logo" className="w-12 h-12 lg:w-14 lg:h-14 object-contain" />
-              <div className="flex flex-col">
-                <div className="font-extrabold text-gray-900 leading-none text-xs lg:text-base tracking-tight uppercase" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+            <Link to="/" className="hidden md:flex items-center gap-2 lg:gap-3 flex-shrink-0 max-w-[280px] lg:max-w-none">
+              <img src={cuLogo} alt="KSUCU Logo" className="w-10 h-10 lg:w-14 lg:h-14 object-contain flex-shrink-0" />
+              <div className="flex flex-col min-w-0">
+                <div className="font-extrabold text-gray-900 leading-none text-[10px] lg:text-base tracking-tight uppercase" style={{ fontFamily: 'Montserrat, sans-serif' }}>
                   KISII UNIVERSITY CHRISTIAN UNION
                 </div>
                 <div className="flex items-center gap-2 mt-1 lg:mt-1.5 w-full">
                   <div className="h-[1px] flex-1 bg-[#730051]/30"></div>
-                  <span className="text-[#730051] text-[10px] lg:text-sm whitespace-nowrap px-1" style={{ fontFamily: 'Satisfy, cursive' }}>
+                  <span className="text-[#730051] text-[8px] lg:text-sm whitespace-nowrap px-1" style={{ fontFamily: 'Satisfy, cursive' }}>
                     Transforming Campus, Impacting nations
                   </span>
                   <div className="h-[1px] flex-1 bg-[#730051]/30"></div>
@@ -583,12 +583,12 @@ const Header = () => {
               </div>
             </Link>
 
-            <nav className="hidden md:flex items-center justify-center gap-0 lg:gap-0.5 flex-1 min-w-0">
-              <Link to="/" className="px-2 lg:px-3 py-2 rounded-lg font-medium text-sm text-gray-700 hover:bg-gray-100 transition-colors whitespace-nowrap">Home</Link>
-              <a href="#about" className="px-3 py-2 rounded-lg font-medium text-sm text-gray-700 hover:bg-gray-100 transition-colors" onClick={(e) => { e.preventDefault(); document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' }); }}>About</a>
+            <nav className="hidden md:flex items-center justify-center gap-0.5 lg:gap-1.5 flex-1 min-w-0">
+              <Link to="/" className="px-1.5 lg:px-3 py-2 rounded-lg font-medium text-xs lg:text-sm text-gray-700 hover:bg-gray-100 transition-colors whitespace-nowrap">Home</Link>
+              <a href="#about" className="px-1.5 lg:px-3 py-2 rounded-lg font-medium text-xs lg:text-sm text-gray-700 hover:bg-gray-100 transition-colors whitespace-nowrap" onClick={(e) => { e.preventDefault(); document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' }); }}>About</a>
 
               <div className="relative" onMouseEnter={() => handleMouseEnter('services')} onMouseLeave={handleMouseLeave}>
-                <button className={`flex items-center gap-1 px-3 py-2 rounded-lg font-medium text-sm transition-colors ${activeDropdown === 'services' ? 'text-[#730051] bg-purple-50' : 'text-gray-700 hover:bg-gray-100'}`}>
+                <button className={`flex items-center gap-0.5 lg:gap-1 px-1.5 lg:px-3 py-2 rounded-lg font-medium text-xs lg:text-sm transition-colors whitespace-nowrap ${activeDropdown === 'services' ? 'text-[#730051] bg-purple-50' : 'text-gray-700 hover:bg-gray-100'}`}>
                   Services
                   <ChevronDown size={14} className={`transition-transform ${activeDropdown === 'services' ? 'rotate-180' : ''}`} />
                 </button>
@@ -596,7 +596,7 @@ const Header = () => {
               </div>
 
               <div className="relative" onMouseEnter={() => handleMouseEnter('governance')} onMouseLeave={handleMouseLeave}>
-                <button className={`flex items-center gap-1 px-3 py-2 rounded-lg font-medium text-sm transition-colors ${activeDropdown === 'governance' ? 'text-[#730051] bg-purple-50' : 'text-gray-700 hover:bg-gray-100'}`}>
+                <button className={`flex items-center gap-0.5 lg:gap-1 px-1.5 lg:px-3 py-2 rounded-lg font-medium text-xs lg:text-sm transition-colors whitespace-nowrap ${activeDropdown === 'governance' ? 'text-[#730051] bg-purple-50' : 'text-gray-700 hover:bg-gray-100'}`}>
                   Governance
                   <ChevronDown size={14} className={`transition-transform ${activeDropdown === 'governance' ? 'rotate-180' : ''}`} />
                 </button>
@@ -604,7 +604,7 @@ const Header = () => {
               </div>
 
               <div className="relative" onMouseEnter={() => handleMouseEnter('attendance')} onMouseLeave={handleMouseLeave}>
-                <button className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium text-sm transition-all relative ${activeDropdown === 'attendance' ? 'text-[#730051] bg-purple-50' : 'text-gray-700 hover:bg-gray-100'}`}>
+                <button className={`flex items-center gap-1 lg:gap-2 px-1.5 lg:px-3 py-2 rounded-lg font-medium text-xs lg:text-sm transition-all relative whitespace-nowrap ${activeDropdown === 'attendance' ? 'text-[#730051] bg-purple-50' : 'text-gray-700 hover:bg-gray-100'}`}>
                   Attendance
                   {activeSessions.length > 0 && (
                     <span className="relative flex h-2 w-2">
@@ -616,18 +616,18 @@ const Header = () => {
                 </button>
                 {activeDropdown === 'attendance' && renderAttendanceDropdown()}
               </div>
-            </nav>
 
-            <div className="hidden md:flex items-center flex-shrink-0 ml-4">
-              {userData ? (
-                <button onClick={() => navigate('/home')} className="flex items-center gap-2 px-3 py-2 rounded-lg font-medium text-sm text-gray-700 hover:bg-gray-100 transition-colors">
-                  <User size={18} />
-                  {userData.username}
-                </button>
-              ) : (
-                <Link to="/signIn" className="px-5 py-2 bg-[#730051] text-white font-medium text-sm rounded-lg hover:bg-[#5a0040] transition-colors shadow-lg shadow-purple-900/10 active:scale-95 transform transition-all">Sign In</Link>
-              )}
-            </div>
+              <div className="flex-shrink-0 ml-1 lg:ml-4">
+                {userData ? (
+                  <button onClick={() => navigate('/home')} className="flex items-center gap-2 px-2 lg:px-3 py-2 rounded-lg font-medium text-xs lg:text-sm text-gray-700 hover:bg-gray-100 transition-colors whitespace-nowrap">
+                    <User size={18} />
+                    {userData.username}
+                  </button>
+                ) : (
+                  <Link to="/signIn" className="px-3 lg:px-5 py-1.5 lg:py-2 bg-[#730051] text-white font-medium text-xs lg:text-sm rounded-lg hover:bg-[#5a0040] transition-colors shadow-lg shadow-purple-900/10 active:scale-95 transform transition-all whitespace-nowrap">Sign In</Link>
+                )}
+              </div>
+            </nav>
           </div>
         </div>
       </header>

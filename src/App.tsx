@@ -8,9 +8,7 @@ function App() {
   return (
     <>
       <Header />
-      {/* Spacer for persistent mobile icon sidebar */}
-      <div className="md:hidden w-[52px] fixed top-0 left-0 bottom-0 z-0" />
-      <div className="min-h-screen">
+      <div className="min-h-screen pt-16 md:pt-20 pl-[52px] md:pl-0">
         <Suspense fallback={
           <div style={{
             display: 'flex',
@@ -27,8 +25,8 @@ function App() {
         }>
           <Outlet />
         </Suspense>
+        <Footer />
       </div>
-      <Footer />
       <CommunityChat />
     </>
   )
