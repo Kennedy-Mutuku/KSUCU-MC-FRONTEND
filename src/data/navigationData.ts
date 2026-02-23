@@ -54,11 +54,11 @@ export const organizationSections: NavSection[] = [
   {
     title: 'Evangelistic Teams',
     items: [
-      { label: 'RIVET - Rift Valley Evangelistic Team', href: '/ets/rivet' },
-      { label: 'ESET - Eastern Evangelistic Team', href: '/ets/eset' },
-      { label: 'WESO - Western Evangelistic Students Outreach', href: '/ets/weso' },
-      { label: 'NET - Nyanza Evangelistic Team', href: '/ets/net' },
-      { label: 'CET - Central Evangelistic Team', href: '/ets/cet' },
+      { label: 'RIVET', href: '/ets/rivet' },
+      { label: 'ESET', href: '/ets/eset' },
+      { label: 'WESO', href: '/ets/weso' },
+      { label: 'NET', href: '/ets/net' },
+      { label: 'CET', href: '/ets/cet' },
     ],
   },
   {
