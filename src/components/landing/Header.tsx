@@ -178,6 +178,7 @@ const mobileNavTabs: { key: string; icon: React.ElementType; label: string; }[] 
   { key: 'ministries', icon: Music, label: 'Ministries' },
   { key: 'boards', icon: Building2, label: 'Boards' },
   { key: 'eteams', icon: Globe, label: 'E. Teams' },
+  { key: 'mediadesk', icon: Tv2, label: 'Media Desk' },
   { key: 'fellowships', icon: UsersRound, label: 'Fellowships' },
   { key: 'biblestudy', icon: BookOpen, label: 'Bible Study' },
   { key: 'classes', icon: GraduationCap, label: 'Classes' },
@@ -190,7 +191,6 @@ const mobileNavTabs: { key: string; icon: React.ElementType; label: string; }[] 
   { key: 'winasoul', icon: UserPlus, label: 'Win a Soul' },
   { key: 'leadership', icon: Crown, label: 'Leadership' },
   { key: 'governingdocs', icon: FileText, label: 'Governing Docs' },
-  { key: 'mediadesk', icon: Tv2, label: 'Media Desk' },
   { key: 'committees', icon: UsersRound, label: 'Committees' },
   { key: 'attendance', icon: ClipboardList, label: 'Attendance' },
   { key: 'signin', icon: LogIn, label: 'Sign In' },
@@ -703,11 +703,11 @@ const Header = () => {
             </Link>
 
             <nav className="hidden md:flex items-center justify-center gap-0.5 lg:gap-1.5 flex-1 min-w-0">
-              <Link to="/" className="nav-link-underline px-1.5 lg:px-3 py-2 font-medium text-xs lg:text-sm text-gray-700 whitespace-nowrap">Home</Link>
+              <Link to="/" className={`nav-link-underline px-1.5 lg:px-3 py-2 font-medium text-xs lg:text-sm whitespace-nowrap ${location.pathname === '/' ? 'text-[#730051] nav-link-active' : 'text-gray-700'}`}>Home</Link>
 
               {/* Join Us dropdown */}
               <div className="relative" onMouseEnter={() => handleMouseEnter('joinUs')} onMouseLeave={handleMouseLeave}>
-                <button className={`nav-link-underline flex items-center gap-0.5 lg:gap-1 px-1.5 lg:px-3 py-2 font-medium text-xs lg:text-sm whitespace-nowrap ${activeDropdown === 'joinUs' || activeNav === 'joinUs' ? 'text-[#730051] nav-link-active' : 'text-gray-700'}`}>
+                <button className={`nav-link-underline flex items-center gap-0.5 lg:gap-1 px-1.5 lg:px-3 py-2 font-medium text-xs lg:text-sm whitespace-nowrap ${activeDropdown === 'joinUs' || ['ministries', 'boards', 'eteams', 'fellowships', 'biblestudy', 'classes'].includes(activeNav || '') ? 'text-[#730051] nav-link-active' : 'text-gray-700'}`}>
                   Join Us
                   <ChevronDown size={14} className={`transition-transform ${activeDropdown === 'joinUs' ? 'rotate-180' : ''}`} />
                 </button>
@@ -715,7 +715,7 @@ const Header = () => {
               </div>
 
               <div className="relative" onMouseEnter={() => handleMouseEnter('services')} onMouseLeave={handleMouseLeave}>
-                <button className={`nav-link-underline flex items-center gap-0.5 lg:gap-1 px-1.5 lg:px-3 py-2 font-medium text-xs lg:text-sm whitespace-nowrap ${activeDropdown === 'services' || activeNav === 'services' ? 'text-[#730051] nav-link-active' : 'text-gray-700'}`}>
+                <button className={`nav-link-underline flex items-center gap-0.5 lg:gap-1 px-1.5 lg:px-3 py-2 font-medium text-xs lg:text-sm whitespace-nowrap ${activeDropdown === 'services' || ['financials', 'feedback', 'compassion', 'requisitions', 'filemanager', 'library', 'winasoul'].includes(activeNav || '') ? 'text-[#730051] nav-link-active' : 'text-gray-700'}`}>
                   Services
                   <ChevronDown size={14} className={`transition-transform ${activeDropdown === 'services' ? 'rotate-180' : ''}`} />
                 </button>
@@ -723,7 +723,7 @@ const Header = () => {
               </div>
 
               <div className="relative" onMouseEnter={() => handleMouseEnter('governance')} onMouseLeave={handleMouseLeave}>
-                <button className={`nav-link-underline flex items-center gap-0.5 lg:gap-1 px-1.5 lg:px-3 py-2 font-medium text-xs lg:text-sm whitespace-nowrap ${activeDropdown === 'governance' || activeNav === 'governance' ? 'text-[#730051] nav-link-active' : 'text-gray-700'}`}>
+                <button className={`nav-link-underline flex items-center gap-0.5 lg:gap-1 px-1.5 lg:px-3 py-2 font-medium text-xs lg:text-sm whitespace-nowrap ${activeDropdown === 'governance' || ['leadership', 'governingdocs', 'committees'].includes(activeNav || '') ? 'text-[#730051] nav-link-active' : 'text-gray-700'}`}>
                   Governance
                   <ChevronDown size={14} className={`transition-transform ${activeDropdown === 'governance' ? 'rotate-180' : ''}`} />
                 </button>
