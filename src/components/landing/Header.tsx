@@ -557,44 +557,52 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, isManualExpan
             position: 'fixed',
             top: Math.max(64, panelTop),
             left: isExpanded ? '170px' : '52px',
-            width: 'min(260px, calc(100vw - 170px))',
+            width: 'min(240px, calc(100vw - 170px))',
             maxHeight: `calc(100vh - ${Math.max(64, panelTop)}px)`,
             overflowY: 'auto',
             background: '#ffffff',
             borderRadius: '0 12px 12px 0',
-            boxShadow: '4px 4px 24px rgba(115,0,81,0.15), 0 2px 8px rgba(0,0,0,0.1)',
+            boxShadow: '8px 0 24px rgba(0,0,0,0.12), 4px 4px 12px rgba(115,0,81,0.05)',
             zIndex: 99998,
-            animation: 'slideInPanel 0.2s cubic-bezier(0.4,0,0.2,1)',
-            borderLeft: '3px solid #730051',
+            animation: 'slideInPanel 0.25s cubic-bezier(0.4,0,0.2,1)',
+            borderLeft: '1px solid #f3e8f0',
           }}
         >
-          {/* Panel header */}
-          <div style={{
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            padding: '10px 12px 8px',
-            borderBottom: '2px solid #f3e8f0',
-            background: 'linear-gradient(135deg, #730051 0%, #9a006c 100%)',
-            borderRadius: '0 12px 0 0',
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              {activeTabDef && <activeTabDef.icon size={14} style={{ color: 'rgba(255,255,255,0.9)' }} />}
-              <span style={{ fontSize: '12px', fontWeight: 700, color: 'white', letterSpacing: '0.5px', textTransform: 'uppercase' }}>
-                {activeTabDef?.label}
-              </span>
-            </div>
-            <button
-              onClick={closePanel}
-              style={{ background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: '6px', cursor: 'pointer', padding: '3px', color: 'white', display: 'flex', alignItems: 'center' }}
-            >
-              <X size={14} />
-            </button>
-          </div>
+          {/* Content sections (Self-contained, no purple header) */}
+          <div style={{ padding: '8px 4px' }}>
+            {sections.map((section, i) => {
+              // Deduplication: If the section title matches the active tab's label exactly, 
+              // we hide the accordion button and show items directly.
+              const isRedundant = section.title.toLowerCase() === activeTabDef?.label.toLowerCase();
 
-          {/* Content sections */}
-          <div style={{ padding: '4px 4px 8px' }}>
-            {sections.map((section, i) => (
-              <SectionAccordion key={i} section={section} onClose={closePanel} />
-            ))}
+              if (isRedundant) {
+                return (
+                  <div key={i} style={{ padding: '4px 0 10px' }}>
+                    {section.items.map((item, j) => {
+                      const ItemIcon = subItemIcons[item.label] || ChevronRight;
+                      return (
+                        <Link
+                          key={j}
+                          to={item.href || '#'}
+                          onClick={closePanel}
+                          style={{
+                            display: 'flex', alignItems: 'center', gap: '8px',
+                            padding: '10px 14px', color: '#374151', fontSize: '13px',
+                            textDecoration: 'none', transition: 'all 0.15s',
+                            fontWeight: 500
+                          }}
+                        >
+                          <ItemIcon size={14} style={{ color: '#730051', flexShrink: 0 }} />
+                          {item.label}
+                        </Link>
+                      );
+                    })}
+                  </div>
+                );
+              }
+
+              return <SectionAccordion key={i} section={section} onClose={closePanel} />;
+            })}
           </div>
         </div>
       )}
