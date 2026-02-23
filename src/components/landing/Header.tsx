@@ -191,6 +191,7 @@ const mobileNavTabs: { key: string; icon: React.ElementType; label: string; }[] 
   { key: 'leadership', icon: Crown, label: 'Leadership' },
   { key: 'governingdocs', icon: FileText, label: 'Governing Docs' },
   { key: 'mediadesk', icon: Tv2, label: 'Media Desk' },
+  { key: 'committees', icon: UsersRound, label: 'Committees' },
   { key: 'attendance', icon: ClipboardList, label: 'Attendance' },
   { key: 'about', icon: Info, label: 'About' },
   { key: 'signin', icon: LogIn, label: 'Sign In' },
@@ -238,6 +239,7 @@ const getTabSections = (key: string, activeSessions: Session[]): TabSection[] =>
     case 'attendance':
       if (activeSessions.length === 0) return [];
       return [{ title: 'Active Sessions', icon: ClipboardList, items: activeSessions.map(s => ({ label: s.title, href: `/attendance?session=${s._id}` })) }];
+    case 'committees': return [{ title: 'Committees', icon: UsersRound, items: organizationSections[5].items }];
     default: return [];
   }
 };
@@ -524,8 +526,10 @@ const Header = () => {
     if (path.startsWith('/my-docs')) return 'filemanager';
     if (path.startsWith('/library')) return 'library';
     if (path.startsWith('/save')) return 'winasoul';
-    if (['/leadership', '/other-committees', '/elders'].some(p => path.startsWith(p))) return 'leadership';
-    if (['/pdfs', '/christianminds', '/governing-docs'].some(p => path.startsWith(p))) return 'governingdocs';
+    if (path.startsWith('/boards')) return 'boards';
+    if (path.startsWith('/other-committees')) return 'committees';
+    if (path.startsWith('/leadership')) return 'leadership';
+    if (path.startsWith('/governing-docs')) return 'governingdocs';
     if (path.startsWith('/attendance') || path.startsWith('/session')) return 'attendance';
     return null;
   };
