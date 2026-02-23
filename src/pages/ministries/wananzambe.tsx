@@ -1,12 +1,12 @@
-import React, { useEffect, useRef } from 'react';
-import styles from '../../styles/ministryPage.module.css';
+import React, { useEffect, useRef, useState } from 'react';
+import styles from './wananzambe.module.css';
 import { Link } from 'react-router-dom';
 import wanazambeImg from '../../assets/wananzambe.jpg';
+import MinistryRegistrationModal from '../../components/MinistryRegistrationModal';
 
 const WanazambePage: React.FC = () => {
   const contentRef1 = useRef<HTMLDivElement>(null);
-  const contentRef2 = useRef<HTMLDivElement>(null);
-  const testimonialsRef = useRef<HTMLDivElement>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     // Smooth scroll behavior
@@ -21,15 +21,13 @@ const WanazambePage: React.FC = () => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
+          entry.target.classList.add(styles.visible || 'visible');
         }
       });
     }, observerOptions);
 
     // Observe elements if they exist
     if (contentRef1.current) observer.observe(contentRef1.current);
-    if (contentRef2.current) observer.observe(contentRef2.current);
-    if (testimonialsRef.current) observer.observe(testimonialsRef.current);
 
     return () => {
       document.documentElement.style.scrollBehavior = 'auto';
@@ -48,37 +46,37 @@ const WanazambePage: React.FC = () => {
 
       <div className={styles.container}>
         <div className={`${styles.contentSection} ${styles.animate}`} ref={contentRef1}>
-          <div className={styles.description}>
+          <div className={styles.sectionBlock}>
             <h2>About Wananzambe</h2>
             <p>
-              Wananzambe is the instrumentalists' ministry in KSUCU-MC, dedicated to enhancing worship through music. This ministry consists of skilled musicians who play various instruments to create a powerful and uplifting worship experience. With a passion for excellence and a heart for service, Wananzambe plays a vital role in leading the congregation into deep and meaningful worship.
+              Wananzambe is the instrumentalists' ministry of KSUCU-MC, committed to strengthening worship through skilled musicianship and servant leadership. Our team exists to support and elevate the worship experience, creating an atmosphere that leads the congregation into deep and meaningful encounters with God.
             </p>
-            
-            
+
             <h3>Our Mission</h3>
             <p>
               To glorify God through instrumental worship, creating an atmosphere where hearts are lifted and souls are touched by His presence. We strive to support the worship experience through skillful musicianship and devoted hearts.
             </p>
-            
-            <h3>What We Do</h3>
+          </div>
+
+          <div className={styles.sectionBlock}>
+            <h2>What We Do</h2>
             <ul className={styles.activitiesList}>
               <li data-number="01">Lead instrumental worship during church services</li>
               <li data-number="02">Support choir and praise & worship team performances</li>
               <li data-number="03">Participate in special events and concerts</li>
-              <li data-number="04">Conduct music workshops and mentorship programs</li>
-              <li data-number="05">Organize community outreach through music</li>
             </ul>
-            
           </div>
 
-          <div className={styles.joinSection}>
+          <div className={styles.sectionBlock}>
             <h2>Join Wananzambe</h2>
             <p>
-             Do you have a heart for worship and musical talents to share? We welcome musicians of all skill levels who are passionate about serving God through instrumental worship.
+              Do you have a heart for worship and musical talents to share? We welcome musicians of all skill levels who are passionate about serving God through instrumental worship.
             </p>
-            
+            <p>
+              We are looking for:
+            </p>
+
             <div className={styles.requirements}>
-              <h3>Requirements to Join</h3>
               <ul>
                 <li>Born-again Christian with a heart for worship</li>
                 <li>Basic instrumental skills (training provided for beginners)</li>
@@ -87,53 +85,24 @@ const WanazambePage: React.FC = () => {
                 <li>Team player attitude and servant's heart</li>
               </ul>
             </div>
-            
 
-            <div className={styles.schedule}>
-              <h3>Practice Schedule</h3>
-              <div className={styles.scheduleGrid}>
-                <div className={styles.scheduleItem}>
-                  <strong>Weekly Rehearsals</strong>
-                  <p>Saturdays: 2:00 PM - 4:00 PM</p>
-                </div>
-                <div className={styles.scheduleItem}>
-                  <strong>Pre-Practice</strong>
-                  <p>Thursday: 5:00 PM - 7:00 PM</p>
-                </div>
-                <div className={styles.scheduleItem}>
-                  <strong>Special Events</strong>
-                  <p>As scheduled and announced</p>
-                </div>
-              </div>
-            </div>
-            
             <div className={styles.actionButtons}>
               <Link to="/contact-us" className={styles.commitmentButton}>
-                Join Wanazambe
+                Join Wananzambe
               </Link>
               <Link to="/contact-us" className={styles.contactButton}>
-                Contact Worship Coodinator
+                Contact Worship Coordinator
               </Link>
             </div>
           </div>
         </div>
 
-<div className={`${styles.contentSection} ${styles.animate}`} ref={contentRef1} >
-          <div className={styles.description}>
-            <h3>Our Worship Philosophy</h3>
-            <p>
-              "Let everything that has breath praise the Lord. Praise the Lord!" Psalm 150:6
-            </p>
-            <p>
-             We believe that worship is both a privilege and a responsibility. It's our response to who God is and what He has done for us. Our goal is not just to perform music, but to create an environment where every person can encounter the living God and respond with their whole heart.
-            </p>
-            
-          </div>
-        </div>
-
-        
+        <MinistryRegistrationModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          ministryName="Wananzambe Ministry"
+        />
       </div>
-      
     </>
   );
 };
