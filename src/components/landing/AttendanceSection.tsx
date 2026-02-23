@@ -182,28 +182,28 @@ const AttendanceSection = () => {
   };
 
   return (
-    <section className="py-8 bg-gray-50/50">
+    <section className="py-4 bg-gray-50/50">
       <div className="max-w-6xl mx-auto px-4">
         {/* Center: Session Status & Actions */}
-        <div className="lg:col-span-3 max-w-2xl mx-auto w-full space-y-6">
+        <div className="lg:col-span-3 max-w-2xl mx-auto w-full space-y-3">
           <div className="text-center">
-            <h2 className="text-3xl font-black text-[#730051] mb-2 tracking-tight">Attendance Center</h2>
-            <p className="text-gray-600 font-medium">Please sign in if you are attending any active session.</p>
+            <h2 className="text-2xl font-black text-[#730051] mb-1 tracking-tight">Attendance Center</h2>
+            <p className="text-sm text-gray-600 font-medium">Please sign in if you are attending any active session.</p>
           </div>
 
-          <div className="p-8 bg-white rounded-[2.5rem] border border-gray-100 shadow-2xl shadow-purple-900/5">
-            <div className="flex items-center justify-center gap-3 mb-6">
-              <div className={`w-3 h-3 rounded-full ${activeSessions.length > 0 ? 'bg-green-500 animate-pulse' : 'bg-gray-300'}`} />
-              <span className="font-bold text-sm uppercase tracking-wider text-gray-500">
+          <div className={`${activeSessions.length === 0 ? 'p-4' : 'p-6'} bg-white rounded-2xl border border-gray-100 shadow-lg shadow-purple-900/5`}>
+            <div className="flex items-center justify-center gap-2 mb-3">
+              <div className={`w-2 h-2 rounded-full ${activeSessions.length > 0 ? 'bg-green-500 animate-pulse' : 'bg-gray-300'}`} />
+              <span className="font-bold text-xs uppercase tracking-wider text-gray-500">
                 {activeSessions.length} {activeSessions.length === 1 ? 'Session' : 'Sessions'} Active
               </span>
             </div>
 
             {activeSessions.length === 0 ? (
-              <div className="py-12 text-center">
-                <AlertCircle className="mx-auto text-gray-200 mb-4" size={48} />
-                <p className="text-lg font-bold text-gray-400">No sessions are currently open for signing.</p>
-                <p className="text-sm text-gray-400 mt-1">Wait for a leader to start a session.</p>
+              <div className="py-4 text-center">
+                <AlertCircle className="mx-auto text-gray-200 mb-2" size={28} />
+                <p className="text-sm font-semibold text-gray-400">No sessions currently open</p>
+                <p className="text-xs text-gray-400 mt-0.5">Wait for a leader to start a session</p>
               </div>
             ) : (
               <div className="space-y-3">

@@ -105,7 +105,7 @@ const SignUp: React.FC = () => {
       setShowDropdown(false);
     }
   };
-  
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { id, value } = e.target;
@@ -139,7 +139,7 @@ const SignUp: React.FC = () => {
     setSelectedMinistries([]);
     setFieldErrors({});
   };
-  
+
   const handleSubmit = async () => {
     // Check if there are any field errors (duplicate email/phone)
     if (fieldErrors.email || fieldErrors.phone) {
@@ -289,7 +289,7 @@ const SignUp: React.FC = () => {
           </div>
 
           <div className={styles['form-footer']} style={{ marginTop: '20px' }}>
-            <p><Link to={"/Home"}>Home</Link></p>
+            <p><Link to={"/Home"}>← Back to Home</Link></p>
           </div>
         </div>
       </div>
@@ -307,28 +307,42 @@ const SignUp: React.FC = () => {
         </Link>
         <h2 className={styles['text']}>Sign Up</h2>
 
-        <p style={{ fontSize: '14px', color: '#666', textAlign: 'center', marginBottom: '15px' }}>
-          Fill in your details to create an account. Your phone number will be your password.
+        <p style={{ fontSize: '13px', color: '#777', textAlign: 'center', marginBottom: '15px' }}>
+          Create your account • Phone number is your password
         </p>
 
         {error && <p className={styles.error}>{error}</p>}
 
         <div className={styles['form']}>
           <div className={styles['form-div']}>
-            <label htmlFor="name">NAME</label>
-            <input type="text" id="username" className={styles['input']} value={formData.username} onChange={handleChange} placeholder="Enter your full name" />
+            <label htmlFor="name">Full Name</label>
+            <input
+              type="text"
+              id="username"
+              className={styles['input']}
+              value={formData.username}
+              onChange={handleChange}
+              placeholder="Enter your full name"
+              required
+              minLength={3}
+              maxLength={100}
+            />
           </div>
 
           <div className={styles['form-div']}>
-            <label htmlFor="phone">PHONE (This will be your password)</label>
+            <label htmlFor="phone">Phone Number</label>
             <input
-              type="text"
+              type="tel"
               id="phone"
               className={styles['input']}
               value={formData.phone}
               onChange={handleChange}
               onBlur={() => checkFieldExists('phone', formData.phone)}
               placeholder="e.g., 0712345678"
+              pattern="0[0-9]{9}"
+              title="Phone number must start with 0 and be exactly 10 digits"
+              required
+              maxLength={10}
               style={fieldErrors.phone ? { borderColor: '#dc2626' } : {}}
             />
             {checkingField === 'phone' && (
@@ -353,7 +367,7 @@ const SignUp: React.FC = () => {
           </div>
 
           <div className={styles['form-div']}>
-            <label htmlFor="email">E-mail (This will be your username)</label>
+            <label htmlFor="email">E-mail</label>
             <input
               type="email"
               id="email"
@@ -362,6 +376,8 @@ const SignUp: React.FC = () => {
               onChange={handleChange}
               onBlur={() => checkFieldExists('email', formData.email)}
               placeholder="Enter your email"
+              required
+              maxLength={100}
               style={fieldErrors.email ? { borderColor: '#dc2626' } : {}}
             />
             {checkingField === 'email' && (
@@ -386,22 +402,50 @@ const SignUp: React.FC = () => {
           </div>
 
           <div className={styles['form-div']}>
-            <label htmlFor="course">COURSE</label>
-            <input type="text" id="course" className={styles['input']} value={formData.course} onChange={handleChange} placeholder="e.g., Computer Science" />
+            <label htmlFor="course">Course</label>
+            <input
+              type="text"
+              id="course"
+              className={styles['input']}
+              value={formData.course}
+              onChange={handleChange}
+              placeholder="e.g., Computer Science"
+              required
+              maxLength={100}
+            />
           </div>
 
           <div className={styles['form-div']}>
-            <label htmlFor="reg">REG NUMBER</label>
-            <input type="text" id="reg" className={styles['input']} value={formData.reg} onChange={handleChange} placeholder="e.g., BCS/1234/21" />
+            <label htmlFor="reg">Reg Number</label>
+            <input
+              type="text"
+              id="reg"
+              className={styles['input']}
+              value={formData.reg}
+              onChange={handleChange}
+              placeholder="e.g., BCS/1234/21"
+              required
+              maxLength={50}
+            />
           </div>
 
           <div className={styles['form-div']}>
-            <label htmlFor="yos">YEAR OF STUDY (1-6)</label>
-            <input type="number" id="yos" className={styles['input']} value={formData.yos} onChange={handleChange} min="1" max="6" placeholder="e.g., 2" />
+            <label htmlFor="yos">Year of Study</label>
+            <input
+              type="number"
+              id="yos"
+              className={styles['input']}
+              value={formData.yos}
+              onChange={handleChange}
+              min="1"
+              max="6"
+              placeholder="1-6"
+              required
+            />
           </div>
 
           <div className={styles['form-div']}>
-            <label htmlFor="ministry">MINISTRY</label>
+            <label htmlFor="ministry">Ministry</label>
             <div className={styles['ministry-container']} tabIndex={0} onBlur={handleBlur}>
               <div className={styles['ministry-header']} onClick={() => setShowDropdown(!showDropdown)}>
                 <span>
@@ -429,8 +473,8 @@ const SignUp: React.FC = () => {
           </div>
 
           <div className={styles['form-div']}>
-            <label htmlFor="et">ET</label>
-            <select id="et" className={styles['select']} value={formData.et} onChange={handleChange}>
+            <label htmlFor="et">ET Group</label>
+            <select id="et" className={styles['select']} value={formData.et} onChange={handleChange} required>
               <option value="">Select ET...</option>
               <option value="rivet">Rivet</option>
               <option value="cet">Cet</option>
@@ -454,11 +498,11 @@ const SignUp: React.FC = () => {
           </div>
 
           <div className={styles['form-footer']}>
-            <p>Already have an account? <Link to={"/signIn"}>Click Here to Login</Link></p>
+            <p><Link to={"/Home"}>← Back to Home</Link></p>
           </div>
 
-          <div className={styles['form-footer']}>
-            <p><Link to={"/Home"}>Home</Link></p>
+          <div className={styles['signup-link']}>
+            <p>Already have an account? <Link to={"/signIn"} className={styles['register-link']}>Login here</Link></p>
           </div>
 
         </div>

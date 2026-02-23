@@ -4,18 +4,29 @@ import {
   User, ChevronDown, ChevronRight, ExternalLink, Menu, X,
   Home, Briefcase, Building2, Info,
   Users, Globe, Music, UsersRound, GraduationCap, Crown, LogIn,
+  AlertCircle, ClipboardList, BookOpen
 } from 'lucide-react';
 import { getApiUrl } from '../../config/environment';
 import { headerNavGroups, organizationSections, type NavItem, type NavSection } from '../../data/navigationData';
 import cuLogo from '../../assets/cuLogoUAR.png';
+import QuickAttendanceSign from '../attendance/QuickAttendanceSign';
 
 interface UserData {
   username: string;
   email: string;
 }
 
+interface Session {
+  _id: string;
+  title: string;
+  ministry: string;
+  leadershipRole: string;
+  isActive: boolean;
+  startTime: string;
+  durationMinutes: number;
+}
+
 // Cascading flyout menu item for desktop - children appear to the right (or left if near edge)
-// forceLeft: when a parent already opens left, all descendants also open left
 const FlyoutItem = ({ item, onClose, forceLeft = false }: { item: NavItem; onClose: () => void; forceLeft?: boolean }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [openLeft, setOpenLeft] = useState(forceLeft);
@@ -25,7 +36,6 @@ const FlyoutItem = ({ item, onClose, forceLeft = false }: { item: NavItem; onClo
 
   const handleEnter = () => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    // If parent already forced left, keep it. Otherwise check space.
     if (forceLeft) {
       setOpenLeft(true);
     } else if (itemRef.current) {
@@ -49,9 +59,8 @@ const FlyoutItem = ({ item, onClose, forceLeft = false }: { item: NavItem; onClo
         onMouseLeave={handleLeave}
       >
         <button
-          className={`w-full flex items-center justify-between px-3 py-2 text-sm rounded-md transition-colors text-left ${
-            isHovered ? 'text-[#730051] bg-purple-50' : 'text-gray-700 hover:bg-gray-50'
-          }`}
+          className={`w-full flex items-center justify-between px-3 py-2 text-sm rounded-md transition-colors text-left ${isHovered ? 'text-[#730051] bg-purple-50' : 'text-gray-700 hover:bg-gray-50'
+            }`}
         >
           <span>{item.label}</span>
           <ChevronRight size={14} className={`text-gray-400 flex-shrink-0 ml-2 ${openLeft && isHovered ? 'rotate-180' : ''}`} />
@@ -103,7 +112,7 @@ const FlyoutItem = ({ item, onClose, forceLeft = false }: { item: NavItem; onClo
   );
 };
 
-// Mobile sidebar nav item - renders children recursively with indentation
+// Mobile sidebar nav item
 const MobileSidebarItem = ({ item, depth = 0, onClose }: { item: NavItem; depth?: number; onClose: () => void }) => {
   const [isOpen, setIsOpen] = useState(false);
   const hasChildren = item.children && item.children.length > 0;
@@ -113,9 +122,8 @@ const MobileSidebarItem = ({ item, depth = 0, onClose }: { item: NavItem; depth?
       <div>
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className={`w-full flex items-center justify-between py-2 px-3 rounded-md text-left transition-colors ${
-            isOpen ? 'text-[#730051] bg-purple-50' : 'text-gray-700 hover:bg-gray-50'
-          }`}
+          className={`w-full flex items-center justify-between py-2 px-3 rounded-md text-left transition-colors ${isOpen ? 'text-[#730051] bg-purple-50' : 'text-gray-700 hover:bg-gray-50'
+            }`}
           style={{ paddingLeft: `${12 + depth * 12}px` }}
         >
           <span className="text-sm break-words min-w-0">{item.label}</span>
@@ -164,6 +172,7 @@ const MobileSidebarItem = ({ item, depth = 0, onClose }: { item: NavItem; depth?
 // Icon map for mobile sidebar tabs
 const mobileNavTabs: { key: string; icon: React.ElementType; label: string; }[] = [
   { key: 'dashboard', icon: Home, label: 'Home' },
+  { key: 'about', icon: Info, label: 'About' },
   { key: 'services', icon: Briefcase, label: 'Services' },
   { key: 'boards', icon: Building2, label: 'Boards' },
   { key: 'ets', icon: Globe, label: 'E.Teams' },
@@ -172,14 +181,13 @@ const mobileNavTabs: { key: string; icon: React.ElementType; label: string; }[] 
   { key: 'committees', icon: Users, label: 'Committees' },
   { key: 'classes', icon: GraduationCap, label: 'Classes' },
   { key: 'leadership', icon: Crown, label: 'Leadership' },
-  { key: 'about', icon: Info, label: 'About' },
+  { key: 'attendance', icon: ClipboardList, label: 'Attendance' },
   { key: 'signin', icon: LogIn, label: 'Sign In' },
 ];
 
-// Map tab keys to their navigation data
-const getTabContent = (key: string): NavItem[] | null => {
+const getTabContent = (key: string, activeSessions: Session[] = []): NavItem[] | null => {
   switch (key) {
-    case 'services': return organizationSections[0].items; // Quick Access
+    case 'services': return organizationSections[0].items;
     case 'boards': return organizationSections[1].items;
     case 'ets': return organizationSections[2].items;
     case 'ministries': return organizationSections[3].items;
@@ -187,13 +195,19 @@ const getTabContent = (key: string): NavItem[] | null => {
     case 'committees': return organizationSections[5].items;
     case 'classes': return organizationSections[6].items;
     case 'leadership': return organizationSections[7].items;
+    case 'attendance':
+      if (activeSessions.length === 0) return null;
+      return activeSessions.map(s => ({
+        label: s.title,
+        href: `/attendance?session=${s._id}`
+      }));
     default: return null;
   }
 };
 
-// Mobile sidebar: icon strip always visible, expands on tap to show labels + sub-items
-const MobileSidebarMenu = ({ userData, onNavigate, showLabels, setShowLabels, activeTab, setActiveTab }: {
+const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, showLabels, setShowLabels, activeTab, setActiveTab }: {
   userData: UserData | null;
+  activeSessions: Session[];
   onNavigate: (path: string) => void;
   showLabels: boolean;
   setShowLabels: (v: boolean) => void;
@@ -203,7 +217,6 @@ const MobileSidebarMenu = ({ userData, onNavigate, showLabels, setShowLabels, ac
   const isExpanded = showLabels || activeTab !== null;
 
   const handleTabClick = (key: string) => {
-    // Direct navigation tabs
     if (key === 'dashboard') { setActiveTab(null); onNavigate('/'); return; }
     if (key === 'about') {
       setActiveTab(null);
@@ -219,19 +232,15 @@ const MobileSidebarMenu = ({ userData, onNavigate, showLabels, setShowLabels, ac
       else { onNavigate('/signIn'); }
       return;
     }
-
-    // Toggle expandable tabs
     setActiveTab(activeTab === key ? null : key);
   };
 
   const collapsePanel = () => { setActiveTab(null); setShowLabels(false); };
-
-  const tabContent = activeTab ? getTabContent(activeTab) : null;
-  const activeLabel = mobileNavTabs.find(t => t.key === activeTab)?.label || '';
+  const tabContent = activeTab ? getTabContent(activeTab, activeSessions) : null;
+  const activeLabel = mobileNavTabs.find(t => t.key === activeTab)?.label || 'Menu';
 
   return (
     <>
-      {/* Backdrop when expanded */}
       {isExpanded && (
         <div
           className="md:hidden"
@@ -246,12 +255,8 @@ const MobileSidebarMenu = ({ userData, onNavigate, showLabels, setShowLabels, ac
         />
       )}
 
-      {/* Sidebar container - always visible on mobile, hidden on desktop */}
-      <div
-        className="flex md:hidden fixed top-16 left-0 bottom-0"
-        style={{ zIndex: 99999 }}
-      >
-        {/* Icon strip - always visible */}
+      <div className="flex md:hidden fixed top-16 left-0 bottom-0" style={{ zIndex: 99999 }}>
+        {/* Icon strip */}
         <div
           style={{
             width: '52px',
@@ -268,6 +273,8 @@ const MobileSidebarMenu = ({ userData, onNavigate, showLabels, setShowLabels, ac
           {mobileNavTabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.key;
+            const isAttendance = tab.key === 'attendance';
+            const hasActiveSessions = activeSessions.length > 0;
 
             if (tab.key === 'signin' && userData) {
               return (
@@ -316,19 +323,21 @@ const MobileSidebarMenu = ({ userData, onNavigate, showLabels, setShowLabels, ac
                   gap: '1px',
                   flexShrink: 0,
                   transition: 'all 0.2s',
+                  position: 'relative',
                 }}
                 title={tab.label}
               >
                 <Icon size={16} />
-                <span style={{ fontSize: '7px', lineHeight: 1, fontWeight: isActive ? 600 : 400 }}>
-                  {tab.label}
-                </span>
+                {isAttendance && hasActiveSessions && (
+                  <span className="absolute top-2 right-3 w-2 h-2 bg-red-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.8)]" />
+                )}
+                <span style={{ fontSize: '7px', lineHeight: 1, fontWeight: isActive ? 600 : 400 }}>{tab.label}</span>
               </button>
             );
           })}
         </div>
 
-        {/* Expanded panel - slides out when hamburger or a tab is active */}
+        {/* Expanded Panel */}
         <div
           style={{
             width: isExpanded ? 'calc(100vw - 52px)' : '0px',
@@ -341,12 +350,11 @@ const MobileSidebarMenu = ({ userData, onNavigate, showLabels, setShowLabels, ac
             flexDirection: 'column',
           }}
         >
-          {/* Labels list mode (hamburger) - show all items with icons + labels */}
           {showLabels && !activeTab && (
             <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', padding: '4px 6px' }}>
               {mobileNavTabs.map((tab) => {
                 const Icon = tab.icon;
-                const hasContent = getTabContent(tab.key) !== null;
+                const hasContent = getTabContent(tab.key, activeSessions) !== null;
                 return (
                   <button
                     key={tab.key}
@@ -366,8 +374,6 @@ const MobileSidebarMenu = ({ userData, onNavigate, showLabels, setShowLabels, ac
                       textAlign: 'left',
                       transition: 'background-color 0.15s',
                     }}
-                    onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#faf5ff'; e.currentTarget.style.color = '#730051'; }}
-                    onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = '#374151'; }}
                   >
                     <Icon size={18} style={{ flexShrink: 0 }} />
                     <span style={{ flex: 1 }}>{tab.label}</span>
@@ -378,7 +384,6 @@ const MobileSidebarMenu = ({ userData, onNavigate, showLabels, setShowLabels, ac
             </div>
           )}
 
-          {/* Specific tab content mode */}
           {tabContent && (
             <>
               <button
@@ -395,9 +400,6 @@ const MobileSidebarMenu = ({ userData, onNavigate, showLabels, setShowLabels, ac
                   flexShrink: 0,
                   backgroundColor: 'transparent',
                   border: 'none',
-                  borderBottomWidth: '1px',
-                  borderBottomStyle: 'solid',
-                  borderBottomColor: '#e5e7eb',
                   cursor: 'pointer',
                   width: '100%',
                   textAlign: 'left',
@@ -422,18 +424,40 @@ const MobileSidebarMenu = ({ userData, onNavigate, showLabels, setShowLabels, ac
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [userData, setUserData] = useState<UserData | null>(null);
+  const [activeSessions, setActiveSessions] = useState<Session[]>([]);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [showLabels, setShowLabels] = useState(false);
   const [mobileActiveTab, setMobileActiveTab] = useState<string | null>(null);
+  const [signingSession, setSigningSession] = useState<Session | null>(null);
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const fetchActiveSessions = async () => {
+    try {
+      const timestamp = Date.now();
+      const response = await fetch(`${getApiUrl('attendanceSessionStatus')}?t=${timestamp}`, {
+        credentials: 'include',
+        headers: { 'Cache-Control': 'no-cache' }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setActiveSessions(data.sessions || []);
+      }
+    } catch (error) {
+      console.error('Error loading active sessions:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchActiveSessions();
+    const interval = setInterval(fetchActiveSessions, 5000);
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
@@ -445,15 +469,11 @@ const Header = () => {
           const firstName = data.username?.split(' ')[0] || data.username;
           setUserData({ ...data, username: firstName });
         }
-      } catch {
-        // User not logged in
-      }
+      } catch { }
     };
     fetchUser();
   }, []);
 
-
-  // Desktop dropdown handlers
   const handleMouseEnter = (key: string) => {
     if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
     setActiveDropdown(key);
@@ -463,48 +483,71 @@ const Header = () => {
     closeTimeoutRef.current = setTimeout(() => setActiveDropdown(null), 150);
   };
 
-  const closeDropdown = () => {
-    setActiveDropdown(null);
-  };
+  const closeDropdown = () => setActiveDropdown(null);
 
-  // Render a cascading dropdown for a group of sections
-  // First level shows section titles, hovering a title flyouts its items to the right
   const renderCascadePanel = (sections: NavSection[], alignRight = false) => (
-    <div
-      className={`absolute top-full mt-1 bg-white rounded-lg shadow-xl border border-gray-200 py-2 min-w-[220px] z-50 ${alignRight ? 'right-0' : 'left-0'}`}
-    >
+    <div className={`absolute top-full mt-1 bg-white rounded-lg shadow-xl border border-gray-200 py-2 min-w-[220px] z-50 ${alignRight ? 'right-0' : 'left-0'}`}>
       {sections.map((section) => (
-        <FlyoutItem
-          key={section.title}
-          item={{ label: section.title, children: section.items }}
-          onClose={closeDropdown}
-        />
+        <FlyoutItem key={section.title} item={{ label: section.title, children: section.items }} onClose={closeDropdown} />
       ))}
     </div>
   );
 
-  // Render the services cascade - items are direct children, each can flyout further
   const renderServicesCascade = () => (
-    <div
-      className="absolute top-full left-0 mt-1 bg-white rounded-lg shadow-xl border border-gray-200 py-2 min-w-[220px] z-50"
-    >
+    <div className="absolute top-full left-0 mt-1 bg-white rounded-lg shadow-xl border border-gray-200 py-2 min-w-[220px] z-50">
       {headerNavGroups.services.items.map((item, i) => (
         <FlyoutItem key={i} item={item} onClose={closeDropdown} />
       ))}
     </div>
   );
 
+  const renderAttendanceDropdown = () => (
+    <div className="absolute top-full right-0 mt-1 bg-white rounded-xl shadow-2xl border border-gray-100 py-3 min-w-[280px] z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+      <div className="px-4 py-2 border-b border-gray-50 mb-2">
+        <h4 className="text-xs font-black text-[#730051] uppercase tracking-wider">Active Sessions</h4>
+      </div>
+      {activeSessions.length === 0 ? (
+        <div className="px-4 py-6 text-center">
+          <AlertCircle size={24} className="mx-auto text-gray-200 mb-2" />
+          <p className="text-xs font-bold text-gray-400">No sessions currently open</p>
+        </div>
+      ) : (
+        <div className="max-h-[350px] overflow-y-auto px-2 space-y-1">
+          {activeSessions.map((s) => (
+            <div key={s._id} className="w-full text-left px-3 py-3 rounded-lg hover:bg-purple-50 transition-all group border border-transparent hover:border-purple-100">
+              <div className="flex items-center justify-between gap-3 mb-2">
+                <div className="min-w-0 flex-1">
+                  <h5 className="text-sm font-bold text-gray-900 group-hover:text-[#730051] truncate">{s.title}</h5>
+                  <p className="text-[10px] text-gray-400 font-bold uppercase tracking-tight">{s.leadershipRole}</p>
+                </div>
+                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse flex-shrink-0" />
+              </div>
+              <button
+                onClick={(e) => { e.stopPropagation(); setSigningSession(s); closeDropdown(); }}
+                className="w-full py-1.5 bg-white border border-gray-200 text-[#730051] text-[10px] font-black rounded-lg shadow-sm hover:bg-[#730051] hover:text-white hover:border-[#730051] transition-all transform active:scale-95 flex items-center justify-center gap-1.5"
+              >
+                Sign Attendance
+              </button>
+            </div>
+          ))}
+          <div className="mt-2 pt-2 border-t border-gray-50 px-2 pb-1">
+            <button
+              onClick={() => { navigate('/'); closeDropdown(); setTimeout(() => document.getElementById('attendance-center')?.scrollIntoView({ behavior: 'smooth' }), 100); }}
+              className="w-full py-2 text-[10px] font-black text-[#730051] uppercase tracking-widest hover:bg-purple-50 rounded-md transition-colors"
+            >
+              View Attendance Center
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <>
-      <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
-          ? 'bg-white shadow-md'
-          : 'bg-white/95 backdrop-blur-sm'
-          }`}
-      >
+      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white shadow-md' : 'bg-white/95 backdrop-blur-sm'}`}>
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           <div className="flex items-center h-16 md:h-20 md:pl-0">
-            {/* Hamburger - far left on mobile, toggles Services panel */}
             <button
               onClick={() => {
                 if (mobileActiveTab === 'services') { setMobileActiveTab(null); setShowLabels(false); }
@@ -516,144 +559,100 @@ const Header = () => {
               {mobileActiveTab === 'services' ? <X size={22} /> : <Menu size={22} />}
             </button>
 
-            {/* Title - Centered on mobile */}
             <div className="md:hidden flex-1 text-center">
-              <Link to="/" className="font-bold text-base text-gray-800">
-                KSUCU-MC
-              </Link>
+              <Link to="/" className="font-bold text-base text-gray-800">KSUCU-MC</Link>
             </div>
 
-            {/* Logo - Far right on mobile */}
             <Link to="/" className="md:hidden flex-shrink-0">
-              <img
-                src={cuLogo}
-                alt="KSUCU Logo"
-                className="w-10 h-10 object-contain"
-              />
+              <img src={cuLogo} alt="KSUCU Logo" className="w-10 h-10 object-contain" />
             </Link>
 
-            {/* Desktop: Logo + Title together on left */}
             <Link to="/" className="hidden md:flex items-center gap-2 flex-shrink-0">
-              <img
-                src={cuLogo}
-                alt="KSUCU Logo"
-                className="w-12 h-12 object-contain"
-              />
+              <img src={cuLogo} alt="KSUCU Logo" className="w-12 h-12 object-contain" />
               <div className="font-bold text-gray-800 text-sm lg:text-lg whitespace-nowrap">
                 <span className="hidden lg:inline">Kisii University CU</span>
                 <span className="lg:hidden">KSUCU</span>
               </div>
             </Link>
 
-            {/* Desktop Navigation - Centered */}
             <nav className="hidden md:flex items-center justify-center gap-0 lg:gap-0.5 flex-1 min-w-0">
-              <Link
-                to="/"
-                className="px-2 lg:px-3 py-2 rounded-lg font-medium text-sm text-gray-700 hover:bg-gray-100 transition-colors whitespace-nowrap"
-              >
-                Home
-              </Link>
+              <Link to="/" className="px-2 lg:px-3 py-2 rounded-lg font-medium text-sm text-gray-700 hover:bg-gray-100 transition-colors whitespace-nowrap">Home</Link>
+              <a href="#about" className="px-3 py-2 rounded-lg font-medium text-sm text-gray-700 hover:bg-gray-100 transition-colors" onClick={(e) => { e.preventDefault(); document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' }); }}>About</a>
 
-              {/* Services Dropdown */}
-              <div
-                className="relative"
-                onMouseEnter={() => handleMouseEnter('services')}
-                onMouseLeave={handleMouseLeave}
-              >
-                <button
-                  className={`flex items-center gap-1 px-2 lg:px-3 py-2 rounded-lg font-medium text-sm transition-colors whitespace-nowrap ${
-                    activeDropdown === 'services' ? 'text-[#730051] bg-purple-50' : 'text-gray-700 hover:bg-gray-100'
-                  }`}
-                >
+              <div className="relative" onMouseEnter={() => handleMouseEnter('services')} onMouseLeave={handleMouseLeave}>
+                <button className={`flex items-center gap-1 px-3 py-2 rounded-lg font-medium text-sm transition-colors ${activeDropdown === 'services' ? 'text-[#730051] bg-purple-50' : 'text-gray-700 hover:bg-gray-100'}`}>
                   Services
                   <ChevronDown size={14} className={`transition-transform ${activeDropdown === 'services' ? 'rotate-180' : ''}`} />
                 </button>
                 {activeDropdown === 'services' && renderServicesCascade()}
               </div>
 
-              {/* Organization Dropdown */}
-              <div
-                className="relative"
-                onMouseEnter={() => handleMouseEnter('organization')}
-                onMouseLeave={handleMouseLeave}
-              >
-                <button
-                  className={`flex items-center gap-1 px-2 lg:px-3 py-2 rounded-lg font-medium text-sm transition-colors whitespace-nowrap ${
-                    activeDropdown === 'organization' ? 'text-[#730051] bg-purple-50' : 'text-gray-700 hover:bg-gray-100'
-                  }`}
-                >
-                  Organization
-                  <ChevronDown size={14} className={`transition-transform ${activeDropdown === 'organization' ? 'rotate-180' : ''}`} />
-                </button>
-                {activeDropdown === 'organization' && renderCascadePanel(headerNavGroups.organization)}
-              </div>
-
-              {/* Governance Dropdown */}
-              <div
-                className="relative"
-                onMouseEnter={() => handleMouseEnter('governance')}
-                onMouseLeave={handleMouseLeave}
-              >
-                <button
-                  className={`flex items-center gap-1 px-2 lg:px-3 py-2 rounded-lg font-medium text-sm transition-colors whitespace-nowrap ${
-                    activeDropdown === 'governance' ? 'text-[#730051] bg-purple-50' : 'text-gray-700 hover:bg-gray-100'
-                  }`}
-                >
+              <div className="relative" onMouseEnter={() => handleMouseEnter('governance')} onMouseLeave={handleMouseLeave}>
+                <button className={`flex items-center gap-1 px-3 py-2 rounded-lg font-medium text-sm transition-colors ${activeDropdown === 'governance' ? 'text-[#730051] bg-purple-50' : 'text-gray-700 hover:bg-gray-100'}`}>
                   Governance
                   <ChevronDown size={14} className={`transition-transform ${activeDropdown === 'governance' ? 'rotate-180' : ''}`} />
                 </button>
                 {activeDropdown === 'governance' && renderCascadePanel(headerNavGroups.governance, true)}
               </div>
 
-              <a
-                href="#about"
-                className="px-2 lg:px-3 py-2 rounded-lg font-medium text-sm text-gray-700 hover:bg-gray-100 transition-colors whitespace-nowrap"
-              >
-                About
-              </a>
+              <div className="relative" onMouseEnter={() => handleMouseEnter('attendance')} onMouseLeave={handleMouseLeave}>
+                <button className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium text-sm transition-all relative ${activeDropdown === 'attendance' ? 'text-[#730051] bg-purple-50' : 'text-gray-700 hover:bg-gray-100'}`}>
+                  Attendance
+                  {activeSessions.length > 0 && (
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)]" />
+                    </span>
+                  )}
+                  <ChevronDown size={14} className={`transition-transform duration-300 ${activeDropdown === 'attendance' ? 'rotate-180' : ''}`} />
+                </button>
+                {activeDropdown === 'attendance' && renderAttendanceDropdown()}
+              </div>
             </nav>
 
-            {/* Auth - Far Right */}
             <div className="hidden md:flex items-center flex-shrink-0">
               {userData ? (
-                <button
-                  onClick={() => navigate('/home')}
-                  className="flex items-center gap-2 px-3 py-2 rounded-lg font-medium text-sm text-gray-700 hover:bg-gray-100 transition-colors"
-                >
+                <button onClick={() => navigate('/home')} className="flex items-center gap-2 px-3 py-2 rounded-lg font-medium text-sm text-gray-700 hover:bg-gray-100 transition-colors">
                   <User size={18} />
                   {userData.username}
                 </button>
               ) : (
-                <Link
-                  to="/signIn"
-                  className="px-3 lg:px-5 py-2 bg-[#730051] text-white font-medium text-sm rounded-lg hover:bg-[#5a0040] transition-colors whitespace-nowrap"
-                >
-                  Sign In
-                </Link>
+                <Link to="/signIn" className="px-5 py-2 bg-[#730051] text-white font-medium text-sm rounded-lg hover:bg-[#5a0040] transition-colors shadow-lg shadow-purple-900/10 active:scale-95 transform transition-all">Sign In</Link>
               )}
             </div>
-
           </div>
         </div>
       </header>
 
-      {/* Click-away overlay for desktop dropdowns */}
-      {activeDropdown && (
-        <div
-          className="fixed inset-0 z-40 hidden md:block"
-          onClick={closeDropdown}
-        />
-      )}
+      {activeDropdown && <div className="fixed inset-0 z-40 hidden md:block" onClick={closeDropdown} />}
 
-      {/* Mobile Sidebar - always rendered, icon strip always visible */}
       <MobileSidebarMenu
         userData={userData}
+        activeSessions={activeSessions}
         onNavigate={(path: string) => navigate(path)}
         showLabels={showLabels}
         setShowLabels={setShowLabels}
         activeTab={mobileActiveTab}
         setActiveTab={setMobileActiveTab}
       />
+
+      {signingSession && (
+        <QuickAttendanceSign
+          session={signingSession}
+          onClose={() => setSigningSession(null)}
+        />
+      )}
+
+      <style>{`
+        @keyframes pulse-red {
+          0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+          70% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+          100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+        .animate-pulse-red {
+          animation: pulse-red 2s infinite;
+        }
+      `}</style>
     </>
   );
 };

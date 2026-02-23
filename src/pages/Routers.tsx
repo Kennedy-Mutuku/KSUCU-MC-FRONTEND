@@ -73,6 +73,7 @@ const Leadership = lazy(() => import("../components/Leadership"));
 const OtherCommittees = lazy(() => import("../components/OtherCommittees"));
 const CommitteeAdmin = lazy(() => import("../components/admin"));
 const DirectSignPage = lazy(() => import("./DirectSignPage"));
+const WelcomePage = lazy(() => import("./WelcomePage"));
 
 
 export const router = createBrowserRouter([
@@ -144,6 +145,7 @@ export const router = createBrowserRouter([
             { path: "/leadership", element: <Leadership /> },
             { path: "/other-committees", element: <OtherCommittees /> },
             { path: "/committee-admin", element: <CommitteeAdmin /> },
+            { path: "/welcome", element: <WelcomePage /> },
 
             /* Fellowships and Classes */
             { path: "/brothersfellowship", element: <BrothersFellowship /> },

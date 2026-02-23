@@ -4,7 +4,7 @@ import styles from '../styles/signin.module.css';
 import cuLogo from '../assets/KSUCU logo updated document.png';
 import { Link, useNavigate } from 'react-router-dom';
 import loadingAnime from '../assets/Animation - 1716747954931.gif';
-import {Eye, EyeOff} from 'lucide-react'
+import { Eye, EyeOff } from 'lucide-react'
 import { getApiUrl, isDevMode } from '../config/environment';
 import UserProfile from './userProfile';
 import ErrorBoundary from './ErrorBoundary';
@@ -53,7 +53,7 @@ const SignIn: React.FC = () => {
         try {
             const apiUrl = getApiUrl('users');
             console.log('🔍 SignIn: Fetching user data from:', apiUrl);
-            
+
             // Add cache-busting and better headers for cross-device compatibility
             const response = await fetch(`${apiUrl}?t=${Date.now()}`, {
                 credentials: 'include',
@@ -69,21 +69,26 @@ const SignIn: React.FC = () => {
                 const data = await response.json();
                 console.log('✅ SignIn: User authenticated, data:', data);
                 setUserData(data);
-                // Automatically redirect to profile page if user is already logged in
-                navigate('/profile');
+                // Check if profile photo exists
+                if (!data.profilePhoto && !data.email.includes('admin')) {
+                    navigate('/welcome');
+                } else {
+                    // Automatically redirect to profile page if user is already logged in
+                    navigate('/profile');
+                }
             } else {
                 console.log('SignIn: User not authenticated, response not ok');
             }
         } catch (error) {
             console.log('SignIn: Authentication check failed:', error);
-            
+
             // Retry logic for production connection issues
             if (retryCount < 2) {
                 console.log(`🔄 Retrying authentication check (attempt ${retryCount + 1}/3)...`);
                 setTimeout(() => checkUserAuthentication(retryCount + 1), 2000);
                 return;
             }
-            
+
         } finally {
             console.log('🔍 SignIn: Authentication check completed, setting checkingAuth to false');
             setCheckingAuth(false);
@@ -92,20 +97,20 @@ const SignIn: React.FC = () => {
 
 
     const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
+        setShowPassword(!showPassword);
     };
 
     const handleSubmit = async () => {
         // Define mappings for email domains to endpoints and routes
 
-        if(formData.email === '' || formData.password === ''){
+        if (formData.email === '' || formData.password === '') {
             setError('All fields required 🙂')
             return
         }
 
         // Auto-complete common admin emails if missing domain
         let processedEmail = formData.email.toLowerCase().trim();
-        
+
         // More flexible auto-completion for admin emails
         const adminPatterns = [
             { pattern: /^admin@ksucumcsuperadmi/i, complete: 'admin@ksucumcsuperadmin.co.ke' },  // Handle typos
@@ -113,7 +118,7 @@ const SignIn: React.FC = () => {
             { pattern: /^admin@ksucumcbsadmin/i, complete: 'admin@ksucumcbsadmin.co.ke' },
             { pattern: /^admin@ksucumcadmissionadmin/i, complete: 'admin@ksucumcadmissionadmin.co.ke' }
         ];
-        
+
         // Check if the email matches any pattern and doesn't already end with .co.ke
         if (!processedEmail.endsWith('.co.ke')) {
             for (const { pattern, complete } of adminPatterns) {
@@ -136,20 +141,20 @@ const SignIn: React.FC = () => {
 
             { domain: '@ksucumcadmissionadmin.co.ke', endpoint: getApiUrl('admissionAdmin'), route: '/admission' },
         ];
-    
+
         // Offline check disabled - always try to login
         // if (!navigator.onLine) {
         //     setError('Check your internet and try again...');
         //     return;
         // }
-    
+
         window.scrollTo({
             top: 0,
             behavior: 'auto', // 'auto' for instant scroll
         });
-    
+
         setgeneralLoading(true);
-        
+
         try {
             // Find the matching configuration based on the email domain
             const mapping = domainMappings.find(mapping =>
@@ -186,7 +191,7 @@ const SignIn: React.FC = () => {
                 email: processedEmail,
                 password: formData.password
             };
-            
+
             console.log('📤 SignIn: Sending login data:', { email: loginData.email, password: '***hidden***' });
 
             const response = await axios.post(endpoint, loginData, {
@@ -196,13 +201,18 @@ const SignIn: React.FC = () => {
                     'Content-Type': 'application/json'
                 }
             });
-    
+
             console.log('✅ SignIn: Login successful, response:', response.data);
             console.log('🔐 SignIn: Navigating to:', route);
-    
-            // Navigate to the specified route
-            navigate(route);
-    
+
+            // Check for profile photo if regular user login
+            if (route === '/profile' && response.data.user && !response.data.user.profilePhoto) {
+                navigate('/welcome');
+            } else {
+                // Navigate to the specified route
+                navigate(route);
+            }
+
         } catch (error: any) {
             console.error('SignIn: Login error:', error);
             console.error('SignIn: Error response:', error.response);
@@ -254,16 +264,16 @@ const SignIn: React.FC = () => {
                 const errorMessage = typeof error === 'object' && error.message
                     ? error.message
                     : typeof error === 'string'
-                    ? error
-                    : 'Unknown connection error';
+                        ? error
+                        : 'Unknown connection error';
                 setError(`Connection error. Please try again or contact support. (${errorMessage})`);
             }
         } finally {
             setgeneralLoading(false);
         }
     };
-    
-    
+
+
     // Show user profile if authenticated
     if (userData) {
         return <UserProfile userData={userData} isLoading={generalLoading} />;
@@ -287,184 +297,187 @@ const SignIn: React.FC = () => {
 
     return (
         <ErrorBoundary>
-        <div className={styles.body}>
-            {generalLoading && (
-                <div className={styles['loading-screen']}>
-                    <p className={styles['loading-text']}>Please wait...</p>
-                    <img src={loadingAnime} alt="animation gif" />
-                </div>
-            )}
-            <div className={styles['container']}>
-                <Link to={"/"} className={styles.logo_div} style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
-                    <div className={styles['logo_signUp']} style={{ textAlign: 'center' }}>
-                        <img src={cuLogo} alt="CU logo" style={{ maxWidth: '150px', height: 'auto' }} />
-                    </div>
-                </Link>
-                
-                {error && <div className={styles.error}>{error}</div>}
-
-                {showWhatsAppHelp && (
-                    <div style={{
-                        background: '#f8f4f7',
-                        border: '1px solid #730051',
-                        borderRadius: '8px',
-                        padding: '20px',
-                        marginBottom: '15px'
-                    }}>
-                        <p style={{ margin: '0 0 15px 0', color: '#730051', fontSize: '15px', fontWeight: 'bold', textAlign: 'center' }}>
-                            Forgot your password?
-                        </p>
-                        <p style={{ margin: '0 0 10px 0', color: '#555', fontSize: '13px' }}>
-                            Enter your registration number below to get help:
-                        </p>
-                        <input
-                            type="text"
-                            placeholder="e.g., BCS/1234/21"
-                            value={regNumberInput}
-                            onChange={(e) => setRegNumberInput(e.target.value)}
-                            style={{
-                                width: '100%',
-                                padding: '12px',
-                                borderRadius: '8px',
-                                border: '1px solid #730051',
-                                fontSize: '14px',
-                                marginBottom: '12px',
-                                boxSizing: 'border-box'
-                            }}
-                        />
-                        <button
-                            onClick={handleWhatsAppSubmit}
-                            style={{
-                                width: '100%',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                gap: '8px',
-                                background: '#730051',
-                                color: 'white',
-                                padding: '12px 20px',
-                                borderRadius: '25px',
-                                border: 'none',
-                                cursor: 'pointer',
-                                fontWeight: 'bold',
-                                fontSize: '14px'
-                            }}
-                        >
-                            Submit
-                        </button>
-                        <p style={{ margin: '12px 0 0 0', color: '#730051', fontSize: '12px', textAlign: 'center' }}>
-                            Tip: Your default password is your phone number
-                        </p>
+            <div className={styles.body}>
+                {generalLoading && (
+                    <div className={styles['loading-screen']}>
+                        <p className={styles['loading-text']}>Please wait...</p>
+                        <img src={loadingAnime} alt="animation gif" />
                     </div>
                 )}
+                <div className={styles['container']}>
+                    <Link to={"/"} className={styles.logo_div} style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+                        <div className={styles['logo_signUp']} style={{ textAlign: 'center' }}>
+                            <img src={cuLogo} alt="CU logo" style={{ maxWidth: '150px', height: 'auto' }} />
+                        </div>
+                    </Link>
 
-                {showSignupLink && (
+                    {error && <div className={styles.error}>{error}</div>}
+
+                    {showWhatsAppHelp && (
+                        <div style={{
+                            background: '#f8f4f7',
+                            border: '1px solid #730051',
+                            borderRadius: '8px',
+                            padding: '20px',
+                            marginBottom: '15px'
+                        }}>
+                            <p style={{ margin: '0 0 15px 0', color: '#730051', fontSize: '15px', fontWeight: 'bold', textAlign: 'center' }}>
+                                Forgot your password?
+                            </p>
+                            <p style={{ margin: '0 0 10px 0', color: '#555', fontSize: '13px' }}>
+                                Enter your registration number below to get help:
+                            </p>
+                            <input
+                                type="text"
+                                placeholder="e.g., BCS/1234/21"
+                                value={regNumberInput}
+                                onChange={(e) => setRegNumberInput(e.target.value)}
+                                style={{
+                                    width: '100%',
+                                    padding: '12px',
+                                    borderRadius: '8px',
+                                    border: '1px solid #730051',
+                                    fontSize: '14px',
+                                    marginBottom: '12px',
+                                    boxSizing: 'border-box'
+                                }}
+                            />
+                            <button
+                                onClick={handleWhatsAppSubmit}
+                                style={{
+                                    width: '100%',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    gap: '8px',
+                                    background: '#730051',
+                                    color: 'white',
+                                    padding: '12px 20px',
+                                    borderRadius: '25px',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                    fontWeight: 'bold',
+                                    fontSize: '14px'
+                                }}
+                            >
+                                Submit
+                            </button>
+                            <p style={{ margin: '12px 0 0 0', color: '#730051', fontSize: '12px', textAlign: 'center' }}>
+                                Tip: Your default password is your phone number
+                            </p>
+                        </div>
+                    )}
+
+                    {showSignupLink && (
+                        <div style={{
+                            background: '#fef3c7',
+                            border: '1px solid #f59e0b',
+                            borderRadius: '8px',
+                            padding: '15px',
+                            marginBottom: '15px',
+                            textAlign: 'center'
+                        }}>
+                            <p style={{ margin: '0 0 10px 0', color: '#92400e', fontSize: '14px' }}>
+                                You don't have an account yet. Register now to get started!
+                            </p>
+                            <Link
+                                to="/signUp"
+                                style={{
+                                    display: 'inline-block',
+                                    background: '#730051',
+                                    color: 'white',
+                                    padding: '10px 25px',
+                                    borderRadius: '25px',
+                                    textDecoration: 'none',
+                                    fontWeight: 'bold',
+                                    fontSize: '14px'
+                                }}
+                            >
+                                Click here to Sign Up
+                            </Link>
+                        </div>
+                    )}
+
                     <div style={{
-                        background: '#fef3c7',
-                        border: '1px solid #f59e0b',
-                        borderRadius: '8px',
-                        padding: '15px',
-                        marginBottom: '15px',
-                        textAlign: 'center'
+                        filter: showWhatsAppHelp ? 'blur(3px)' : 'none',
+                        pointerEvents: showWhatsAppHelp ? 'none' : 'auto',
+                        opacity: showWhatsAppHelp ? 0.5 : 1,
+                        transition: 'all 0.3s ease'
                     }}>
-                        <p style={{ margin: '0 0 10px 0', color: '#92400e', fontSize: '14px' }}>
-                            You don't have an account yet. Register now to get started!
-                        </p>
-                        <Link
-                            to="/signUp"
-                            style={{
-                                display: 'inline-block',
-                                background: '#730051',
-                                color: 'white',
-                                padding: '10px 25px',
-                                borderRadius: '25px',
-                                textDecoration: 'none',
-                                fontWeight: 'bold',
-                                fontSize: '14px'
-                            }}
-                        >
-                            Click here to Sign Up
-                        </Link>
-                    </div>
-                )}
+                        <h2 className={styles['text']}>Log in</h2>
 
-                <div style={{
-                    filter: showWhatsAppHelp ? 'blur(3px)' : 'none',
-                    pointerEvents: showWhatsAppHelp ? 'none' : 'auto',
-                    opacity: showWhatsAppHelp ? 0.5 : 1,
-                    transition: 'all 0.3s ease'
-                }}>
-                <h2 className={styles['text']}>Log in</h2>
+                        <form action="" className={styles['form']}>
 
-                <form action="" className={styles['form']}>
-
-                    <div className={styles['form-div']}>
-                        <label htmlFor="email">e-mail</label>
-                        <input 
-                            type="email" 
-                            id="email" 
-                            className={styles['input']} 
-                            value={formData.email} 
-                            onChange={handleChange} 
-                            placeholder="Enter your email"
-                            required 
-                        />
-                    </div>
-
-                    <div className={styles['form-div']}>
-                        <label htmlFor="password">Password</label>
-                            <section className={styles['password-wrapper']}>
+                            <div className={styles['form-div']}>
+                                <label htmlFor="email">E-mail</label>
                                 <input
-                                type={showPassword ? "text" : "password"}
-                                id="password"
-                                className={styles['input-pswd']}
-                                value={formData.password}
-                                onChange={handleChange}
+                                    type="email"
+                                    id="email"
+                                    className={styles['input']}
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    placeholder="Enter your email"
+                                    required
                                 />
-                                <button type="button" className={styles['eye-button']} onClick={togglePasswordVisibility}>
-                                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                                </button>
-                            </section>
+                            </div>
+
+                            <div className={styles['form-div']}>
+                                <label htmlFor="password">Password</label>
+                                <section className={styles['password-wrapper']}>
+                                    <input
+                                        type={showPassword ? "text" : "password"}
+                                        id="password"
+                                        className={styles['input-pswd']}
+                                        value={formData.password}
+                                        onChange={handleChange}
+                                        placeholder="Enter your password"
+                                    />
+                                    <button type="button" className={styles['eye-button']} onClick={togglePasswordVisibility}>
+                                        {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                    </button>
+                                </section>
+                            </div>
+
+                        </form>
+
+                        <div className={styles['submisions']}>
+                            <div className={styles['clearForm']} onClick={() => setFormData({ email: '', password: '' })}>Clear</div>
+                            <div className={styles['submitData']} onClick={handleSubmit}>Log In</div>
+                        </div>
+
+                        <div className={styles['form-footer']}>
+                            <p><Link to={'/forgotPassword'}>Forgot password?</Link></p>
+                        </div>
+
+                        <div className={styles['form-footer']}>
+                            <p><Link to={"/Home"}>← Back to Home</Link></p>
+                        </div>
+
+                        <div className={styles['signup-link']}>
+                            <p>Don't have an account? <Link to={"/signUp"} className={styles['register-link']}>Register here</Link></p>
+                        </div>
                     </div>
 
-                </form>
+                    {isDevMode() && (
+                        <div style={{
+                            position: 'fixed',
+                            top: '10px',
+                            right: '10px',
+                            background: '#ff9800',
+                            color: 'white',
+                            padding: '5px 10px',
+                            borderRadius: '4px',
+                            fontSize: '12px',
+                            zIndex: 1000
+                        }}>
+                            DEV MODE
+                        </div>
+                    )}
 
-                <div className={styles['submisions']}>
-                    <div className={styles['clearForm']} onClick={() => setFormData({ email: '', password: '' })}>Clear</div>
-                    <div className={styles['submitData']} onClick={handleSubmit}>Next</div>
                 </div>
-
-                <div className={styles['form-footer']}>
-                    <p><Link to={'/forgotPassword'}>Forgot pasword</Link></p>
-                </div>
-
-
-
-                <div className={styles['form-footer']}>
-                    <p><Link to={"/Home"}>Home</Link></p>
-                </div>
-                </div>
-
-                {isDevMode() && (
-                    <div style={{ 
-                        position: 'fixed', 
-                        top: '10px', 
-                        right: '10px', 
-                        background: '#ff9800', 
-                        color: 'white', 
-                        padding: '5px 10px', 
-                        borderRadius: '4px', 
-                        fontSize: '12px', 
-                        zIndex: 1000 
-                    }}>
-                        DEV MODE
-                    </div>
-                )}
 
             </div>
-
-        </div>
-    </ErrorBoundary>
+        </ErrorBoundary>
     );
 };
 

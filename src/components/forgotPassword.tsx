@@ -4,24 +4,31 @@ import cuLogo from '../assets/cuLogoUAR.png';
 import { Link } from 'react-router-dom';
 
 const Forgotpassword: React.FC = () => {
-    const [regNumber, setRegNumber] = useState('');
+    const [formData, setFormData] = useState({
+        name: '',
+        regNumber: ''
+    });
     const [error, setError] = useState('');
 
-    const handleRegChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setRegNumber(e.target.value);
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { id, value } = e.target;
+        setFormData(prev => ({ ...prev, [id]: value }));
     };
 
     const handleWhatsAppRedirect = () => {
-        if (!regNumber.trim()) {
-            setError('Please enter your registration number');
+        if (!formData.name.trim() || !formData.regNumber.trim()) {
+            setError('Please fill in all fields');
             return;
         }
 
-        const message = `I am ${regNumber}, I forgot my ksucu-mc portal password`;
+        const message = `Hello admin, I am ${formData.name.trim()}, of reg no ${formData.regNumber.trim()}, kindly help me in resetting my KSUCU MC password.`;
         const encodedMessage = encodeURIComponent(message);
-        const whatsappUrl = `https://wa.me/254740881485?text=${encodedMessage}`;
-        
-        window.open(whatsappUrl, '_blank');
+
+        // Open both WhatsApp windows - 0717481883 first, then 0740881485
+        window.open(`https://wa.me/254717481883?text=${encodedMessage}`, '_blank');
+        window.open(`https://wa.me/254740881485?text=${encodedMessage}`, '_blank');
+
+        setError('');
     };
 
     return (
@@ -32,46 +39,57 @@ const Forgotpassword: React.FC = () => {
                 </Link>
                 <h2 className={styles['text']}>Forgot Password?</h2>
 
-                <div style={{ 
-                    padding: '20px', 
-                    backgroundColor: '#e3f2fd', 
-                    border: '1px solid #2196f3', 
-                    borderRadius: '8px', 
+                <p style={{
+                    fontSize: '13px',
+                    color: '#777',
+                    textAlign: 'center',
                     marginBottom: '20px',
-                    textAlign: 'center'
+                    padding: '0 20px'
                 }}>
-                    <p style={{ margin: '0 0 15px 0', color: '#1565c0', fontSize: '16px' }}>
-                        📱 <strong>Contact Admin via WhatsApp</strong>
-                    </p>
-                    <p style={{ margin: '0 0 15px 0', color: '#424242', fontSize: '14px' }}>
-                        To reset your password, please contact our admin on WhatsApp.<br/>
-                        Enter your registration number below and click "Contact Admin".
-                    </p>
-                </div>
+                    Enter your details to request password reset from admin
+                </p>
 
                 {error && <p className={styles.error}>{error}</p>}
 
                 <form action="" className={styles['form']}>
                     <div className={styles['form-div']}>
-                        <label htmlFor="regNumber">REGISTRATION NUMBER</label>
-                        <input 
-                            type="text" 
-                            id="regNumber" 
+                        <label htmlFor="name">Full Name</label>
+                        <input
+                            type="text"
+                            id="name"
                             className={styles['input']}
-                            value={regNumber} 
-                            onChange={handleRegChange}
-                            placeholder="Enter your reg number..."
+                            value={formData.name}
+                            onChange={handleChange}
+                            placeholder="Enter your full name"
+                            required
+                        />
+                    </div>
+
+                    <div className={styles['form-div']}>
+                        <label htmlFor="regNumber">Reg Number</label>
+                        <input
+                            type="text"
+                            id="regNumber"
+                            className={styles['input']}
+                            value={formData.regNumber}
+                            onChange={handleChange}
+                            placeholder="e.g., BCS/1234/21"
+                            required
                         />
                     </div>
                 </form>
 
                 <div className={styles['submisions']}>
-                    <div className={styles['clearForm']} onClick={() => setRegNumber('')}>Clear</div>
-                    <div className={styles['submitData']} onClick={handleWhatsAppRedirect}>Contact Admin</div>
+                    <div className={styles['clearForm']} onClick={() => setFormData({ name: '', regNumber: '' })}>Clear</div>
+                    <div className={styles['submitData']} onClick={handleWhatsAppRedirect}>Request Password Reset</div>
                 </div>
 
                 <div className={styles['form-footer']}>
-                    <p><Link to={"/signIn"}>Back to Sign In</Link></p>
+                    <p><Link to={"/signIn"}>← Back to Login</Link></p>
+                </div>
+
+                <div className={styles['signup-link']}>
+                    <p>Don't have an account? <Link to={"/signUp"} className={styles['register-link']}>Register here</Link></p>
                 </div>
 
             </div>
@@ -80,4 +98,5 @@ const Forgotpassword: React.FC = () => {
 };
 
 export default Forgotpassword;
+
 

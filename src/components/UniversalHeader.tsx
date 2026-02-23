@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faUserLock, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 
 const UniversalHeader: React.FC = () => {
-  const [userData, setUserData] = useState<{ username: string; email: string; yos: number; phone: string; et: string; ministry: string } | null>(null);
+  const [userData, setUserData] = useState<{ username: string; email: string; yos: number; phone: string; et: string; ministry: string; profilePhoto?: string } | null>(null);
   const [isSuperAdmin, setIsSuperAdmin] = useState(false);
   const [error, setError] = useState('');
   const [generalLoading, setgeneralLoading] = useState(false);
@@ -64,7 +64,7 @@ const UniversalHeader: React.FC = () => {
 
   const fetchUserData = async () => {
     console.log('🏠 Header: Fetching user data...');
-    
+
     // Offline check disabled - always try to fetch
     // if (!navigator.onLine) {
     //     console.log('Header: User offline');
@@ -73,54 +73,54 @@ const UniversalHeader: React.FC = () => {
     // }
 
     window.scrollTo({
-        top: 0,
-        behavior: 'auto'
+      top: 0,
+      behavior: 'auto'
     });
-    
+
     try {
-        setgeneralLoading(true)
-        document.body.style.overflow = 'hidden';            
+      setgeneralLoading(true)
+      document.body.style.overflow = 'hidden';
 
-        const apiUrl = getApiUrl('users');
-        console.log('🏠 Header: Fetching from:', apiUrl);
+      const apiUrl = getApiUrl('users');
+      console.log('🏠 Header: Fetching from:', apiUrl);
 
-        const response = await fetch(apiUrl, {
-            credentials: 'include'
-        });
+      const response = await fetch(apiUrl, {
+        credentials: 'include'
+      });
 
-        console.log('🏠 Header: Response status:', response.status);
-        const data = await response.json();
-        console.log('🏠 Header: Response data:', data);
-        
-        if (!response.ok) {
-            throw new Error(data.message || 'Failed to fetch user data');
-        }  
+      console.log('🏠 Header: Response status:', response.status);
+      const data = await response.json();
+      console.log('🏠 Header: Response data:', data);
 
-        if (!data.phone || !data.reg || !data.yos) {
-            setError('...navigating to update details')
-            navigate('/changeDetails');
-            return;
-        }
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to fetch user data');
+      }
 
-        const firstName = data.username.split(' ')[0];
+      if (!data.phone || !data.reg || !data.yos) {
+        setError('...navigating to update details')
+        navigate('/changeDetails');
+        return;
+      }
 
-        const finalUserData = {
-            ...data,
-            username: firstName
-        };
-        console.log('Header: Setting user data:', finalUserData);
-        setUserData(finalUserData);
-        
+      const firstName = data.username.split(' ')[0];
+
+      const finalUserData = {
+        ...data,
+        username: firstName
+      };
+      console.log('Header: Setting user data:', finalUserData);
+      setUserData(finalUserData);
+
     } catch (error) {
-        if (error instanceof Error && error.message === 'Authentication failed: jwt expired') {
-            navigate('/');
-        } else {
-            console.error('Header: Error fetching user data:', error);
-        }
-        
-    }finally{    
-        document.body.style.overflow = '';  
-        setgeneralLoading(false);      
+      if (error instanceof Error && error.message === 'Authentication failed: jwt expired') {
+        navigate('/');
+      } else {
+        console.error('Header: Error fetching user data:', error);
+      }
+
+    } finally {
+      document.body.style.overflow = '';
+      setgeneralLoading(false);
     }
   };
 
@@ -130,7 +130,7 @@ const UniversalHeader: React.FC = () => {
     console.log('👤 Header: Navigating to /profile');
     navigate('/profile')
   }
-  
+
   function handleRedirectToLogin() {
     navigate('/signIn')
   }
@@ -190,16 +190,31 @@ const UniversalHeader: React.FC = () => {
                 )}
 
                 {isSuperAdmin ? (
-                  <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', minWidth: '80px', minHeight: '50px', justifyContent: 'center'}} onClick={handleSuperAdminLogout}>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', minWidth: '80px', minHeight: '50px', justifyContent: 'center' }} onClick={handleSuperAdminLogout}>
                     <FontAwesomeIcon className={`${styles['user-icon']} `} icon={faSignOutAlt} />
-                    <span style={{color: '#ffffff', fontSize: '12px', marginTop: '3px', fontWeight: '600', textShadow: '0 1px 3px rgba(0,0,0,0.3)', whiteSpace: 'nowrap'}}>
+                    <span style={{ color: '#ffffff', fontSize: '12px', marginTop: '3px', fontWeight: '600', textShadow: '0 1px 3px rgba(0,0,0,0.3)', whiteSpace: 'nowrap' }}>
                       Logout
                     </span>
                   </div>
                 ) : (
-                  <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', minWidth: '80px', minHeight: '50px', justifyContent: 'center'}} onClick={userData ? handleRedirectToUserInfo : handleRedirectToLogin}>
-                    <FontAwesomeIcon className={`${styles['user-icon']} `} icon={userData ? faUser : faUserLock} />
-                    <span style={{color: '#ffffff', fontSize: '12px', marginTop: '3px', fontWeight: '600', textShadow: '0 1px 3px rgba(0,0,0,0.3)', whiteSpace: 'nowrap'}}>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', minWidth: '80px', minHeight: '50px', justifyContent: 'center' }} onClick={userData ? handleRedirectToUserInfo : handleRedirectToLogin}>
+                    {userData && userData.profilePhoto ? (
+                      <img
+                        src={userData.profilePhoto}
+                        alt="Profile"
+                        style={{
+                          width: '32px',
+                          height: '32px',
+                          borderRadius: '50%',
+                          objectFit: 'cover',
+                          border: '2px solid #ffffff',
+                          boxShadow: '0 2px 5px rgba(0,0,0,0.2)'
+                        }}
+                      />
+                    ) : (
+                      <FontAwesomeIcon className={`${styles['user-icon']} `} icon={userData ? faUser : faUserLock} />
+                    )}
+                    <span style={{ color: '#ffffff', fontSize: '12px', marginTop: '3px', fontWeight: '600', textShadow: '0 1px 3px rgba(0,0,0,0.3)', whiteSpace: 'nowrap', backgroundColor: 'rgba(0,0,0,0.4)', padding: '1px 4px', borderRadius: '3px', maxWidth: '70px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                       {userData ? userData.username || 'User' : 'Log In'}
                     </span>
                   </div>
@@ -215,16 +230,31 @@ const UniversalHeader: React.FC = () => {
 
             <div className={`${styles['user-icon-container']} `}>
               {isSuperAdmin ? (
-                <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', minWidth: '60px', minHeight: '45px', justifyContent: 'center'}} onClick={handleSuperAdminLogout}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', minWidth: '60px', minHeight: '45px', justifyContent: 'center' }} onClick={handleSuperAdminLogout}>
                   <FontAwesomeIcon className={`${styles['user-icon']} `} icon={faSignOutAlt} />
-                  <span style={{color: '#ffffff', fontSize: '10px', marginTop: '2px', fontWeight: '600', textShadow: '0 1px 3px rgba(0,0,0,0.3)', whiteSpace: 'nowrap'}}>
+                  <span style={{ color: '#ffffff', fontSize: '10px', marginTop: '2px', fontWeight: '600', textShadow: '0 1px 3px rgba(0,0,0,0.3)', whiteSpace: 'nowrap' }}>
                     Logout
                   </span>
                 </div>
               ) : (
-                <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', minWidth: '60px', minHeight: '45px', justifyContent: 'center'}} onClick={userData ? handleRedirectToUserInfo : handleRedirectToLogin}>
-                  <FontAwesomeIcon className={`${styles['user-icon']} `} icon={userData ? faUser : faUserLock} />
-                  <span style={{color: '#ffffff', fontSize: '10px', marginTop: '2px', fontWeight: '600', textShadow: '0 1px 3px rgba(0,0,0,0.3)', whiteSpace: 'nowrap'}}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', minWidth: '60px', minHeight: '45px', justifyContent: 'center' }} onClick={userData ? handleRedirectToUserInfo : handleRedirectToLogin}>
+                  {userData && userData.profilePhoto ? (
+                    <img
+                      src={userData.profilePhoto}
+                      alt="Profile"
+                      style={{
+                        width: '28px',
+                        height: '28px',
+                        borderRadius: '50%',
+                        objectFit: 'cover',
+                        border: '2px solid #ffffff',
+                        boxShadow: '0 2px 5px rgba(0,0,0,0.2)'
+                      }}
+                    />
+                  ) : (
+                    <FontAwesomeIcon className={`${styles['user-icon']} `} icon={userData ? faUser : faUserLock} />
+                  )}
+                  <span style={{ color: '#ffffff', fontSize: '10px', marginTop: '2px', fontWeight: '600', textShadow: '0 1px 3px rgba(0,0,0,0.3)', whiteSpace: 'nowrap', backgroundColor: 'rgba(115, 0, 81, 0.9)', padding: '2px 6px', borderRadius: '4px', maxWidth: '60px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     {userData ? userData.username || 'User' : 'Log In'}
                   </span>
                 </div>
@@ -252,7 +282,7 @@ const UniversalHeader: React.FC = () => {
           {/* Mobile Navigation Links - simplified without Back/Home */}
           <div className={styles['main-quick--links']}>
             {error && <div className={styles.error}>{error}</div>}
-            
+
           </div>
         </div>
 
