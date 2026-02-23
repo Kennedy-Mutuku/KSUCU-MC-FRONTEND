@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import {
   User, ChevronDown, ChevronRight, ExternalLink, Menu, X,
   Home, Briefcase, Building2, Info,
@@ -431,6 +431,18 @@ const Header = () => {
   const [signingSession, setSigningSession] = useState<Session | null>(null);
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Determine which nav group is active based on current path
+  const getActiveNav = (path: string): string | null => {
+    if (['/news', '/media'].some(p => path.startsWith(p))) return 'mediaDesk';
+    if (['/ministries', '/ets/', '/brothersfellowship', '/sistersfellowship', '/Bs'].some(p => path.startsWith(p))) return 'joinUs';
+    if (['/financial', '/compassion', '/requisitions', '/my-docs', '/library', '/save', '/recomendations'].some(p => path.startsWith(p))) return 'services';
+    if (['/leadership', '/other-committees', '/bestpClass', '/discipleship', '/elders', '/pdfs', '/christianminds'].some(p => path.startsWith(p))) return 'governance';
+    if (path.startsWith('/attendance') || path.startsWith('/session')) return 'attendance';
+    return null;
+  };
+  const activeNav = getActiveNav(location.pathname);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -496,6 +508,26 @@ const Header = () => {
   const renderServicesCascade = () => (
     <div className="absolute top-full left-0 mt-1 bg-white rounded-lg shadow-xl border border-gray-200 py-2 min-w-[220px] z-50">
       {headerNavGroups.services.items.map((item, i) => (
+        <FlyoutItem key={i} item={item} onClose={closeDropdown} />
+      ))}
+    </div>
+  );
+
+  const renderJoinUsPanel = () => (
+    <div className="absolute top-full left-0 mt-1 bg-white rounded-lg shadow-xl border border-gray-200 py-2 min-w-[220px] z-50">
+      {headerNavGroups.joinUs.map((section) => (
+        <FlyoutItem
+          key={section.title}
+          item={{ label: section.title, children: section.items }}
+          onClose={closeDropdown}
+        />
+      ))}
+    </div>
+  );
+
+  const renderMediaDeskPanel = () => (
+    <div className="absolute top-full left-0 mt-1 bg-white rounded-lg shadow-xl border border-gray-200 py-2 min-w-[220px] z-50">
+      {headerNavGroups.mediaDesk.map((item, i) => (
         <FlyoutItem key={i} item={item} onClose={closeDropdown} />
       ))}
     </div>
@@ -584,11 +616,28 @@ const Header = () => {
             </Link>
 
             <nav className="hidden md:flex items-center justify-center gap-0.5 lg:gap-1.5 flex-1 min-w-0">
-              <Link to="/" className="px-1.5 lg:px-3 py-2 rounded-lg font-medium text-xs lg:text-sm text-gray-700 hover:bg-gray-100 transition-colors whitespace-nowrap">Home</Link>
-              <a href="#about" className="px-1.5 lg:px-3 py-2 rounded-lg font-medium text-xs lg:text-sm text-gray-700 hover:bg-gray-100 transition-colors whitespace-nowrap" onClick={(e) => { e.preventDefault(); document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' }); }}>About</a>
+              <Link to="/" className="nav-link-underline px-1.5 lg:px-3 py-2 font-medium text-xs lg:text-sm text-gray-700 whitespace-nowrap">Home</Link>
+
+              {/* Media Desk dropdown */}
+              <div className="relative" onMouseEnter={() => handleMouseEnter('mediaDesk')} onMouseLeave={handleMouseLeave}>
+                <button className={`nav-link-underline flex items-center gap-0.5 lg:gap-1 px-1.5 lg:px-3 py-2 font-medium text-xs lg:text-sm whitespace-nowrap ${activeDropdown === 'mediaDesk' || activeNav === 'mediaDesk' ? 'text-[#730051] nav-link-active' : 'text-gray-700'}`}>
+                  Media Desk
+                  <ChevronDown size={14} className={`transition-transform ${activeDropdown === 'mediaDesk' ? 'rotate-180' : ''}`} />
+                </button>
+                {activeDropdown === 'mediaDesk' && renderMediaDeskPanel()}
+              </div>
+
+              {/* Join Us dropdown */}
+              <div className="relative" onMouseEnter={() => handleMouseEnter('joinUs')} onMouseLeave={handleMouseLeave}>
+                <button className={`nav-link-underline flex items-center gap-0.5 lg:gap-1 px-1.5 lg:px-3 py-2 font-medium text-xs lg:text-sm whitespace-nowrap ${activeDropdown === 'joinUs' || activeNav === 'joinUs' ? 'text-[#730051] nav-link-active' : 'text-gray-700'}`}>
+                  Join Us
+                  <ChevronDown size={14} className={`transition-transform ${activeDropdown === 'joinUs' ? 'rotate-180' : ''}`} />
+                </button>
+                {activeDropdown === 'joinUs' && renderJoinUsPanel()}
+              </div>
 
               <div className="relative" onMouseEnter={() => handleMouseEnter('services')} onMouseLeave={handleMouseLeave}>
-                <button className={`flex items-center gap-0.5 lg:gap-1 px-1.5 lg:px-3 py-2 rounded-lg font-medium text-xs lg:text-sm transition-colors whitespace-nowrap ${activeDropdown === 'services' ? 'text-[#730051] bg-purple-50' : 'text-gray-700 hover:bg-gray-100'}`}>
+                <button className={`nav-link-underline flex items-center gap-0.5 lg:gap-1 px-1.5 lg:px-3 py-2 font-medium text-xs lg:text-sm whitespace-nowrap ${activeDropdown === 'services' || activeNav === 'services' ? 'text-[#730051] nav-link-active' : 'text-gray-700'}`}>
                   Services
                   <ChevronDown size={14} className={`transition-transform ${activeDropdown === 'services' ? 'rotate-180' : ''}`} />
                 </button>
@@ -596,7 +645,7 @@ const Header = () => {
               </div>
 
               <div className="relative" onMouseEnter={() => handleMouseEnter('governance')} onMouseLeave={handleMouseLeave}>
-                <button className={`flex items-center gap-0.5 lg:gap-1 px-1.5 lg:px-3 py-2 rounded-lg font-medium text-xs lg:text-sm transition-colors whitespace-nowrap ${activeDropdown === 'governance' ? 'text-[#730051] bg-purple-50' : 'text-gray-700 hover:bg-gray-100'}`}>
+                <button className={`nav-link-underline flex items-center gap-0.5 lg:gap-1 px-1.5 lg:px-3 py-2 font-medium text-xs lg:text-sm whitespace-nowrap ${activeDropdown === 'governance' || activeNav === 'governance' ? 'text-[#730051] nav-link-active' : 'text-gray-700'}`}>
                   Governance
                   <ChevronDown size={14} className={`transition-transform ${activeDropdown === 'governance' ? 'rotate-180' : ''}`} />
                 </button>
@@ -604,7 +653,7 @@ const Header = () => {
               </div>
 
               <div className="relative" onMouseEnter={() => handleMouseEnter('attendance')} onMouseLeave={handleMouseLeave}>
-                <button className={`flex items-center gap-1 lg:gap-2 px-1.5 lg:px-3 py-2 rounded-lg font-medium text-xs lg:text-sm transition-all relative whitespace-nowrap ${activeDropdown === 'attendance' ? 'text-[#730051] bg-purple-50' : 'text-gray-700 hover:bg-gray-100'}`}>
+                <button className={`nav-link-underline flex items-center gap-1 lg:gap-2 px-1.5 lg:px-3 py-2 font-medium text-xs lg:text-sm transition-all relative whitespace-nowrap ${activeDropdown === 'attendance' || activeNav === 'attendance' ? 'text-[#730051] nav-link-active' : 'text-gray-700'}`}>
                   Attendance
                   {activeSessions.length > 0 && (
                     <span className="relative flex h-2 w-2">
@@ -659,6 +708,33 @@ const Header = () => {
         }
         .animate-pulse-red {
           animation: pulse-red 2s infinite;
+        }
+        .nav-link-underline {
+          position: relative;
+          transition: color 0.2s ease;
+        }
+        .nav-link-underline::after {
+          content: '';
+          position: absolute;
+          bottom: 2px;
+          left: 50%;
+          transform: translateX(-50%) scaleX(0);
+          transform-origin: center;
+          width: 80%;
+          height: 3px;
+          background: #730051;
+          border-radius: 2px;
+          transition: transform 0.25s ease;
+        }
+        .nav-link-underline:hover {
+          color: #730051 !important;
+        }
+        .nav-link-underline:hover::after,
+        .nav-link-underline.nav-link-active::after {
+          transform: translateX(-50%) scaleX(1);
+        }
+        .nav-link-underline.nav-link-active {
+          color: #730051 !important;
         }
       `}</style>
     </>

@@ -142,6 +142,9 @@ const Footer = () => {
           </div>
         </div>
       </div>
+
+      {/* Bottom accent line */}
+      <div style={{ height: '4px', background: 'linear-gradient(90deg, #4a0034, #730051, #a8006e, #730051, #4a0034)' }} />
     </footer>
   );
 };
