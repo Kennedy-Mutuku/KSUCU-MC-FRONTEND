@@ -404,17 +404,19 @@ const SectionAccordion = ({ section, onClose }: { section: TabSection; onClose: 
   );
 };
 
-const MobileSidebarMenu = ({ userData, activeSessions, onNavigate }: {
+const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, isManualExpanded, setIsManualExpanded }: {
   userData: UserData | null;
   activeSessions: Session[];
   onNavigate: (path: string) => void;
+  isManualExpanded: boolean;
+  setIsManualExpanded: (val: boolean) => void;
 }) => {
   const [activeTab, setActiveTab] = useState<string | null>(null);
   const [panelTop, setPanelTop] = useState(0);
   const buttonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
 
-  // Expansion happens when any tab is active
-  const isExpanded = !!activeTab;
+  // Expansion happens when any tab is active OR manually toggled via hamburger
+  const isExpanded = !!activeTab || isManualExpanded;
 
   const handleTabClick = (key: string) => {
     if (key === 'dashboard') { setActiveTab(null); onNavigate('/'); return; }
@@ -442,19 +444,23 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate }: {
       setPanelTop(rect.top);
     }
     setActiveTab(key);
+    setIsManualExpanded(true);
   };
 
-  const closePanel = () => setActiveTab(null);
+  const closePanel = () => {
+    setActiveTab(null);
+    setIsManualExpanded(false);
+  };
 
   const sections = activeTab ? getTabSections(activeTab, activeSessions) : [];
   const activeTabDef = mobileNavTabs.find(t => t.key === activeTab);
 
   return (
     <div className="md:hidden">
-      {/* Backdrop */}
-      {activeTab && (
+      {/* Backdrop for click-outside collapse */}
+      {isExpanded && (
         <div
-          style={{ position: 'fixed', inset: 0, zIndex: 99997, background: 'rgba(0,0,0,0.25)' }}
+          style={{ position: 'fixed', inset: 0, zIndex: 99997, background: 'rgba(0,0,0,0.15)' }}
           onClick={closePanel}
         />
       )}
@@ -610,6 +616,7 @@ const Header = () => {
   const [activeSessions, setActiveSessions] = useState<Session[]>([]);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [signingSession, setSigningSession] = useState<Session | null>(null);
+  const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
@@ -753,13 +760,13 @@ const Header = () => {
       <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white shadow-md' : 'bg-white/95 backdrop-blur-sm'}`}>
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           <div className="flex items-center h-16 md:h-20 md:pl-0">
-            <Link
-              to="/"
-              className="md:hidden p-2 rounded-lg flex-shrink-0"
-              aria-label="Go home"
+            <button
+              onClick={() => setIsSidebarExpanded(!isSidebarExpanded)}
+              className="md:hidden p-2 rounded-lg flex-shrink-0 hover:bg-gray-100 transition-colors"
+              aria-label="Toggle Menu"
             >
               <Menu size={22} className="text-gray-700" />
-            </Link>
+            </button>
 
             <Link to="/" className="md:hidden flex-1 flex items-center justify-center gap-2">
               <img src={cuLogo} alt="KSUCU Logo" className="w-9 h-9 object-contain" />
@@ -865,6 +872,8 @@ const Header = () => {
         userData={userData}
         activeSessions={activeSessions}
         onNavigate={(path: string) => navigate(path)}
+        isManualExpanded={isSidebarExpanded}
+        setIsManualExpanded={setIsSidebarExpanded}
       />
 
       {signingSession && (
