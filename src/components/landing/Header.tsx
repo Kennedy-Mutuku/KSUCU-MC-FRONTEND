@@ -352,8 +352,8 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, isManualExpan
                   transform: isActive ? 'scale(1.02)' : 'scale(1)',
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '16px' }}>
-                  {isUser ? <User size={13} /> : <Icon size={13} />}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '24px' }}>
+                  {isUser ? <User size={18} /> : <Icon size={18} />}
                 </div>
 
                 {isAttendance && hasActiveSessions && (
