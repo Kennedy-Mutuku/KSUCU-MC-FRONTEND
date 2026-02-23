@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, Fragment } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import {
   User, ChevronDown, ChevronRight, ExternalLink, Menu,
-  Home, Building2, Info, Globe, Music,
+  Home, Building2, Globe, Music,
   UsersRound, GraduationCap, Crown, LogIn,
   ClipboardList, BookOpen, Tv2, FileText, AlertCircle,
   MessageSquare, Coins, Heart, Folder, Book, UserPlus
@@ -193,7 +193,6 @@ const mobileNavTabs: { key: string; icon: React.ElementType; label: string; }[] 
   { key: 'mediadesk', icon: Tv2, label: 'Media Desk' },
   { key: 'committees', icon: UsersRound, label: 'Committees' },
   { key: 'attendance', icon: ClipboardList, label: 'Attendance' },
-  { key: 'about', icon: Info, label: 'About' },
   { key: 'signin', icon: LogIn, label: 'Sign In' },
 ];
 
