@@ -174,7 +174,12 @@ const MobileSidebarItem = ({ item, depth = 0, onClose }: { item: NavItem; depth?
 // Icon map for mobile sidebar tabs
 const mobileNavTabs: { key: string; icon: React.ElementType; label: string; }[] = [
   { key: 'dashboard', icon: Home, label: 'Home' },
-  { key: 'joinus', icon: UsersRound, label: 'Join Us' },
+  { key: 'ministries', icon: Music, label: 'Ministries' },
+  { key: 'boards', icon: Building2, label: 'Boards' },
+  { key: 'eteams', icon: Globe, label: 'E. Teams' },
+  { key: 'fellowships', icon: UsersRound, label: 'Fellowships' },
+  { key: 'biblestudy', icon: BookOpen, label: 'Bible Study' },
+  { key: 'classes', icon: GraduationCap, label: 'Classes' },
   { key: 'services', icon: Briefcase, label: 'Services' },
   { key: 'governance', icon: Crown, label: 'Governance' },
   { key: 'mediadesk', icon: Tv2, label: 'Media Desk' },
@@ -191,14 +196,12 @@ interface TabSection {
 
 const getTabSections = (key: string, activeSessions: Session[]): TabSection[] => {
   switch (key) {
-    case 'joinus': return [
-      { title: 'Ministries', icon: Music, items: organizationSections[3].items },
-      { title: 'Boards', icon: Building2, items: organizationSections[1].items },
-      { title: 'E. Teams', icon: Globe, items: organizationSections[2].items },
-      { title: 'Fellowships', icon: UsersRound, items: organizationSections[4].items },
-      { title: 'Bible Study', icon: BookOpen, items: [{ label: 'Register for Bible Study', href: '/Bs' }, { label: 'View BS Groups', href: '/Bs' }] },
-      { title: 'Classes', icon: GraduationCap, items: organizationSections[6].items },
-    ];
+    case 'ministries': return [{ title: 'Ministries', icon: Music, items: organizationSections[3].items }];
+    case 'boards': return [{ title: 'Boards', icon: Building2, items: organizationSections[1].items }];
+    case 'eteams': return [{ title: 'E. Teams', icon: Globe, items: organizationSections[2].items }];
+    case 'fellowships': return [{ title: 'Fellowships', icon: UsersRound, items: organizationSections[4].items }];
+    case 'biblestudy': return [{ title: 'Bible Study', icon: BookOpen, items: [{ label: 'Register for Bible Study', href: '/Bs' }, { label: 'View BS Groups', href: '/Bs' }] }];
+    case 'classes': return [{ title: 'Classes', icon: GraduationCap, items: organizationSections[6].items }];
     case 'services': return [{ title: 'Quick Access', icon: Briefcase, items: organizationSections[0].items }];
     case 'governance': return [
       { title: 'Leadership', icon: Crown, items: organizationSections[7].items },
@@ -496,9 +499,13 @@ const Header = () => {
 
   // Determine which nav group is active based on current path
   const getActiveNav = (path: string): string | null => {
-    if (['/news', '/media'].some(p => path.startsWith(p))) return 'mediaDesk';
-    if (['/ministries', '/ets/', '/brothersfellowship', '/sistersfellowship', '/bestpClass', '/discipleship'].some(p => path.startsWith(p))) return 'joinUs';
-    if (['/financial', '/compassion', '/requisitions', '/my-docs', '/library', '/save', '/recomendations', '/Bs'].some(p => path.startsWith(p))) return 'services';
+    if (path.startsWith('/news') || path.startsWith('/media')) return 'mediadesk';
+    if (path.startsWith('/ministries')) return 'ministries';
+    if (path.startsWith('/ets/') || path.startsWith('/e-teams')) return 'eteams';
+    if (['/brothersfellowship', '/sistersfellowship', '/fellowships'].some(p => path.startsWith(p))) return 'fellowships';
+    if (path.startsWith('/classes') || path.startsWith('/bestpClass')) return 'classes';
+    if (path.startsWith('/Bs') || path.startsWith('/biblestudy')) return 'biblestudy';
+    if (['/financial', '/compassion', '/requisitions', '/my-docs', '/library', '/save', '/recomendations'].some(p => path.startsWith(p))) return 'services';
     if (['/leadership', '/other-committees', '/elders', '/pdfs', '/christianminds'].some(p => path.startsWith(p))) return 'governance';
     if (path.startsWith('/attendance') || path.startsWith('/session')) return 'attendance';
     return null;
