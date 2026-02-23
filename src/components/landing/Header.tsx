@@ -4,7 +4,8 @@ import {
   User, ChevronDown, ChevronRight, ExternalLink, Menu,
   Home, Briefcase, Building2, Info, Globe, Music,
   UsersRound, GraduationCap, Crown, LogIn,
-  ClipboardList, BookOpen, Tv2, FileText, AlertCircle
+  ClipboardList, BookOpen, Tv2, FileText, AlertCircle,
+  MessageSquare, Coins, Heart, Folder, Book, UserPlus
 } from 'lucide-react';
 
 import { getApiUrl } from '../../config/environment';
@@ -180,7 +181,13 @@ const mobileNavTabs: { key: string; icon: React.ElementType; label: string; }[] 
   { key: 'fellowships', icon: UsersRound, label: 'Fellowships' },
   { key: 'biblestudy', icon: BookOpen, label: 'Bible Study' },
   { key: 'classes', icon: GraduationCap, label: 'Classes' },
-  { key: 'services', icon: Briefcase, label: 'Services' },
+  { key: 'feedback', icon: MessageSquare, label: 'Feedback' },
+  { key: 'financials', icon: Coins, label: 'Financials' },
+  { key: 'compassion', icon: Heart, label: 'Compassion' },
+  { key: 'requisitions', icon: FileText, label: 'Requisitions' },
+  { key: 'filemanager', icon: Folder, label: 'File Manager' },
+  { key: 'library', icon: Book, label: 'Library' },
+  { key: 'winasoul', icon: UserPlus, label: 'Win a Soul' },
   { key: 'leadership', icon: Crown, label: 'Leadership' },
   { key: 'governingdocs', icon: FileText, label: 'Governing Docs' },
   { key: 'mediadesk', icon: Tv2, label: 'Media Desk' },
@@ -203,7 +210,13 @@ const getTabSections = (key: string, activeSessions: Session[]): TabSection[] =>
     case 'fellowships': return [{ title: 'Fellowships', icon: UsersRound, items: organizationSections[4].items }];
     case 'biblestudy': return [{ title: 'Bible Study', icon: BookOpen, items: [{ label: 'Register for Bible Study', href: '/Bs' }, { label: 'View BS Groups', href: '/Bs' }] }];
     case 'classes': return [{ title: 'Classes', icon: GraduationCap, items: organizationSections[6].items }];
-    case 'services': return [{ title: 'Quick Access', icon: Briefcase, items: organizationSections[0].items }];
+    case 'feedback': return [{ title: 'Feedback', icon: MessageSquare, items: [{ label: 'Submit Anonymously', href: '/recomendations' }, { label: 'Submit with Identity', href: '/recomendations' }] }];
+    case 'financials': return [{ title: 'Financials', icon: Coins, items: [{ label: 'View Financial Statements', href: '/financial' }, { label: 'My Contributions', href: '/financial' }] }];
+    case 'compassion': return [{ title: 'Compassion', icon: Heart, items: [{ label: 'Request Support', href: '/compassion-counseling' }, { label: 'Support the Ministry', href: '/compassion-counseling' }] }];
+    case 'requisitions': return [{ title: 'Requisitions', icon: FileText, items: [{ label: 'My Requisitions', href: '/requisitions' }, { label: 'New Requisition', href: '/requisitions' }] }];
+    case 'filemanager': return [{ title: 'File Manager', icon: Folder, items: [{ label: 'My Documents', href: '/my-docs' }, { label: 'Shared Files', href: '/my-docs' }] }];
+    case 'library': return [{ title: 'Library', icon: Book, items: [{ label: 'Search Books', href: '/library' }, { label: 'My Borrows', href: '/library' }] }];
+    case 'winasoul': return [{ title: 'Win a Soul', icon: UserPlus, items: [{ label: 'Mission Reports', href: '/save' }, { label: 'Evangelism Guide', href: '/save' }] }];
     case 'leadership': return [{ title: 'Leadership', icon: Crown, items: organizationSections[7].items }];
     case 'governingdocs': return [{ title: 'Governing Docs', icon: FileText, items: [{ label: 'Constitution', href: '/pdfs/constitution.pdf', external: true }, { label: 'Financial Policy', href: '#' }, { label: 'Leadership Manual', href: '#' }] }];
     case 'mediadesk': return [{
@@ -504,7 +517,13 @@ const Header = () => {
     if (['/brothersfellowship', '/sistersfellowship', '/fellowships'].some(p => path.startsWith(p))) return 'fellowships';
     if (path.startsWith('/classes') || path.startsWith('/bestpClass')) return 'classes';
     if (path.startsWith('/Bs') || path.startsWith('/biblestudy')) return 'biblestudy';
-    if (['/financial', '/compassion', '/requisitions', '/my-docs', '/library', '/save', '/recomendations'].some(p => path.startsWith(p))) return 'services';
+    if (path.startsWith('/financial')) return 'financials';
+    if (path.startsWith('/recomendations')) return 'feedback';
+    if (path.startsWith('/compassion-counseling')) return 'compassion';
+    if (path.startsWith('/requisitions')) return 'requisitions';
+    if (path.startsWith('/my-docs')) return 'filemanager';
+    if (path.startsWith('/library')) return 'library';
+    if (path.startsWith('/save')) return 'winasoul';
     if (['/leadership', '/other-committees', '/elders'].some(p => path.startsWith(p))) return 'leadership';
     if (['/pdfs', '/christianminds', '/governing-docs'].some(p => path.startsWith(p))) return 'governingdocs';
     if (path.startsWith('/attendance') || path.startsWith('/session')) return 'attendance';
