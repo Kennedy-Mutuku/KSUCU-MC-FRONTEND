@@ -311,9 +311,9 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, isManualExpan
         width: isExpanded ? '160px' : '48px',
         backgroundColor: '#730051',
         display: 'flex', flexDirection: 'column', alignItems: isExpanded ? 'flex-start' : 'center',
-        paddingTop: '4px', paddingBottom: '6px',
+        paddingTop: '2px', paddingBottom: '4px',
         paddingLeft: isExpanded ? '6px' : '0',
-        overflowY: 'auto', gap: '2px', zIndex: 99999,
+        overflowY: 'auto', gap: '0px', zIndex: 99999,
         transition: 'width 0.3s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s ease',
         boxShadow: isExpanded ? '4px 0 20px rgba(0,0,0,0.3)' : 'none',
       }}>
@@ -334,24 +334,24 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, isManualExpan
                 title={tab.label}
                 style={{
                   width: isExpanded ? '148px' : '42px',
-                  minHeight: '38px',
+                  minHeight: '30px',
                   display: 'flex',
                   flexDirection: isExpanded ? 'row' : 'column',
                   alignItems: 'center',
                   justifyContent: isExpanded ? 'flex-start' : 'center',
                   paddingLeft: isExpanded ? '10px' : '0',
-                  borderRadius: '8px', border: 'none', cursor: 'pointer',
+                  borderRadius: '6px', border: 'none', cursor: 'pointer',
                   backgroundColor: isActive ? 'rgba(255,255,255,0.95)' : 'transparent',
                   color: isActive ? '#730051' : 'rgba(255,255,255,0.85)',
-                  gap: isExpanded ? '10px' : '1px',
+                  gap: isExpanded ? '6px' : '1px',
                   flexShrink: 0, position: 'relative',
                   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                  boxShadow: isActive ? '0 2px 10px rgba(0,0,0,0.1)' : 'none',
+                  boxShadow: isActive ? '0 1px 6px rgba(0,0,0,0.1)' : 'none',
                   transform: isActive ? 'scale(1.02)' : 'scale(1)',
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '18px' }}>
-                  {isUser ? <User size={15} /> : <Icon size={15} />}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '16px' }}>
+                  {isUser ? <User size={13} /> : <Icon size={13} />}
                 </div>
 
                 {isAttendance && hasActiveSessions && (
@@ -368,10 +368,10 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, isManualExpan
                 )}
 
                 <span style={{
-                  fontSize: isExpanded ? '11.5px' : '6.5px',
+                  fontSize: isExpanded ? '10.5px' : '6px',
                   lineHeight: 1,
-                  fontWeight: isActive ? 700 : 500,
-                  letterSpacing: '0.1px',
+                  fontWeight: isActive ? 750 : 600,
+                  letterSpacing: '0.05px',
                   whiteSpace: 'nowrap',
                   transition: 'all 0.3s ease',
                 }}>
@@ -390,11 +390,11 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, isManualExpan
               {/* Integrated Vertical Expansion */}
               {isExpanded && isActive && sections.length > 0 && (
                 <div style={{
-                  width: '154px',
+                  width: '148px',
                   background: 'rgba(255,255,255,0.98)',
-                  borderRadius: '10px',
-                  marginTop: '2px',
-                  marginBottom: '6px',
+                  borderRadius: '8px',
+                  marginTop: '1px',
+                  marginBottom: '2px',
                   overflow: 'hidden',
                   maxHeight: '400px', // Allow scroll if too long
                   overflowY: 'auto',
@@ -431,10 +431,10 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, isManualExpan
                               }
                             }}
                             style={{
-                              display: 'flex', alignItems: 'center', gap: '8px',
-                              padding: '8px 16px', color: '#374151', fontSize: '11.5px',
+                              display: 'flex', alignItems: 'center', gap: '6px',
+                              padding: '6px 14px', color: '#374151', fontSize: '10px',
                               textDecoration: 'none', transition: 'all 0.15s',
-                              fontWeight: 500
+                              fontWeight: 600
                             }}
                           >
                             <span style={{ flex: 1 }}>{item.label}</span>
