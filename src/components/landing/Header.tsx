@@ -702,7 +702,7 @@ const Header = () => {
               </div>
             </Link>
 
-            <nav className="hidden md:flex items-center justify-center gap-0.5 lg:gap-1.5 flex-1 min-w-0">
+            <nav className="hidden md:flex items-center justify-end gap-1.5 lg:gap-4 flex-1 min-w-0 md:ml-4 lg:ml-8">
               <Link to="/" className={`nav-link-underline px-1.5 lg:px-3 py-2 font-medium text-xs lg:text-sm whitespace-nowrap ${location.pathname === '/' ? 'text-[#730051] nav-link-active' : 'text-gray-700'}`}>Home</Link>
 
               {/* Join Us dropdown */}
