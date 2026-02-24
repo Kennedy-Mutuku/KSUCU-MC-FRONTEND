@@ -1,12 +1,12 @@
-import React, { useEffect, useRef } from 'react';
-import styles from '../../styles/ministryPage.module.css';
+import React, { useEffect, useRef, useState } from 'react';
+import styles from './churchSchool.module.css';
 import { Link } from 'react-router-dom';
 import churshSchoolImg from '../../assets/churchschool.jpg';
+import MinistryRegistrationModal from '../../components/MinistryRegistrationModal';
 
 const ChurchSchoolPage: React.FC = () => {
   const contentRef1 = useRef<HTMLDivElement>(null);
-  const contentRef2 = useRef<HTMLDivElement>(null);
-  const testimonialsRef = useRef<HTMLDivElement>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     // Smooth scroll behavior
@@ -21,15 +21,13 @@ const ChurchSchoolPage: React.FC = () => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
+          entry.target.classList.add(styles.visible || 'visible');
         }
       });
     }, observerOptions);
 
     // Observe elements if they exist
     if (contentRef1.current) observer.observe(contentRef1.current);
-    if (contentRef2.current) observer.observe(contentRef2.current);
-    if (testimonialsRef.current) observer.observe(testimonialsRef.current);
 
     return () => {
       document.documentElement.style.scrollBehavior = 'auto';
@@ -42,112 +40,68 @@ const ChurchSchoolPage: React.FC = () => {
       <div className={styles.heroSection} style={{ '--hero-bg': `url(${churshSchoolImg})` } as React.CSSProperties}>
         <div className={styles.heroContent}>
           <h1 className={styles.title}>Church School Ministry</h1>
-          <p className={styles.subtitle}>Bridging faith and education</p>
+          <p className={styles.subtitle}>Serving schools through mentorship, support, and faith</p>
         </div>
       </div>
 
       <div className={styles.container}>
         <div className={`${styles.contentSection} ${styles.animate}`} ref={contentRef1}>
-          <div className={styles.description}>
+          <div className={styles.sectionBlock}>
             <h2>About Church School Ministry</h2>
             <p>
-              The Church-School Ministry is dedicated to building a bridge between our church and local schools, fostering relationships that reflect God's love and make a lasting impact on students, teachers, and families. This ministry exists to serve, support, and inspire the next generation by meeting practical needs, encouraging spiritual growth, and sharing the hope of Christ.
+              The Church School Ministry partners with local schools to provide mentorship, academic support, and spiritual encouragement to students. Through consistent engagement, we aim to support character development, strengthen learning, and reflect Christ's love through practical service.
             </p>
-            
-            <p>
-              Through partnerships with schools, we provide mentorship, tutoring, prayer support, and resources that enhance both academic success and personal development. Whether through after-school programs, teacher appreciation initiatives, or outreach events, our goal is to create an environment where faith, education, and community come together to transform lives.
-            </p>
-            
+
             <h3>Our Vision</h3>
             <p>
-              To be a beacon of hope and support within our educational community, demonstrating Christ's love through practical service and building relationships that lead to positive change in students' lives.
+              To support the educational community through mentorship, academic assistance, and spiritual guidance, contributing positively to students' growth in character and faith.
             </p>
-            
-            <h3>What We Do</h3>
+          </div>
+
+          <div className={styles.sectionBlock}>
+            <h2>What We Do</h2>
             <ul className={styles.activitiesList}>
               <li data-number="01">After-school tutoring and homework assistance</li>
-              <li data-number="02">Mentorship programs for at-risk students</li>
-              <li data-number="03">Teacher appreciation events and support</li>
-              <li data-number="04">School supply drives and resource provision</li>
-              <li data-number="05">Prayer support for schools and educators</li>
-              <li data-number="06">Volunteer coordination for school events</li>
-              <li data-number="06">Scholarship programs for deserving students</li>
+              <li data-number="02">Mentorship and guidance for students</li>
+              <li data-number="03">Teacher support and appreciation initiatives</li>
+              <li data-number="04">Spiritual nurture through prayer and biblical encouragement</li>
+              <li data-number="05">Character and values development through structured engagement</li>
             </ul>
-            
           </div>
 
-          <div className={styles.joinSection}>
-            <h2>Make a Difference in Education</h2>
+          <div className={styles.sectionBlock}>
+            <h2>Join Church School Ministry</h2>
             <p>
-             Join us as we invest in the lives of students and educators, planting seeds of faith and hope that will bear fruit for years to come. Every student deserves support and encouragement to reach their full potential.
+              Do you have a heart for guiding and supporting young learners? We welcome students who are willing to invest their time, skills, and faith into mentorship and academic support within local schools.
             </p>
-            
+
             <div className={styles.requirements}>
-              <h3>How to Get Involved</h3>
               <ul>
-                <li>Heart for children and young people's development</li>
-                <li>Background check clearance for working with minors</li>
-                <li>Basic academic skills or willingness to be trained</li>
-                <li>Patience and understanding with diverse learning needs</li>
-                <li>Commitment to regular volunteer schedule</li>
-                <li>Respect for diverse backgrounds and beliefs</li>
+                <li>A genuine commitment to Christ</li>
+                <li>Respect for children and educational environments</li>
+                <li>Willingness to mentor and support students consistently</li>
+                <li>Basic academic competence or willingness to assist with tutoring</li>
+                <li>Commitment to safeguarding and responsible conduct (background check may be required)</li>
               </ul>
             </div>
-            
 
-            <div className={styles.schedule}>
-              <h3>Ministry Schedule</h3>
-              <div className={styles.scheduleGrid}>
-                <div className={styles.scheduleItem}>
-                  <strong>Tutoring Sessions</strong>
-                  <p>Mon-Thu: 3:30 PM - 5:30 PM</p>
-                </div>
-                <div className={styles.scheduleItem}>
-                  <strong>Mentorship Meetings</strong>
-                  <p>Saturdays: 10:00 AM - 12:00 PM</p>
-                </div>
-                <div className={styles.scheduleItem}>
-                  <strong>Planning & Training</strong>
-                  <p>Second Saturday: 9:00 AM - 11:00 AM</p>
-                </div>
-                <div className={styles.scheduleItem}>
-                  <strong>School Visits</strong>
-                  <p>As arranged with schools</p>
-                </div>
-              </div>
-            </div>
-            
             <div className={styles.actionButtons}>
-              <Link to="/contact-us" className={styles.commitmentButton}>
-                Join Church School
-              </Link>
+              <button className={styles.commitmentButton} onClick={() => setIsModalOpen(true)}>
+                Join Church School Ministry
+              </button>
               <Link to="/contact-us" className={styles.contactButton}>
-                Contact Overseer
+                Contact Coordinator
               </Link>
             </div>
           </div>
         </div>
 
-<div className={`${styles.contentSection} ${styles.animate}`} ref={contentRef1} >
-          <div className={styles.description}>
-            <h3>Our Education Philosophy</h3>
-            <p>
-              "Train up a child in the way he should go, and when he is old he will not depart from it." â€“ Proverbs 22:6
-            </p>
-            <p>
-             We believe that education is a partnership between school, family, church, and community. By working together, we can provide students with the academic support, life skills, and moral foundation they need to succeed not just in school, but in life.
-            </p>
-            
-            <h3>Community Impact</h3>
-            <p>
-              Our ministry has touched hundreds of lives through tutoring, mentorship, and support programs. We've seen students improve their grades, gain confidence, and develop positive life goals. Teachers and parents consistently report the positive impact our volunteers have on their students.
-            </p>
-          </div>
-        </div>
-
-        
+        <MinistryRegistrationModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          ministryName="Church School Ministry"
+        />
       </div>
-      
     </>
   );
 };
