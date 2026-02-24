@@ -1,20 +1,31 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styles from '../styles/attendanceSignin.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faCheckCircle,
-    faExclamationTriangle,
+    faExclamationCircle,
     faSearch,
+    faTimes,
+    faSpinner,
     faUserCheck,
-    faTimes
+    faPenNib,
+    faArrowRight,
+    faArrowLeft
 } from '@fortawesome/free-solid-svg-icons';
-import axios from 'axios';
 import { getApiUrl } from '../config/environment';
-import SignaturePad from './attendance/SignaturePad';
 import AttendanceSessionStatus from './attendance/AttendanceSessionStatus';
+import SignaturePad from './attendance/SignaturePad';
 
-interface AttendanceSession {
+interface User {
     _id: string;
+    username: string;
+    registrationNumber: string;
+    phoneNumber?: string;
+}
+
+interface Session {
+    _id: string;
+    title: string;
     ministry: string;
     isActive: boolean;
     startTime: string;
@@ -22,248 +33,336 @@ interface AttendanceSession {
     leadershipRole?: string;
 }
 
-interface UserSearchResult {
-    _id: string;
-    username: string;
-    reg: string;
-    course: string;
-    yos: string;
-    phone: string;
-}
-
-interface AttendanceSigninProps {
-    ministry: string;
-}
-
-const AttendanceSignin: React.FC<AttendanceSigninProps> = ({ ministry }) => {
-    const [session, setSession] = useState<AttendanceSession | null>(null);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
-    const [attendanceFormData, setAttendanceFormData] = useState({ name: '', regNo: '', course: '', year: '', phoneNumber: '', signature: '', userType: 'student' });
-
-    // Quick Search State
+const AttendanceSignin: React.FC = () => {
+    const [attendanceSessions, setAttendanceSessions] = useState<Session[]>([]);
+    const [selectedSession, setSelectedSession] = useState<Session | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [signing, setSigning] = useState(false);
+    const [message, setMessage] = useState('');
+    const [success, setSuccess] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
-    const [searchResults, setSearchResults] = useState<UserSearchResult[]>([]);
-    const [isSearching, setIsSearching] = useState(false);
-    const [selectedUser, setSelectedUser] = useState<UserSearchResult | null>(null);
-    const searchTimeoutRef = useRef<any>(null);
+    const [selectedUser, setSelectedUser] = useState<User | null>(null);
+    const [showForm, setShowForm] = useState(false);
+    const [attendanceFormData, setAttendanceFormData] = useState({
+        phoneNumber: '',
+        registrationNumber: '',
+        ministry: '',
+        signature: ''
+    });
+
+    const signatureUpdateCallback = useCallback((sig: string) => {
+        setAttendanceFormData(prev => ({ ...prev, signature: sig }));
+    }, []);
 
     useEffect(() => {
-        checkActiveSession();
-        const interval = setInterval(checkActiveSession, 10000);
-        return () => clearInterval(interval);
-    }, [ministry]);
-
-    const checkActiveSession = async () => {
-        try {
-            const timestamp = Date.now();
-            const sessionResponse = await axios.get(
-                `${getApiUrl('attendanceSessionStatus')}?t=${timestamp}&refresh=${Math.random()}`,
-                { withCredentials: true }
-            );
-
-            if (sessionResponse.data.session) {
-                const sessionData = sessionResponse.data.session;
-                setSession(sessionData);
-            } else {
-                setSession(null);
-            }
-        } catch (error: any) {
-            setSession(null);
-            setError('⚠️ Connection error. Please try again.');
-            setTimeout(() => setError(''), 5000);
-        }
-    };
-
-    const handleSearch = (value: string) => {
-        setSearchQuery(value);
-        if (value.length < 3) {
-            setSearchResults([]);
-            return;
-        }
-
-        if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
-        searchTimeoutRef.current = setTimeout(async () => {
-            setIsSearching(true);
+        const fetchStatus = async () => {
             try {
-                const response = await axios.get(`${getApiUrl('usersSearch')}?query=${encodeURIComponent(value)}`, {
-                    withCredentials: true
+                const response = await fetch(getApiUrl('attendanceStatus'), {
+                    credentials: 'include'
                 });
-                setSearchResults(response.data);
+                if (response.ok) {
+                    const data = await response.json();
+                    setAttendanceSessions(data.sessions || []);
+
+                    // If we have a selected session, keep it updated
+                    if (selectedSession) {
+                        const updated = (data.sessions || []).find((s: Session) => s._id === selectedSession._id);
+                        if (updated) {
+                            setSelectedSession(updated);
+                        }
+                    }
+                }
             } catch (err) {
-                console.error('Search error:', err);
+                console.error('Error fetching session status:', err);
             } finally {
-                setIsSearching(false);
-            }
-        }, 500);
-    };
-
-    const handleSelectUser = (user: UserSearchResult) => {
-        setSelectedUser(user);
-        setAttendanceFormData({
-            name: user.username,
-            regNo: user.reg,
-            course: user.course,
-            year: user.yos,
-            phoneNumber: user.phone,
-            signature: '',
-            userType: 'student'
-        });
-        setSearchQuery('');
-        setSearchResults([]);
-    };
-
-    const resetSelection = () => {
-        setSelectedUser(null);
-        setAttendanceFormData({ name: '', regNo: '', course: '', year: '', phoneNumber: '', signature: '', userType: 'student' });
-    };
-
-    const signAttendance = async () => {
-        if (!attendanceFormData.name || !attendanceFormData.phoneNumber || !attendanceFormData.signature) {
-            setError('Please fill in name, phone number, and signature');
-            setTimeout(() => setError(''), 3000);
-            return;
-        }
-
-        if (attendanceFormData.userType === 'student' && (!attendanceFormData.regNo || !attendanceFormData.course || !attendanceFormData.year)) {
-            setError('Students must fill in registration number, course, and year');
-            setTimeout(() => setError(''), 3000);
-            return;
-        }
-
-        setLoading(true);
-        try {
-            const timestamp = Date.now();
-            const sessionResponse = await axios.get(
-                `${getApiUrl('attendanceSessionStatus')}?t=${timestamp}&refresh=${Math.random()}`,
-                { withCredentials: true }
-            );
-
-            const latestSession = sessionResponse.data.session;
-            if (!latestSession || !latestSession.isActive) {
-                setError('No active session found or session closed.');
                 setLoading(false);
-                return;
             }
+        };
 
-            const attendanceData = {
-                ...attendanceFormData,
-                name: attendanceFormData.name.trim(),
-                regNo: attendanceFormData.userType === 'student' ? attendanceFormData.regNo.trim().toUpperCase() : `VISITOR-${Date.now()}`,
-                course: attendanceFormData.userType === 'student' ? attendanceFormData.course.trim() : 'N/A',
-                year: attendanceFormData.userType === 'student' ? parseInt(attendanceFormData.year) : 0,
-                phoneNumber: attendanceFormData.phoneNumber.trim(),
-                signature: attendanceFormData.signature.trim(),
-                sessionId: latestSession._id
+        fetchStatus();
+        const interval = setInterval(fetchStatus, 5000);
+        return () => clearInterval(interval);
+    }, []);
+
+    const handleSearch = async (query: string) => {
+        setSearchQuery(query);
+        if (query.length < 4) {
+            if (selectedUser) resetUserSelection();
+            return;
+        }
+
+        try {
+            const response = await fetch(`${getApiUrl('usersSearch')}?query=${encodeURIComponent(query)}`, {
+                credentials: 'include'
+            });
+            if (response.ok) {
+                const data = await response.json();
+                const mappedUsers = (data || []).map((user: any) => ({
+                    _id: user._id,
+                    username: user.username,
+                    registrationNumber: user.reg || '',
+                    phoneNumber: user.phone || ''
+                }));
+
+                // Auto-select if there is an exact match for registration number
+                const exactMatch = mappedUsers.find(
+                    (user: User) => user.registrationNumber.toUpperCase() === query.toUpperCase()
+                );
+
+                if (exactMatch) {
+                    handleSelectUser(exactMatch);
+                } else if (selectedUser) {
+                    // Clear selection if they change the reg no and it no longer matches
+                    resetUserSelection();
+                }
+            }
+        } catch (err) {
+            console.error('Search error:', err);
+        }
+    };
+
+    const handleSelectUser = (user: User) => {
+        setSelectedUser(user);
+        setAttendanceFormData(prev => ({
+            ...prev,
+            phoneNumber: user.phoneNumber || '',
+            registrationNumber: user.username // Use name as registration identity for sign-in payload if needed
+        }));
+    };
+
+    const resetUserSelection = () => {
+        setSelectedUser(null);
+        setAttendanceFormData(prev => ({
+            ...prev,
+            phoneNumber: '',
+            registrationNumber: ''
+        }));
+    };
+
+    const handleSignin = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        const regNo = selectedUser ? selectedUser.registrationNumber : attendanceFormData.registrationNumber;
+
+        if (!regNo) {
+            setMessage('❌ Please enter your name or registration number');
+            return;
+        }
+
+        if (!attendanceFormData.signature) {
+            setMessage('✍️ Please provide your signature');
+            return;
+        }
+
+        setSigning(true);
+        setMessage('');
+
+        try {
+            const payload = {
+                sessionId: selectedSession?._id,
+                regNo: regNo,
+                phoneNumber: attendanceFormData.phoneNumber,
+                ministry: selectedSession?.ministry || attendanceFormData.ministry,
+                signature: attendanceFormData.signature,
+                userId: selectedUser?._id,
+                name: selectedUser?.username || regNo
             };
 
-            await axios.post(getApiUrl('attendanceSignAnonymous'), attendanceData, { withCredentials: true });
-            const signedName = attendanceFormData.name.trim();
+            const response = await fetch(getApiUrl('attendanceSignAnonymous'), {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+                credentials: 'include'
+            });
 
-            resetSelection();
+            const data = await response.json();
 
-            setSuccess(`✅ ${signedName} successfully signed attendance!`);
-            setTimeout(() => setSuccess(''), 4000);
-        } catch (error: any) {
-            setError(`❌ ${error.response?.data?.message || 'Error signing attendance'}`);
-            setTimeout(() => setError(''), 6000);
+            if (response.ok) {
+                setSuccess(true);
+                setMessage('✅ Attendance recorded successfully!');
+                setTimeout(() => {
+                    setSuccess(false);
+                    setMessage('');
+                    setShowForm(false);
+                    setAttendanceFormData(prev => ({ ...prev, signature: '', phoneNumber: '', registrationNumber: '' }));
+                    setSelectedUser(null);
+                }, 3000);
+            } else {
+                setMessage(`❌ ${data.message || 'Error signing attendance'}`);
+            }
+        } catch (err) {
+            setMessage('❌ Network error. Please try again.');
         } finally {
-            setLoading(false);
+            setSigning(false);
         }
     };
+
+    if (loading) {
+        return (
+            <div className={styles.attendanceContainer}>
+                <div className={styles.attendanceCard} style={{ display: 'flex', justifyContent: 'center', padding: '50px' }}>
+                    <FontAwesomeIcon icon={faSpinner} spin size="2x" style={{ color: '#8b005e' }} />
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className={styles.attendanceContainer}>
             <div className={styles.attendanceCard}>
-                <AttendanceSessionStatus session={session} ministry={ministry} />
+                {!showForm ? (
+                    <div className={styles.landingView}>
+                        <div className={styles.centerIconWrapper}>
+                            <FontAwesomeIcon icon={faPenNib} />
+                        </div>
+                        <h1 className={styles.centerTitle}>Attendance Center</h1>
+                        <p className={styles.centerSubtitle}>
+                            Select a session below to record your participation.
+                        </p>
 
-                {session?.isActive && (
-                    <>
-                        {error && <div className={styles.error}><FontAwesomeIcon icon={faExclamationTriangle} /> <span>{error}</span></div>}
-                        {success && <div className={styles.success}><FontAwesomeIcon icon={faCheckCircle} /> <span>{success}</span></div>}
+                        <div className={styles.sessionList}>
+                            {attendanceSessions.length === 0 ? (
+                                <AttendanceSessionStatus session={null} />
+                            ) : (
+                                attendanceSessions.map((session, idx) => (
+                                    <div
+                                        key={session._id}
+                                        className={styles.compactStatusRow}
+                                        onClick={() => {
+                                            setSelectedSession(session);
+                                            setAttendanceFormData(prev => ({ ...prev, ministry: session.ministry || '' }));
+                                            setShowForm(true);
+                                        }}
+                                    >
+                                        <div className={styles.compactNumber}>{idx + 1}</div>
+                                        <div className={styles.compactInfo}>
+                                            <h3 className={styles.compactTitle}>{session.title}</h3>
+                                            <p className={styles.compactSubtitle}>{session.leadershipRole || 'General'}</p>
+                                        </div>
+                                        <button className={styles.compactSignBtn}>Sign</button>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    </div>
+                ) : (
+                    <div className={styles.formView}>
+                        <div className={styles.formHeader}>
+                            <button className={styles.backBtn} onClick={() => { setShowForm(false); setSelectedSession(null); }}>
+                                <FontAwesomeIcon icon={faArrowLeft} /> Back
+                            </button>
+                            <div>
+                                <h3 style={{ margin: 0, fontSize: '1.1rem', color: '#0f172a' }}>Sign In</h3>
+                                <p style={{ fontSize: '0.75rem', color: '#8b005e', fontWeight: 700 }}>{selectedSession?.title}</p>
+                            </div>
+                        </div>
 
-                        {!selectedUser && (
-                            <div className={styles.searchSection}>
-                                <div className={styles.searchInputWrapper}>
+                        {message && (
+                            <div className={`${styles.alert} ${success ? styles.alertSuccess : styles.alertError}`}>
+                                <FontAwesomeIcon icon={success ? faCheckCircle : faExclamationCircle} />
+                                {message}
+                            </div>
+                        )}
+
+                        <form onSubmit={handleSignin}>
+                            <div className={styles.searchWrapper}>
+                                <label className={styles.formLabel}>Registration Number</label>
+                                <div style={{ position: 'relative' }}>
                                     <FontAwesomeIcon icon={faSearch} className={styles.searchIcon} />
                                     <input
                                         type="text"
-                                        placeholder="🔍 Search by Name or Reg No..."
+                                        className={`${styles.formInput} ${styles.searchInput}`}
+                                        placeholder="Enter Registration Number (e.g., IN16/...)"
                                         value={searchQuery}
-                                        onChange={(e) => handleSearch(e.target.value)}
-                                        className={styles.searchInput}
-                                        disabled={loading}
+                                        onChange={(e) => {
+                                            const val = e.target.value.toUpperCase();
+                                            setSearchQuery(val);
+                                            handleSearch(val);
+                                        }}
+                                        onBlur={() => {
+                                            // Handle case where they stop typing and we haven't found anyone
+                                            if (!selectedUser && searchQuery.length > 5) {
+                                                setAttendanceFormData(prev => ({ ...prev, registrationNumber: searchQuery }));
+                                            }
+                                        }}
+                                        disabled={signing}
                                     />
-                                    {isSearching && <div className={styles.searchLoader}></div>}
                                 </div>
-                                {searchResults.length > 0 && (
-                                    <div className={styles.searchResults}>
-                                        {searchResults.map(user => (
-                                            <div key={user._id} className={styles.searchResultItem} onClick={() => handleSelectUser(user)}>
-                                                <span className={styles.resultName}>{user.username}</span>
-                                                <span className={styles.resultReg}>{user.reg} • {user.course}</span>
-                                            </div>
-                                        ))}
+                            </div>
+
+                            {selectedUser ? (
+                                <div className={styles.userFoundAlert}>
+                                    <div className={styles.userFoundContent}>
+                                        <div className={styles.userFoundIcon}>
+                                            <FontAwesomeIcon icon={faUserCheck} />
+                                        </div>
+                                        <div>
+                                            <h4 className={styles.welcomeText}>Welcome back, {selectedUser.username}!</h4>
+                                            <p className={styles.foundMeta}>Reg No: {selectedUser.registrationNumber}</p>
+                                        </div>
                                     </div>
-                                )}
-                            </div>
-                        )}
-
-                        {selectedUser && (
-                            <div className={styles.userFoundCard}>
-                                <div className={styles.userInfo}>
-                                    <h4><FontAwesomeIcon icon={faUserCheck} /> {selectedUser.username}</h4>
-                                    <p>{selectedUser.reg} • Year {selectedUser.yos}</p>
+                                    <button
+                                        type="button"
+                                        className={styles.clearBtn}
+                                        onClick={resetUserSelection}
+                                        title="Not you?"
+                                    >
+                                        <FontAwesomeIcon icon={faTimes} />
+                                    </button>
                                 </div>
-                                <button className={styles.resetButton} onClick={resetSelection} title="Change person"><FontAwesomeIcon icon={faTimes} /></button>
-                            </div>
-                        )}
-
-                        <div className={styles.attendanceForm}>
-                            {!selectedUser && (
-                                <>
+                            ) : searchQuery.length >= 4 && (
+                                <div className={styles.manualEntrySection}>
+                                    <p className={styles.manualEntryHint}>Not recognized? Please enter your details manually:</p>
                                     <div className={styles.formGroup}>
-                                        <label className={styles.formLabel}>Full Name *</label>
+                                        <label className={styles.formLabel}>Full Name</label>
                                         <input
                                             type="text"
-                                            value={attendanceFormData.name}
-                                            onChange={(e) => setAttendanceFormData({ ...attendanceFormData, name: e.target.value })}
                                             className={styles.formInput}
+                                            placeholder="Enter your full name"
+                                            value={attendanceFormData.registrationNumber}
+                                            onChange={(e) => setAttendanceFormData({ ...attendanceFormData, registrationNumber: e.target.value })}
+                                            required
                                         />
                                     </div>
                                     <div className={styles.formGroup}>
-                                        <label className={styles.formLabel}>Registration Number *</label>
-                                        <input
-                                            type="text"
-                                            value={attendanceFormData.regNo}
-                                            onChange={(e) => setAttendanceFormData({ ...attendanceFormData, regNo: e.target.value.toUpperCase() })}
-                                            className={styles.formInput}
-                                            disabled={attendanceFormData.userType === 'visitor'}
-                                        />
-                                    </div>
-                                    <div className={styles.formGroup}>
-                                        <label className={styles.formLabel}>Phone Number *</label>
+                                        <label className={styles.formLabel}>Phone Number (Optional)</label>
                                         <input
                                             type="tel"
+                                            className={styles.formInput}
+                                            placeholder="Enter phone number"
                                             value={attendanceFormData.phoneNumber}
                                             onChange={(e) => setAttendanceFormData({ ...attendanceFormData, phoneNumber: e.target.value })}
-                                            className={styles.formInput}
                                         />
                                     </div>
-                                </>
+                                </div>
                             )}
 
-                            <SignaturePad
-                                onSignatureChange={(sig) => setAttendanceFormData(prev => ({ ...prev, signature: sig }))}
-                                loading={loading}
-                            />
+                            {(selectedUser || (searchQuery.length >= 4)) && (
+                                <>
+                                    <div className={styles.formGroup}>
+                                        <label className={styles.formLabel}>Sign Here</label>
+                                        <SignaturePad
+                                            onSignatureChange={signatureUpdateCallback}
+                                            loading={signing}
+                                        />
+                                    </div>
 
-                            <button onClick={signAttendance} disabled={loading} className={`${styles.signButton} ${loading ? styles.loading : ''}`}>
-                                {loading ? 'Processing...' : selectedUser ? 'Complete Check-in' : 'Sign Attendance'}
-                            </button>
-                        </div>
-                    </>
+                                    <button
+                                        type="submit"
+                                        className={styles.primaryCta}
+                                        disabled={signing}
+                                        style={{ marginTop: '10px' }}
+                                    >
+                                        {signing ? (
+                                            <><FontAwesomeIcon icon={faSpinner} spin /> Recording...</>
+                                        ) : (
+                                            <>Confirm Participation <FontAwesomeIcon icon={faUserCheck} /></>
+                                        )}
+                                    </button>
+                                </>
+                            )}
+                        </form>
+                    </div>
                 )}
             </div>
         </div>

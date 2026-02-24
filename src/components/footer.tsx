@@ -15,7 +15,7 @@ const quickLinks = [
 const socialLinks = [
   { icon: Facebook, href: 'https://www.facebook.com/ksucumaincampus', label: 'Facebook' },
   { icon: Instagram, href: 'https://www.instagram.com/ksucu_mc', label: 'Instagram' },
-  { icon: Youtube, href: 'https://www.youtube.com/@ksucumaincampus', label: 'YouTube' },
+  { icon: Youtube, href: 'https://www.youtube.com/@ksucu-mc', label: 'YouTube' },
   { icon: Twitter, href: 'https://twitter.com/ksucumc', label: 'Twitter' },
 ];
 
@@ -134,7 +134,7 @@ const Footer = () => {
           <div className="max-w-6xl mx-auto px-4 py-4">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-sm text-purple-200">
               <p>
-                Kisii University Christian Union {currentYear}
+                Kisii University Christian Union &#169; {currentYear}
                 <span
                   onClick={() => setShowAdminAccess(true)}
                   style={{ cursor: 'pointer', marginLeft: '10px', fontSize: '10px', color: 'rgba(255,255,255,0.4)', textDecoration: 'none' }}

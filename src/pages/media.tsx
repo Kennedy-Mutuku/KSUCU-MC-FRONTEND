@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from '../styles/Media.module.css';
-import UniversalHeader from '../components/UniversalHeader';
-import Footer from '../components/footer';
 import loadingAnime from '../assets/Animation - 1716747954931.gif';
 import { FaYoutube, FaFacebook, FaTiktok, FaTwitter, FaImage, FaNewspaper, FaBook, FaTimes, FaSync } from 'react-icons/fa';
 import { getApiUrl, getImageUrl, getBaseUrl, isDevMode } from '../config/environment';
@@ -256,7 +254,6 @@ const Media: React.FC = () => {
   
   return (
     <>
-      <UniversalHeader />
       
       {generalLoading && (
         <div className={styles['loading-screen']}>
@@ -273,8 +270,12 @@ const Media: React.FC = () => {
         {/* Hero Section */}
         <section className={styles.heroSection}>
           <div className={styles.heroContent}>
-            <h1 className={styles.heroTitle}>KSUCU-MC MEDIA HUB</h1>
+            <h1 className={styles.heroTitle}>WELCOME TO THE <br />KSUCU-MC MEDIA HUB</h1>
             <p className={styles.heroSubtitle}>Stay connected through our digital platforms and explore our content</p>
+
+            <Link to="/" className={styles.backButton}>
+               <p>Back to Home</p> 
+            </Link>
           </div>
         </section>
 
@@ -460,7 +461,6 @@ const Media: React.FC = () => {
         )}
         </main>
       )}
-      <Footer />
     </>
   );
 };

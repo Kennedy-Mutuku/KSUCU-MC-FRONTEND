@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { MessageCircle, Send, X, Users, Image, Mic, Video, Edit, Trash2, Reply, Check, CheckCheck, Heart, ThumbsDown } from 'lucide-react';
 import socketService from '../services/socketService';
 import { getApiUrl, getBaseUrl } from '../config/environment';
@@ -57,6 +58,7 @@ interface TypingUser {
 }
 
 const CommunityChat: React.FC = () => {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
@@ -74,13 +76,13 @@ const CommunityChat: React.FC = () => {
   const [longPressMessage, setLongPressMessage] = useState<Message | null>(null);
   const [showDeleteOptions, setShowDeleteOptions] = useState(false);
   const [pressTimer, setPressTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
-  
+
   // Media recording states
   const [isRecording, setIsRecording] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
   const [recordingTime, setRecordingTime] = useState(0);
   const [recordingTimer, setRecordingTimer] = useState<ReturnType<typeof setInterval> | null>(null);
-  
+
   // Swipe to reply states
   const [swipeStartX, setSwipeStartX] = useState(0);
   const [swipeStartY, setSwipeStartY] = useState(0);
@@ -88,12 +90,12 @@ const CommunityChat: React.FC = () => {
   const [swipingMessage, setSwipingMessage] = useState<string | null>(null);
   const [isSwipeActive, setIsSwipeActive] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
-  
+
   // Reaction animation state
-  const [reactionUpdates, setReactionUpdates] = useState<{[key: string]: {likes: number, dislikes: number}}>({});
-  
+  const [reactionUpdates, setReactionUpdates] = useState<{ [key: string]: { likes: number, dislikes: number } }>({});
+
   // Media fullscreen state
-  const [fullscreenMedia, setFullscreenMedia] = useState<{url: string, type: 'image' | 'video'} | null>(null);
+  const [fullscreenMedia, setFullscreenMedia] = useState<{ url: string, type: 'image' | 'video' } | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatWindowRef = useRef<HTMLDivElement>(null);
@@ -109,23 +111,23 @@ const CommunityChat: React.FC = () => {
   const fetchCurrentUser = async () => {
     try {
       console.log('🔍 Chat: Fetching user data...');
-      
+
       // Use the same method as UniversalHeader
       const apiUrl = getApiUrl('users');
       const response = await fetch(apiUrl, {
         credentials: 'include'
       });
-      
+
       console.log('🔍 Chat: Response status:', response.status);
       const data = await response.json();
       console.log('🔍 Chat: Response data:', data);
-      
+
       if (!response.ok) {
         console.log('❌ Chat: Response not ok:', data.message);
         setCurrentUser(null);
         return false;
       }
-      
+
       // Check if we have user data (same as UniversalHeader)
       if (data && data.username && data._id) {
         // Use the full username from database, not just first name
@@ -151,7 +153,7 @@ const CommunityChat: React.FC = () => {
     try {
       setIsLoading(true);
       setError(''); // Clear any previous errors
-      
+
       // Require authentication for chat access
       const isAuthenticated = await fetchCurrentUser();
 
@@ -181,31 +183,31 @@ const CommunityChat: React.FC = () => {
       console.log('🔍 Chat: Received new message:', message);
       console.log('🔍 Chat: Current user when receiving message:', currentUser);
       setMessages(prev => [...prev, message]);
-      
+
       // Auto-mark messages as delivered if they're from other users
       if (currentUser && message.senderId !== currentUser.userId) {
         setTimeout(() => {
           socketService.updateMessageStatus(message._id, 'delivered');
-          
+
           // Auto-mark as read after a short delay (simulating user viewing)
           setTimeout(() => {
             socketService.updateMessageStatus(message._id, 'read');
           }, 2000);
         }, 500);
       }
-      
+
       setTimeout(scrollToBottom, 100);
     });
 
     socketService.onMessageEdited((message: Message) => {
-      setMessages(prev => prev.map(msg => 
+      setMessages(prev => prev.map(msg =>
         msg._id === message._id ? message : msg
       ));
     });
 
     socketService.onMessageDeleted(({ messageId }: { messageId: string }) => {
       // Mark message as deleted for everyone (show "This message was deleted")
-      setMessages(prev => prev.map(msg => 
+      setMessages(prev => prev.map(msg =>
         msg._id === messageId ? { ...msg, deleted: true, message: '', mediaUrl: undefined } : msg
       ));
     });
@@ -216,7 +218,7 @@ const CommunityChat: React.FC = () => {
     });
 
     socketService.onMessageStatusUpdated(({ messageId, status }: { messageId: string; status: string }) => {
-      setMessages(prev => prev.map(msg => 
+      setMessages(prev => prev.map(msg =>
         msg._id === messageId ? { ...msg, status: status as any } : msg
       ));
     });
@@ -241,8 +243,8 @@ const CommunityChat: React.FC = () => {
       const likesCount = reactions?.likes?.length || 0;
       const dislikesCount = reactions?.dislikes?.length || 0;
       triggerReactionAnimation(messageId, likesCount, dislikesCount);
-      
-      setMessages(prev => prev.map(msg => 
+
+      setMessages(prev => prev.map(msg =>
         msg._id === messageId ? { ...msg, reactions } : msg
       ));
     });
@@ -251,15 +253,15 @@ const CommunityChat: React.FC = () => {
   const loadMessages = async () => {
     try {
       console.log('💬 Chat: Loading messages...');
-      
-      const apiUrl = `${getApiUrl('chatMessages')}?page=${page}&limit=50`;
+
+      const apiUrl = `${getApiUrl('chatMessages')}?page=${page}&limit=20`; // Reduced from 50 to 20
       const response = await fetch(apiUrl, {
         credentials: 'include'
       });
-      
+
       const data = await response.json();
       console.log('💬 Chat: Messages response:', data);
-      
+
       if (response.ok && data.success) {
         setMessages(prev => page === 1 ? data.messages : [...data.messages, ...prev]);
         setHasMore(data.hasMore);
@@ -278,18 +280,18 @@ const CommunityChat: React.FC = () => {
   };
 
   const handleSendMessage = async () => {
-    console.log('handleSendMessage called', { 
-      newMessage: newMessage, 
-      trimmed: newMessage.trim(), 
-      isConnected, 
-      isLoading 
+    console.log('handleSendMessage called', {
+      newMessage: newMessage,
+      trimmed: newMessage.trim(),
+      isConnected,
+      isLoading
     });
-    
+
     if (!newMessage.trim() || !isConnected) {
-      console.log('Send message blocked:', { 
-        hasMessage: !!newMessage.trim(), 
-        isConnected, 
-        isLoading 
+      console.log('Send message blocked:', {
+        hasMessage: !!newMessage.trim(),
+        isConnected,
+        isLoading
       });
       return;
     }
@@ -319,7 +321,7 @@ const CommunityChat: React.FC = () => {
     // Validate file type
     const allowedTypes = ['image/', 'video/', 'audio/', 'application/pdf', 'text/', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
     const isValidType = allowedTypes.some(type => file.type.startsWith(type));
-    
+
     if (!isValidType) {
       setError('File type not supported. Please upload images, videos, audio, PDF, or document files.');
       return;
@@ -334,11 +336,11 @@ const CommunityChat: React.FC = () => {
     try {
       setIsLoading(true);
       setError(''); // Clear previous errors
-      
-      const fileType = file.type.startsWith('image/') ? 'image' : 
-                      file.type.startsWith('video/') ? 'video' : 
-                      file.type.startsWith('audio/') ? 'audio' : 'file';
-      
+
+      const fileType = file.type.startsWith('image/') ? 'image' :
+        file.type.startsWith('video/') ? 'video' :
+          file.type.startsWith('audio/') ? 'audio' : 'file';
+
       console.log(`📁 Chat: Uploading ${fileType}...`, {
         name: file.name,
         size: file.size,
@@ -347,13 +349,13 @@ const CommunityChat: React.FC = () => {
 
       // Get authentication token from cookies - try both possible cookie names
       let token = Cookies.get('user_s') || Cookies.get('socket_token');
-      
+
       // Prepare headers
       const headers: HeadersInit = {};
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
       }
-      
+
       const response = await fetch(getApiUrl('chatUpload'), {
         method: 'POST',
         credentials: 'include',
@@ -373,7 +375,7 @@ const CommunityChat: React.FC = () => {
         console.error('📁 Chat: Failed to upload file:', data.message);
         console.error('📁 Chat: Response status:', response.status);
         console.error('📁 Chat: Full response:', data);
-        
+
         // Handle specific authentication errors
         if (response.status === 401 || response.status === 403) {
           if (!token) {
@@ -418,7 +420,7 @@ const CommunityChat: React.FC = () => {
         const audioBlob = new Blob(chunks, { type: 'audio/webm' });
         const audioFile = new File([audioBlob], 'voice_message.webm', { type: 'audio/webm' });
         handleFileUpload(audioFile);
-        
+
         // Stop all tracks to release microphone
         stream.getTracks().forEach(track => track.stop());
       };
@@ -426,16 +428,16 @@ const CommunityChat: React.FC = () => {
       setMediaRecorder(recorder);
       setIsRecording(true);
       setRecordingTime(0);
-      
+
       // Start recording
       recorder.start();
-      
+
       // Start timer
       const timer = setInterval(() => {
         setRecordingTime(prev => prev + 1);
       }, 1000);
       setRecordingTimer(timer);
-      
+
       console.log('🎤 Started voice recording');
     } catch (error) {
       console.error('Error starting voice recording:', error);
@@ -448,12 +450,12 @@ const CommunityChat: React.FC = () => {
       mediaRecorder.stop();
       setIsRecording(false);
       setMediaRecorder(null);
-      
+
       if (recordingTimer) {
         clearInterval(recordingTimer);
         setRecordingTimer(null);
       }
-      
+
       console.log('🎤 Stopped voice recording');
     }
   };
@@ -464,12 +466,12 @@ const CommunityChat: React.FC = () => {
       setIsRecording(false);
       setMediaRecorder(null);
       setRecordingTime(0);
-      
+
       if (recordingTimer) {
         clearInterval(recordingTimer);
         setRecordingTimer(null);
       }
-      
+
       console.log('🎤 Cancelled voice recording');
     }
   };
@@ -500,7 +502,7 @@ const CommunityChat: React.FC = () => {
   const handleTyping = (typing: boolean) => {
     if (typing) {
       socketService.setTyping(true);
-      
+
       // Clear existing timeout
       if (typingTimeoutRef.current) {
         clearTimeout(typingTimeoutRef.current);
@@ -524,17 +526,17 @@ const CommunityChat: React.FC = () => {
     const diffInHours = (now.getTime() - date.getTime()) / (1000 * 60 * 60);
 
     if (diffInHours < 24) {
-      return date.toLocaleTimeString('en-US', { 
-        hour: '2-digit', 
+      return date.toLocaleTimeString('en-US', {
+        hour: '2-digit',
         minute: '2-digit',
-        hour12: true 
+        hour12: true
       });
     } else if (diffInHours < 168) { // 7 days
       return date.toLocaleDateString('en-US', { weekday: 'short' });
     } else {
-      return date.toLocaleDateString('en-US', { 
-        month: 'short', 
-        day: 'numeric' 
+      return date.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric'
       });
     }
   };
@@ -590,10 +592,10 @@ const CommunityChat: React.FC = () => {
 
       if (response.ok && data.success) {
         // Update message in local state
-        setMessages(prev => prev.map(msg => 
+        setMessages(prev => prev.map(msg =>
           msg._id === messageId ? data.message : msg
         ));
-        
+
         // Also emit through socket for real-time updates
         socketService.addReaction(messageId, reactionType);
       } else {
@@ -608,7 +610,7 @@ const CommunityChat: React.FC = () => {
 
   const hasUserReacted = (reactions: any, reactionType: 'likes' | 'dislikes'): boolean => {
     if (!reactions || !currentUser) return false;
-    
+
     return reactions[reactionType]?.some((reaction: any) => {
       return reaction.userId?.toString() === currentUser.userId.toString();
     }) || false;
@@ -616,14 +618,14 @@ const CommunityChat: React.FC = () => {
 
   const triggerReactionAnimation = (messageId: string, newLikes: number, newDislikes: number) => {
     const previousCounts = reactionUpdates[messageId] || { likes: 0, dislikes: 0 };
-    
+
     // Only trigger if counts actually changed
     if (previousCounts.likes !== newLikes || previousCounts.dislikes !== newDislikes) {
       setReactionUpdates(prev => ({
         ...prev,
         [messageId]: { likes: newLikes, dislikes: newDislikes }
       }));
-      
+
       // Remove the animation trigger after animation completes
       setTimeout(() => {
         setReactionUpdates(prev => {
@@ -641,21 +643,21 @@ const CommunityChat: React.FC = () => {
       const userIdMatch = longPressMessage.senderId === currentUser.userId;
       const usernameMatch = longPressMessage.senderName === currentUser.username;
       const trimmedUsernameMatch = !!(currentUser.username && longPressMessage.senderName === currentUser.username.trim());
-      const caseInsensitiveUsernameMatch = !!(currentUser.username && 
+      const caseInsensitiveUsernameMatch = !!(currentUser.username &&
         longPressMessage.senderName.toLowerCase() === currentUser.username.toLowerCase());
-      const trimmedCaseInsensitiveMatch = !!(currentUser.username && 
+      const trimmedCaseInsensitiveMatch = !!(currentUser.username &&
         longPressMessage.senderName.toLowerCase().trim() === currentUser.username.toLowerCase().trim());
-      
-      const isOwn = userIdMatch || usernameMatch || trimmedUsernameMatch || 
-                    caseInsensitiveUsernameMatch || trimmedCaseInsensitiveMatch;
-      
+
+      const isOwn = userIdMatch || usernameMatch || trimmedUsernameMatch ||
+        caseInsensitiveUsernameMatch || trimmedCaseInsensitiveMatch;
+
       if (!isOwn) {
         setError('You can only delete your own messages for everyone.');
         setShowDeleteOptions(false);
         setLongPressMessage(null);
         return;
       }
-      
+
       try {
         socketService.deleteMessage(longPressMessage._id);
         setShowDeleteOptions(false);
@@ -675,7 +677,7 @@ const CommunityChat: React.FC = () => {
     setSwipingMessage(message._id);
     setIsSwipeActive(true);
     setSwipeDistance(0);
-    
+
     // Cancel any ongoing long press when starting swipe
     if (pressTimer) {
       clearTimeout(pressTimer);
@@ -685,11 +687,11 @@ const CommunityChat: React.FC = () => {
 
   const handleSwipeMove = (e: React.TouchEvent, message: Message) => {
     if (!isSwipeActive || swipingMessage !== message._id) return;
-    
+
     const touch = e.touches[0];
     const deltaX = touch.clientX - swipeStartX;
     const deltaY = Math.abs(touch.clientY - swipeStartY);
-    
+
     // If user is swiping horizontally, cancel long press
     if (Math.abs(deltaX) > 10) {
       if (pressTimer) {
@@ -697,13 +699,13 @@ const CommunityChat: React.FC = () => {
         setPressTimer(null);
       }
     }
-    
+
     // Only allow horizontal swipes (prevent vertical scrolling interference)
     if (deltaY > 30) {
       handleSwipeEnd();
       return;
     }
-    
+
     // Only track rightward swipes (positive deltaX)
     if (deltaX > 0 && deltaX <= 80) {
       setSwipeDistance(deltaX);
@@ -719,7 +721,7 @@ const CommunityChat: React.FC = () => {
         setReplyToMessage(messageToReply);
       }
     }
-    
+
     // Reset swipe state
     setIsSwipeActive(false);
     setSwipingMessage(null);
@@ -733,22 +735,22 @@ const CommunityChat: React.FC = () => {
     setSwipingMessage(message._id);
     setIsDragging(true);
     setSwipeDistance(0);
-    
+
     // Cancel any ongoing long press when starting drag
     if (pressTimer) {
       clearTimeout(pressTimer);
       setPressTimer(null);
     }
-    
+
     e.preventDefault(); // Prevent text selection
   };
 
   const handleMouseDragMove = (e: React.MouseEvent, message: Message) => {
     if (!isDragging || swipingMessage !== message._id) return;
-    
+
     const deltaX = e.clientX - swipeStartX;
     const deltaY = Math.abs(e.clientY - swipeStartY);
-    
+
     // If user is dragging horizontally, cancel long press
     if (Math.abs(deltaX) > 10) {
       if (pressTimer) {
@@ -756,13 +758,13 @@ const CommunityChat: React.FC = () => {
         setPressTimer(null);
       }
     }
-    
+
     // Only allow horizontal drags (prevent vertical scrolling interference)
     if (deltaY > 30) {
       handleMouseDragEnd();
       return;
     }
-    
+
     // Only track rightward drags (positive deltaX)
     if (deltaX > 0 && deltaX <= 80) {
       setSwipeDistance(deltaX);
@@ -778,7 +780,7 @@ const CommunityChat: React.FC = () => {
         setReplyToMessage(messageToReply);
       }
     }
-    
+
     // Reset drag state
     setIsDragging(false);
     setSwipingMessage(null);
@@ -788,20 +790,20 @@ const CommunityChat: React.FC = () => {
   const renderMessage = (message: Message) => {
     // Enhanced ownership detection with debugging
     let isOwn = false;
-    
+
     if (currentUser) {
       // Check multiple comparison methods
       const userIdMatch = message.senderId === currentUser.userId;
       const usernameMatch = message.senderName === currentUser.username;
       const trimmedUsernameMatch = !!(currentUser.username && message.senderName === currentUser.username.trim());
-      const caseInsensitiveUsernameMatch = !!(currentUser.username && 
+      const caseInsensitiveUsernameMatch = !!(currentUser.username &&
         message.senderName.toLowerCase() === currentUser.username.toLowerCase());
-      const trimmedCaseInsensitiveMatch = !!(currentUser.username && 
+      const trimmedCaseInsensitiveMatch = !!(currentUser.username &&
         message.senderName.toLowerCase().trim() === currentUser.username.toLowerCase().trim());
-      
-      isOwn = userIdMatch || usernameMatch || trimmedUsernameMatch || 
-              caseInsensitiveUsernameMatch || trimmedCaseInsensitiveMatch;
-      
+
+      isOwn = userIdMatch || usernameMatch || trimmedUsernameMatch ||
+        caseInsensitiveUsernameMatch || trimmedCaseInsensitiveMatch;
+
       // Debug logging to help identify the issue
       console.log('Message ownership check:', {
         messageId: message._id,
@@ -817,7 +819,7 @@ const CommunityChat: React.FC = () => {
         finalResult: isOwn
       });
     }
-    
+
     // Check if message is deleted for current user (both authenticated and guest)
     const isDeletedForMe = message.deletedFor?.some(del => {
       if (currentUser?.userId) {
@@ -827,7 +829,7 @@ const CommunityChat: React.FC = () => {
       }
       return false;
     });
-    
+
     // Don't render messages deleted for this user
     if (isDeletedForMe) return null;
 
@@ -842,7 +844,7 @@ const CommunityChat: React.FC = () => {
             <Reply size={20} />
           </div>
         )}
-        <div 
+        <div
           className={`${styles.message} ${isOwn ? styles.ownMessage : styles.otherMessage} ${swipingMessage === message._id ? styles.swipeActive : ''}`}
           style={{
             transform: swipingMessage === message._id ? `translateX(${swipeDistance}px)` : 'translateX(0px)',
@@ -917,10 +919,10 @@ const CommunityChat: React.FC = () => {
               <span className={styles.replyContent}>{message.replyTo.message}</span>
             </div>
           )}
-          
+
           <div className={styles.messageHeader}>
-            <div 
-              className={styles.userAvatar} 
+            <div
+              className={styles.userAvatar}
               style={{ backgroundColor: generateUserColor(message.senderName) }}
             >
               {generateUserInitials(message.senderName)}
@@ -935,8 +937,8 @@ const CommunityChat: React.FC = () => {
               </p>
             ) : message.messageType === 'image' ? (
               <div>
-                <img 
-                  src={`${getBaseUrl()}${message.mediaUrl}`} 
+                <img
+                  src={`${getBaseUrl()}${message.mediaUrl}`}
                   alt={message.mediaFileName || 'Image'}
                   className={styles.messageImage}
                   onClick={() => setFullscreenMedia({
@@ -957,8 +959,8 @@ const CommunityChat: React.FC = () => {
               </div>
             ) : message.messageType === 'video' ? (
               <div>
-                <video 
-                  src={`${getBaseUrl()}${message.mediaUrl}`} 
+                <video
+                  src={`${getBaseUrl()}${message.mediaUrl}`}
                   controls
                   preload="metadata"
                   className={styles.messageVideo}
@@ -982,8 +984,8 @@ const CommunityChat: React.FC = () => {
               </div>
             ) : message.messageType === 'audio' ? (
               <div>
-                <audio 
-                  src={`${getBaseUrl()}${message.mediaUrl}`} 
+                <audio
+                  src={`${getBaseUrl()}${message.mediaUrl}`}
                   controls
                   preload="metadata"
                   className={styles.messageAudio}
@@ -1000,9 +1002,9 @@ const CommunityChat: React.FC = () => {
               </div>
             ) : message.messageType === 'file' ? (
               <div className={styles.fileMessage}>
-                <a 
-                  href={`${getBaseUrl()}${message.mediaUrl}`} 
-                  target="_blank" 
+                <a
+                  href={`${getBaseUrl()}${message.mediaUrl}`}
+                  target="_blank"
                   rel="noopener noreferrer"
                   className={styles.fileLink}
                   title={`Download ${message.mediaFileName || 'file'} (${message.mediaSize ? Math.round(message.mediaSize / 1024) + ' KB' : 'unknown size'})`}
@@ -1021,7 +1023,7 @@ const CommunityChat: React.FC = () => {
               <p>{message.message}</p>
             )}
           </div>
-          
+
           <div className={styles.messageFooter}>
             <span className={styles.timestamp}>
               {formatTime(message.timestamp)}
@@ -1034,7 +1036,7 @@ const CommunityChat: React.FC = () => {
           {!message.deleted && (
             <div className={styles.messageReactions}>
               <div className={styles.reactionButtons}>
-                <button 
+                <button
                   className={`${styles.reactionButton} ${hasUserReacted(message.reactions, 'likes') ? styles.reactionActive : ''}`}
                   onClick={() => handleReaction(message._id, 'like')}
                   title="Like this message"
@@ -1044,7 +1046,7 @@ const CommunityChat: React.FC = () => {
                     {message.reactions?.likes?.length || 0}
                   </span>
                 </button>
-                <button 
+                <button
                   className={`${styles.reactionButton} ${hasUserReacted(message.reactions, 'dislikes') ? styles.reactionActive : ''}`}
                   onClick={() => handleReaction(message._id, 'dislike')}
                   title="Dislike this message"
@@ -1080,7 +1082,8 @@ const CommunityChat: React.FC = () => {
   };
 
   const handleLoginRedirect = () => {
-    window.location.href = '/signIn';
+    navigate('/signIn');
+    setIsOpen(false);
   };
 
   const generateUserInitials = (username: string): string => {
@@ -1093,7 +1096,7 @@ const CommunityChat: React.FC = () => {
 
   const generateUserColor = (username: string): string => {
     const colors = [
-      '#730051', '#8b1c5b', '#0099cc', '#00c6ff', '#ef4444', 
+      '#730051', '#8b1c5b', '#0099cc', '#00c6ff', '#ef4444',
       '#f59e0b', '#10b981', '#8b5cf6', '#f97316', '#06b6d4'
     ];
     let hash = 0;
@@ -1107,7 +1110,7 @@ const CommunityChat: React.FC = () => {
     if (isOpen && !isConnected && !showLoginPrompt) {
       connectSocket();
     }
-    
+
     // Trigger AI chatbot visibility update when chat opens/closes
     setTimeout(() => {
       const chatbaseFrame = document.querySelector('iframe[src*="chatbase.co"]') as HTMLIFrameElement;
@@ -1126,7 +1129,7 @@ const CommunityChat: React.FC = () => {
       if (isDragging && swipingMessage) {
         const deltaX = e.clientX - swipeStartX;
         const deltaY = Math.abs(e.clientY - swipeStartY);
-        
+
         // Cancel long press if dragging horizontally
         if (Math.abs(deltaX) > 10) {
           if (pressTimer) {
@@ -1134,13 +1137,13 @@ const CommunityChat: React.FC = () => {
             setPressTimer(null);
           }
         }
-        
+
         // Only allow horizontal drags
         if (deltaY > 30) {
           handleMouseDragEnd();
           return;
         }
-        
+
         // Only track rightward drags
         if (deltaX > 0 && deltaX <= 80) {
           setSwipeDistance(deltaX);
@@ -1208,19 +1211,19 @@ const CommunityChat: React.FC = () => {
             </button>
           </div>
         </div>
-        
+
         <div className={styles.loginPrompt}>
           <h3>Authentication Required</h3>
           <p>Only logged-in members are allowed to access the community chat.</p>
           <p>Please log in to your account to start chatting with other members.</p>
           <div className={styles.loginPromptButtons}>
-            <button 
+            <button
               onClick={() => setIsOpen(false)}
               className={styles.cancelButton}
             >
               Cancel
             </button>
-            <button 
+            <button
               onClick={handleLoginRedirect}
               className={styles.loginButton}
             >
@@ -1232,11 +1235,12 @@ const CommunityChat: React.FC = () => {
     );
   }
 
+
   return (
     <div className={styles.chatWindow}>
       <div className={styles.chatHeader}>
         <div className={styles.headerLeft}>
-          <MessageCircle size={20} />
+          <MessageCircle size={24} />
           <span>KSUCU-MC Community Chat</span>
         </div>
         <div className={styles.headerRight}>
@@ -1260,8 +1264,19 @@ const CommunityChat: React.FC = () => {
       )}
 
       <div className={styles.messagesContainer} ref={chatWindowRef}>
-        {hasMore && (
-          <button 
+        {isLoading && messages.length === 0 && (
+          <div style={{ textAlign: 'center', padding: '40px 20px', color: '#6b7280' }}>
+            <div className={styles.loading} style={{ fontSize: '16px', fontWeight: 500 }}>
+              Loading messages...
+            </div>
+            <div style={{ fontSize: '13px', marginTop: '8px', opacity: 0.7 }}>
+              Please wait
+            </div>
+          </div>
+        )}
+
+        {hasMore && !isLoading && (
+          <button
             className={styles.loadMore}
             onClick={() => {
               setPage(prev => prev + 1);
@@ -1273,14 +1288,14 @@ const CommunityChat: React.FC = () => {
         )}
 
         {messages.map(renderMessage)}
-        
+
         {typingUsers.length > 0 && (
           <div className={styles.typingIndicator}>
-            {typingUsers.map(user => user.username).join(', ')} 
+            {typingUsers.map(user => user.username).join(', ')}
             {typingUsers.length === 1 ? ' is' : ' are'} typing...
           </div>
         )}
-        
+
         <div ref={messagesEndRef} />
       </div>
 
@@ -1318,20 +1333,20 @@ const CommunityChat: React.FC = () => {
 
       <div className={styles.inputContainer}>
         <div className={styles.inputActions}>
-          <button 
-            onClick={handleImageUpload} 
+          <button
+            onClick={handleImageUpload}
             title="Send Image"
           >
             <Image size={20} />
           </button>
-          <button 
-            onClick={handleVideoUpload} 
+          <button
+            onClick={handleVideoUpload}
             title="Send Video"
           >
             <Video size={20} />
           </button>
-          <button 
-            onClick={handleVoiceMessage} 
+          <button
+            onClick={handleVoiceMessage}
             className={isRecording ? styles.recordingButton : ''}
             title={isRecording ? "Stop Recording" : "Record Voice Message"}
           >
@@ -1353,16 +1368,16 @@ const CommunityChat: React.FC = () => {
               handleTyping(false);
             }
           }}
-          placeholder={editingMessage ? "Edit your message..." : "Type a message..."}
+          placeholder={editingMessage ? "Edit your message..." : "Type Message.."}
           className={styles.messageInput}
           disabled={!isConnected || isLoading}
         />
 
-        <button 
+        <button
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            
+
             if (newMessage.trim() && isConnected && !isLoading) {
               console.log('Sending message:', newMessage.trim());
               handleSendMessage();
@@ -1391,7 +1406,7 @@ const CommunityChat: React.FC = () => {
           }}
           style={{ display: 'none' }}
         />
-        
+
         <input
           ref={imageInputRef}
           type="file"
@@ -1405,7 +1420,7 @@ const CommunityChat: React.FC = () => {
           }}
           style={{ display: 'none' }}
         />
-        
+
         <input
           ref={videoInputRef}
           type="file"
@@ -1427,8 +1442,8 @@ const CommunityChat: React.FC = () => {
           <div className={styles.deleteOptions} onClick={(e) => e.stopPropagation()}>
             <h3>Delete Message</h3>
             <p>Choose how you want to delete this message:</p>
-            
-            <button 
+
+            <button
               className={styles.deleteOption}
               onClick={handleDeleteForMe}
             >
@@ -1442,23 +1457,23 @@ const CommunityChat: React.FC = () => {
             {/* Only show "Delete for All" if the message belongs to the current user */}
             {(() => {
               if (!currentUser || !longPressMessage) return null;
-              
+
               // Check if current user owns the message
               const userIdMatch = longPressMessage.senderId === currentUser.userId;
               const usernameMatch = longPressMessage.senderName === currentUser.username;
               const trimmedUsernameMatch = !!(currentUser.username && longPressMessage.senderName === currentUser.username.trim());
-              const caseInsensitiveUsernameMatch = !!(currentUser.username && 
+              const caseInsensitiveUsernameMatch = !!(currentUser.username &&
                 longPressMessage.senderName.toLowerCase() === currentUser.username.toLowerCase());
-              const trimmedCaseInsensitiveMatch = !!(currentUser.username && 
+              const trimmedCaseInsensitiveMatch = !!(currentUser.username &&
                 longPressMessage.senderName.toLowerCase().trim() === currentUser.username.toLowerCase().trim());
-              
-              const isOwn = userIdMatch || usernameMatch || trimmedUsernameMatch || 
-                          caseInsensitiveUsernameMatch || trimmedCaseInsensitiveMatch;
-              
+
+              const isOwn = userIdMatch || usernameMatch || trimmedUsernameMatch ||
+                caseInsensitiveUsernameMatch || trimmedCaseInsensitiveMatch;
+
               if (!isOwn) return null;
-              
+
               return (
-                <button 
+                <button
                   className={styles.deleteOption}
                   onClick={handleDeleteForAll}
                 >
@@ -1471,7 +1486,7 @@ const CommunityChat: React.FC = () => {
               );
             })()}
 
-            <button 
+            <button
               className={`${styles.deleteOption} ${styles.cancelOption}`}
               onClick={() => setShowDeleteOptions(false)}
             >
@@ -1483,18 +1498,18 @@ const CommunityChat: React.FC = () => {
 
       {/* Fullscreen Media Modal */}
       {fullscreenMedia && (
-        <div 
-          className={styles.mediaFullscreen} 
+        <div
+          className={styles.mediaFullscreen}
           onClick={() => setFullscreenMedia(null)}
         >
           {fullscreenMedia.type === 'image' ? (
-            <img 
+            <img
               src={fullscreenMedia.url}
               alt="Fullscreen view"
               onClick={(e) => e.stopPropagation()}
             />
           ) : (
-            <video 
+            <video
               src={fullscreenMedia.url}
               controls
               autoPlay

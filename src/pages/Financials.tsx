@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import styles from '../styles/financials.module.css';
 
-import UniversalHeader from '../components/UniversalHeader';
-import Footer from '../components/footer';
 
 const FinancialsPage: React.FC = () => {
   
@@ -19,7 +17,6 @@ const FinancialsPage: React.FC = () => {
 
   return (
     <>
-      <UniversalHeader />
 
       <main className={styles.main}>
 
@@ -100,7 +97,6 @@ const FinancialsPage: React.FC = () => {
         </div>
       </main>
 
-      <Footer />
     </>
   );
 };

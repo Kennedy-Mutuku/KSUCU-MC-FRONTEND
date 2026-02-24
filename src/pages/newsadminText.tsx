@@ -3,8 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import ReactCrop, { Crop, PixelCrop } from 'react-image-crop';
 import styles from '../styles/newsStudio.module.css'
 
-import UniversalHeader from '../components/UniversalHeader';
-import Footer from '../components/footer';
 
 import 'react-image-crop/dist/ReactCrop.css';
 
@@ -120,7 +118,6 @@ const PhotoUploadPage: React.FC = () => {
 
   return (
     <div className={styles.bodyNewsPage}>
-      <UniversalHeader />
 
       <div className={styles.containerNewsStudio}>
           <h1 className={styles.title}>KSUCU-MC NEWS STUDIO</h1>
@@ -183,7 +180,6 @@ const PhotoUploadPage: React.FC = () => {
 
       </div>
 
-      <Footer />
 
     </div>
 

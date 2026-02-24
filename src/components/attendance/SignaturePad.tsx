@@ -33,7 +33,12 @@ const SignaturePad: React.FC<SignaturePadProps> = ({ onSignatureChange, loading 
 
         const draw = (e: MouseEvent | TouchEvent) => {
             if (!isDrawing || !ctx || loading) return;
-            e.preventDefault();
+
+            // Prevent scrolling while drawing on touch devices
+            if ('touches' in e) {
+                e.preventDefault();
+            }
+
             const rect = canvas.getBoundingClientRect();
             const clientX = 'touches' in e ? e.touches[0].clientX : (e as MouseEvent).clientX;
             const clientY = 'touches' in e ? e.touches[0].clientY : (e as MouseEvent).clientY;
@@ -52,28 +57,32 @@ const SignaturePad: React.FC<SignaturePadProps> = ({ onSignatureChange, loading 
 
             lastX = currentX;
             lastY = currentY;
-
-            onSignatureChange(canvas.toDataURL());
         };
 
         const stopDrawing = () => {
-            isDrawing = false;
+            if (isDrawing) {
+                isDrawing = false;
+                onSignatureChange(canvas.toDataURL());
+            }
         };
+
+        const handleMouseUp = () => stopDrawing();
+        const handleTouchEnd = () => stopDrawing();
 
         canvas.addEventListener('mousedown', startDrawing);
         canvas.addEventListener('mousemove', draw);
-        window.addEventListener('mouseup', stopDrawing);
+        window.addEventListener('mouseup', handleMouseUp);
         canvas.addEventListener('touchstart', startDrawing, { passive: false });
         canvas.addEventListener('touchmove', draw, { passive: false });
-        window.addEventListener('touchend', stopDrawing);
+        window.addEventListener('touchend', handleTouchEnd);
 
         return () => {
             canvas.removeEventListener('mousedown', startDrawing);
             canvas.removeEventListener('mousemove', draw);
-            window.removeEventListener('mouseup', stopDrawing);
+            window.removeEventListener('mouseup', handleMouseUp);
             canvas.removeEventListener('touchstart', startDrawing);
             canvas.removeEventListener('touchmove', draw);
-            window.removeEventListener('touchend', stopDrawing);
+            window.removeEventListener('touchend', handleTouchEnd);
         };
     }, [onSignatureChange, loading]);
 

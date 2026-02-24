@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getApiUrl } from '../config/environment';
 import styles from '../styles/feedback.module.css';
-import UniversalHeader from '../components/UniversalHeader';
-import Footer from '../components/footer';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -137,7 +135,6 @@ const FeedbackForm: React.FC = () => {
     return (
         <>
             <ToastContainer />
-            <UniversalHeader />
             <h2 className={styles.bsTitle}>Feedback</h2>
 
             <div className={styles.container}>
@@ -222,7 +219,6 @@ const FeedbackForm: React.FC = () => {
                 </form>
 
             </div>
-            <Footer />
         </>
     );
 };

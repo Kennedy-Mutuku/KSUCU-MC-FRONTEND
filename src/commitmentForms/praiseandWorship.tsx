@@ -2,8 +2,6 @@ import React, { useRef, useState, useEffect } from "react";
 import axios from "axios";
 import SignatureCanvas from "react-signature-canvas";
 import styles from "../styles/InstrumentalistsCommitment.module.css"; // Reusing the same styles
-import UniversalHeader from '../components/UniversalHeader';
-import Footer from '../components/footer';
 import { getApiUrl } from '../config/environment';
 
 const PraiseandWorshipCommitment: React.FC = () => {
@@ -150,7 +148,6 @@ const PraiseandWorshipCommitment: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <UniversalHeader />
       <div className={styles.containerForm}>
         <div className={styles.commitmentForm}>
           <h2 className={styles.formTitle}>🙌 Praise & Worship Ministry Commitment Form</h2>
@@ -349,7 +346,6 @@ const PraiseandWorshipCommitment: React.FC = () => {
 
           </div>
         </div>
-      <Footer />
     </div>
   );
 };

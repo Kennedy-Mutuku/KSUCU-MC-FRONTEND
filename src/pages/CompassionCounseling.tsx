@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { getApiUrl } from '../config/environment';
 import styles from '../styles/compassionCounseling.module.css';
-import UniversalHeader from '../components/UniversalHeader';
-import Footer from '../components/footer';
-import { Heart, Phone, MessageCircle, DollarSign, User, Mail, MapPin, Bell, CheckCircle, Eye, Clock } from 'lucide-react';
+import { Heart, Phone, MessageCircle, DollarSign, User, Mail, MapPin, Bell, CheckCircle, Eye, Clock, IdCardIcon } from 'lucide-react';
+import { FaWhatsapp } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
 interface PaymentMethod {
@@ -333,7 +332,6 @@ const CompassionCounselingPage: React.FC = () => {
 
   return (
     <>
-      <UniversalHeader />
       <div className={styles.container}>
         {/* Hero Section */}
         <div className={styles.heroSection}>
@@ -526,7 +524,6 @@ const CompassionCounselingPage: React.FC = () => {
                     required
                   >
                     <option value="material">Material Assistance (Food, Clothing, etc.)</option>
-                    <option value="financial">Financial Support</option>
                     <option value="counseling">Counseling & Emotional Support</option>
                     <option value="spiritual">Spiritual Guidance & Prayer</option>
                     <option value="medical">Medical Assistance</option>
@@ -738,12 +735,17 @@ const CompassionCounselingPage: React.FC = () => {
             <div className={styles.serviceCard}>
               <Heart className={styles.serviceIcon} />
               <h3>Material Support</h3>
-              <p>Food assistance, clothing, household items, and basic necessities for those in need.</p>
+              <p>Food assistance, clothing and basic necessities for those in need.</p>
             </div>
             <div className={styles.serviceCard}>
               <MessageCircle className={styles.serviceIcon} />
               <h3>Counseling Services</h3>
               <p>Professional counseling, emotional support, and spiritual guidance during difficult times.</p>
+            </div>
+            <div className={styles.serviceCard}>
+              <IdCardIcon className={styles.serviceIcon} />
+              <h3>Meal Cards</h3>
+              <p>We offer meal cards as from 6am - 5pm.</p>
             </div>
             <div className={styles.serviceCard}>
               <Phone className={styles.serviceIcon} />
@@ -777,8 +779,15 @@ const CompassionCounselingPage: React.FC = () => {
             </div>
           </div>
         )}
+
+        <div className={styles.joinUS}>
+          <h2>JOIN US TODAY</h2>
+           <p>We serve in the compassion ministry to walk alongside people in times of need, offering practical help, care, and hope. Our work is rooted in the belief that every person has inherent worth and deserves to be treated with respect, not pity. Through listening, presence, and action, we support individuals and families facing hardship and remind them that they are not alone. Compassion, for us, is not a momentary act—it is a commitment to show up consistently and love faithfully.</p>
+          <strong>Click to join today: <a href='https://chat.whatsapp.com/HKXoHp7SlVX4cOfUeIDeFJ'><FaWhatsapp size={24} color="#25D366" /></a></strong>
+        </div>
+
       </div>
-      <Footer />
+
     </>
   );
 };

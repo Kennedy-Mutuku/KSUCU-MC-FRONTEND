@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import UniversalHeader from "../components/UniversalHeader";
-import Footer from "../components/footer";
 import { generateRequisitionPDF } from "../utils/generateRequisitionPDF";
 import styles from "../styles/RequisitionsAdmin.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -42,6 +41,7 @@ interface RequisitionForm {
 }
 
 const RequisitionsAdmin: React.FC = () => {
+  const navigate = useNavigate();
   const [requisitions, setRequisitions] = useState<RequisitionForm[]>([]);
   const [filteredRequisitions, setFilteredRequisitions] = useState<
     RequisitionForm[]
@@ -340,7 +340,6 @@ const RequisitionsAdmin: React.FC = () => {
   if (!authenticated) {
     return (
       <>
-        <UniversalHeader />
         <div className={styles.container}>
           <div className={styles.header}>
             <h1>Requisitions Admin - Authentication Required</h1>
@@ -348,7 +347,7 @@ const RequisitionsAdmin: React.FC = () => {
               Please access this page through the Password Overseer dashboard.
             </p>
             <button
-              onClick={() => (window.location.href = "/worship-docket-admin")}
+              onClick={() => navigate("/worship-docket-admin")}
               style={{
                 padding: "10px 20px",
                 background: "#730051",
@@ -362,14 +361,12 @@ const RequisitionsAdmin: React.FC = () => {
             </button>
           </div>
         </div>
-        <Footer />
       </>
     );
   }
 
   return (
     <>
-      <UniversalHeader />
       <div className={styles.container}>
         <div className={styles.header}>
           <h1>
@@ -823,37 +820,37 @@ const RequisitionsAdmin: React.FC = () => {
 
                   {(editingRequisition.status === "approved" ||
                     editingRequisition.status === "rejected") && (
-                    <div className={styles.statusInfo}>
-                      <p>
-                        <strong>Status:</strong>{" "}
-                        {editingRequisition.status.toUpperCase()}
-                      </p>
-                      {editingRequisition.releasedBy && (
+                      <div className={styles.statusInfo}>
                         <p>
-                          <strong>Processed by:</strong>{" "}
-                          {editingRequisition.releasedBy}
+                          <strong>Status:</strong>{" "}
+                          {editingRequisition.status.toUpperCase()}
                         </p>
-                      )}
-                      {editingRequisition.releasedAt && (
-                        <p>
-                          <strong>Date:</strong>{" "}
-                          {new Date(
-                            editingRequisition.releasedAt,
-                          ).toLocaleString()}
-                        </p>
-                      )}
-                      <div className={styles.actionButtons}>
-                        <button
-                          onClick={() =>
-                            handleStatusUpdate(editingRequisition, "pending")
-                          }
-                          className={styles.pendingButton}
-                        >
-                          ↻ Reset to Pending
-                        </button>
+                        {editingRequisition.releasedBy && (
+                          <p>
+                            <strong>Processed by:</strong>{" "}
+                            {editingRequisition.releasedBy}
+                          </p>
+                        )}
+                        {editingRequisition.releasedAt && (
+                          <p>
+                            <strong>Date:</strong>{" "}
+                            {new Date(
+                              editingRequisition.releasedAt,
+                            ).toLocaleString()}
+                          </p>
+                        )}
+                        <div className={styles.actionButtons}>
+                          <button
+                            onClick={() =>
+                              handleStatusUpdate(editingRequisition, "pending")
+                            }
+                            className={styles.pendingButton}
+                          >
+                            ↻ Reset to Pending
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
 
                   <div className={styles.formGroup}>
                     <label>Comments (Optional)</label>
@@ -870,7 +867,6 @@ const RequisitionsAdmin: React.FC = () => {
           </div>
         )}
       </div>
-      <Footer />
     </>
   );
 };

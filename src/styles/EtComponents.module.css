@@ -1,0 +1,116 @@
+.etHeader {
+    background-color: #ffffff;
+    color: #730051;
+    padding: 1.5rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.etHeaderTitle {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background: linear-gradient(135deg, #730051 0%, #2c3e50 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.backBtn {
+    background: transparent;
+    color: #730051;
+    border: 1px solid #730051;
+    padding: 0.6rem 1.2rem;
+    border-radius: 30px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.backBtn:hover {
+    background: #730051;
+    color: white;
+    transform: translateX(-5px);
+}
+
+.etFooterLinks {
+    background: #FAFAFA;
+    padding: 5rem 2rem;
+    text-align: center;
+    border-top: 1px solid #f0f0f0;
+}
+
+.etFooterLinksTitle {
+    color: #730051;
+    margin-bottom: 2.5rem;
+    font-size: 1.4rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.etLinksGrid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.etLinkItem {
+    padding: 0.8rem 1.5rem;
+    background: white;
+    border: 1px solid #730051;
+    color: #730051;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    min-width: 120px;
+}
+
+.etLinkItem:hover {
+    background: #730051;
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(115, 0, 81, 0.2);
+}
+
+.etLinkItem.active {
+    background: #730051;
+    color: white;
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+@media (max-width: 600px) {
+    .etHeader {
+        padding: 0.8rem 1rem;
+    }
+
+    .etHeaderTitle {
+        font-size: 1.2rem;
+    }
+
+    .etLinksGrid {
+        gap: 0.8rem;
+    }
+
+    .etLinkItem {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+        min-width: 100px;
+    }
+}

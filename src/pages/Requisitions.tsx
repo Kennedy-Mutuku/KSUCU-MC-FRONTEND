@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import UniversalHeader from "../components/UniversalHeader";
-import Footer from "../components/footer";
 import CollapsibleTermsAndConditions from "../components/CollapsibleTermsAndConditions";
 import AssetTransferForm from "../components/AssetTransferForm";
 import { generateRequisitionPDF } from "../utils/generateRequisitionPDF";
@@ -407,20 +405,17 @@ const Requisitions: React.FC = () => {
   if (!isAuthenticated) {
     return (
       <>
-        <UniversalHeader />
         <div className={styles.container}>
           <div className={styles.errorMessage}>
             {error || "Checking authentication..."}
           </div>
         </div>
-        <Footer />
       </>
     );
   }
 
   return (
     <>
-      <UniversalHeader />
       <div className={styles.container}>
         <div className={styles.header}>
           <h1>Equipment Requisition</h1>
@@ -988,7 +983,6 @@ const Requisitions: React.FC = () => {
           </div>
         )}
       </div>
-      <Footer />
     </>
   );
 };

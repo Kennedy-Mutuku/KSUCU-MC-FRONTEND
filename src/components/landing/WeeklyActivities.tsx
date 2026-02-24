@@ -15,14 +15,14 @@ const activities: Activity[] = [
   { day: 'Thursday', event: 'ET Fellowship', time: '6:50 PM - 8:50 PM', venue: 'Communicated daily' },
   { day: 'Friday', event: 'Friday Fellowship', time: '6:50 PM - 8:50 PM', venue: 'Communicated daily' },
   { day: 'Saturday', event: 'Class Fellowship', time: '9:00 AM - 12:00 PM', venue: 'Communicated earlier' },
-  { day: 'Sunday', event: 'Services', time: '7:30 AM - 12:45 PM', venue: 'Communicated before service', highlight: true },
+  { day: 'Sunday [Services]', event: '1st & 2nd', time: '7:30 AM - 12:45 PM ', venue: 'Communicated before service', highlight: true },
 ];
 
 const WeeklyActivities = () => {
   return (
-    <section className="py-16 md:py-20 bg-gray-50">
+    <section className="py-6 md:py-20 bg-gray-50">
       <div className="max-w-6xl mx-auto px-4 md:px-6">
-        <div className="text-center mb-12">
+        <div className="text-center mb-3 md:mb-12">
           <span className="inline-block px-3 py-1 bg-purple-100 text-[#730051] text-sm font-medium rounded-full mb-4">
             Weekly Schedule
           </span>
@@ -34,38 +34,37 @@ const WeeklyActivities = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5 md:gap-6">
           {activities.map((activity, index) => (
             <div
               key={index}
-              className={`relative p-5 rounded-xl border transition-all duration-300 hover:shadow-lg hover:-translate-y-1 ${
+              className={`relative p-3 md:p-5 rounded-xl border transition-all duration-300 hover:shadow-lg hover:-translate-y-1 ${
                 activity.highlight
                   ? 'bg-gradient-to-br from-purple-50 to-cyan-50 border-purple-200'
                   : 'bg-white border-gray-200'
               }`}
             >
               {activity.highlight && (
-                <span className="absolute -top-2 -right-2 px-2 py-1 bg-[#730051] text-white text-xs font-medium rounded-full">
+                <span className="absolute -top-2 -right-2 px-1.5 py-0.5 md:px-2 md:py-1 bg-[#730051] text-white text-[10px] md:text-xs font-medium rounded-full">
                   Special
                 </span>
               )}
 
-              <div className="flex items-center gap-2 mb-3">
-                <Calendar size={16} className="text-[#730051]" />
-                <span className="text-sm font-semibold text-[#730051]">{activity.day}</span>
-              </div>
+              <span className="text-xs md:text-sm font-semibold text-[#730051]">{activity.day}</span>
 
-              <h3 className="text-lg font-semibold text-gray-800 mb-3">
+              <h3 className="text-sm md:text-lg font-semibold text-gray-800 mt-1 mb-1.5 md:mb-3">
                 {activity.event}
               </h3>
 
-              <div className="space-y-2 text-sm text-gray-600">
-                <div className="flex items-center gap-2">
-                  <Clock size={14} className="flex-shrink-0" />
+              <div className="space-y-1 text-[11px] md:text-sm text-gray-600">
+                <div className="flex items-center gap-1">
+                  <Clock size={11} className="flex-shrink-0 md:hidden" />
+                  <Clock size={14} className="flex-shrink-0 hidden md:block" />
                   <span>{activity.time}</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <MapPin size={14} className="flex-shrink-0" />
+                <div className="flex items-center gap-1">
+                  <MapPin size={11} className="flex-shrink-0 md:hidden" />
+                  <MapPin size={14} className="flex-shrink-0 hidden md:block" />
                   <span>{activity.venue}</span>
                 </div>
               </div>

@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import UniversalHeader from '../components/UniversalHeader';
-import Footer from '../components/footer';
 import styles from '../styles/NewsAdmin.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
@@ -216,7 +214,6 @@ const NewsAdmin: React.FC = () => {
     if (!authenticated) {
         return (
             <>
-                <UniversalHeader />
                 <div className={styles.container}>
                     <div className={styles.loginCard}>
                         <FontAwesomeIcon icon={faLock} className={styles.lockIcon} />
@@ -249,14 +246,12 @@ const NewsAdmin: React.FC = () => {
                         </button>
                     </div>
                 </div>
-                <Footer />
             </>
         );
     }
 
     return (
         <>
-                  <UniversalHeader />
             <div className={styles.container}>
                 <div className={styles.adminHeader}>
                     <h1>
@@ -454,7 +449,6 @@ const NewsAdmin: React.FC = () => {
                     </div>
                 )}
             </div>
-            <Footer />
         </>
     );
 };

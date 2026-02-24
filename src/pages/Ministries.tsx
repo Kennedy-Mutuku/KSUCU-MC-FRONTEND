@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react';
 import styles from '../styles/ministries.module.css';
 
-import UniversalHeader from '../components/UniversalHeader';
-import Footer from '../components/footer';
 import { useLocation } from 'react-router-dom';
 import PW from '../assets/praise-and-worship.jpg'
 import wananzambe from '../assets/wananzambe.jpg'
@@ -98,7 +96,6 @@ const MinistriesPage: React.FC = () => {
             </div>
       )} */}
 
-      <UniversalHeader />
 
       <div className={styles.main}>
         <h2 className={styles['ministries--title']}>MINISTRIES</h2>
@@ -263,7 +260,6 @@ If you have a creative spark and a desire to serve, we invite you to join us in 
 
         </div>
       </div>
-      <Footer />
     </>
   );
 };

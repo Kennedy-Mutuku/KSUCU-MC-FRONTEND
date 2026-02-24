@@ -1,224 +1,346 @@
-/* Attendance Session Management Styles */
+.pageWrapper {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    display: flex;
+    justify-content: center;
+    padding: 2rem 1rem;
+}
+
 .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-    min-height: 80vh;
+    width: 100%;
+    max-width: 900px;
+    animation: fadeIn 0.6s ease-out;
 }
 
-/* Header */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .header {
-    background: linear-gradient(135deg, #730051, #5a003d);
-    color: white;
-    padding: 2rem;
-    border-radius: 15px;
-    margin-bottom: 2rem;
     text-align: center;
-    position: relative;
-}
-
-.header h1 {
-    margin: 0 0 1rem 0;
-    font-size: 2rem;
-}
-
-.roleInfo {
-    font-size: 1.1rem;
-    opacity: 0.9;
-    margin: 0;
+    margin-bottom: 3rem;
 }
 
 .backButton {
-    position: absolute;
-    top: 1rem;
-    left: 1rem;
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.backButton:hover {
-    background: rgba(255, 255, 255, 0.3);
-}
-
-/* Active Role Indicator */
-.activeRoleIndicator {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
-    background: rgba(255, 255, 255, 0.15);
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: 50px;
-    padding: 0.75rem 1.5rem;
-    margin: 0 auto 1.5rem auto;
-    width: fit-content;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-}
-
-.activeRoleIcon {
-    font-size: 1.5rem;
-    animation: glow 2s infinite alternate;
-}
-
-.activeRoleText {
-    font-size: 1.1rem;
-    font-weight: 500;
-    color: #ffffff;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-}
-
-@keyframes glow {
-    0% { text-shadow: 0 0 5px rgba(255, 215, 0, 0.7); }
-    100% { text-shadow: 0 0 15px rgba(255, 215, 0, 1), 0 0 25px rgba(255, 215, 0, 0.8); }
-}
-
-/* Message */
-.message {
-    background: #e8f5e8;
-    color: #2d5a2d;
-    padding: 1rem;
-    border-radius: 8px;
-    margin-bottom: 2rem;
-    text-align: center;
-    border-left: 4px solid #4caf50;
-}
-
-/* Session Controls */
-.sessionControls {
     background: white;
-    border-radius: 12px;
-    padding: 2rem;
-    margin-bottom: 2rem;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
-
-.sessionControls h2 {
-    color: #730051;
-    margin-bottom: 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.sessionStatus {
-    margin-bottom: 2rem;
-}
-
-.statusCard {
-    padding: 1.5rem;
-    border-radius: 10px;
-    text-align: center;
-}
-
-.statusCard.active {
-    background: linear-gradient(135deg, #e8f5e8, #d4edda);
-    border: 2px solid #4caf50;
-}
-
-.statusCard.inactive {
-    background: linear-gradient(135deg, #fff3cd, #ffeaa7);
-    border: 2px solid #ffc107;
-}
-
-.statusCard h3 {
-    margin: 0 0 1rem 0;
-    font-size: 1.3rem;
-}
-
-.statusCard p {
-    margin: 0.5rem 0;
-    color: #666;
-}
-
-.controlButtons {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-.controlButton {
-    padding: 1rem 2rem;
-    border: none;
-    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    padding: 0.6rem 1.2rem;
+    border-radius: 50px;
+    color: #64748b;
+    font-size: 0.9rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
+    margin-bottom: 1.5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.backButton:hover {
+    color: #730051;
+    border-color: #730051;
+    transform: translateX(-3px);
+    box-shadow: 0 4px 12px rgba(115, 0, 81, 0.1);
+}
+
+.header h1 {
+    color: #2d3748;
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    min-width: 140px;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.header p {
+    color: #718096;
+    font-size: 1.1rem;
+}
+
+.message {
+    padding: 1.2rem;
+    border-radius: 12px;
+    background: #e6fffa;
+    color: #2c7a7b;
+    border: 1px solid #b2f5ea;
+    margin-bottom: 2rem;
+    text-align: center;
+    font-weight: 600;
+    animation: slideDown 0.3s ease-out;
+}
+
+.errorMessage {
+    background: #fff5f5;
+    color: #c53030;
+    border-color: #feb2b2;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-10px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Start Session Form */
+.adminActions {
+    margin-bottom: 3rem;
+    display: flex;
     justify-content: center;
 }
 
 .startButton {
-    background: #4caf50;
+    background: linear-gradient(135deg, #730051 0%, #9d176e 100%);
     color: white;
+    border: none;
+    padding: 1.2rem 2.5rem;
+    border-radius: 16px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 20px rgba(115, 0, 81, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
 }
 
-.startButton:hover:not(:disabled) {
-    background: #45a049;
-    transform: translateY(-2px);
+.startButton:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 15px 30px rgba(115, 0, 81, 0.3);
 }
 
-.resetButton {
-    background: #ff9800;
-    color: white;
-}
-
-.resetButton:hover:not(:disabled) {
-    background: #e68900;
-    transform: translateY(-2px);
-}
-
-.stopButton {
-    background: #f44336;
-    color: white;
-}
-
-.stopButton:hover:not(:disabled) {
-    background: #da190b;
-    transform: translateY(-2px);
-}
-
-.forceButton {
-    background: #dc3545;
-    color: white;
-    border: 2px solid #dc3545;
-    animation: pulse-warning 2s infinite;
-}
-
-.forceButton:hover:not(:disabled) {
-    background: #c82333;
-    border-color: #c82333;
-    transform: translateY(-2px);
-    animation: none;
-}
-
-@keyframes pulse-warning {
-    0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4); }
-    70% { box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
-}
-
-.controlButton:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none !important;
-}
-
-/* Attendance Records */
-.attendanceRecords {
+.startForm {
     background: white;
+    padding: 2.5rem;
+    border-radius: 24px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 500px;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+}
+
+.startForm h3 {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    color: #1a202c;
+    text-align: center;
+}
+
+.formGroup {
+    margin-bottom: 1.5rem;
+}
+
+.formGroup label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #4a5568;
+    margin-bottom: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.formInput {
+    width: 100%;
+    padding: 1rem 1.2rem;
+    border: 2px solid #edf2f7;
     border-radius: 12px;
-    padding: 2rem;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    color: #2d3748;
+    background: #f8fafc;
+}
+
+.formInput:focus {
+    outline: none;
+    border-color: #730051;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(115, 0, 81, 0.1);
+}
+
+.formActions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.submitButton {
+    background: #730051;
+    color: white;
+    border: none;
+    padding: 1.1rem;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.submitButton:hover {
+    background: #5a003f;
+    transform: translateY(-2px);
+}
+
+.cancelButton {
+    background: #edf2f7;
+    color: #4a5568;
+    border: none;
+    padding: 1rem;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Sessions Grid */
+.sessionsOverview {
+    margin-bottom: 3rem;
+}
+
+.sectionHeader {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.sectionHeader h2 {
+    font-size: 1.4rem;
+    color: #2d3748;
+    margin: 0;
+}
+
+.badge {
+    background: #730051;
+    color: white;
+    padding: 0.2rem 0.8rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 800;
+}
+
+.sessionList {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.sessionPill {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 20px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.sessionPill:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.05);
+    border-color: #cbd5e0;
+}
+
+.selectedPill {
+    border-color: #730051;
+    background: #fffcfd;
+    box-shadow: 0 10px 25px rgba(115, 0, 81, 0.1);
+}
+
+.pillInfo h4 {
+    margin: 0 0 0.5rem 0;
+    color: #1a202c;
+    font-size: 1.2rem;
+}
+
+.pillInfo p {
+    margin: 0;
+    color: #718096;
+    font-size: 0.9rem;
+}
+
+.pillActions {
+    display: flex;
+    gap: 0.6rem;
+    margin-top: 1.5rem;
+}
+
+.pillActions button {
+    background: #f7fafc;
+    border: 1px solid #edf2f7;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #4a5568;
+    transition: all 0.2s ease;
+}
+
+.pillActions button:hover {
+    background: #730051;
+    color: white;
+    transform: scale(1.1);
+}
+
+.stopIcon:hover {
+    background: #e53e3e !important;
+}
+
+.emptyText {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: white;
+    border-radius: 24px;
+    color: #a0aec0;
+    font-weight: 500;
+}
+
+/* Records List */
+.recordsSection {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 24px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+    animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
 .recordsHeader {
@@ -231,200 +353,110 @@
 }
 
 .recordsHeader h2 {
-    color: #730051;
     margin: 0;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    color: #1a202c;
+}
+
+.recordsHeader p {
+    margin: 0.2rem 0 0 0;
+    color: #718096;
+    font-size: 0.9rem;
 }
 
 .downloadButton {
-    background: #730051;
+    background: #2d3748;
     color: white;
     border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
+    padding: 0.8rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 700;
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.6rem;
 }
 
 .downloadButton:hover {
-    background: #5a003d;
+    background: #1a202c;
     transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.loading {
-    text-align: center;
-    padding: 3rem;
-    color: #666;
-    font-size: 1.1rem;
+.tableWrapper {
+    margin: 0 -1rem;
+    overflow-x: auto;
+    padding: 0 1rem;
 }
 
-.recordsList {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1rem;
+.recordsTable {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 0.8rem;
 }
 
-.recordCard {
-    background: #f8f9fa;
-    border: 1px solid #e9ecef;
-    border-radius: 10px;
-    padding: 1.5rem;
-    display: flex;
-    align-items: flex-start;
-    gap: 1rem;
-    transition: all 0.3s ease;
+.recordsTable th {
+    text-align: left;
+    padding: 0 1rem 1rem 1rem;
+    color: #a0aec0;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
 }
 
-.recordCard:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+.recordsTable tr td {
+    background: #f8fafc;
+    padding: 1.2rem 1rem;
+    transition: all 0.2s ease;
 }
 
-.recordNumber {
-    background: #730051;
-    color: white;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.recordsTable tr td:first-child {
+    border-radius: 15px 0 0 15px;
+}
+
+.recordsTable tr td:last-child {
+    border-radius: 0 15px 15px 0;
+}
+
+.recordsTable tr:hover td {
+    background: #edf2f7;
+    transform: scale(1.005);
+}
+
+.regBadge {
+    background: #e2e8f0;
+    color: #475569;
+    padding: 0.3rem 0.7rem;
+    border-radius: 6px;
+    font-family: monospace;
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+
+.timeCell {
+    color: #718096;
     font-weight: 600;
-    flex-shrink: 0;
-}
-
-.recordInfo h3 {
-    margin: 0 0 0.5rem 0;
-    color: #730051;
-    font-size: 1.1rem;
-}
-
-.recordInfo p {
-    margin: 0.25rem 0;
-    color: #666;
     font-size: 0.9rem;
 }
 
 .noRecords {
     text-align: center;
-    padding: 4rem 2rem;
-    color: #666;
+    padding: 3rem !important;
+    color: #a0aec0;
+    background: transparent !important;
 }
 
-.noRecordsIcon {
-    font-size: 4rem;
-    color: #ccc;
-    margin-bottom: 1rem;
-}
-
-.noRecords h3 {
-    margin: 1rem 0;
-    color: #333;
-}
-
-.noRecords p {
-    color: #666;
-    line-height: 1.6;
-}
-
-/* Responsive Design */
-@media (max-width: 767px) {
-    .container {
-        padding: 10px;
-    }
-    
-    .header {
-        padding: 1.5rem;
-        text-align: center;
-    }
-    
+@media (max-width: 640px) {
     .header h1 {
-        font-size: 1.5rem;
+        font-size: 1.8rem;
     }
-    
-    .backButton {
-        position: static;
-        margin-bottom: 1rem;
-    }
-    
-    .activeRoleIndicator {
-        padding: 0.5rem 1rem;
-        margin-bottom: 1rem;
-    }
-    
-    .activeRoleText {
-        font-size: 1rem;
-    }
-    
-    .activeRoleIcon {
-        font-size: 1.25rem;
-    }
-    
-    .controlButtons {
-        flex-direction: column;
-        align-items: center;
-    }
-    
-    .controlButton {
-        width: 100%;
-        max-width: 250px;
-    }
-    
-    .recordsHeader {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    
-    .recordsList {
+
+    .sessionList {
         grid-template-columns: 1fr;
     }
-    
-    .recordCard {
-        padding: 1rem;
-    }
-    
-    .noRecords {
-        padding: 2rem 1rem;
-    }
-}
 
-@media (max-width: 767px) {
-    .sessionControls,
-    .attendanceRecords {
-        padding: 1rem;
-    }
-    
-    .recordCard {
+    .recordsHeader {
         flex-direction: column;
         text-align: center;
     }
-    
-    .recordNumber {
-        align-self: center;
-    }
-}
-
-/* Time-related styles */
-.recentBadge {
-    background: rgba(76, 175, 80, 0.2);
-    color: #4CAF50;
-    padding: 2px 8px;
-    border-radius: 8px;
-    font-size: 0.7rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-left: 8px;
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0% { opacity: 1; }
-    50% { opacity: 0.7; }
-    100% { opacity: 1; }
 }

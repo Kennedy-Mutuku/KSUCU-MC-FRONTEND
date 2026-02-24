@@ -1,613 +1,407 @@
 .attendanceContainer {
-    margin: 20px 0;
-    padding: 0 20px;
-    animation: slideIn 0.5s ease-out;
-}
-
-.closedSession {
-    opacity: 0.7;
-    animation: fadeOut 0.5s ease-out;
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 0 16px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .attendanceCard {
-    background: linear-gradient(135deg, #730051, #5a003d);
-    border-radius: 15px;
-    padding: 25px;
-    box-shadow: 0 8px 25px rgba(115, 0, 81, 0.3);
-    color: white;
-    position: relative;
-    overflow: hidden;
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    color: #1a1a1a;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-.attendanceCard::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, #ffaa00, #ff6600, #ff3300);
-    animation: shimmer 2s infinite;
+/* Landing Page Styles */
+.landingView {
+    text-align: center;
+    animation: fadeIn 0.6s ease-out;
 }
 
-.header {
+.centerIconWrapper {
+    width: 48px;
+    height: 48px;
+    background: #fdf2f9;
+    color: #8b005e;
+    border-radius: 14px;
     display: flex;
     align-items: center;
-    gap: 12px;
+    justify-content: center;
+    margin: 0 auto 12px;
+    font-size: 1.25rem;
+}
+
+.centerTitle {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #0c1a30;
+    margin: 0 0 8px;
+    letter-spacing: -0.5px;
+}
+
+.centerSubtitle {
+    color: #64748b;
+    font-size: 0.95rem;
+    line-height: 1.5;
     margin-bottom: 20px;
+    max-width: 380px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-.icon {
-    font-size: 1.5rem;
-}
-
-.checkIcon {
-    color: #4CAF50;
-}
-
-.clockIcon {
-    color: #FFA726;
-}
-
-.title {
-    margin: 0;
-    font-size: 1.4rem;
-    font-weight: 600;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.closedMessage {
-    text-align: center;
-    padding: 20px 0;
-}
-
-.closedMessage p {
-    margin: 5px 0;
-    font-size: 1.1rem;
-}
-
-.closedNote {
-    font-size: 0.95rem !important;
-    opacity: 0.8;
-    font-style: italic;
-}
-
-.error {
-    background: rgba(244, 67, 54, 0.2);
-    border: 1px solid rgba(244, 67, 54, 0.4);
-    border-radius: 8px;
-    padding: 12px;
-    margin-bottom: 15px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: #ffcdd2;
-}
-
-.success {
-    background: rgba(76, 175, 80, 0.2);
-    border: 1px solid rgba(76, 175, 80, 0.4);
-    border-radius: 8px;
-    padding: 12px;
-    margin-bottom: 15px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: #c8e6c9;
-}
-
-.signedStatus {
-    text-align: center;
-    padding: 20px 0;
-}
-
-.signedIcon {
-    color: #4CAF50;
-    font-size: 2rem;
-    margin-bottom: 10px;
-    display: block;
-}
-
-.signedStatus p {
-    font-size: 1.1rem;
-    margin: 0;
-    color: #c8e6c9;
-}
-
-.signSection {
-    text-align: center;
-}
-
-.instruction {
-    font-size: 1.1rem;
-    margin-bottom: 20px;
-    opacity: 0.9;
-    line-height: 1.4;
-}
-
-.signButton {
-    background: linear-gradient(45deg, #4CAF50, #45a049);
+.primaryCta {
+    background: #8b005e;
     color: white;
     border: none;
-    padding: 15px 40px;
-    border-radius: 25px;
-    font-size: 1.1rem;
+    padding: 14px 24px;
+    border-radius: 12px;
+    font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
     width: 100%;
-    margin-top: 20px;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(139, 0, 94, 0.2);
 }
 
-.signButton:hover:not(:disabled) {
+.primaryCta:hover {
+    background: #75004f;
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.5);
-    background: linear-gradient(45deg, #45a049, #388e3c);
+    box-shadow: 0 8px 25px rgba(139, 0, 94, 0.35);
 }
 
-.signButton:active:not(:disabled) {
+.primaryCta:active {
     transform: translateY(0);
 }
 
-.signButton:disabled, .signButton.disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-    background: #ccc !important;
-}
-
-.multiUserButton:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-    background: #ccc !important;
-}
-
-.loading {
-    position: relative;
-    overflow: hidden;
-}
-
-.loading::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    animation: loading 1.5s infinite;
-}
-
-.loginPrompt {
-    text-align: center;
-    padding: 20px 0;
-    font-size: 1.1rem;
-    color: #ffcdd2;
-}
-
-/* Multi-user styles */
-.attendanceCount {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    padding: 12px;
-    margin-bottom: 15px;
-    text-align: center;
-}
-
-.usersIcon {
-    color: #4CAF50;
-    margin-right: 8px;
-}
-
-.usersList {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    justify-content: center;
-    margin-top: 10px;
-}
-
-.userBadge {
-    background: rgba(76, 175, 80, 0.2);
-    border: 1px solid rgba(76, 175, 80, 0.4);
-    color: #c8e6c9;
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 0.85rem;
-    font-weight: 500;
-}
-
-.multiUserButton {
-    background: linear-gradient(45deg, #00c6ff, #0099cc);
-    color: white;
-    border: none;
-    padding: 12px 25px;
-    border-radius: 20px;
-    font-size: 0.95rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 3px 10px rgba(0, 198, 255, 0.3);
-    margin-top: 10px;
+/* Status Card */
+.statusCard {
+    background: #f4fbf7;
+    border: 1px solid #e1f5eb;
+    border-radius: 14px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 12px;
+    text-align: left;
+}
+
+.statusIconWrapper {
+    width: 36px;
+    height: 36px;
+    background: #e1f5eb;
+    color: #10b981;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
     justify-content: center;
-    width: 100%;
+    font-size: 1.1rem;
 }
 
-.multiUserButton:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 198, 255, 0.4);
-    background: linear-gradient(45deg, #0099cc, #007aa3);
+.statusInfo h3 {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0f172a;
 }
 
-.attendanceForm {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 6px;
-    padding: 6px;
-    margin-top: 6px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.formTitle {
-    margin: 0 0 4px 0;
-    color: #ffffff;
+.statusDetails {
+    margin: 1px 0 0;
     font-size: 0.85rem;
-    text-align: center;
-    font-weight: 600;
+    color: #64748b;
+}
+
+/* Form Styles */
+.formHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.backBtn {
+    background: none;
+    border: none;
+    color: #64748b;
+    font-size: 0.9rem;
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.backBtn:hover {
+    color: #8b005e;
+}
+
+.formGroup {
+    margin-bottom: 16px;
 }
 
 .formLabel {
     display: block;
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 0.75rem;
-    margin-bottom: 2px;
-    font-weight: 500;
-}
-
-.formNote {
-    text-align: center;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 0.7rem;
-    margin-top: 4px;
-    font-style: italic;
-}
-
-.multiUserForm {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    padding: 8px;
-    margin-top: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.multiUserForm h4 {
-    margin: 0 0 6px 0;
-    color: #ffffff;
     font-size: 0.9rem;
-    text-align: center;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 6px;
+}
+
+.formInput {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 1rem;
+    color: #1e293b;
+    transition: all 0.2s ease;
+    background: #f8fafc;
+}
+
+.formInput:focus {
+    outline: none;
+    border-color: #8b005e;
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(139, 0, 94, 0.1);
+}
+
+/* Search Box */
+.searchWrapper {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.searchIcon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+}
+
+.searchInput {
+    padding-left: 42px !important;
+}
+
+/* User Found Alert */
+.userFoundAlert {
+    background: #fdf2f9;
+    border: 1px solid #f9d5ec;
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    animation: slideIn 0.3s ease-out;
+}
+
+.userFoundContent {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.userFoundIcon {
+    width: 36px;
+    height: 36px;
+    background: #8b005e;
+    color: white;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+}
+
+.welcomeText {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #8b005e;
+}
+
+.foundMeta {
+    margin: 2px 0 0;
+    font-size: 0.8rem;
+    color: #64748b;
+}
+
+.clearBtn {
+    background: #ffffff;
+    border: 1px solid #f1f5f9;
+    color: #ef4444;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.clearBtn:hover {
+    background: #fef2f2;
+    transform: scale(1.1);
+}
+
+/* Manual Entry Section */
+.manualEntrySection {
+    background: #f8fafc;
+    border: 1px dashed #e2e8f0;
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 20px;
+    animation: fadeIn 0.4s ease-out;
+}
+
+.manualEntryHint {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin: 0 0 12px;
     font-weight: 500;
 }
 
-.formGroup {
-    margin-bottom: 4px;
-}
-
-.formInput, .formSelect {
-    width: 100%;
-    padding: 4px 6px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 4px;
-    background: rgba(255, 255, 255, 0.15);
-    color: white;
-    font-size: 0.8rem;
-    transition: all 0.3s ease;
-    box-sizing: border-box;
-    height: 28px;
-}
-
-.formInput::placeholder {
-    color: rgba(255, 255, 255, 0.5);
-    font-style: italic;
-}
-
-.formInput:disabled, .formSelect:disabled {
-    opacity: 0.6;
-    background: rgba(255, 255, 255, 0.05);
-    cursor: not-allowed;
-}
-
-.formInput:focus, .formSelect:focus {
-    outline: none;
-    border-color: rgba(0, 198, 255, 0.6);
-    box-shadow: 0 0 0 2px rgba(0, 198, 255, 0.2);
-    background: rgba(255, 255, 255, 0.15);
-}
-
-.formSelect option {
-    background: #730051;
-    color: white;
-}
-
-.submitButton {
-    background: linear-gradient(45deg, #4CAF50, #45a049);
-    color: white;
-    border: none;
-    padding: 6px 16px;
-    border-radius: 8px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
-    width: 100%;
-    margin-top: 4px;
-    height: 32px;
-}
-
-.submitButton:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
-    background: linear-gradient(45deg, #45a049, #388e3c);
-}
-
-.submitButton:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-    background: #ccc !important;
-}
-
-/* Animations */
 @keyframes slideIn {
     from {
         opacity: 0;
-        transform: translateY(-20px);
+        transform: translateX(-10px);
     }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Error/Success */
+.alert {
+    padding: 12px 16px;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.alertError {
+    background: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fee2e2;
+}
+
+.alertSuccess {
+    background: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #d1fae5;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
     to {
         opacity: 1;
         transform: translateY(0);
     }
 }
 
-@keyframes fadeOut {
-    from {
-        opacity: 1;
-    }
-    to {
-        opacity: 0.7;
-    }
-}
-
-@keyframes shimmer {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
-}
-
-@keyframes loading {
-    0% { left: -100%; }
-    100% { left: 100%; }
-}
-
-/* Responsive Design */
-@media (max-width: 767px) {
+/* Mobile Adjustments */
+@media (max-width: 480px) {
     .attendanceContainer {
-        padding: 0 10px;
+        margin: 20px auto;
+        padding: 0 15px;
     }
-    
+
+    .centerTitle {
+        font-size: 1.7rem;
+    }
+
     .attendanceCard {
-        padding: 20px 15px;
-    }
-    
-    .title {
-        font-size: 1.2rem;
-    }
-    
-    .signButton {
-        padding: 12px 30px;
-        font-size: 1rem;
-    }
-    
-    .instruction {
-        font-size: 1rem;
+        padding: 24px 20px;
     }
 }
 
-@media (max-width: 767px) {
-    .header {
-        flex-direction: column;
-        text-align: center;
-        gap: 8px;
-    }
-    
-    .title {
-        font-size: 1.1rem;
-    }
-    
-    .signButton {
-        padding: 10px 25px;
-        font-size: 0.95rem;
-    }
-    
-    .multiUserButton {
-        padding: 6px 12px;
-        font-size: 0.8rem;
-        height: 28px;
-    }
-    
-    .attendanceForm {
-        padding: 4px;
-    }
-    
-    .formTitle {
-        font-size: 0.8rem;
-    }
-    
-    .multiUserForm {
-        padding: 6px;
-    }
-    
-    .usersList {
-        flex-direction: column;
-        align-items: center;
-    }
-    
-    .userBadge {
-        font-size: 0.8rem;
-    }
-}
-
-/* Time-related styles */
-.recentIndicator {
-    background: rgba(76, 175, 80, 0.3);
-    color: #4CAF50;
-    padding: 2px 8px;
-    border-radius: 10px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    animation: pulse 2s infinite;
-    margin-left: 8px;
-    display: inline-block;
-}
-
-@keyframes pulse {
-    0% { opacity: 1; }
-    50% { opacity: 0.7; }
-    100% { opacity: 1; }
-}
-
-/* Search Styles */
-.searchSection {
-    margin-bottom: 20px;
-    position: relative;
-}
-
-.searchInputWrapper {
-    position: relative;
+/* Compact List Styles */
+.compactStatusRow {
     display: flex;
     align-items: center;
-}
-
-.searchIcon {
-    position: absolute;
-    left: 12px;
-    color: rgba(255, 255, 255, 0.6);
-}
-
-.searchInput {
-    width: 100%;
-    padding: 10px 10px 10px 35px;
-    border: 2px solid rgba(0, 198, 255, 0.3);
-    border-radius: 25px;
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-}
-
-.searchInput:focus {
-    outline: none;
-    border-color: #00c6ff;
-    background: rgba(255, 255, 255, 0.2);
-    box-shadow: 0 0 15px rgba(0, 198, 255, 0.3);
-}
-
-.searchResults {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background: #730051;
-    border: 1px solid rgba(0, 198, 255, 0.3);
-    border-radius: 12px;
-    margin-top: 8px;
-    z-index: 10;
-    max-height: 250px;
-    overflow-y: auto;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    animation: slideIn 0.3s ease-out;
-}
-
-.searchResultItem {
-    padding: 12px 15px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.searchResultItem:last-child {
-    border-bottom: none;
-}
-
-.searchResultItem:hover {
-    background: rgba(0, 198, 255, 0.2);
-}
-
-.resultName {
-    display: block;
-    font-weight: 600;
-    color: white;
-}
-
-.resultReg {
-    display: block;
-    font-size: 0.85rem;
-    color: #00c6ff;
-}
-
-/* User Found Card */
-.userFoundCard {
-    background: rgba(0, 198, 255, 0.15);
-    border: 2px solid #00c6ff;
-    border-radius: 15px;
-    padding: 15px;
-    margin-bottom: 20px;
-    display: flex;
     justify-content: space-between;
-    align-items: center;
-    animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-@keyframes popIn {
-    0% { transform: scale(0.8); opacity: 0; }
-    100% { transform: scale(1); opacity: 1; }
-}
-
-.userInfo h4 {
-    margin: 0;
-    color: white;
-    font-size: 1.1rem;
-}
-
-.userInfo p {
-    margin: 5px 0 0 0;
-    color: #00c6ff;
-    font-size: 0.9rem;
-    font-weight: 500;
-}
-
-.resetButton {
-    background: rgba(255, 255, 255, 0.2);
-    border: none;
-    color: white;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
+    padding: 12px 16px;
+    background: #f8fafc;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    border: 1px solid #e2e8f0;
     cursor: pointer;
     transition: all 0.2s ease;
+}
+
+.compactStatusRow:hover {
+    border-color: #8b005e;
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(139, 0, 94, 0.05);
+}
+
+.compactNumber {
+    width: 28px;
+    height: 28px;
+    background: #fff;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: #8b005e;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-.resetButton:hover {
-    background: #ff5252;
-    transform: rotate(90deg);
+.compactInfo {
+    flex: 1;
+    margin-left: 12px;
+}
+
+.compactTitle {
+    margin: 0 !important;
+    font-size: 0.95rem !important;
+    font-weight: 700 !important;
+    color: #1a1a1a !important;
+}
+
+.compactSubtitle {
+    margin: 0 !important;
+    font-size: 0.7rem !important;
+    color: #64748b !important;
+    text-transform: uppercase !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.5px !important;
+}
+
+.compactSignBtn {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    color: #8b005e;
+    padding: 6px 16px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.compactStatusRow:hover .compactSignBtn {
+    background: #8b005e;
+    color: #fff;
+    border-color: #8b005e;
 }

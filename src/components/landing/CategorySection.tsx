@@ -1,15 +1,11 @@
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
-import { Link } from 'react-router-dom';
-
-interface CategoryItem {
-  label: string;
-  href: string;
-}
+import type { NavItem } from '../../data/navigationData';
+import NavItemRenderer from './NavItemRenderer';
 
 interface CategorySectionProps {
   title: string;
-  items: CategoryItem[];
+  items: NavItem[];
   defaultOpen?: boolean;
 }
 
@@ -35,21 +31,12 @@ const CategorySection = ({ title, items, defaultOpen = false }: CategorySectionP
 
       <div
         className={`overflow-hidden transition-all duration-300 ease-in-out ${
-          isOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+          isOpen ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
         }`}
       >
-        <ul className="px-4 pb-4 md:px-5 md:pb-5 space-y-2">
-          {items.map((item, index) => (
-            <li key={index}>
-              <Link
-                to={item.href}
-                className="block py-2.5 px-4 rounded-lg text-gray-600 hover:text-[#730051] hover:bg-purple-50 transition-all duration-200"
-              >
-                {item.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <div className="px-4 pb-4 md:px-5 md:pb-5">
+          <NavItemRenderer items={items} />
+        </div>
       </div>
     </div>
   );
