@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import WESO_IMG from '../../assets/WESO.jpg';
 import styles from '../../styles/ET.module.css';
-import { Target, Eye, Activity, Users } from 'lucide-react';
+import { Target, Eye, Activity } from 'lucide-react';
 
 const Weso: React.FC = () => {
     useEffect(() => {
@@ -60,38 +60,7 @@ const Weso: React.FC = () => {
                     </div>
                 </section>
 
-                {/* Stats Section */}
-                <section className={styles.statsGrid}>
-                    <div className={styles.statCard}>
-                        <span className={styles.statNumber}>4+</span>
-                        <span className={styles.statLabel}>Counties Reached</span>
-                    </div>
-                    <div className={styles.statCard}>
-                        <span className={styles.statNumber}>18+</span>
-                        <span className={styles.statLabel}>Missions/Year</span>
-                    </div>
-                    <div className={styles.statCard}>
-                        <span className={styles.statNumber}>900+</span>
-                        <span className={styles.statLabel}>Lives Impacted</span>
-                    </div>
-                    <div className={styles.statCard}>
-                        <span className={styles.statNumber}>140+</span>
-                        <span className={styles.statLabel}>Active Members</span>
-                    </div>
-                </section>
 
-                {/* CTA Section */}
-                <section className={styles.ctaBox}>
-                    <h2 className={styles.ctaTitle}>Make a Difference in the West</h2>
-                    <p className={styles.ctaText}>
-                        Join the WESO family and take the message of Christ to the heart of the Western region.
-                        Your passion can ignite a revival.
-                    </p>
-                    <a href="#" className={styles.ctaBtn}>
-                        <Users className="inline-block mr-2 mb-1" size={20} />
-                        Join the Team
-                    </a>
-                </section>
             </div>
 
         </div>

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import ESET_IMG from '../../assets/eset.jpg';
 import styles from '../../styles/ET.module.css';
-import { Target, Eye, Activity, Users } from 'lucide-react';
+import { Target, Eye, Activity } from 'lucide-react';
 
 const Eset: React.FC = () => {
     useEffect(() => {
@@ -61,38 +61,7 @@ const Eset: React.FC = () => {
                     </div>
                 </section>
 
-                {/* Stats Section */}
-                <section className={styles.statsGrid}>
-                    <div className={styles.statCard}>
-                        <span className={styles.statNumber}>15+</span>
-                        <span className={styles.statLabel}>Counties Reached</span>
-                    </div>
-                    <div className={styles.statCard}>
-                        <span className={styles.statNumber}>10+</span>
-                        <span className={styles.statLabel}>Missions/Year</span>
-                    </div>
-                    <div className={styles.statCard}>
-                        <span className={styles.statNumber}>1200+</span>
-                        <span className={styles.statLabel}>Lives Impacted</span>
-                    </div>
-                    <div className={styles.statCard}>
-                        <span className={styles.statNumber}>180+</span>
-                        <span className={styles.statLabel}>Active Members</span>
-                    </div>
-                </section>
 
-                {/* CTA Section */}
-                <section className={styles.ctaBox}>
-                    <h2 className={styles.ctaTitle}>Reach the Regions Beyond</h2>
-                    <p className={styles.ctaText}>
-                        The harvest is plentiful in the Eastern and Coastal regions.
-                        Join ESET in our mission to shine the light of Christ where it is needed most.
-                    </p>
-                    <a href="#" className={styles.ctaBtn}>
-                        <Users className="inline-block mr-2 mb-1" size={20} />
-                        Join the Team
-                    </a>
-                </section>
             </div>
 
         </div>

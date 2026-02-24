@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import RIVET_IMG from '../../assets/RIVET.jpg';
 import styles from '../../styles/ET.module.css';
-import { Target, Eye, Activity, Users } from 'lucide-react';
+import { Target, Eye, Activity } from 'lucide-react';
 
 const Rivet: React.FC = () => {
     useEffect(() => {
@@ -61,38 +61,7 @@ const Rivet: React.FC = () => {
                     </div>
                 </section>
 
-                {/* Stats Section */}
-                <section className={styles.statsGrid}>
-                    <div className={styles.statCard}>
-                        <span className={styles.statNumber}>12+</span>
-                        <span className={styles.statLabel}>Counties Reached</span>
-                    </div>
-                    <div className={styles.statCard}>
-                        <span className={styles.statNumber}>20+</span>
-                        <span className={styles.statLabel}>Missions/Year</span>
-                    </div>
-                    <div className={styles.statCard}>
-                        <span className={styles.statNumber}>1000+</span>
-                        <span className={styles.statLabel}>Lives Impacted</span>
-                    </div>
-                    <div className={styles.statCard}>
-                        <span className={styles.statNumber}>150+</span>
-                        <span className={styles.statLabel}>Active Members</span>
-                    </div>
-                </section>
 
-                {/* CTA Section */}
-                <section className={styles.ctaBox}>
-                    <h2 className={styles.ctaTitle}>Ready to Make an Impact?</h2>
-                    <p className={styles.ctaText}>
-                        Join RIVET today and be part of the movement that is changing lives across the Rift Valley.
-                        Your hands, your voice, and your heart are needed in the harvest field.
-                    </p>
-                    <a href="#" className={styles.ctaBtn}>
-                        <Users className="inline-block mr-2 mb-1" size={20} />
-                        Join the Team
-                    </a>
-                </section>
             </div>
 
         </div>

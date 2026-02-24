@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import CET_IMG from '../../assets/CET.jpg';
 import styles from '../../styles/ET.module.css';
-import { Target, Eye, Activity, Users } from 'lucide-react';
+import { Target, Eye, Activity } from 'lucide-react';
 
 const Cet: React.FC = () => {
     useEffect(() => {
@@ -60,38 +60,7 @@ const Cet: React.FC = () => {
                     </div>
                 </section>
 
-                {/* Stats Section */}
-                <section className={styles.statsGrid}>
-                    <div className={styles.statCard}>
-                        <span className={styles.statNumber}>10+</span>
-                        <span className={styles.statLabel}>Regions Reached</span>
-                    </div>
-                    <div className={styles.statCard}>
-                        <span className={styles.statNumber}>2+</span>
-                        <span className={styles.statLabel}>Missions/Year</span>
-                    </div>
-                    <div className={styles.statCard}>
-                        <span className={styles.statNumber}>1500+</span>
-                        <span className={styles.statLabel}>Lives Impacted</span>
-                    </div>
-                    <div className={styles.statCard}>
-                        <span className={styles.statNumber}>100+</span>
-                        <span className={styles.statLabel}>Active Members</span>
-                    </div>
-                </section>
 
-                {/* CTA Section */}
-                <section className={styles.ctaBox}>
-                    <h2 className={styles.ctaTitle}>Impact the Heart of Kenya</h2>
-                    <p className={styles.ctaText}>
-                        Join CET in our mission to reach Nairobi and the Central region.
-                        Be the light in the city and beyond.
-                    </p>
-                    <a href="#" className={styles.ctaBtn}>
-                        <Users className="inline-block mr-2 mb-1" size={20} />
-                        Join the Team
-                    </a>
-                </section>
             </div>
 
         </div>

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import NET_IMG from '../../assets/NET.jpg';
 import styles from '../../styles/ET.module.css';
-import { Target, Eye, Activity, Users } from 'lucide-react';
+import { Target, Eye, Activity } from 'lucide-react';
 
 const Net: React.FC = () => {
     useEffect(() => {
@@ -61,38 +61,7 @@ const Net: React.FC = () => {
                     </div>
                 </section>
 
-                {/* Stats Section */}
-                <section className={styles.statsGrid}>
-                    <div className={styles.statCard}>
-                        <span className={styles.statNumber}>6+</span>
-                        <span className={styles.statLabel}>Counties Reached</span>
-                    </div>
-                    <div className={styles.statCard}>
-                        <span className={styles.statNumber}>15+</span>
-                        <span className={styles.statLabel}>Missions/Year</span>
-                    </div>
-                    <div className={styles.statCard}>
-                        <span className={styles.statNumber}>800+</span>
-                        <span className={styles.statLabel}>Lives Impacted</span>
-                    </div>
-                    <div className={styles.statCard}>
-                        <span className={styles.statNumber}>120+</span>
-                        <span className={styles.statLabel}>Active Members</span>
-                    </div>
-                </section>
 
-                {/* CTA Section */}
-                <section className={styles.ctaBox}>
-                    <h2 className={styles.ctaTitle}>Serve with NET</h2>
-                    <p className={styles.ctaText}>
-                        God is doing amazing things in the Nyanza region, and you can be a part of it.
-                        Step out in faith and join NET to share the love of Jesus today.
-                    </p>
-                    <a href="#" className={styles.ctaBtn}>
-                        <Users className="inline-block mr-2 mb-1" size={20} />
-                        Join the Team
-                    </a>
-                </section>
             </div>
 
         </div>
