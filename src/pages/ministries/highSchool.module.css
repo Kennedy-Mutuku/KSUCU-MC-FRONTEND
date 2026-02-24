@@ -16,7 +16,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: clamp(300px, 45vh, 500px); /* 40-50% vh */
+  height: clamp(400px, 60vh, 700px); /* Taller to fit more of the group */
   width: 100%;
   padding: 0 4%; 
   margin: 0; 
@@ -24,7 +24,7 @@
   /* Dark semi-transparent overlay */
   background-image: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)), var(--hero-bg);
   background-size: cover; 
-  background-position: center 30%;
+  background-position: center 25%; /* Shifted up to avoid cutting faces */
   background-repeat: no-repeat;
   color: #ffffff;
   text-align: center;
