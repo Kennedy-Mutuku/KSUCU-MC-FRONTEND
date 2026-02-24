@@ -74,7 +74,7 @@ const Requisitions: React.FC = () => {
     releasedBySignature: "",
     date: "",
   });
-  const backEndURL = "https://ksucu-mc.co.ke";
+  const backEndURL = ""; // Empty string allows Vite proxy to handle the routing in dev
 
   // Helper function to show toast with auto-hide
   const showToast = (
@@ -103,20 +103,9 @@ const Requisitions: React.FC = () => {
       setIsToastFading(false);
     }, duration);
   };
-
   useEffect(() => {
     // No authentication required - allow public access
     setIsAuthenticated(true);
-
-    // Set today's date automatically in asset transfer form
-    const today = new Date().toISOString().split("T")[0];
-    setAssetTransferData((prev) => ({
-      ...prev,
-      date: today,
-    }));
-
-    // Load admin contact phone from API first
-    loadAdminContactPhone();
 
     // Check if user is logged in and load their requisitions
     const userData = localStorage.getItem("user-data");
@@ -130,6 +119,16 @@ const Requisitions: React.FC = () => {
         console.log("No user data found");
       }
     }
+
+    // Set today's date automatically in asset transfer form
+    const today = new Date().toISOString().split("T")[0];
+    setAssetTransferData((prev) => ({
+      ...prev,
+      date: today,
+    }));
+
+    // Load admin contact phone from API first
+    loadAdminContactPhone();
 
     // Refresh phone number periodically (every 30 seconds)
     const phoneRefreshInterval = setInterval(() => {
@@ -456,14 +455,9 @@ const Requisitions: React.FC = () => {
                           Submitted:{" "}
                           {new Date(req.submittedAt).toLocaleDateString()}
                         </span>
-                        <button
-                          type="button"
-                          onClick={() => downloadRequisitionPDF(req)}
-                          className={styles.downloadButton}
-                          title="Download requisition as PDF"
-                        >
-                          📥 Download PDF
-                        </button>
+                        <span className={styles.pdfPendingNote}>
+                          ⏳ Awaiting admin review
+                        </span>
                       </div>
                     ))}
                 </div>
@@ -480,17 +474,28 @@ const Requisitions: React.FC = () => {
                           {req.items.map((item) => item.itemName).join(", ")}
                         </strong>
                         <span>
-                          Submitted:{" "}
-                          {new Date(req.submittedAt).toLocaleDateString()}
+                          Approved:{" "}
+                          {req.releasedAt
+                            ? new Date(req.releasedAt).toLocaleDateString()
+                            : new Date(req.submittedAt).toLocaleDateString()}
                         </span>
-                        <button
-                          type="button"
-                          onClick={() => downloadRequisitionPDF(req)}
-                          className={styles.downloadButton}
-                          title="Download requisition as PDF"
-                        >
-                          📥 Download PDF
-                        </button>
+                        {req.releasedBy && (
+                          <span>Approved by: {req.releasedBy}</span>
+                        )}
+                        {req.assetTransfer?.releasedBySignature || req.approvalSignature ? (
+                          <button
+                            type="button"
+                            onClick={() => downloadRequisitionPDF(req)}
+                            className={styles.downloadButton}
+                            title="Download your signed PDF"
+                          >
+                            📥 Download Signed PDF
+                          </button>
+                        ) : (
+                          <span className={styles.pdfPendingNote}>
+                            ✍️ Awaiting admin signature
+                          </span>
+                        )}
                       </div>
                     ))}
                 </div>
@@ -510,14 +515,20 @@ const Requisitions: React.FC = () => {
                           Submitted:{" "}
                           {new Date(req.submittedAt).toLocaleDateString()}
                         </span>
-                        <button
-                          type="button"
-                          onClick={() => downloadRequisitionPDF(req)}
-                          className={styles.downloadButton}
-                          title="Download requisition as PDF"
-                        >
-                          📥 Download PDF
-                        </button>
+                        {req.assetTransfer?.releasedBySignature || req.approvalSignature ? (
+                          <button
+                            type="button"
+                            onClick={() => downloadRequisitionPDF(req)}
+                            className={styles.downloadButton}
+                            title="Download signed PDF"
+                          >
+                            📥 Download Signed PDF
+                          </button>
+                        ) : (
+                          <span className={styles.pdfPendingNote}>
+                            ✍️ Waiting for admin signature
+                          </span>
+                        )}
                       </div>
                     ))}
                 </div>
