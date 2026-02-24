@@ -4,29 +4,27 @@
 .container {
   min-height: 100vh;
   font-family: 'Inter', sans-serif;
-  background: #fdfdfd; /* Off-white for a softer feel */
+  background: #ffffff; /* White background as requested */
   color: #3b3b3b;
   font-size: 17px;
   line-height: 1.7;
 }
 
-/* Hero Section: Centered and Responsive (Matching Itumbe Resort Structure) */
+/* Hero Section: Centered and Responsive */
 .heroSection {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  /* Matching the exact structural behavior of Itumbe reference */
-  height: clamp(400px, 60vh, 700px); /* Taller to fit more of the group */ 
+  height: clamp(300px, 45vh, 500px); /* 40-50% vh */
   width: 100%;
   padding: 0 4%; 
   margin: 0; 
   
-  /* Retaining Praise and Worship Identity */
-  background-image: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)), var(--hero-bg);
+  /* Dark semi-transparent overlay */
+  background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), var(--hero-bg);
   background-size: cover; 
-  /* Shifted up to keep faces visible */
-  background-position: center 45%; 
+  background-position: center 50%; 
   background-repeat: no-repeat;
   color: #ffffff;
   text-align: center;
@@ -49,16 +47,16 @@
 
 .subtitle {
   font-size: 1.35rem;
-  opacity: 0.95; /* Increased opacity for readability */
+  opacity: 0.95; 
   font-weight: 400;
-  margin: 0 auto; /* Ensures centered layout */
+  margin: 0 auto; 
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
   max-width: 600px;
 }
 
 @media (max-width: 768px) {
   .heroSection {
-    min-height: 40vh; /* Shorter on mobile for cleaner transition */
+    min-height: 40vh; 
     padding: 20px 6%;
   }
   .title {
@@ -73,12 +71,12 @@
 .contentSection {
   padding: 100px 8%;
   overflow-x: hidden;
-  max-width: 1100px; /* Slightly narrower for reading comfort */
+  max-width: 1100px; 
   margin: 0 auto;
 }
 
 .contentSection h2 {
-  color: #5c0042; /* Slightly softer purple */
+  color: #5c0042; /* Purple accents for headings */
   font-size: 2.4rem;
   font-weight: 800;
   margin-bottom: 24px;
@@ -98,7 +96,7 @@
   line-height: 1.8;
   margin-bottom: 24px;
   color: #4a4a4a;
-  max-width: 800px; /* Don't let lines get too long */
+  max-width: 800px; 
 }
 
 .sectionBlock {
@@ -106,7 +104,7 @@
   position: relative;
 }
 
-/* Add a subtle decorative element */
+/* Subtle decorative element */
 .sectionBlock:not(:last-child)::after {
   content: '';
   display: block;
@@ -117,10 +115,10 @@
   border-radius: 2px;
 }
 
-/* What We Do - Redesigned Cards to feel less rigid */
+/* What We Do */
 .activitiesList {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr); /* 4 compact cards in one row on desktop */
   gap: 24px;
   list-style: none;
   padding: 0;
@@ -130,9 +128,9 @@
 .activitiesList li {
   background: #ffffff;
   padding: 35px 25px;
-  border-radius: 8px; /* Softer radius */
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); /* Extremely soft shadow */
-  border: 1px solid #f0f0f0; /* Subtle border instead of heavy top border */
+  border-radius: 8px; /* Clean radius */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04); 
+  border: 1px solid #f0f0f0; 
   transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.4s ease;
   display: flex;
   flex-direction: column;
@@ -143,15 +141,15 @@
 
 .activitiesList li:hover {
   transform: translateY(-6px);
-  box-shadow: 0 12px 30px rgba(92, 0, 66, 0.08);
+  box-shadow: 0 12px 30px rgba(92, 0, 66, 0.08); /* Subtle purple glow */
   border-color: #f0e6ed;
 }
 
 .activitiesList li::before {
   content: attr(data-number);
-  font-size: 1.25rem; /* Make numbers look more like elegant labels, less like loud numbers */
+  font-size: 1.25rem; 
   font-weight: 700;
-  color: #a67c98; /* Subtle accent color */
+  color: #a67c98; /* Purple accent */
   opacity: 1;
   margin-bottom: 20px;
   display: inline-block;
@@ -164,7 +162,7 @@
 .requirements {
   margin-top: 30px;
   margin-bottom: 50px;
-  background-color: #faf8f9; /* Super subtle background to group them */
+  background-color: #faf8f9; 
   padding: 40px;
   border-radius: 12px;
 }
@@ -189,7 +187,6 @@
 }
 
 .requirements li::before {
-  /* Use a nice checkmark or dash instead of a basic bullet for a refined look */
   content: '—'; 
   color: #730051;
   font-weight: bold;
@@ -199,10 +196,10 @@
   top: -2px;
 }
 
-/* Buttons - More modern, less "click me now!" */
+/* Buttons */
 .actionButtons {
   display: flex;
-  flex-direction: row; /* Side-by-side on desktop looks more sophisticated */
+  flex-direction: row; 
   align-items: center;
   gap: 30px;
   margin-top: 20px;
@@ -213,13 +210,13 @@
   align-items: center;
   justify-content: center;
   padding: 16px 40px;
-  border-radius: 40px; /* Pill shape is very modern */
+  border-radius: 40px; 
   border: none;
   font-weight: 600;
   font-size: 1.05rem;
   text-decoration: none;
   cursor: pointer;
-  background: #730051;
+  background: #730051; /* Primary purple button */
   color: #ffffff;
   transition: all 0.3s ease;
 }
@@ -239,7 +236,7 @@
   text-decoration: none;
   cursor: pointer;
   background: transparent;
-  color: #555555; /* Secondary action should be less loud */
+  color: #555555; 
   border: none;
   position: relative;
   transition: all 0.3s ease;
@@ -277,9 +274,9 @@
 }
 
 /* Responsive Fixes */
-@media (max-width: 1024px) {
+@media (max-width: 1200px) {
   .activitiesList {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr); /* 2x2 grid on medium */
   }
 }
 
@@ -287,13 +284,13 @@
   .heroSection {
     justify-content: center;
     text-align: center;
-    align-items: center; /* Center on mobile */
+    align-items: center; 
   }
   .subtitle {
     margin: 0 auto;
   }
   .activitiesList {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; /* Stack vertically on mobile */
   }
   .contentSection {
     padding: 60px 6%;

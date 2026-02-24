@@ -1,12 +1,12 @@
-import React, { useEffect, useRef } from 'react';
-import styles from '../../styles/ministryPage.module.css';
+import React, { useEffect, useRef, useState } from 'react';
+import styles from './creativity.module.css';
 import { Link } from 'react-router-dom';
 import creativityImg from '../../assets/creativity.jpg';
+import MinistryRegistrationModal from '../../components/MinistryRegistrationModal';
 
 const CreativityPage: React.FC = () => {
   const contentRef1 = useRef<HTMLDivElement>(null);
-  const contentRef2 = useRef<HTMLDivElement>(null);
-  const testimonialsRef = useRef<HTMLDivElement>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     // Smooth scroll behavior
@@ -21,15 +21,13 @@ const CreativityPage: React.FC = () => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
+          entry.target.classList.add(styles.visible || 'visible');
         }
       });
     }, observerOptions);
 
     // Observe elements if they exist
     if (contentRef1.current) observer.observe(contentRef1.current);
-    if (contentRef2.current) observer.observe(contentRef2.current);
-    if (testimonialsRef.current) observer.observe(testimonialsRef.current);
 
     return () => {
       document.documentElement.style.scrollBehavior = 'auto';
@@ -42,117 +40,66 @@ const CreativityPage: React.FC = () => {
       <div className={styles.heroSection} style={{ '--hero-bg': `url(${creativityImg})` } as React.CSSProperties}>
         <div className={styles.heroContent}>
           <h1 className={styles.title}>Creativity Ministry</h1>
-          <p className={styles.subtitle}>Expressing God's creativity through art and media</p>
+          <p className={styles.subtitle}>Using drama and storytelling to communicate truth</p>
         </div>
       </div>
 
       <div className={styles.container}>
         <div className={`${styles.contentSection} ${styles.animate}`} ref={contentRef1}>
-          <div className={styles.description}>
+          <div className={styles.sectionBlock}>
             <h2>About Creativity Ministry</h2>
             <p>
-              The Creativity Ministry is a vibrant community of individuals passionate about using their God-given talents to glorify Him and inspire others. Whether through visual arts, design, writing, drama, dance, media, or other creative expressions, our mission is to bring the message of Christ to life in unique and impactful ways.
+              The Creativity Ministry uses drama and theatrical expression to communicate biblical truth in relatable and impactful ways. Through skits, stage presentations, and themed productions, we support the preaching of the Word and create moments that help the congregation reflect, understand, and respond.
             </p>
-            
-            <p>
-              We believe creativity is a reflection of the Creator and a powerful tool to communicate truth, evoke emotion, and build connections. From creating engaging visuals for worship, producing powerful performances, or crafting inspiring content, we strive to use our gifts to draw people closer to God.
-            </p>
-            
+
             <h3>Our Vision</h3>
             <p>
-              To be a creative force that transforms hearts and minds through art, inspiring people to see God's beauty and truth in fresh, innovative ways that speak to every generation.
+              To use drama and creative storytelling as a tool for spiritual reflection, helping students engage with biblical truth in practical and memorable ways.
             </p>
-            
-            <h3>What We Create</h3>
-            <ul className={styles.activitiesList}>
-              <li data-number="01">Visual graphics and designs for church communications</li>
-              <li data-number="02">Video production for sermons and special events</li>
-              <li data-number="03">Photography for church activities and ministries</li>
-              <li data-number="04">Drama and theatrical performances</li>
-              <li data-number="05">Dance choreography and movement worship</li>
-              <li data-number="06">Creative writing and storytelling</li>
-              <li data-number="06">Digital media and social content</li>
-              <li data-number="06">Art installations and decorative displays</li>
-            </ul>
-            
           </div>
 
-          <div className={styles.joinSection}>
-            <h2>Unleash Your Creative Gifts</h2>
+          <div className={styles.sectionBlock}>
+            <h2>What We Do</h2>
+            <ul className={styles.activitiesList}>
+              <li data-number="01">Present drama and skits during Sunday services to illustrate sermon messages</li>
+              <li data-number="02">Organize themed Creativity Nights featuring stage performances and storytelling</li>
+              <li data-number="03">Develop short dramatic pieces that address real-life issues from a biblical perspective</li>
+            </ul>
+          </div>
+
+          <div className={styles.sectionBlock}>
+            <h2>Join the Creativity Ministry</h2>
             <p>
-             If you have a creative spark and a desire to serve, we invite you to join us in transforming ideas into expressions of worship and outreach that make a difference in the church and beyond.
+              Do you have a passion for drama, storytelling, or stage performance? We welcome students who are willing to grow in confidence, teamwork, and biblical understanding while using creativity to serve the Christian Union.
             </p>
-            
+
             <div className={styles.requirements}>
-              <h3>How to Get Involved</h3>
               <ul>
-                <li>Passion for creative expression and artistic excellence</li>
-                <li>Heart for worship and desire to serve God</li>
-                <li>Skills in one or more creative disciplines (all levels welcome)</li>
-                <li>Commitment to collaborative teamwork</li>
-                <li>Willingness to learn new techniques and technologies</li>
-                <li>Availability for project deadlines and events</li>
+                <li>A genuine commitment to Christ</li>
+                <li>Willingness to learn and participate in rehearsals</li>
+                <li>Openness to teamwork and constructive feedback</li>
+                <li>Reliability during scheduled presentations</li>
+                <li>Desire to grow in confidence and stage discipline</li>
               </ul>
             </div>
-            
 
-            <div className={styles.schedule}>
-              <h3>Creativity Schedule</h3>
-              <div className={styles.scheduleGrid}>
-                <div className={styles.scheduleItem}>
-                  <strong>Team Meetings</strong>
-                  <p>Saturdays: 2:00 PM - 4:00 PM</p>
-                </div>
-                <div className={styles.scheduleItem}>
-                  <strong>Project Work</strong>
-                  <p>Flexible based on deadlines</p>
-                </div>
-                <div className={styles.scheduleItem}>
-                  <strong>Skills Workshops</strong>
-                  <p>Monthly: Various times</p>
-                </div>
-                <div className={styles.scheduleItem}>
-                  <strong>Creative Sessions</strong>
-                  <p>As needed for special events</p>
-                </div>
-              </div>
-            </div>
-            
             <div className={styles.actionButtons}>
-              <Link to="/contact-us" className={styles.commitmentButton}>
-                Join Creativity 
-              </Link>
+              <button className={styles.commitmentButton} onClick={() => setIsModalOpen(true)}>
+                Join Creativity Ministry
+              </button>
               <Link to="/contact-us" className={styles.contactButton}>
-                Contact Overseer
+                Contact Coordinator
               </Link>
             </div>
           </div>
         </div>
 
-<div className={`${styles.contentSection} ${styles.animate}`} ref={contentRef1} >
-          <div className={styles.description}>
-            <h3>Our Creative Philosophy</h3>
-            <p>
-              "Whatever you do, work at it with all your heart, as working for the Lord, not for human masters." Colossians 3:23
-            </p>
-            <p>
-             We believe that God is the ultimate Creator, and we are made in His image with the ability to create. Every piece of art, every video, every design is an opportunity to reflect His creativity and share His love with the world. Our work is not just creative expression - it's worship in action.
-            </p>
-            
-            <h3>Creative Excellence</h3>
-            <p>
-              We pursue excellence in all our creative endeavors, not for personal glory, but to honor God with the best of our abilities. We stay current with trends and technologies while maintaining timeless biblical truths in our messaging.
-            </p>
-            <h3>Community Impact</h3>
-            <p>
-              Our creative works extend beyond church walls to impact the broader community through social media, community events, and collaborative projects that demonstrate God's love and creativity to the world..
-            </p>
-          </div>
-        </div>
-
-        
+        <MinistryRegistrationModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          ministryName="Creativity Ministry"
+        />
       </div>
-      
     </>
   );
 };
