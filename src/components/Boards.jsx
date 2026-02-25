@@ -48,7 +48,7 @@ function Boards() {
     },
 
     {
-      id: "editorial",
+      id: "Editorial",
       title: "Editorial Board",
       icon: "fas fa-pen-fancy",
       image: editorialBoardImg,
