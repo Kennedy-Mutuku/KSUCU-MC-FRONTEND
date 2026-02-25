@@ -182,7 +182,6 @@ const mobileNavTabs: { key: string; icon: React.ElementType; label: string; }[] 
   { key: 'fellowships', icon: UsersRound, label: 'Fellowships' },
   { key: 'biblestudy', icon: BookOpen, label: 'Bible Study' },
   { key: 'classes', icon: GraduationCap, label: 'Classes' },
-  { key: 'feedback', icon: MessageSquare, label: 'Feedback' },
   { key: 'financials', icon: Coins, label: 'Financials' },
   { key: 'compassion', icon: Heart, label: 'Compassion' },
   { key: 'requisitions', icon: FileText, label: 'Requisitions' },
@@ -194,6 +193,7 @@ const mobileNavTabs: { key: string; icon: React.ElementType; label: string; }[] 
   { key: 'committees', icon: UsersRound, label: 'Committees' },
   { key: 'attendance', icon: ClipboardList, label: 'Attendance' },
   { key: 'signin', icon: LogIn, label: 'Sign In' },
+  { key: 'feedback', icon: MessageSquare, label: 'Talk to us' },
 ];
 
 interface TabSection {
@@ -210,7 +210,7 @@ const getTabSections = (key: string, activeSessions: Session[]): TabSection[] =>
     case 'fellowships': return [{ title: 'Fellowships', icon: UsersRound, items: organizationSections[4].items }];
     case 'biblestudy': return [{ title: 'Bible Study', icon: BookOpen, items: [{ label: 'Register for Bible Study', href: '/Bs' }, { label: 'View BS Groups', href: '/Bs' }] }];
     case 'classes': return [{ title: 'Classes', icon: GraduationCap, items: organizationSections[6].items }];
-    case 'feedback': return [{ title: 'Feedback', icon: MessageSquare, items: [{ label: 'Submit Anonymously', href: '/recomendations' }, { label: 'Submit with Identity', href: '/recomendations' }] }];
+    case 'feedback': return [{ title: 'Talk to us', icon: MessageSquare, items: [{ label: 'Submit Anonymously', href: '/recomendations' }, { label: 'Submit with Identity', href: '/recomendations' }] }];
     case 'financials': return [{ title: 'Financials', icon: Coins, items: [{ label: 'View Financial Statements', href: '/financial' }, { label: 'My Contributions', href: '/financial' }] }];
     case 'compassion': return [{ title: 'Compassion', icon: Heart, items: [{ label: 'Request Support', href: '/compassion-counseling' }, { label: 'Support the Ministry', href: '/compassion-counseling' }] }];
     case 'requisitions': return [{ title: 'Requisitions', icon: FileText, items: [{ label: 'My Requisitions', href: '/requisitions' }, { label: 'New Requisition', href: '/requisitions' }] }];
@@ -244,10 +244,11 @@ const getTabSections = (key: string, activeSessions: Session[]): TabSection[] =>
 };
 
 
-const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, isManualExpanded, setIsManualExpanded }: {
+const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, activeNav, isManualExpanded, setIsManualExpanded }: {
   userData: UserData | null;
   activeSessions: Session[];
   onNavigate: (path: string) => void;
+  activeNav: string | null;
   isManualExpanded: boolean;
   setIsManualExpanded: (val: boolean) => void;
 }) => {
@@ -262,7 +263,9 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, isManualExpan
     if (key === 'dashboard') {
       setActiveTab(null);
       setExpandedNestedItem(null);
+      setIsManualExpanded(false);
       onNavigate('/');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
     if (key === 'about') {
@@ -276,6 +279,7 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, isManualExpan
     if (key === 'signin') {
       setActiveTab(null);
       setExpandedNestedItem(null);
+      setIsManualExpanded(false);
       onNavigate(userData ? '/home' : '/signIn');
       return;
     }
@@ -320,7 +324,7 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, isManualExpan
       }}>
         {mobileNavTabs.map((tab) => {
           const Icon = tab.icon;
-          const isActive = activeTab === tab.key;
+          const isActive = activeTab === tab.key || (activeNav === tab.key && !activeTab);
           const isAttendance = tab.key === 'attendance';
           const hasActiveSessions = activeSessions.length > 0;
           const hasSections = getTabSections(tab.key, activeSessions).length > 0;
@@ -512,6 +516,7 @@ const Header = () => {
 
   // Determine which nav group is active based on current path
   const getActiveNav = (path: string): string | null => {
+    if (path === '/') return 'dashboard';
     if (path.startsWith('/news') || path.startsWith('/media')) return 'mediadesk';
     if (path.startsWith('/ministries')) return 'ministries';
     if (path.startsWith('/ets/') || path.startsWith('/e-teams')) return 'eteams';
@@ -659,7 +664,7 @@ const Header = () => {
 
   return (
     <>
-      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white shadow-md' : 'bg-white/95 backdrop-blur-sm'}`}>
+      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b-2 border-[#730051]/15 ${isScrolled ? 'bg-white shadow-lg shadow-black/5' : 'bg-white/95 backdrop-blur-sm'}`}>
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           <div className="flex items-center h-16 md:h-20 md:pl-0">
             <button
@@ -774,6 +779,7 @@ const Header = () => {
         userData={userData}
         activeSessions={activeSessions}
         onNavigate={(path: string) => navigate(path)}
+        activeNav={activeNav}
         isManualExpanded={isSidebarExpanded}
         setIsManualExpanded={setIsSidebarExpanded}
       />
