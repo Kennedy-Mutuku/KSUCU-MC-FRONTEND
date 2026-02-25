@@ -1,8 +1,8 @@
 @import url(index.module.css);
 
-/* Body wrapper - offset below the fixed global header (80px) */
+/* Body wrapper */
 .body {
-    padding-top: 80px;
+    min-height: 100vh;
 }
 
 /* Video background styling */
@@ -33,12 +33,19 @@
 .libraryContainer {
     max-width: 1100px;
     margin: 12px auto;
-    /* reduced top/bottom spacing */
     background: rgba(255, 255, 255, 0.98);
     padding: 14px;
-    /* tighter padding */
     border-radius: 8px;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+@media (max-width: 768px) {
+    .libraryContainer {
+        margin: 0;
+        padding: 10px;
+        border-radius: 0;
+        box-shadow: none;
+    }
 }
 
 /* Custom 3D Header */
@@ -53,9 +60,15 @@
         inset 0 4px 10px rgba(255, 255, 255, 0.2);
     position: sticky;
     top: 80px;
-    /* sit just below the global fixed header */
     z-index: 40;
     border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 768px) {
+    .customHeader {
+        top: 64px;
+        padding: 10px 15px;
+    }
 }
 
 .backBtn {
@@ -105,7 +118,6 @@
         0 10px 10px rgba(0, 0, 0, .2),
         0 20px 20px rgba(0, 0, 0, .15);
     display: inline-block;
-    transform: none;
 }
 
 /* Original Header styles (overridden by customHeader) */
@@ -130,10 +142,16 @@
 .controls {
     position: sticky;
     top: 148px;
-    /* 80px global header + ~68px library header */
     z-index: 30;
     display: block;
     padding-bottom: 6px;
+}
+
+@media (max-width: 768px) {
+    .controls {
+        top: 114px;
+        /* 64px global + ~50px library header height approximately */
+    }
 }
 
 .searchFilter {
@@ -143,6 +161,13 @@
     padding: 15px;
     border-radius: 8px;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+}
+
+@media (max-width: 768px) {
+    .searchFilter {
+        padding: 8px;
+        margin-bottom: 12px;
+    }
 }
 
 .searchRow {
@@ -169,7 +194,6 @@
 .searchInput {
     width: 100%;
     padding: 10px 12px 10px 36px;
-    /* slightly smaller */
     border-radius: 999px;
     border: 1px solid rgba(0, 0, 0, 0.06);
     box-shadow: 0 3px 10px rgba(115, 0, 81, 0.04);
@@ -191,15 +215,11 @@
     min-width: 180px;
 }
 
-/* Category navigation styling */
-/* Category navigation removed */
-
 /* Book list styles */
 .books {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 12px;
-    /* reduced gap */
     align-items: stretch;
 }
 
@@ -332,14 +352,12 @@
 .modal {
     position: fixed;
     z-index: 10000;
-    /* Higher value to ensure it sits above other elements */
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
     overflow: auto;
     background-color: rgba(0, 0, 0, 0.6);
-    /* Darker overlay for better visibility */
 }
 
 .modalContent {
@@ -356,7 +374,6 @@
     position: relative;
     z-index: 10001;
 }
-
 
 .close {
     color: #00c6ff;
@@ -388,35 +405,113 @@
     }
 
     .title3d {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
         letter-spacing: 1px;
-        transform: none;
+    }
+
+    .searchRow {
+        display: flex;
+        flex-direction: row;
+        gap: 8px;
+    }
+
+    .searchInputWrapper {
+        flex: 1;
+    }
+
+    .select {
+        min-width: 100px;
+        width: auto;
+        font-size: 0.8rem;
+        padding: 8px 4px;
+    }
+
+    .books {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 10px;
+    }
+
+    .bookInner {
+        padding: 10px;
+    }
+
+    .bookTitle {
+        font-size: 0.85rem;
+        height: 2.4rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .bookCategory {
+        font-size: 0.7rem;
+    }
+
+    .bookActions {
+        gap: 4px;
+        flex-wrap: wrap;
+    }
+
+    .downloadBtn,
+    .openBtn {
+        padding: 6px 8px;
+        font-size: 0.75rem;
+        flex: 1;
+        min-width: 60px;
+        text-align: center;
+    }
+
+    .bookCover {
+        height: 140px;
+    }
+
+    .placeholderIcon {
+        font-size: 2rem;
+    }
+
+    .booksWrapper {
+        padding-bottom: 100px;
+    }
+}
+
+@media (max-width: 480px) {
+    .books {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    .bookCover {
+        height: 110px;
     }
 
     .searchRow {
         flex-direction: column;
-        gap: 8px;
+        align-items: stretch;
     }
 
     .select {
         width: 100%;
     }
+}
 
-    .categoryNav {
-        padding: 6px;
-    }
-
-    .category {
-        margin: 5px 6px;
-    }
-
+@media (max-width: 380px) {
     .books {
         grid-template-columns: repeat(1, 1fr);
     }
+}
 
-    .booksWrapper {
-        max-height: calc(100vh - 280px);
-        padding-bottom: 180px;
-        /* more space on small screens */
+/* Global fixes for overlapping widgets on library page */
+:global(#chatbase-bubble-button),
+:global(#chatbase-bubble-window) {
+    z-index: 50 !important;
+}
+
+@media (max-width: 768px) {
+    :global(#chatbase-bubble-button) {
+        bottom: 10px !important;
+        right: 10px !important;
+        transform: scale(0.8);
     }
 }
