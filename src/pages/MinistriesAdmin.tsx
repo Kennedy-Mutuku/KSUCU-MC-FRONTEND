@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import UniversalHeader from '../components/UniversalHeader';
-import Footer from '../components/footer';
 import styles from '../styles/ministriesAdmin.module.css';
 import { getApiUrl } from '../config/environment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -1041,7 +1039,6 @@ const MinistriesAdmin: React.FC = () => {
     if (!authenticated) {
         return (
             <div className={styles.container}>
-                <UniversalHeader />
                 <div className={styles.authContainer}>
                     <div className={styles.authCard}>
                         <FontAwesomeIcon icon={faLock} className={styles.lockIcon} />
@@ -1069,14 +1066,16 @@ const MinistriesAdmin: React.FC = () => {
                         </button>
                     </div>
                 </div>
-                <Footer />
             </div>
         );
     }
 
     return (
         <div className={styles.container}>
+<<<<<<< HEAD
             <UniversalHeader />
+=======
+>>>>>>> 48cfd2009546c7f66d045eb78952fc0474a4ee79
             <div className={styles.adminContainer}>
                 <div className={styles.adminHeader}>
                     <h1 className={styles.adminTitle}>
@@ -1748,7 +1747,6 @@ const MinistriesAdmin: React.FC = () => {
                     </div>
                 )}
             </div>
-            <Footer />
         </div>
     );
 };

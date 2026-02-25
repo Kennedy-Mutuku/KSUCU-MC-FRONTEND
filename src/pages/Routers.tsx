@@ -1,60 +1,79 @@
+import { lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
-import App from "../App";
-import LandingPage from "./LandingPageNew";
-import FinancialsPage from "./Financials";
-import MinistriesPage from "./Ministries";
-import Etpage from "./Et";
-import NoPage from "./NoPage";
-import SignIn from "../components/signin";
-import SignUp from "../components/signup";
-import Bs from "../components/bibleStudy";
-import SavedSouls from "./savedSouls";
-import Forgotpassword from "../components/forgotPassword";
-import ClassesSection from "./classes";
-import BoardsPage from "./boards";
-import ChangeDetails from "../components/changeDetails";
-import NewsPage from "./NewsPage";
-import PhotoUploadPage from "./newsadminText";
-import PasswordReset from "../components/newPaaswwordInput";
-import SavedSoulsList from "./adminMission";
-import BsMembersList from "./adminBs";
-import Library from "./library";
-import Media from "./media"
-import MediaAdmin from "./MediaAdmin"
-import Elders from "./eldersPage"
-import FeedbackForm from "../components/feedBackForm";
-import SuperAdmin from "./superAdmin";
-import PraiseandWorshipCommitment from "../commitmentForms/praiseandWorship";
-import ChoirCommitment from "../commitmentForms/Choir";
-import InstrumentalistsCommitment from "../commitmentForms/instrumentalists";
-import AdmissionAdmin from "./admissionAdmin";
-import UserProfilePage from "./userProfile";
-import UserManagement from "./userManagement";
-import WorshipDocketAdmin from "./WorshipDocketAdmin";
-import UsheringPage from "./ministries/ushering";
-import CreativityPage from "./ministries/creativity";
-import CompassionPage from "./ministries/compassion";
-import IntercessoryPage from "./ministries/intercessory";
-import HighSchoolPage from "./ministries/highSchool";
-import WananzambePage from "./ministries/wananzambe";
-import ChurchSchoolPage from "./ministries/churchSchool";
-import PraiseAndWorshipPage from "./ministries/praiseAndWorship";
-import ChoirPage from "./ministries/choir";
-import ContactUs from "./ContactUs";
-import MessagesAdmin from "./MessagesAdmin";
-import AttendanceSessionManagement from "./AttendanceSessionManagement";
-import NewsAdmin from "./NewsAdmin";
-import Requisitions from "./Requisitions";
-import RequisitionsAdmin from "./RequisitionsAdmin";
-import CompassionCounselingPage from "./CompassionCounseling";
-import CompassionCounselingAdmin from "./CompassionCounselingAdmin";
-import PollingOfficerDashboard from "./PollingOfficerDashboard";
-import PollingOfficerManagement from "./PollingOfficerManagement";
-import MyDocs from "./MyDocs";
-import SuperAdminDocumentDashboard from "./superAdminDocumentDashboard";
+import App from "../App.tsx";
 
-/*newly added Christian Minds*/
-import ChristianMinds from "./christianMinds";
+// Lazy-loaded components
+const LandingPage = lazy(() => import("./LandingPageNew"));
+const FinancialsPage = lazy(() => import("./Financials"));
+const MinistriesPage = lazy(() => import("./Ministries"));
+const Etpage = lazy(() => import("./Et"));
+const RivetPage = lazy(() => import("./ets/Rivet"));
+const NetPage = lazy(() => import("./ets/Net"));
+const EsetPage = lazy(() => import("./ets/Eset"));
+const WesoPage = lazy(() => import("./ets/Weso"));
+const CetPage = lazy(() => import("./ets/Cet"));
+const NoPage = lazy(() => import("./NoPage"));
+const SignIn = lazy(() => import("../components/signin"));
+const SignUp = lazy(() => import("../components/signup"));
+const Bs = lazy(() => import("../components/bibleStudy"));
+const SavedSouls = lazy(() => import("./savedSouls"));
+const Forgotpassword = lazy(() => import("../components/forgotPassword"));
+const ClassesSection = lazy(() => import("./classes"));
+const BoardsPage = lazy(() => import("./boards"));
+const ChangeDetails = lazy(() => import("../components/changeDetails"));
+const NewsPage = lazy(() => import("./NewsPage"));
+const PhotoUploadPage = lazy(() => import("./newsadminText"));
+const PasswordReset = lazy(() => import("../components/newPaaswwordInput"));
+const SavedSoulsList = lazy(() => import("./adminMission"));
+const BsMembersList = lazy(() => import("./adminBs"));
+const Library = lazy(() => import("./library"));
+const Media = lazy(() => import("./media"));
+const MediaAdmin = lazy(() => import("./MediaAdmin"));
+const Elders = lazy(() => import("./eldersPage"));
+const FeedbackForm = lazy(() => import("../components/feedBackForm"));
+const SuperAdmin = lazy(() => import("./superAdmin"));
+const PraiseandWorshipCommitment = lazy(() => import("../commitmentForms/praiseandWorship"));
+const ChoirCommitment = lazy(() => import("../commitmentForms/Choir"));
+const InstrumentalistsCommitment = lazy(() => import("../commitmentForms/instrumentalists"));
+const AdmissionAdmin = lazy(() => import("./admissionAdmin"));
+const UserProfilePage = lazy(() => import("./userProfile"));
+const UserManagement = lazy(() => import("./userManagement"));
+const WorshipDocketAdmin = lazy(() => import("./WorshipDocketAdmin"));
+const UsheringPage = lazy(() => import("./ministries/ushering"));
+const CreativityPage = lazy(() => import("./ministries/creativity"));
+const CompassionPage = lazy(() => import("./ministries/compassion"));
+const IntercessoryPage = lazy(() => import("./ministries/intercessory"));
+const HighSchoolPage = lazy(() => import("./ministries/highSchool"));
+const WananzambePage = lazy(() => import("./ministries/wananzambe"));
+const ChurchSchoolPage = lazy(() => import("./ministries/churchSchool"));
+const PraiseAndWorshipPage = lazy(() => import("./ministries/praiseAndWorship"));
+const ChoirPage = lazy(() => import("./ministries/choir"));
+const ContactUs = lazy(() => import("./ContactUs"));
+const MessagesAdmin = lazy(() => import("./MessagesAdmin"));
+const AttendanceSessionManagement = lazy(() => import("./AttendanceSessionManagement"));
+const NewsAdmin = lazy(() => import("./NewsAdmin"));
+const Requisitions = lazy(() => import("./Requisitions"));
+const RequisitionsAdmin = lazy(() => import("./RequisitionsAdmin"));
+const CompassionCounselingPage = lazy(() => import("./CompassionCounseling"));
+const CompassionCounselingAdmin = lazy(() => import("./CompassionCounselingAdmin"));
+const PollingOfficerDashboard = lazy(() => import("./PollingOfficerDashboard"));
+const PollingOfficerManagement = lazy(() => import("./PollingOfficerManagement"));
+const MyDocs = lazy(() => import("./MyDocs"));
+const SuperAdminDocumentDashboard = lazy(() => import("./superAdminDocumentDashboard"));
+const ChristianMinds = lazy(() => import("./christianMinds"));
+const SistersFellowship = lazy(() => import("./sistersFellowship"));
+const BrothersFellowship = lazy(() => import("./brothersFellowship"));
+const DiscipleshipClass = lazy(() => import("./discipleshipClass"));
+const BestpClass = lazy(() => import("./bestpClass"));
+const ClassFellowship = lazy(() => import("./classFellowship"));
+const ChatAdmin = lazy(() => import("./ChatAdmin"));
+const Kairos = lazy(() => import("./Kairos"));
+const Focus = lazy(() => import("./Focus"));
+const Leadership = lazy(() => import("../components/Leadership"));
+const OtherCommittees = lazy(() => import("../components/OtherCommittees"));
+const CommitteeAdmin = lazy(() => import("../components/admin"));
+const DirectSignPage = lazy(() => import("./DirectSignPage"));
+const WelcomePage = lazy(() => import("./WelcomePage"));
 
 
 
@@ -68,6 +87,14 @@ export const router = createBrowserRouter([
             { path: "/financial", element: <FinancialsPage /> },
             { path: "/ministries", element: <MinistriesPage /> },
             { path: "/ets", element: <Etpage /> },
+<<<<<<< HEAD
+=======
+            { path: "/ets/rivet", element: <RivetPage /> },
+            { path: "/ets/net", element: <NetPage /> },
+            { path: "/ets/eset", element: <EsetPage /> },
+            { path: "/ets/weso", element: <WesoPage /> },
+            { path: "/ets/cet", element: <CetPage /> },
+>>>>>>> 48cfd2009546c7f66d045eb78952fc0474a4ee79
             { path: "/signIn", element: <SignIn /> },
             { path: "/signUp", element: <SignUp /> },
             { path: "/Bs", element: <Bs /> },
@@ -117,6 +144,24 @@ export const router = createBrowserRouter([
             { path: "/admin/documents", element: <SuperAdminDocumentDashboard /> },
             /*newly added Christian Minds*/
             { path: "/christianminds", element: <ChristianMinds /> },
+<<<<<<< HEAD
+=======
+            { path: "/kairos", element: <Kairos /> },
+            { path: "/focus", element: <Focus /> },
+            { path: "/leadership", element: <Leadership /> },
+            { path: "/other-committees", element: <OtherCommittees /> },
+            { path: "/committee-admin", element: <CommitteeAdmin /> },
+            { path: "/welcome", element: <WelcomePage /> },
+
+            /* Fellowships and Classes */
+            { path: "/brothersfellowship", element: <BrothersFellowship /> },
+            { path: "/sistersfellowship", element: <SistersFellowship /> },
+            { path: "/bestpClass", element: <BestpClass /> },
+            { path: "/discipleship", element: <DiscipleshipClass /> },
+            { path: "/classFellowship", element: <ClassFellowship /> },
+            { path: "/chat-admin", element: <ChatAdmin /> },
+            { path: "/sign-attendance/:shortId", element: <DirectSignPage /> },
+>>>>>>> 48cfd2009546c7f66d045eb78952fc0474a4ee79
             { path: "*", element: <NoPage /> }
         ]
     }

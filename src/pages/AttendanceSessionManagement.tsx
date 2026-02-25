@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState, useEffect } from 'react';
 import Footer from '../components/footer';
 import styles from '../styles/overseerDashboard.module.css';
@@ -5,6 +6,14 @@ import oldStyles from '../styles/attendanceSession.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getApiUrl, getBaseUrl } from '../config/environment';
 import { formatDateTime, formatSessionDuration } from '../utils/timeUtils';
+=======
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import styles from '../styles/attendanceSession.module.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { getApiUrl, getBaseUrl } from '../config/environment';
+import { formatDateTime } from '../utils/timeUtils';
+>>>>>>> 48cfd2009546c7f66d045eb78952fc0474a4ee79
 import { downloadAttendancePDF } from '../utils/attendanceReport';
 import cuLogo from '../assets/cuLogoUAR.png';
 import {
@@ -12,8 +21,8 @@ import {
     faPlay,
     faStop,
     faDownload,
-    faCalendar,
     faArrowLeft,
+<<<<<<< HEAD
     faClipboardList,
     faUserPlus,
     faEnvelope,
@@ -30,6 +39,15 @@ import WorshipCoordinatorCommitmentsView from '../components/WorshipCoordinatorC
 import MinistryRegistrationsView from '../components/MinistryRegistrationsView';
 import MinistryMessagesView from '../components/MinistryMessagesView';
 import axiosInstance from '../config/axios';
+=======
+    faLink,
+    faClock,
+    faTrash,
+    faHistory,
+    faRotateRight
+} from '@fortawesome/free-solid-svg-icons';
+import { io } from 'socket.io-client';
+>>>>>>> 48cfd2009546c7f66d045eb78952fc0474a4ee79
 
 interface AttendanceRecord {
     _id: string;
@@ -46,22 +64,27 @@ interface AttendanceRecord {
 
 interface AttendanceSession {
     _id: string;
+    title: string;
     leadershipRole: string;
     isActive: boolean;
     startTime: string;
     endTime?: string;
-    totalAttendees: number;
+    durationMinutes: number;
+    shortId: string;
+    attendanceCount: number;
 }
 
 type ViewType = 'overview' | 'attendance' | 'commitments' | 'registrations' | 'messages';
 
 const AttendanceSessionManagement: React.FC = () => {
+    const navigate = useNavigate();
     const [leadershipRole, setLeadershipRole] = useState<string>('');
-    const [attendanceSession, setAttendanceSession] = useState<AttendanceSession | null>(null);
+    const [activeSessions, setActiveSessions] = useState<AttendanceSession[]>([]);
+    const [selectedSession, setSelectedSession] = useState<AttendanceSession | null>(null);
     const [attendanceRecords, setAttendanceRecords] = useState<AttendanceRecord[]>([]);
-    const [globalActiveSession, setGlobalActiveSession] = useState<{ leadershipRole: string; isActive: boolean; startTime?: string; sessionId?: string } | null>(null);
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState('');
+<<<<<<< HEAD
     const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
     const currentView = (searchParams.get('view') as ViewType) || 'overview';
@@ -71,6 +94,16 @@ const AttendanceSessionManagement: React.FC = () => {
         registrations: 0,
         messages: 0
     });
+=======
+    const [showStartForm, setShowStartForm] = useState(false);
+    const [newSessionData, setNewSessionData] = useState({
+        title: '',
+        durationMinutes: 60,
+        ministry: 'General'
+    });
+    const [allSessions, setAllSessions] = useState<AttendanceSession[]>([]);
+    const [showArchive, setShowArchive] = useState(false);
+>>>>>>> 48cfd2009546c7f66d045eb78952fc0474a4ee79
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -85,9 +118,15 @@ const AttendanceSessionManagement: React.FC = () => {
 
         const decodedRole = decodeURIComponent(role).trim();
         setLeadershipRole(decodedRole);
+<<<<<<< HEAD
         loadSessionData(decodedRole);
         fetchStats(decodedRole);
         const refreshInterval = setInterval(() => loadSessionData(decodedRole), 5000);
+=======
+        loadSessionData();
+
+        const refreshInterval = setInterval(loadSessionData, 5000);
+>>>>>>> 48cfd2009546c7f66d045eb78952fc0474a4ee79
         return () => clearInterval(refreshInterval);
     }, [searchParams]);
 
@@ -126,54 +165,60 @@ const AttendanceSessionManagement: React.FC = () => {
 
     // Socket.IO for real-time updates
     useEffect(() => {
-        if (!attendanceSession?._id) return;
+        if (!selectedSession?._id) return;
 
         const socket = io(getBaseUrl(), { withCredentials: true });
 
         socket.on('newAttendance', (data: { record: AttendanceRecord, sessionId: string }) => {
-            if (data.sessionId === attendanceSession._id) {
+            if (data.sessionId === selectedSession._id) {
                 setAttendanceRecords(prev => {
                     if (prev.find(r => r._id === data.record._id)) return prev;
                     return [data.record, ...prev];
                 });
+                // Also update the count in activeSessions
+                setActiveSessions(prev => prev.map(s =>
+                    s._id === data.sessionId ? { ...s, attendanceCount: s.attendanceCount + 1 } : s
+                ));
             }
         });
 
         return () => {
             socket.disconnect();
         };
-    }, [attendanceSession?._id]);
+    }, [selectedSession?._id]);
 
-    const loadSessionData = async (role: string) => {
+    const loadSessionData = async () => {
         try {
             const timestamp = Date.now();
-            const response = await fetch(`${getApiUrl('attendanceSessionStatus')}?t=${timestamp}&role=${encodeURIComponent(role)}`, {
+            const response = await fetch(`${getApiUrl('attendanceSessionStatus')}?t=${timestamp}`, {
                 credentials: 'include',
                 headers: { 'Cache-Control': 'no-cache' }
             });
 
             if (response.ok) {
                 const data = await response.json();
-                if (data.session) {
-                    setGlobalActiveSession({
-                        leadershipRole: data.session.leadershipRole,
-                        isActive: data.session.isActive,
-                        startTime: data.session.startTime,
-                        sessionId: data.session._id
-                    });
+                const sessions = data.sessions || [];
+                setAllSessions(sessions);
+                setActiveSessions(sessions.filter((s: AttendanceSession) => s.isActive));
 
+<<<<<<< HEAD
                     // isOwnedByRequester lives at the TOP LEVEL of the response, not inside data.session
                     if (data.isOwnedByRequester) {
                         setAttendanceSession(data.session);
                         fetchRecords(data.session._id, role);
                     } else {
                         setAttendanceSession(null);
+=======
+                if (selectedSession) {
+                    const updated = sessions.find((s: AttendanceSession) => s._id === selectedSession._id);
+                    if (updated) {
+                        setSelectedSession(updated);
+                        fetchRecords(updated._id);
+                    } else if (selectedSession.isActive) {
+                        setSelectedSession(null);
+>>>>>>> 48cfd2009546c7f66d045eb78952fc0474a4ee79
                         setAttendanceRecords([]);
                     }
-                } else {
-                    setAttendanceSession(null);
-                    setGlobalActiveSession(null);
-                    setAttendanceRecords([]);
                 }
             }
 
@@ -182,14 +227,16 @@ const AttendanceSessionManagement: React.FC = () => {
         }
     };
 
-    const fetchRecords = async (sessionId: string, role: string) => {
+    const fetchRecords = async (sessionId: string) => {
+        if (!sessionId) return;
         try {
             const timestamp = Date.now();
-            const recordsResponse = await fetch(`${getApiUrl('attendanceRecords')}/${sessionId}?t=${timestamp}&role=${encodeURIComponent(role)}`, {
+            const recordsResponse = await fetch(`${getApiUrl('attendanceRecords')}/${sessionId}?t=${timestamp}&role=${encodeURIComponent(leadershipRole)}`, {
                 credentials: 'include'
             });
             if (recordsResponse.ok) {
                 const data = await recordsResponse.json();
+                // ONLY update records if it's still for the currently selected session
                 setAttendanceRecords(data.records || []);
             }
         } catch (err) {
@@ -198,6 +245,7 @@ const AttendanceSessionManagement: React.FC = () => {
     };
 
     const startSession = async () => {
+        if (!newSessionData.title) return setMessage('Please enter a session title');
         setLoading(true);
         try {
             // Map leadership role to ministry enum if possible
@@ -226,16 +274,27 @@ const AttendanceSessionManagement: React.FC = () => {
                 credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
+<<<<<<< HEAD
                     leadershipRole,
                     ministry,
                     title: `${leadershipRole} Session - ${new Date().toLocaleDateString()}`,
                     durationMinutes: 60
+=======
+                    title: newSessionData.title,
+                    durationMinutes: newSessionData.durationMinutes,
+                    leadershipRole,
+                    ministry: newSessionData.ministry
+>>>>>>> 48cfd2009546c7f66d045eb78952fc0474a4ee79
                 })
             });
 
             if (response.ok) {
+                const data = await response.json();
                 setMessage('Session opened successfully!');
-                setTimeout(() => loadSessionData(leadershipRole), 500);
+                setShowStartForm(false);
+                setNewSessionData({ title: '', durationMinutes: 60, ministry: 'General' });
+                loadSessionData();
+                setSelectedSession(data.session);
             } else {
                 const err = await response.json();
                 setMessage(err.message || 'Error opening session');
@@ -248,19 +307,28 @@ const AttendanceSessionManagement: React.FC = () => {
         }
     };
 
+<<<<<<< HEAD
     const closeSession = async () => {
         if (!attendanceSession?._id) {
             setMessage('No active session to close.');
             return;
         }
         if (!confirm('Are you sure you want to close the session?')) return;
+=======
+    const closeSession = async (sessionId: string) => {
+        if (!confirm('Are you sure you want to close this session?')) return;
+>>>>>>> 48cfd2009546c7f66d045eb78952fc0474a4ee79
         setLoading(true);
         try {
             const response = await fetch(getApiUrl('attendanceSessionClose'), {
                 method: 'POST',
                 credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },
+<<<<<<< HEAD
                 body: JSON.stringify({ sessionId: attendanceSession._id, leadershipRole, totalAttendees: attendanceRecords.length })
+=======
+                body: JSON.stringify({ sessionId, leadershipRole })
+>>>>>>> 48cfd2009546c7f66d045eb78952fc0474a4ee79
             });
             if (response.ok) {
                 // Immediately clear state so UI reflects closed status right away
@@ -268,11 +336,19 @@ const AttendanceSessionManagement: React.FC = () => {
                 setGlobalActiveSession(null);
                 setAttendanceRecords([]);
                 setMessage('Session closed successfully!');
+<<<<<<< HEAD
                 // Then re-poll after 1s to confirm from the server
                 setTimeout(() => loadSessionData(leadershipRole), 1000);
             } else {
                 const err = await response.json();
                 setMessage(err.message || 'Error closing session');
+=======
+                loadSessionData();
+                if (selectedSession?._id === sessionId) {
+                    setSelectedSession(null);
+                    setAttendanceRecords([]);
+                }
+>>>>>>> 48cfd2009546c7f66d045eb78952fc0474a4ee79
             }
         } catch (error) {
             setMessage('Error closing session');
@@ -282,22 +358,102 @@ const AttendanceSessionManagement: React.FC = () => {
         }
     };
 
+<<<<<<< HEAD
 
+=======
+    const deleteSession = async (sessionId: string) => {
+        if (!confirm('WARNING: This will permanently delete the session and ALL its records. Continue?')) return;
+        setLoading(true);
+        try {
+            const response = await fetch(getApiUrl('attendanceSessionDelete'), {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ sessionId })
+            });
+            if (response.ok) {
+                setMessage('Session and records deleted!');
+                loadSessionData();
+                if (selectedSession?._id === sessionId) {
+                    setSelectedSession(null);
+                    setAttendanceRecords([]);
+                }
+            }
+        } catch (error) {
+            setMessage('Error deleting session');
+        } finally {
+            setLoading(false);
+            setTimeout(() => setMessage(''), 5000);
+        }
+    };
+
+    const reopenSession = async (sessionId: string) => {
+        if (!confirm('Re-open this session for signing?')) return;
+        setLoading(true);
+        try {
+            const response = await fetch(getApiUrl('attendanceSessionReopen'), {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ sessionId })
+            });
+            if (response.ok) {
+                setMessage('Session re-opened!');
+                loadSessionData();
+            }
+        } catch (error) {
+            setMessage('Error re-opening session');
+        } finally {
+            setLoading(false);
+            setTimeout(() => setMessage(''), 5000);
+        }
+    };
+
+    const extendSession = async (sessionId: string) => {
+        const mins = prompt('How many minutes to add?', '30');
+        if (!mins || isNaN(parseInt(mins))) return;
+
+        try {
+            const response = await fetch(getApiUrl('attendanceSessionExtend'), {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ sessionId, additionalMinutes: parseInt(mins) })
+            });
+            if (response.ok) {
+                setMessage('Session extended!');
+                loadSessionData();
+            }
+        } catch (error) {
+            setMessage('Error extending session');
+        }
+    };
+
+    const copyLink = (shortId: string) => {
+        const url = `${window.location.origin}/sign-attendance/${shortId}`;
+        navigator.clipboard.writeText(url);
+        alert('Shareable link copied to clipboard!');
+    };
+>>>>>>> 48cfd2009546c7f66d045eb78952fc0474a4ee79
 
     const handleDownloadPDF = async () => {
-        if (!attendanceSession?._id) return;
+        if (!selectedSession?._id) return;
 
         setLoading(true);
         setMessage('⚙️ Preparing PDF (fetching high-quality signature data)...');
 
         try {
+<<<<<<< HEAD
             const response = await fetch(`${getApiUrl('attendanceRecords')}/${attendanceSession._id}?signatures=true&role=${encodeURIComponent(leadershipRole)}`, {
+=======
+            const response = await fetch(`${getApiUrl('attendanceRecords')}/${selectedSession._id}?signatures=true&role=${encodeURIComponent(leadershipRole)}`, {
+>>>>>>> 48cfd2009546c7f66d045eb78952fc0474a4ee79
                 credentials: 'include'
             });
 
             if (response.ok) {
                 const data = await response.json();
-                downloadAttendancePDF(data.records || [], leadershipRole, attendanceSession);
+                downloadAttendancePDF(data.records || [], leadershipRole, selectedSession as any);
                 setMessage('✅ PDF Generated!');
             } else {
                 setMessage('❌ Error fetching full signature data');
@@ -310,6 +466,7 @@ const AttendanceSessionManagement: React.FC = () => {
         }
     };
 
+<<<<<<< HEAD
     const navItems = [
         { id: 'overview', label: 'Home', icon: faHome },
         { id: 'attendance', label: 'Attendance', icon: faUsers },
@@ -432,6 +589,61 @@ const AttendanceSessionManagement: React.FC = () => {
                 <div className={styles.sectionContainer}>
                     <div className={styles.sectionHeader}>
                         <h3>Session Summary</h3>
+=======
+    return (
+        <>
+            <div className={styles.pageWrapper}>
+                <div className={styles.container}>
+                    <div className={styles.header}>
+                        <button onClick={() => navigate('/worship-docket-admin')} className={styles.backButton}>
+                            <FontAwesomeIcon icon={faArrowLeft} /> Back to Dashboard
+                        </button>
+                        <h1><FontAwesomeIcon icon={faUsers} /> Attendance Management</h1>
+                        <p>Centralized control for all church meeting sessions</p>
+                    </div>
+
+                    {message && (
+                        <div className={`${styles.message} ${message.includes('error') || message.includes('❌') ? styles.errorMessage : ''}`}>
+                            {message}
+                        </div>
+                    )}
+
+                    <div className={styles.adminActions}>
+                        {!showStartForm ? (
+                            <button onClick={() => setShowStartForm(true)} className={styles.startButton}>
+                                <FontAwesomeIcon icon={faPlay} /> Create New Attendance Session
+                            </button>
+                        ) : (
+                            <div className={styles.startForm}>
+                                <h3>Start New Meeting</h3>
+                                <div className={styles.formGroup}>
+                                    <label>Session Title (e.g., Sunday Service)</label>
+                                    <input
+                                        type="text"
+                                        className={styles.formInput}
+                                        value={newSessionData.title}
+                                        onChange={(e) => setNewSessionData({ ...newSessionData, title: e.target.value })}
+                                        placeholder="What meeting is this?"
+                                    />
+                                </div>
+                                <div className={styles.formGroup}>
+                                    <label>Duration (Minutes)</label>
+                                    <input
+                                        type="number"
+                                        className={styles.formInput}
+                                        value={newSessionData.durationMinutes}
+                                        onChange={(e) => setNewSessionData({ ...newSessionData, durationMinutes: parseInt(e.target.value) || 0 })}
+                                    />
+                                </div>
+                                <div className={styles.formActions}>
+                                    <button onClick={startSession} disabled={loading} className={styles.submitButton}>
+                                        {loading ? 'Starting...' : 'Start Session Now'}
+                                    </button>
+                                    <button onClick={() => setShowStartForm(false)} className={styles.cancelButton}>Cancel</button>
+                                </div>
+                            </div>
+                        )}
+>>>>>>> 48cfd2009546c7f66d045eb78952fc0474a4ee79
                     </div>
                     {attendanceSession?.isActive ? (
                         <div className="space-y-4">
@@ -452,6 +664,7 @@ const AttendanceSessionManagement: React.FC = () => {
                                 <span className="text-xl font-bold">{attendanceRecords.length}</span>
                             </div>
 
+<<<<<<< HEAD
                             <div className="p-4 bg-purple-50 rounded-lg border border-purple-100 mt-4">
                                 <h4 className="text-purple-900 font-bold mb-2">Share With Members</h4>
                                 <div className="space-y-2">
@@ -472,10 +685,152 @@ const AttendanceSessionManagement: React.FC = () => {
                         <div className="text-center py-12 text-muted">
                             <p>No active session at the moment.</p>
                             <button onClick={startSession} className="mt-4 text-primary font-bold hover:underline">Start Session Now</button>
+=======
+                    <div className={styles.sessionsOverview}>
+                        <div className={styles.sectionHeader}>
+                            <h2>Active Sessions</h2>
+                            <div className={styles.headerActions}>
+                                <span className={styles.badge}>{activeSessions.length}</span>
+                                <button
+                                    className={`${styles.archiveToggle} ${showArchive ? styles.activeToggle : ''}`}
+                                    onClick={() => setShowArchive(!showArchive)}
+                                    title="Session Archive"
+                                >
+                                    <FontAwesomeIcon icon={faHistory} /> {showArchive ? 'Hide Archive' : 'Show Archive'}
+                                </button>
+                            </div>
+                        </div>
+                        {activeSessions.length === 0 ? (
+                            <div className={styles.emptyText}>
+                                <FontAwesomeIcon icon={faClock} style={{ fontSize: '2rem', marginBottom: '1rem', opacity: 0.3 }} />
+                                <p>No sessions currently active.</p>
+                            </div>
+                        ) : (
+                            <div className={styles.sessionList}>
+                                {activeSessions.map(session => (
+                                    <div
+                                        key={session._id}
+                                        className={`${styles.sessionPill} ${selectedSession?._id === session._id ? styles.selectedPill : ''}`}
+                                        onClick={() => {
+                                            setSelectedSession(session);
+                                            fetchRecords(session._id);
+                                        }}
+                                    >
+                                        <div className={styles.pillInfo}>
+                                            <h4>{session.title}</h4>
+                                            <div className={styles.pillMeta}>
+                                                <span>{session.attendanceCount} signed in</span>
+                                                <span className={styles.timeTag}>
+                                                    <FontAwesomeIcon icon={faClock} /> {formatDateTime(session.startTime).split(',')[1]}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div className={styles.pillActions}>
+                                            <button onClick={(e) => { e.stopPropagation(); copyLink(session.shortId); }} title="Copy Link"><FontAwesomeIcon icon={faLink} /></button>
+                                            <button onClick={(e) => { e.stopPropagation(); extendSession(session._id); }} title="Extend Time"><FontAwesomeIcon icon={faClock} /></button>
+                                            <button onClick={(e) => { e.stopPropagation(); closeSession(session._id); }} className={styles.stopIcon} title="Close Session"><FontAwesomeIcon icon={faStop} /></button>
+                                            <button onClick={(e) => { e.stopPropagation(); deleteSession(session._id); }} className={styles.deleteIcon} title="Delete Full Session"><FontAwesomeIcon icon={faTrash} /></button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
+                    {showArchive && (
+                        <div className={styles.archiveSection}>
+                            <div className={styles.sectionHeader}>
+                                <h2>Previous Attendances</h2>
+                                <span className={styles.badge}>{allSessions.filter(s => !s.isActive).length}</span>
+                            </div>
+                            <div className={styles.archiveList}>
+                                {allSessions.filter(s => !s.isActive).length === 0 ? (
+                                    <p className={styles.emptyText}>No historical records found.</p>
+                                ) : (
+                                    allSessions.filter(s => !s.isActive).map(session => (
+                                        <div
+                                            key={session._id}
+                                            className={`${styles.archivePill} ${selectedSession?._id === session._id ? styles.selectedPill : ''}`}
+                                            onClick={() => {
+                                                setSelectedSession(session);
+                                                fetchRecords(session._id);
+                                            }}
+                                        >
+                                            <div className={styles.pillInfo}>
+                                                <h4>{session.title}</h4>
+                                                <div className={styles.pillMeta}>
+                                                    <span>{formatDateTime(session.startTime).split(',')[0]}</span>
+                                                    <span>{session.attendanceCount} members</span>
+                                                </div>
+                                            </div>
+                                            <div className={styles.pillActions}>
+                                                <button onClick={(e) => { e.stopPropagation(); reopenSession(session._id); }} title="Re-open Session"><FontAwesomeIcon icon={faRotateRight} /></button>
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setSelectedSession(session);
+                                                        handleDownloadPDF();
+                                                    }}
+                                                    className={styles.downloadIcon}
+                                                    title="Quick PDF Export"
+                                                >
+                                                    <FontAwesomeIcon icon={faDownload} />
+                                                </button>
+                                                <button onClick={(e) => { e.stopPropagation(); deleteSession(session._id); }} className={styles.deleteIcon} title="Delete Record"><FontAwesomeIcon icon={faTrash} /></button>
+                                            </div>
+                                        </div>
+                                    ))
+                                )}
+                            </div>
+                        </div>
+                    )}
+
+                    {selectedSession && (
+                        <div className={styles.recordsSection}>
+                            <div className={styles.recordsHeader}>
+                                <div>
+                                    <h2>{selectedSession.title}</h2>
+                                    <p>{attendanceRecords.length} attendees recorded</p>
+                                </div>
+                                <button onClick={handleDownloadPDF} className={styles.downloadButton} disabled={loading}>
+                                    <FontAwesomeIcon icon={faDownload} /> {loading ? 'Processing...' : 'Export PDF'}
+                                </button>
+                            </div>
+                            <div className={styles.tableWrapper}>
+                                <table className={styles.recordsTable}>
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Reg No</th>
+                                            <th>Course</th>
+                                            <th>Time</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {attendanceRecords.map(record => (
+                                            <tr key={record._id}>
+                                                <td><strong>{record.userName}</strong></td>
+                                                <td><span className={styles.typeBadge}>{record.userType || 'student'}</span></td>
+                                                <td><span className={styles.regBadge}>{record.regNo}</span></td>
+                                                <td><span className={styles.courseTag}>{record.course || 'N/A'}</span></td>
+                                                <td className={styles.timeCell}>{record.signedAt ? formatDateTime(record.signedAt).split(',')[1] : 'N/A'}</td>
+                                            </tr>
+                                        ))}
+                                        {attendanceRecords.length === 0 && (
+                                            <tr>
+                                                <td colSpan={5} className={styles.noRecords}>No one has signed in yet.</td>
+                                            </tr>
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+>>>>>>> 48cfd2009546c7f66d045eb78952fc0474a4ee79
                         </div>
                     )}
                 </div>
             </div>
+<<<<<<< HEAD
         </div>
     );
 
@@ -664,6 +1019,9 @@ const AttendanceSessionManagement: React.FC = () => {
                 />
             )}
         </div>
+=======
+        </>
+>>>>>>> 48cfd2009546c7f66d045eb78952fc0474a4ee79
     );
 };
 

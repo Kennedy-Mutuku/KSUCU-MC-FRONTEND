@@ -5,8 +5,6 @@ import { Link } from 'react-router-dom';
 import styles from '../styles/signup.module.css'; 
 import { ChevronDown } from 'lucide-react';
 import { getApiUrl } from '../config/environment';
-import UniversalHeader from '../components/UniversalHeader';
-import Footer from '../components/footer';
 
 type FormData = {
   username: string;
@@ -151,7 +149,6 @@ const AdmissionAdmin: React.FC = () => {
 
   return (
     <>
-      <UniversalHeader />
       <div className={styles.body}>
       <div className={styles['container']}>
 
@@ -274,7 +271,6 @@ const AdmissionAdmin: React.FC = () => {
         </div>
 
       </div>
-      <Footer />
     </>
   );
 };

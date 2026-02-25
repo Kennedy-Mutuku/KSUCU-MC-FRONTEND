@@ -14,7 +14,7 @@ export const downloadAttendancePDF = (records: any[], leadershipRole: string, se
         <!DOCTYPE html>
         <html>
         <head>
-            <title>KSUCU - ${leadershipRole} - Attendance Report</title>
+            <title>KSUCU - ${session?.title || leadershipRole} - Attendance Report</title>
             <style>
                 @page { size: A4; margin: 10mm; }
                 body { font-family: 'Arial', sans-serif; margin: 0; padding: 0; font-size: 12px; }
@@ -68,7 +68,7 @@ export const downloadAttendancePDF = (records: any[], leadershipRole: string, se
         </head>
         <body>
             <img src="${window.location.origin}/img/letterhead.png" class="letterhead-img" alt="KSUCU-MC Letterhead" />
-            <div class="header"><h2>${leadershipRole} - Attendance Report</h2></div>
+            <div class="header"><h2>${session?.title || leadershipRole} - Attendance Report</h2></div>
             <div class="session-info">
                 <div><strong>Leader:</strong> ${leadershipRole}</div>
                 <div>

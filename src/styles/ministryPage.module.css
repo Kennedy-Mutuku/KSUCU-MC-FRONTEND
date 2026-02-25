@@ -1,5 +1,6 @@
 @import url(global.css);
 
+<<<<<<< HEAD
 /* ====== GLOBAL CONTAINER ====== */
 /* ===============================
    HERO SECTION (More Alive)
@@ -531,6 +532,78 @@
 
 .qualitiesCard h3 {
   color: #8B1C3F;
+=======
+/* ministryPage.module.css - Professional Version */
+
+/* Container & Global Setup */
+.container {
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+  background: #ffffff;
+  color: #333333;
+}
+
+/* Hero Section: Compact full-width page header */
+.heroSection {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 350px;
+  width: 100%;
+  margin-top: 0;
+  padding: 0 5%;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(115, 0, 81, 0.6)), var(--hero-bg);
+  background-size: cover;
+  background-position: center 30%;
+  color: #ffffff;
+  text-align: center;
+}
+
+.heroContent {
+  z-index: 2;
+  max-width: 700px;
+}
+
+.title {
+  font-size: 2.8rem;
+  font-weight: 800;
+  margin-bottom: 12px;
+  text-shadow: 0 3px 8px rgba(0, 0, 0, 0.6);
+  line-height: 1.2;
+}
+
+.subtitle {
+  font-size: 1.15rem;
+  opacity: 0.95;
+  font-weight: 400;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+@media (max-width: 768px) {
+  .heroSection {
+    height: 280px;
+    padding: 0 6%;
+  }
+  .title {
+    font-size: 1.9rem;
+  }
+  .subtitle {
+    font-size: 1rem;
+  }
+}
+
+/* Content Sections */
+.contentSection {
+  padding: 80px 10%;
+  overflow-x: hidden;
+}
+
+.contentSection h2, 
+.contentSection h3 {
+  color: #730051; /* Your requested purple */
+  font-weight: 700;
+>>>>>>> 48cfd2009546c7f66d045eb78952fc0474a4ee79
   margin-bottom: 25px;
   font-size: 1.5rem;
   font-weight: 700;

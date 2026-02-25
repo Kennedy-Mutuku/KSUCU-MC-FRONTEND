@@ -7,7 +7,7 @@ interface Forum {
   icon: React.ElementType;
   description: string;
   details: string;
-  link?: string; // Added optional link property
+  link?: string;
 }
 
 const forums: Forum[] = [
@@ -45,6 +45,7 @@ const forums: Forum[] = [
     icon: Globe,
     description: 'Missions and world view',
     details: 'The Kairos Course is a missions training program that will expand your worldview and equip you to participate in God\'s global mission. Join us for this transformative experience.',
+    link: '/kairos',
   },
   {
     id: 'christianminds',
@@ -60,6 +61,7 @@ const forums: Forum[] = [
     icon: Rocket,
     description: 'Annual student gatherings',
     details: 'FOCUS conferences bring together Christian students from across the region for worship, teaching, and fellowship. These events are life-changing experiences that strengthen faith and build community.',
+    link: '/focus',
   },
 ];
 
@@ -78,12 +80,12 @@ const ForumsSection = () => {
   }, [selectedForum]);
 
   // Define base classes for the card to ensure identical styling for both button and link
-  const cardClasses = "block w-full group p-6 bg-gray-50 rounded-xl border border-gray-200 text-left transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-purple-200";
+  const cardClasses = "block w-full group p-3 md:p-6 bg-gray-50 rounded-xl border border-gray-200 text-left transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-purple-200";
 
   return (
-    <section className="py-16 md:py-20 bg-white">
+    <section className="py-6 md:py-20 bg-white">
       <div className="max-w-6xl mx-auto px-4 md:px-6">
-        <div className="text-center mb-12">
+        <div className="text-center mb-3 md:mb-12">
           <span className="inline-block px-3 py-1 bg-purple-100 text-[#730051] text-sm font-medium rounded-full mb-4">
             Get Involved
           </span>
@@ -95,20 +97,21 @@ const ForumsSection = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-2.5 md:gap-6">
           {forums.map((forum) => {
             const Icon = forum.icon;
 
             // Render content inside the card
             const cardContent = (
               <>
-                <div className="w-12 h-12 flex items-center justify-center bg-purple-100 rounded-xl mb-4 group-hover:bg-[#730051] transition-colors duration-300">
-                  <Icon size={24} className="text-[#730051] group-hover:text-white" />
+                <div className="w-8 h-8 md:w-12 md:h-12 flex items-center justify-center bg-purple-100 rounded-lg md:rounded-xl mb-2 md:mb-4 group-hover:bg-[#730051] transition-colors duration-300">
+                  <Icon size={16} className="text-[#730051] group-hover:text-white md:hidden" />
+                  <Icon size={24} className="text-[#730051] group-hover:text-white hidden md:block" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                <h3 className="text-sm md:text-lg font-semibold text-gray-800 mb-1 md:mb-2">
                   {forum.title}
                 </h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-[11px] md:text-sm text-gray-600">
                   {forum.description}
                 </p>
               </>

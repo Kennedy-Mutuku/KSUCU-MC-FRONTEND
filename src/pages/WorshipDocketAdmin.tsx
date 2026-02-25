@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import UniversalHeader from '../components/UniversalHeader';
-import Footer from '../components/footer';
 import ModernNewsDisplay from '../components/ModernNewsDisplay';
 import styles from '../styles/worshipDocketAdmin.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -13,7 +11,8 @@ import {
     faBox,
     faBookOpen,
     faHeart,
-    faSignOutAlt
+    faSignOutAlt,
+    faComments
 } from '@fortawesome/free-solid-svg-icons';
 
 const WorshipDocketAdmin: React.FC = () => {
@@ -56,6 +55,7 @@ const WorshipDocketAdmin: React.FC = () => {
         setTimeout(() => setMessage(''), 3000);
     };
 
+<<<<<<< HEAD
     const leadershipRoles = [
         'Chairperson',
         'Vice Chair',
@@ -69,23 +69,23 @@ const WorshipDocketAdmin: React.FC = () => {
         'Missions Coordinator',
         'Boards Coordinator'
     ];
+=======
+>>>>>>> 48cfd2009546c7f66d045eb78952fc0474a4ee79
 
-    const handleRoleSelection = (role: string) => {
+    const handleRoleSelection = () => {
+        const role = 'Executive Admin';
         setSelectedRole(role);
-        setMessage(`Selected: ${role} - Redirecting to attendance management...`);
+        setMessage(`Redirecting to attendance management...`);
         setTimeout(() => {
-            // Store authentication state
             sessionStorage.setItem('adminAuth', 'Overseer');
             sessionStorage.setItem('leadershipRole', role);
-            // This will redirect to the session management page
             navigate(`/attendance-session-management?role=${encodeURIComponent(role)}`);
-        }, 1500);
+        }, 800);
     };
 
     if (!authenticated) {
         return (
             <>
-                <UniversalHeader />
                 <div className={styles.container}>
                     <div className={styles.loginCard}>
                         <h2>Leadership Admin</h2>
@@ -116,14 +116,12 @@ const WorshipDocketAdmin: React.FC = () => {
                         </button>
                     </div>
                 </div>
-                <Footer />
             </>
         );
     }
 
     return (
         <>
-            <UniversalHeader />
             <div className={styles.container}>
                 <div className={styles.adminHeader}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
@@ -132,7 +130,7 @@ const WorshipDocketAdmin: React.FC = () => {
                                 <FontAwesomeIcon icon={faUsers} />
                                 Leadership Attendance Administration
                             </h1>
-                            <p>Select your leadership role to manage centralized attendance</p>
+                            <p>Centralized management for all church attendance sessions</p>
                         </div>
                         <button
                             onClick={handleLogout}
@@ -293,22 +291,40 @@ const WorshipDocketAdmin: React.FC = () => {
                         <div className={styles.functionContent}>
                             <h3>
                                 <FontAwesomeIcon icon={faUsers} />
-                                Leadership Attendance Management
+                                Multi-Session Attendance
                             </h3>
-                            <p>Select your leadership role to access centralized attendance management</p>
-                            <div className={styles.leadershipRoleGrid}>
-                                {leadershipRoles.map((role) => (
-                                    <button
-                                        key={role}
-                                        className={styles.leadershipRoleButton}
-                                        onClick={() => handleRoleSelection(role)}
-                                        disabled={selectedRole !== ''}
-                                    >
-                                        {role}
-                                        <FontAwesomeIcon icon={faArrowRight} className={styles.arrowIcon} />
-                                    </button>
-                                ))}
-                            </div>
+                            <p>Create and manage multiple shareable attendance sessions with custom titles and durations.</p>
+                            <button
+                                className={styles.functionButton}
+                                onClick={handleRoleSelection}
+                                disabled={selectedRole !== ''}
+                            >
+                                Open Attendance Manager
+                                <FontAwesomeIcon icon={faArrowRight} className={styles.arrowIcon} />
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* 7. Community Chat Management */}
+                    <div className={styles.functionCard}>
+                        <div className={styles.functionNumber}>7</div>
+                        <div className={styles.functionContent}>
+                            <h3>
+                                <FontAwesomeIcon icon={faComments} />
+                                Community Chat Management
+                            </h3>
+                            <p>Manage the KSUCU-MC community chat: moderate messages, ban users, and oversee chat activity</p>
+                            <button
+                                className={styles.functionButton}
+                                onClick={() => {
+                                    // Store authentication state
+                                    sessionStorage.setItem('adminAuth', 'Overseer');
+                                    navigate('/chat-admin');
+                                }}
+                            >
+                                Chat Admin
+                                <FontAwesomeIcon icon={faArrowRight} className={styles.arrowIcon} />
+                            </button>
                         </div>
                     </div>
 
@@ -340,7 +356,6 @@ const WorshipDocketAdmin: React.FC = () => {
                     </div>
                 )}
             </div>
-            <Footer />
         </>
     );
 };

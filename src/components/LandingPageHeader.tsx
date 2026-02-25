@@ -93,7 +93,7 @@ const LandingPageHeader = () => {
     const checkMobileView = () => {
       setIsMobileView(window.innerWidth <= 767);
     };
-    
+
     checkMobileView(); // Initial check
     window.addEventListener('resize', checkMobileView);
     window.addEventListener('focus', handleFocus);
@@ -108,14 +108,14 @@ const LandingPageHeader = () => {
     };
 
   }, [images.length]);
-  
+
   // Cleanup effect for dropdown state
   useEffect(() => {
     if (!isDropdownOpen) {
       document.body.classList.remove('quick-links-open');
     }
   }, [isDropdownOpen]);
-  
+
   // Click outside handler for quick access
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -123,14 +123,14 @@ const LandingPageHeader = () => {
         const target = event.target as Element;
         const quickLinksBtn = document.querySelector('.Quick-links-btn');
         const quickAccess = document.querySelector('.main-quick--links');
-        
-        if (quickLinksBtn && !quickLinksBtn.contains(target) && 
-            quickAccess && !quickAccess.contains(target)) {
+
+        if (quickLinksBtn && !quickLinksBtn.contains(target) &&
+          quickAccess && !quickAccess.contains(target)) {
           setIsDropdownOpen(false);
         }
       }
     };
-    
+
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
@@ -139,7 +139,7 @@ const LandingPageHeader = () => {
 
   const fetchUserData = async () => {
     console.log('Header: Fetching user data...');
-    
+
     // Offline check disabled - always try to fetch
     // if (!navigator.onLine) {
     //     console.log('Header: User offline');
@@ -148,54 +148,54 @@ const LandingPageHeader = () => {
     // }
 
     window.scrollTo({
-        top: 0,
-        behavior: 'auto'
+      top: 0,
+      behavior: 'auto'
     });
-    
+
     try {
-        setgeneralLoading(true)
-        document.body.style.overflow = 'hidden';            
+      setgeneralLoading(true)
+      document.body.style.overflow = 'hidden';
 
-        const apiUrl = getApiUrl('users');
-        console.log('Header: Fetching from:', apiUrl);
+      const apiUrl = getApiUrl('users');
+      console.log('Header: Fetching from:', apiUrl);
 
-        const response = await fetch(apiUrl, {
-            credentials: 'include'
-        });
+      const response = await fetch(apiUrl, {
+        credentials: 'include'
+      });
 
-        console.log('Header: Response status:', response.status);
-        const data = await response.json();
-        console.log('Header: Response data:', data);
-        
-        if (!response.ok) {
-            throw new Error(data.message || 'Failed to fetch user data');
-        }  
+      console.log('Header: Response status:', response.status);
+      const data = await response.json();
+      console.log('Header: Response data:', data);
 
-        if (!data.phone || !data.reg || !data.yos) {
-            console.log('...navigating to update details')
-            navigate('/changeDetails');
-            return;
-        }
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to fetch user data');
+      }
 
-        const firstName = data.username.split(' ')[0];
+      if (!data.phone || !data.reg || !data.yos) {
+        console.log('...navigating to update details')
+        navigate('/changeDetails');
+        return;
+      }
 
-        const finalUserData = {
-            ...data,
-            username: firstName
-        };
-        console.log('Header: Setting user data:', finalUserData);
-        setUserData(finalUserData);
-        
+      const firstName = data.username.split(' ')[0];
+
+      const finalUserData = {
+        ...data,
+        username: firstName
+      };
+      console.log('Header: Setting user data:', finalUserData);
+      setUserData(finalUserData);
+
     } catch (error) {
-        if (error instanceof Error && error.message === 'Authentication failed: jwt expired') {
-            navigate('/');
-        } else {
-            console.error('Header: Error fetching user data:', error);
-        }
-        
-    }finally{    
-        document.body.style.overflow = '';  
-        setgeneralLoading(false);      
+      if (error instanceof Error && error.message === 'Authentication failed: jwt expired') {
+        navigate('/');
+      } else {
+        console.error('Header: Error fetching user data:', error);
+      }
+
+    } finally {
+      document.body.style.overflow = '';
+      setgeneralLoading(false);
     }
   };
 
@@ -217,7 +217,7 @@ const LandingPageHeader = () => {
       setNewsData(data);
     } catch (error: any) {
       console.log(error)
-    }finally{
+    } finally {
       setgeneralLoading(false)
     }
   };
@@ -226,10 +226,10 @@ const LandingPageHeader = () => {
   const calculateCountdown = (eventDate: string, eventTime: string): CountdownTime | null => {
     try {
       console.log('Calculating countdown for:', eventDate, eventTime);
-      
+
       // Parse the date more robustly
       let eventDateTime: Date;
-      
+
       // Handle different date formats
       if (eventTime && eventTime !== '') {
         // Try different formats for combining date and time
@@ -240,7 +240,7 @@ const LandingPageHeader = () => {
           // Try standard format
           eventDateTime = new Date(`${eventDate}T${eventTime}`);
         }
-        
+
         // If that fails, try parsing separately
         if (isNaN(eventDateTime.getTime())) {
           eventDateTime = new Date(eventDate);
@@ -254,18 +254,18 @@ const LandingPageHeader = () => {
         eventDateTime = new Date(eventDate);
         eventDateTime.setHours(12, 0, 0, 0);
       }
-      
+
       console.log('Parsed event date:', eventDateTime);
-      
+
       // Validate the date
       if (isNaN(eventDateTime.getTime())) {
         console.error('Invalid date/time format:', eventDate, eventTime);
         return { days: 0, hours: 0, minutes: 0, seconds: 0 };
       }
-      
+
       const now = new Date();
       const difference = eventDateTime.getTime() - now.getTime();
-      
+
       console.log('Time difference:', difference, 'ms');
 
       if (difference <= 0) {
@@ -280,7 +280,7 @@ const LandingPageHeader = () => {
 
       const result = { days, hours, minutes, seconds };
       console.log('Countdown result:', result);
-      
+
       // Ensure no NaN values
       if (isNaN(days) || isNaN(hours) || isNaN(minutes) || isNaN(seconds)) {
         console.error('NaN values detected in countdown');
@@ -320,23 +320,23 @@ const LandingPageHeader = () => {
 
   const handleLogout = async () => {
     setgeneralLoading(true)
-      try {
-          const response = await fetch(getApiUrl('usersLogout'), {
-              method: 'POST',
-              credentials: 'include'
-          });
+    try {
+      const response = await fetch(getApiUrl('usersLogout'), {
+        method: 'POST',
+        credentials: 'include'
+      });
 
-          if (!response.ok) {
-              throw new Error('Logout failed');
-          }
-          setUserData(null);
-          navigate('/signIn');
-      } catch (error) {
-          console.error('Error during logout:');
-          console.log('An error occurred during logout');
-      }finally{
-        setgeneralLoading(false)
+      if (!response.ok) {
+        throw new Error('Logout failed');
       }
+      setUserData(null);
+      navigate('/signIn');
+    } catch (error) {
+      console.error('Error during logout:');
+      console.log('An error occurred during logout');
+    } finally {
+      setgeneralLoading(false)
+    }
   };
 
   const toggleDropdown = () => {
@@ -348,7 +348,7 @@ const LandingPageHeader = () => {
     //   });
     // }
     setIsDropdownOpen(!isDropdownOpen);
-    
+
     // Toggle body class for desktop quick access
     if (!isDropdownOpen) {
       document.body.classList.add('quick-links-open');
@@ -374,9 +374,9 @@ const LandingPageHeader = () => {
   }
 
   function navigateMedia() {
-    if(userData){
+    if (userData) {
       navigate('/media')
-    }else{
+    } else {
       console.log('Please log in to access Media');
       setTimeout(() => {
         navigate('/signIn');
@@ -386,9 +386,9 @@ const LandingPageHeader = () => {
 
 
   function handleProtectedLink(path: string, linkName: string) {
-    if(userData){
+    if (userData) {
       navigate(path);
-    }else{
+    } else {
       console.log(`Please log in to access ${linkName}`);
       setTimeout(() => {
         navigate('/signIn');
@@ -431,8 +431,47 @@ const LandingPageHeader = () => {
             <div className={styles.title}>
               <p className={styles['title-text']}>
                 <span className={styles['full-title']}>Kisii University Christian Union</span>
-                <span className={styles['short-title']}>Kisii Uni CU</span>
+                <span className={styles['short-title']}>KSUCU-MC</span>
               </p>
+
+              {/* Mobile username display - visible only on mobile */}
+              {userData && (
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginTop: '4px'
+                }} className={styles['mobile-user-badge']}>
+                  <span style={{
+                    color: '#ffffff',
+                    fontSize: '11px',
+                    fontWeight: '700',
+                    backgroundColor: 'rgba(115, 0, 81, 0.95)',
+                    padding: '4px 10px',
+                    borderRadius: '12px',
+                    border: '1.5px solid rgba(255,255,255,0.4)',
+                    boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
+                    whiteSpace: 'nowrap'
+                  }}>
+                    {userData.profilePhoto ? (
+                      <img
+                        src={userData.profilePhoto}
+                        alt="Profile"
+                        style={{
+                          width: '16px',
+                          height: '16px',
+                          borderRadius: '50%',
+                          border: '1px solid white',
+                          marginRight: '5px'
+                        }}
+                      />
+                    ) : (
+                      <span style={{ marginRight: '5px' }}>👤</span>
+                    )}
+                    {userData.username}
+                  </span>
+                </div>
+              )}
 
               {/* Desktop icons */}
               <div className={styles['nav-one--hidden']}>
@@ -443,7 +482,7 @@ const LandingPageHeader = () => {
                 </div>
 
                 <div className={styles['Quick-links-btn']} onClick={toggleDropdown} >
-                  <a  className={styles['nav-link-quick-link']}>
+                  <a className={styles['nav-link-quick-link']}>
                     Quick Links
                   </a>
                   <button className={styles['dropdown-toggle']} type="button" >
@@ -452,9 +491,25 @@ const LandingPageHeader = () => {
                   {/* No dropdown on desktop - using main quick access section instead */}
                 </div>
 
-                <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', minWidth: '80px', minHeight: '50px', justifyContent: 'center'}} onClick={userData ? handleRedirectToUserInfo : handleRedirectToLogin}>
-                  <FontAwesomeIcon className={`${styles['user-icon']} `} icon={userData ? faUser : faUserLock} />
-                  <span style={{color: '#ffffff', fontSize: '12px', marginTop: '3px', fontWeight: '600', textShadow: '0 1px 3px rgba(0,0,0,0.5)', whiteSpace: 'nowrap', backgroundColor: 'rgba(0,0,0,0.4)', padding: '1px 4px', borderRadius: '3px', maxWidth: '70px', overflow: 'hidden', textOverflow: 'ellipsis'}}>
+                {/* Desktop User Icon / Photo */}
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', minWidth: '80px', minHeight: '50px', justifyContent: 'center' }} onClick={userData ? handleRedirectToUserInfo : handleRedirectToLogin}>
+                  {userData && userData.profilePhoto ? (
+                    <img
+                      src={userData.profilePhoto}
+                      alt="Profile"
+                      style={{
+                        width: '32px',
+                        height: '32px',
+                        borderRadius: '50%',
+                        objectFit: 'cover',
+                        border: '2px solid #ffffff',
+                        boxShadow: '0 2px 5px rgba(0,0,0,0.2)'
+                      }}
+                    />
+                  ) : (
+                    <FontAwesomeIcon className={`${styles['user-icon']} `} icon={userData ? faUser : faUserLock} />
+                  )}
+                  <span style={{ color: '#ffffff', fontSize: '12px', marginTop: '3px', fontWeight: '600', textShadow: '0 1px 3px rgba(0,0,0,0.5)', whiteSpace: 'nowrap', backgroundColor: 'rgba(0,0,0,0.4)', padding: '1px 4px', borderRadius: '3px', maxWidth: '70px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     {userData ? userData.username || 'User' : 'Log In'}
                   </span>
                 </div>
@@ -468,9 +523,24 @@ const LandingPageHeader = () => {
             </div>
 
             <div className={`${styles['user-icon-container']} `}>
-              <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', minWidth: '60px', height: '60px', justifyContent: 'center'}} onClick={userData ? handleRedirectToUserInfo : handleRedirectToLogin}>
-                <FontAwesomeIcon className={`${styles['user-icon']} `} icon={userData ? faUser : faUserLock} />
-                <span style={{color: '#ffffff', fontSize: '10px', marginTop: '2px', fontWeight: '600', textShadow: '0 1px 3px rgba(0,0,0,0.5)', whiteSpace: 'nowrap', backgroundColor: 'rgba(0,0,0,0.4)', padding: '1px 3px', borderRadius: '3px', maxWidth: '55px', overflow: 'hidden', textOverflow: 'ellipsis'}}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', minWidth: '70px', height: '60px', justifyContent: 'center' }} onClick={userData ? handleRedirectToUserInfo : handleRedirectToLogin}>
+                {userData && userData.profilePhoto ? (
+                  <img
+                    src={userData.profilePhoto}
+                    alt="Profile"
+                    style={{
+                      width: '32px',
+                      height: '32px',
+                      borderRadius: '50%',
+                      objectFit: 'cover',
+                      border: '2px solid #ffffff',
+                      boxShadow: '0 2px 5px rgba(0,0,0,0.2)'
+                    }}
+                  />
+                ) : (
+                  <FontAwesomeIcon className={`${styles['user-icon']} `} icon={userData ? faUser : faUserLock} />
+                )}
+                <span style={{ color: '#ffffff', fontSize: '13px', marginTop: '3px', fontWeight: '700', textShadow: '0 2px 4px rgba(0,0,0,0.7)', whiteSpace: 'nowrap', backgroundColor: 'rgba(115, 0, 81, 0.9)', padding: '3px 8px', borderRadius: '6px', maxWidth: '80px', overflow: 'hidden', textOverflow: 'ellipsis', border: '1.5px solid rgba(255,255,255,0.3)' }}>
                   {userData ? userData.username || 'User' : 'Log In'}
                 </span>
               </div>
@@ -499,7 +569,7 @@ const LandingPageHeader = () => {
 
           {(isDropdownOpen || isMobileNavOpen) && (
             <>
-              <div 
+              <div
                 style={{
                   position: 'fixed',
                   top: 0,
@@ -537,51 +607,51 @@ const LandingPageHeader = () => {
                 animation: 'modalSlideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
                 border: '1px solid rgba(115, 0, 81, 0.08)'
               }}>
-            <a onClick={navigateMedia} className={styles['quick-item--link']}>
-              Media
-            </a>
-            <div onClick={() => handleProtectedLink('/save', 'Win a Soul')} className={styles['quick-item--link']}>
-              Win a Soul
-            </div>
-            <div onClick={() => handlePublicLink('/Bs')} className={styles['quick-item--link']}>
-              Bible Study
-            </div>
-            <div onClick={() => handlePublicLink('/library')} className={styles['quick-item--link']}>
-              Library
-            </div>
-            <div onClick={() => handleProtectedLink('/financial', 'Financials')} className={styles['quick-item--link']}>
-              Financials
-            </div>
-            <div onClick={() => handleProtectedLink('/my-docs', 'My Docs')} className={styles['quick-item--link']}>
-              My Docs
-            </div>
-            <a
-              href="/pdfs/constitution.pdf"
-              download="constitution.pdf"
-              className={styles['quick-item--link']}
-            >
-              <FontAwesomeIcon icon={faDownload} style={{ marginRight: '8px' }} />
-              Constitution
-            </a>
-            <div onClick={() => handlePublicLink('/requisitions')} className={styles['quick-item--link']}>
-              Requisitions
-            </div>
-            <div onClick={() => handlePublicLink('/compassion-counseling')} className={styles['quick-item--link']}>
-              Compassion & Counseling
-            </div>
-            <div onClick={handleAboutUsClick} className={styles['quick-item--link']}>
-              About Us
-            </div>
-            <div onClick={() => handlePublicLink('/recomendations')} className={styles['quick-item--link']}>
-              <MessageSquare size={16} style={{ marginRight: '6px', display: 'inline' }} />
-              Feedback
-            </div>
+                <a onClick={navigateMedia} className={styles['quick-item--link']}>
+                  Media
+                </a>
+                <div onClick={() => handleProtectedLink('/save', 'Win a Soul')} className={styles['quick-item--link']}>
+                  Win a Soul
+                </div>
+                <div onClick={() => handlePublicLink('/Bs')} className={styles['quick-item--link']}>
+                  Bible Study
+                </div>
+                <div onClick={() => handlePublicLink('/library')} className={styles['quick-item--link']}>
+                  Library
+                </div>
+                <div onClick={() => handleProtectedLink('/financial', 'Financials')} className={styles['quick-item--link']}>
+                  Financials
+                </div>
+                <div onClick={() => handleProtectedLink('/my-docs', 'My Docs')} className={styles['quick-item--link']}>
+                  My Docs
+                </div>
+                <a
+                  href="/pdfs/constitution.pdf"
+                  download="constitution.pdf"
+                  className={styles['quick-item--link']}
+                >
+                  <FontAwesomeIcon icon={faDownload} style={{ marginRight: '8px' }} />
+                  Constitution
+                </a>
+                <div onClick={() => handlePublicLink('/requisitions')} className={styles['quick-item--link']}>
+                  Requisitions
+                </div>
+                <div onClick={() => handlePublicLink('/compassion-counseling')} className={styles['quick-item--link']}>
+                  Compassion & Counseling
+                </div>
+                <div onClick={handleAboutUsClick} className={styles['quick-item--link']}>
+                  About Us
+                </div>
+                <div onClick={() => handlePublicLink('/recomendations')} className={styles['quick-item--link']}>
+                  <MessageSquare size={16} style={{ marginRight: '6px', display: 'inline' }} />
+                  Feedback
+                </div>
               </div>
             </>
           )}
         </div>
 
-        
+
         <div className={`${styles['']} ${styles['container-vidTitle']}`}>
           <div className={styles['intro-video--header']} style={{ position: 'relative' }}>
             <div className={styles['video-intro']}>
@@ -625,7 +695,7 @@ const LandingPageHeader = () => {
             </span>
           </div>
         </div>
-      </header>
+      </header >
 
       {openCommission &&
         <div className={styles.modalOverlay} onClick={handleCloseCommission}>
@@ -635,13 +705,13 @@ const LandingPageHeader = () => {
                 <div className={styles.modalHeader} style={{ textAlign: 'center' }}>
                   {newsData.title}
                 </div>
-                
+
                 {/* Event Information and Countdown */}
                 {newsData.eventDate && (
                   <div className={styles.eventSection}>
                     <div className={styles.eventInfo} style={{ textAlign: 'center' }}>
-                      <h4 style={{color: '#730051', margin: '0 0 10px 0', textAlign: 'center'}}>Upcoming Event</h4>
-                      <p style={{margin: '5px 0', color: '#666', fontWeight: '600', textAlign: 'center'}}>
+                      <h4 style={{ color: '#730051', margin: '0 0 10px 0', textAlign: 'center' }}>Upcoming Event</h4>
+                      <p style={{ margin: '5px 0', color: '#666', fontWeight: '600', textAlign: 'center' }}>
                         {new Date(newsData.eventDate).toLocaleDateString('en-US', {
                           weekday: 'long',
                           year: 'numeric',
@@ -651,10 +721,10 @@ const LandingPageHeader = () => {
                         {newsData.eventTime ? ` at ${newsData.eventTime}` : ' at 12:00'}
                       </p>
                     </div>
-                    
+
                     {countdown && !eventPassed && (
                       <div className={styles.countdownTimer}>
-                        <h5 style={{color: '#730051', margin: '10px 0 5px 0', textAlign: 'center'}}>Time Remaining</h5>
+                        <h5 style={{ color: '#730051', margin: '10px 0 5px 0', textAlign: 'center' }}>Time Remaining</h5>
                         <div style={{
                           display: 'grid',
                           gridTemplateColumns: 'repeat(4, 1fr)',
@@ -668,8 +738,8 @@ const LandingPageHeader = () => {
                             textAlign: 'center',
                             border: '1px solid rgba(115, 0, 81, 0.2)'
                           }}>
-                            <div style={{fontSize: '18px', fontWeight: 'bold', color: '#730051'}}>{String(countdown.days || 0).padStart(2, '0')}</div>
-                            <div style={{fontSize: '10px', color: '#730051', textTransform: 'uppercase'}}>Days</div>
+                            <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#730051' }}>{String(countdown.days || 0).padStart(2, '0')}</div>
+                            <div style={{ fontSize: '10px', color: '#730051', textTransform: 'uppercase' }}>Days</div>
                           </div>
                           <div style={{
                             background: 'rgba(115, 0, 81, 0.1)',
@@ -678,8 +748,8 @@ const LandingPageHeader = () => {
                             textAlign: 'center',
                             border: '1px solid rgba(115, 0, 81, 0.2)'
                           }}>
-                            <div style={{fontSize: '18px', fontWeight: 'bold', color: '#730051'}}>{String(countdown.hours || 0).padStart(2, '0')}</div>
-                            <div style={{fontSize: '10px', color: '#730051', textTransform: 'uppercase'}}>Hours</div>
+                            <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#730051' }}>{String(countdown.hours || 0).padStart(2, '0')}</div>
+                            <div style={{ fontSize: '10px', color: '#730051', textTransform: 'uppercase' }}>Hours</div>
                           </div>
                           <div style={{
                             background: 'rgba(115, 0, 81, 0.1)',
@@ -688,8 +758,8 @@ const LandingPageHeader = () => {
                             textAlign: 'center',
                             border: '1px solid rgba(115, 0, 81, 0.2)'
                           }}>
-                            <div style={{fontSize: '18px', fontWeight: 'bold', color: '#730051'}}>{String(countdown.minutes || 0).padStart(2, '0')}</div>
-                            <div style={{fontSize: '10px', color: '#730051', textTransform: 'uppercase'}}>Minutes</div>
+                            <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#730051' }}>{String(countdown.minutes || 0).padStart(2, '0')}</div>
+                            <div style={{ fontSize: '10px', color: '#730051', textTransform: 'uppercase' }}>Minutes</div>
                           </div>
                           <div style={{
                             background: 'rgba(115, 0, 81, 0.1)',
@@ -698,13 +768,13 @@ const LandingPageHeader = () => {
                             textAlign: 'center',
                             border: '1px solid rgba(115, 0, 81, 0.2)'
                           }}>
-                            <div style={{fontSize: '18px', fontWeight: 'bold', color: '#730051'}}>{String(countdown.seconds || 0).padStart(2, '0')}</div>
-                            <div style={{fontSize: '10px', color: '#730051', textTransform: 'uppercase'}}>Seconds</div>
+                            <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#730051' }}>{String(countdown.seconds || 0).padStart(2, '0')}</div>
+                            <div style={{ fontSize: '10px', color: '#730051', textTransform: 'uppercase' }}>Seconds</div>
                           </div>
                         </div>
                       </div>
                     )}
-                    
+
                     {eventPassed && (
                       <div style={{
                         background: 'rgba(34, 197, 94, 0.1)',
@@ -714,8 +784,8 @@ const LandingPageHeader = () => {
                         marginTop: '10px',
                         textAlign: 'center'
                       }}>
-                        <h5 style={{color: '#10B981', margin: '0 0 5px 0', textAlign: 'center'}}>Event Has Started/Ended</h5>
-                        <p style={{margin: '0', fontSize: '14px', color: '#666', textAlign: 'center'}}>This event is no longer upcoming.</p>
+                        <h5 style={{ color: '#10B981', margin: '0 0 5px 0', textAlign: 'center' }}>Event Has Started/Ended</h5>
+                        <p style={{ margin: '0', fontSize: '14px', color: '#666', textAlign: 'center' }}>This event is no longer upcoming.</p>
                       </div>
                     )}
                   </div>
@@ -724,10 +794,10 @@ const LandingPageHeader = () => {
                 <div className={styles.modalBody}>
                   {/* Show news image if available */}
                   {newsData.imageUrl && (
-                    <div style={{textAlign: 'center', marginBottom: '15px'}}>
-                      <img 
-                        src={newsData.imageUrl} 
-                        alt="News" 
+                    <div style={{ textAlign: 'center', marginBottom: '15px' }}>
+                      <img
+                        src={newsData.imageUrl}
+                        alt="News"
                         style={{
                           maxWidth: '100%',
                           height: 'auto',
@@ -741,27 +811,27 @@ const LandingPageHeader = () => {
                       />
                     </div>
                   )}
-                  
+
                   {/* Show full news content */}
-                  <div style={{lineHeight: '1.6', color: '#333', textAlign: 'left', marginBottom: '20px'}}>
+                  <div style={{ lineHeight: '1.6', color: '#333', textAlign: 'left', marginBottom: '20px' }}>
                     {newsData.body ? (
                       newsData.body.split('\n').map((paragraph, index) => (
-                        <p key={index} style={{margin: '12px 0', textAlign: 'left'}}>
+                        <p key={index} style={{ margin: '12px 0', textAlign: 'left' }}>
                           {paragraph}
                         </p>
                       ))
                     ) : (
-                      <p style={{margin: '8px 0', textAlign: 'center'}}>
+                      <p style={{ margin: '8px 0', textAlign: 'center' }}>
                         {newsData.summary || 'No content available'}
                       </p>
                     )}
                   </div>
-                  
+
                   {/* Footer with timestamp */}
                   <div style={{
-                    textAlign: 'center', 
-                    marginTop: '20px', 
-                    paddingTop: '15px', 
+                    textAlign: 'center',
+                    marginTop: '20px',
+                    paddingTop: '15px',
                     borderTop: '1px solid rgba(115, 0, 81, 0.1)',
                     fontSize: '12px',
                     color: '#666'
@@ -791,7 +861,7 @@ const LandingPageHeader = () => {
                 </div>
               </>
             )}
-            
+
             <button className={styles.closeBtn} onClick={handleCloseCommission}>
               <FontAwesomeIcon icon={faXmark} />
             </button>

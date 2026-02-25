@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import UniversalHeader from '../components/UniversalHeader';
-import Footer from '../components/footer';
+import { useNavigate } from 'react-router-dom';
 import styles from '../styles/mediaAdmin.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-    faImages, 
-    faPlus, 
-    faTrash, 
-    faEdit, 
+import {
+    faImages,
+    faPlus,
+    faTrash,
+    faEdit,
     faSave,
     faCancel,
     faCalendarAlt,
@@ -48,6 +47,7 @@ const defaultEvents: MediaItem[] = [
 ];
 
 const MediaAdmin: React.FC = () => {
+    const navigate = useNavigate();
     const [mediaItems, setMediaItems] = useState<MediaItem[]>(defaultEvents);
     const [isAddingNew, setIsAddingNew] = useState(false);
     const [editingItem, setEditingItem] = useState<string | null>(null);
@@ -64,7 +64,7 @@ const MediaAdmin: React.FC = () => {
     // Helper function to format date for input field
     const formatDateForInput = (dateStr: string): string => {
         if (!dateStr) return new Date().toISOString().split('T')[0];
-        
+
         try {
             // Handle various date formats
             if (dateStr.includes('-')) {
@@ -74,7 +74,7 @@ const MediaAdmin: React.FC = () => {
                     return dateStr;
                 }
             }
-            
+
             const date = new Date(dateStr);
             if (isNaN(date.getTime())) {
                 return new Date().toISOString().split('T')[0];
@@ -92,13 +92,13 @@ const MediaAdmin: React.FC = () => {
         console.log('  - baseUrl:', getBaseUrl());
         console.log('  - hostname:', window.location.hostname);
         console.log('  - sample imageUrl:', getImageUrl('/uploads/media/test.png'));
-        
+
         // Check for authentication first
         const adminAuth = sessionStorage.getItem('adminAuth');
         console.log('MediaAdmin Debug: adminAuth =', adminAuth);
         console.log('MediaAdmin Debug: defaultEvents length =', defaultEvents.length);
         console.log('MediaAdmin Debug: current mediaItems length =', mediaItems.length);
-        
+
         if (adminAuth === 'Overseer') {
             setAuthenticated(true);
             loadMediaItems();
@@ -111,13 +111,13 @@ const MediaAdmin: React.FC = () => {
     const loadMediaItems = async () => {
         setLoading(true);
         setSyncStatus('syncing');
-        
+
         try {
             // Add timestamp to completely bypass all caching
             const timestamp = new Date().getTime();
             const apiUrl = `${getApiUrl('api/media-items')}?t=${timestamp}`;
             console.log('MediaAdmin: Fetching media items from API:', apiUrl);
-            
+
             const response = await fetch(apiUrl, {
                 method: 'GET',
                 credentials: 'include',
@@ -128,35 +128,35 @@ const MediaAdmin: React.FC = () => {
                     'Expires': '0'
                 }
             });
-            
+
             console.log('MediaAdmin: Response status =', response.status);
-            
+
             if (response.ok) {
                 const data = await response.json();
                 const apiItems = data.data || [];
                 console.log('MediaAdmin: Received', apiItems.length, 'items from API');
-                
+
                 // Merge API items with default events (API items take priority)
                 const mergedItems = [...apiItems];
-                
+
                 // Add default events that aren't already in the database
                 defaultEvents.forEach(defaultItem => {
-                    const exists = apiItems.some((apiItem: MediaItem) => 
-                        apiItem.event === defaultItem.event && 
+                    const exists = apiItems.some((apiItem: MediaItem) =>
+                        apiItem.event === defaultItem.event &&
                         apiItem.link === defaultItem.link
                     );
                     if (!exists) {
                         mergedItems.push(defaultItem);
                     }
                 });
-                
+
                 console.log('MediaAdmin: Total items after merge:', mergedItems.length);
                 setMediaItems(mergedItems);
                 localStorage.setItem('ksucu-media-items', JSON.stringify(mergedItems));
                 setSyncStatus('success');
-                
+
                 // Dispatch event for other components
-                window.dispatchEvent(new CustomEvent('mediaItemsUpdated', { 
+                window.dispatchEvent(new CustomEvent('mediaItemsUpdated', {
                     detail: mergedItems
                 }));
             } else {
@@ -209,7 +209,7 @@ const MediaAdmin: React.FC = () => {
                     credentials: 'include',
                     body: JSON.stringify(newItem)
                 });
-                
+
                 if (response.ok) {
                     const data = await response.json();
                     console.log('MediaAdmin: Successfully added new item:', data.data);
@@ -254,7 +254,7 @@ const MediaAdmin: React.FC = () => {
                 credentials: 'include',
                 body: JSON.stringify(updatedItem)
             });
-            
+
             if (response.ok) {
                 setSyncStatus('success');
                 setEditingItem(null);
@@ -281,7 +281,7 @@ const MediaAdmin: React.FC = () => {
             try {
                 const item = mediaItems.find(i => (i._id || i.id) === id);
                 const itemId = item?._id || id;
-                
+
                 const response = await fetch(getApiUrl(`api/media-items/${itemId}`), {
                     method: 'DELETE',
                     headers: {
@@ -289,7 +289,7 @@ const MediaAdmin: React.FC = () => {
                     },
                     credentials: 'include'
                 });
-                
+
                 if (response.ok) {
                     setSyncStatus('success');
                     // Reload to get fresh data from server
@@ -312,26 +312,26 @@ const MediaAdmin: React.FC = () => {
     const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>, itemId?: string) => {
         const file = event.target.files?.[0];
         if (!file) return;
-        
+
         // Validate file type
         if (!file.type.startsWith('image/')) {
             alert('Please select an image file (PNG, JPG, GIF, WebP)');
             return;
         }
-        
+
         // Validate file size (max 10MB)
         if (file.size > 10 * 1024 * 1024) {
             alert('Image file is too large. Please select a file under 10MB.');
             return;
         }
-        
+
         setLoading(true);
         setSyncStatus('syncing');
-        
+
         try {
             const formData = new FormData();
             formData.append('image', file);
-            
+
             const response = await fetch(getApiUrl('api/media-items/upload-image'), {
                 method: 'POST',
                 headers: {
@@ -340,7 +340,7 @@ const MediaAdmin: React.FC = () => {
                 credentials: 'include',
                 body: formData
             });
-            
+
             if (response.ok) {
                 const data = await response.json();
                 // Store the raw imageUrl from backend (it's already a proper path like /uploads/media/...)
@@ -380,14 +380,13 @@ const MediaAdmin: React.FC = () => {
     if (!authenticated) {
         return (
             <>
-                <UniversalHeader />
                 <div className={styles.container}>
                     <div className={styles.header}>
                         <h1>Media Admin - Authentication Required</h1>
                         <p>Please access this page through the Password Overseer dashboard.</p>
                         <p>Items loaded: {mediaItems.length} (showing first 3 for preview)</p>
-                        
-                        <button 
+
+                        <button
                             onClick={() => {
                                 sessionStorage.setItem('adminAuth', 'Overseer');
                                 setAuthenticated(true);
@@ -405,8 +404,8 @@ const MediaAdmin: React.FC = () => {
                         >
                             Quick Login (Dev)
                         </button>
-                        <button 
-                            onClick={() => window.location.href = '/worship-docket-admin'}
+                        <button
+                            onClick={() => navigate('/worship-docket-admin')}
                             style={{
                                 padding: '10px 20px',
                                 background: '#730051',
@@ -419,30 +418,28 @@ const MediaAdmin: React.FC = () => {
                             Go to Admin Dashboard
                         </button>
                     </div>
-                    
+
                     {/* Preview of media items */}
                     <div className={styles.header}>
                         <h2>Media Items Preview</h2>
                         <p>Found {mediaItems.length} media items in database</p>
                         {mediaItems.slice(0, 3).map(item => (
-                            <div key={item._id || item.id} style={{border: '1px solid #ccc', padding: '10px', margin: '10px', borderRadius: '5px'}}>
+                            <div key={item._id || item.id} style={{ border: '1px solid #ccc', padding: '10px', margin: '10px', borderRadius: '5px' }}>
                                 <h4>{item.event}</h4>
                                 <p><strong>Date:</strong> {item.date}</p>
                                 <p><strong>Link:</strong> <a href={item.link} target="_blank" rel="noopener noreferrer">{item.link.substring(0, 50)}...</a></p>
-                                {item.imageUrl && <img src={item.imageUrl} alt={item.event} style={{maxWidth: '100px', maxHeight: '100px'}} />}
+                                {item.imageUrl && <img src={item.imageUrl} alt={item.event} style={{ maxWidth: '100px', maxHeight: '100px' }} />}
                             </div>
                         ))}
                         {mediaItems.length > 3 && <p>...and {mediaItems.length - 3} more items</p>}
                     </div>
                 </div>
-                <Footer />
             </>
         );
     }
 
     return (
         <>
-            <UniversalHeader />
             <div className={styles.container}>
                 <div className={styles.header}>
                     <h1>
@@ -473,7 +470,7 @@ const MediaAdmin: React.FC = () => {
 
                 {/* Add New Media Item */}
                 <div className={styles.addSection}>
-                    <button 
+                    <button
                         className={styles.addButton}
                         onClick={() => setIsAddingNew(!isAddingNew)}
                     >
@@ -524,9 +521,9 @@ const MediaAdmin: React.FC = () => {
                         </div>
                         {newItem.imageUrl && (
                             <div className={styles.imagePreview}>
-                                <img 
-                                    src={getImageUrl(newItem.imageUrl)} 
-                                    alt="Preview" 
+                                <img
+                                    src={getImageUrl(newItem.imageUrl)}
+                                    alt="Preview"
                                     style={{ maxWidth: '200px', maxHeight: '200px', objectFit: 'cover' }}
                                     onError={() => console.error('Preview image error:', newItem.imageUrl, 'Full URL:', getImageUrl(newItem.imageUrl || ''))}
                                 />
@@ -547,8 +544,8 @@ const MediaAdmin: React.FC = () => {
 
                 {/* Refresh Button */}
                 <div className={styles.refreshSection}>
-                    <button 
-                        className={styles.refreshButton} 
+                    <button
+                        className={styles.refreshButton}
                         onClick={loadMediaItems}
                         disabled={loading}
                     >
@@ -562,7 +559,7 @@ const MediaAdmin: React.FC = () => {
                     <h2>Existing Media Items ({mediaItems.length})</h2>
                     <div className={styles.mediaGrid}>
                         {mediaItems.map((item) => (
-                            <MediaItemCard 
+                            <MediaItemCard
                                 key={item._id || item.id}
                                 item={item}
                                 isEditing={editingItem === (item._id || item.id)}
@@ -577,7 +574,6 @@ const MediaAdmin: React.FC = () => {
                     </div>
                 </div>
             </div>
-            <Footer />
         </>
     );
 };
@@ -643,9 +639,9 @@ const MediaItemCard: React.FC<MediaItemCardProps> = ({
                     />
                     {editData.imageUrl && (
                         <div className={styles.imagePreview}>
-                            <img 
-                                src={getImageUrl(editData.imageUrl)} 
-                                alt="Preview" 
+                            <img
+                                src={getImageUrl(editData.imageUrl)}
+                                alt="Preview"
                                 style={{ maxWidth: '150px', maxHeight: '150px', objectFit: 'cover' }}
                                 onError={() => console.error('Edit preview image error:', editData.imageUrl, 'Full URL:', getImageUrl(editData.imageUrl || ''))}
                             />
@@ -668,9 +664,9 @@ const MediaItemCard: React.FC<MediaItemCardProps> = ({
         <div className={styles.mediaCard}>
             {item.imageUrl ? (
                 <div className={styles.mediaImage}>
-                    <img 
-                        src={getImageUrl(item.imageUrl || '')} 
-                        alt={item.event} 
+                    <img
+                        src={getImageUrl(item.imageUrl || '')}
+                        alt={item.event}
                         onLoad={() => {
                             console.log('✅ Image loaded successfully for:', item.event, 'URL:', getImageUrl(item.imageUrl || ''));
                         }}

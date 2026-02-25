@@ -103,15 +103,20 @@
   }
 }
 
-/* Chat Header */
+/* Chat Header - Original Design */
 .chatHeader {
-  background: linear-gradient(135deg, #730051, #8b1c5b);
+  background: #730051;
   color: white;
   padding: 16px;
+  min-height: auto;
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  gap: 0;
   border-radius: 12px 12px 0 0;
+  box-shadow: 0 4px 12px rgba(115, 0, 81, 0.3);
+  flex-shrink: 0;
 }
 
 .headerLeft {
@@ -130,21 +135,10 @@
 .headerLeft span {
   color: #ffffff;
   font-weight: 700;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  letter-spacing: 0.3px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  position: relative;
-}
-
-.headerLeft span::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.2));
-  border-radius: 4px;
-  z-index: -1;
-  padding: 2px 6px;
-  margin: -2px -6px;
+  font-size: 18px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+  letter-spacing: 0.2px;
+  line-height: 1.2;
 }
 
 .headerRight {
@@ -161,20 +155,30 @@
   padding: 4px 8px;
   border-radius: 12px;
   font-size: 12px;
+  color: white;
+  font-weight: 600;
+  width: auto;
 }
 
-.chatHeader button {
-  background: none;
+.closeButton {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(255, 255, 255, 0.1);
   border: none;
   color: white;
   cursor: pointer;
-  padding: 4px;
-  border-radius: 4px;
-  transition: background-color 0.2s;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.chatHeader button:hover {
+.closeButton:hover {
   background: rgba(255, 255, 255, 0.2);
+  transform: rotate(90deg);
 }
 
 /* Error Message */
@@ -331,22 +335,24 @@
 }
 
 .ownMessage {
-  background: #dcf8c6 !important;
-  color: #1f2937 !important;
+  background: #F5F5F5 !important;
+  color: #111111 !important;
   border-bottom-right-radius: 4px !important;
   margin-left: auto !important;
   margin-right: 0 !important;
   align-self: flex-end !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
 }
 
 .otherMessage {
-  background: white !important;
-  color: #1f2937 !important;
+  background: #E0F7FA !important;
+  color: #111111 !important;
   border-bottom-left-radius: 4px !important;
-  border: 1px solid #e5e7eb !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
   margin-left: 0 !important;
   margin-right: auto !important;
   align-self: flex-start !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
 }
 
 .messageHeader {
@@ -672,51 +678,65 @@
   }
 }
 
-/* Input Container */
+/* Input Area - iOS Style Floating Look */
+/* Input Area - Final Standard Design */
 .inputContainer {
-  padding: 16px;
-  border-top: 1px solid #e5e7eb;
+  padding: 8px 16px;
+  border-top: 1px solid rgba(0,0,0,0.08); /* Distinct top border */
   display: flex;
-  align-items: flex-end;
-  gap: 8px;
-  background: white;
+  align-items: center;
+  gap: 12px;
+  background: #FFFFFF;
+  box-shadow: 0 -1px 2px rgba(0,0,0,0.03);
   position: relative;
   z-index: 100;
-  pointer-events: auto; /* Ensure container allows interactions */
+  width: 100%;
+  box-sizing: border-box;
 }
 
 @media (max-width: 768px) {
   .inputContainer {
-    padding: 12px 16px;
-    gap: 6px;
-    pointer-events: auto; /* Ensure mobile interactions work */
+    padding: 8px 12px;
+    gap: 8px;
   }
 }
 
 .inputActions {
   display: flex;
-  gap: 4px;
+  gap: 8px; /* Reduced spacing to 8px as requested */
+  flex-shrink: 0;
+  margin-right: 8px;
 }
 
 .inputActions button {
   background: none;
   border: none;
-  color: #6b7280;
+  color: #666;
   cursor: pointer;
   padding: 8px;
   border-radius: 6px;
   transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .inputActions button:hover {
-  background: #f3f4f6;
+  background: #F3F4F6;
   color: #730051;
+  transform: scale(1.1);
+}
+
+.micButton {
+  transform: scale(1.1);
 }
 
 .recordingButton {
   background: #ef4444 !important;
   color: white !important;
   animation: pulse 1s infinite;
+  border-radius: 50%;
+  padding: 10px;
 }
 
 .recordingButton:hover {
@@ -737,20 +757,35 @@
 
 .messageInput {
   flex: 1;
-  border: 1px solid #e5e7eb;
-  border-radius: 20px;
-  padding: 12px 16px;
-  font-size: 14px;
+  min-width: 0;
+  height: 36px !important; /* Force fixed height */
+  min-height: 36px !important;
+  max-height: 100px;
+  border: none;
+  border-radius: 18px; /* Classic Pill */
+  padding: 0 16px;
+  font-size: 16px;
+  background: #F2F2F7; /* iOS System Gray 6 */
+  color: #000;
   resize: none;
   outline: none;
-  transition: border-color 0.2s;
-  min-height: 20px;
-  max-height: 100px;
-  overflow-y: auto;
+  line-height: 36px;
+  margin: 0;
+  display: block; /* Ensure it behaves as block for height */
+  overflow: hidden;
+}
+
+.messageInput::placeholder {
+  color: #9CA3AF;
+  text-align: center; /* Centered placeholder as requested */
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 36px;
 }
 
 .messageInput:focus {
-  border-color: #730051;
+  background: #E5E5EA; /* Slightly darker on focus */
+  text-align: left; /* Type from left */
 }
 
 .messageInput:disabled {
@@ -760,27 +795,19 @@
 }
 
 .sendButton {
-  background: linear-gradient(135deg, #730051, #8b1c5b);
+  background: #8E8E93; /* iOS Gray */
   border: none;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  width: 36px; /* Match input height */
+  height: 36px;
   color: white;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.1s; /* Faster transition for immediate feedback */
-  position: relative;
-  z-index: 2147483647 !important; /* Maximum z-index */
+  transition: all 0.2s;
   flex-shrink: 0;
-  pointer-events: auto !important; /* Ensure button can receive click events */
-  user-select: none; /* Prevent text selection */
-  -webkit-touch-callout: none; /* Prevent callout on iOS */
-  -webkit-user-select: none; /* Prevent selection on webkit */
-  touch-action: manipulation; /* Improve touch response */
-  -webkit-tap-highlight-color: transparent; /* Remove tap delay and highlight */
-  outline: none; /* Remove focus outline */
+  margin-left: 8px; /* Slightly more gap */
 }
 
 .sendButton:hover:not(:disabled) {
@@ -790,8 +817,7 @@
 
 .sendButton:active:not(:disabled) {
   transform: scale(0.95);
-  background: linear-gradient(135deg, #5d0041, #73154d);
-  transition: transform 0.05s; /* Very fast feedback on touch */
+  background: #6b7280; /* Darker gray, no gradient */
 }
 
 .sendButton:focus {
@@ -1077,15 +1103,15 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  background: none;
-  border: none;
-  color: #6b7280;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  color: #444;
   cursor: pointer;
-  padding: 4px 6px;
+  padding: 4px 8px;
   border-radius: 12px;
-  font-size: 12px;
+  font-size: 18px;
   transition: all 0.2s ease;
-  min-width: 24px;
+  min-width: 30px;
   justify-content: center;
 }
 
@@ -1219,5 +1245,68 @@
   /* Touch-friendly file type indicators */
   .fileLink::before {
     font-size: 18px;
+  }
+}
+/* ============================================
+   TABLET OPTIMIZATIONS (768px - 1024px)
+   ============================================ */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .chatWindow {
+    width: 420px;
+    height: 550px;
+    bottom: 90px;
+    right: 70px;
+  }
+  
+  .chatIcon {
+    width: 56px;
+    height: 56px;
+    bottom: 90px;
+    right: 25px;
+  }
+  
+  .messageInput {
+    font-size: 15px;
+    padding: 12px 14px;
+  }
+  
+  .inputActions button {
+    padding: 10px;
+  }
+  
+  .message {
+    max-width: 70%;
+  }
+  
+  .messageImage,
+  .messageVideo {
+    max-height: 280px;
+  }
+}
+
+/* ============================================
+   PERFORMANCE OPTIMIZATIONS
+   ============================================ */
+
+/* Hardware acceleration for animations */
+.chatIcon,
+.sendButton,
+.reactionButton {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Smooth scrolling performance */
+.messagesContainer {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Reduce animations on low-end devices */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

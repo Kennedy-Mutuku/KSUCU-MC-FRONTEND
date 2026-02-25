@@ -16,94 +16,86 @@ export default defineConfig({
     },
     proxy: {
       '/users': {
-        target: 'http://localhost:3000',
+        target: 'http://localhost:5000',
         changeOrigin: true,
-        secure: true,
-        cookieDomainRewrite: 'localhost',
-        configure: (proxy) => {
-          proxy.on('proxyReq', (proxyReq, req) => {
-            // Remove problematic headers
-            proxyReq.removeHeader('origin');
-            proxyReq.removeHeader('referer');
-          });
-        }
+        secure: true
       },
       '/news': {
-        target: 'http://localhost:3000',
+        target: 'http://localhost:5000',
         changeOrigin: true,
         secure: false,
         bypass: (req) => req.headers.accept?.includes('text/html') ? '/index.html' : null
       },
       '/attendance': {
-        target: 'http://localhost:3000',
+        target: 'http://localhost:5000',
         changeOrigin: true,
         secure: false,
         bypass: (req) => req.headers.accept?.includes('text/html') ? '/index.html' : null
       },
       '/api': {
-        target: 'http://localhost:3000',
+        target: 'http://localhost:5000',
         changeOrigin: true,
         secure: false
       },
       '/adminnews': {
-        target: 'http://localhost:3000',
+        target: 'http://localhost:5000',
         changeOrigin: true,
         secure: false,
         bypass: (req) => req.headers.accept?.includes('text/html') ? '/index.html' : null
       },
       '/adminmission': {
-        target: 'http://localhost:3000',
+        target: 'http://localhost:5000',
         changeOrigin: true,
         secure: false,
         bypass: (req) => req.headers.accept?.includes('text/html') ? '/index.html' : null
       },
       '/adminBs': {
-        target: 'http://localhost:3000',
+        target: 'http://localhost:5000',
         changeOrigin: true,
         secure: false,
         bypass: (req) => req.headers.accept?.includes('text/html') ? '/index.html' : null
       },
       '/sadmin': {
-        target: 'http://localhost:3000',
+        target: 'http://localhost:5000',
         changeOrigin: true,
         secure: false
       },
       '/admissionadmin': {
-        target: 'http://localhost:3000',
+        target: 'http://localhost:5000',
         changeOrigin: true,
         secure: false
       },
       '/polling-officer': {
-        target: 'http://localhost:3000',
+        target: 'http://localhost:5000',
         changeOrigin: true,
         secure: false,
         bypass: (req) => req.headers.accept?.includes('text/html') ? '/index.html' : null
       },
       '/documents': {
-        target: 'http://localhost:3000',
+        target: 'http://localhost:5000',
         changeOrigin: true,
         secure: false,
         bypass: (req) => req.headers.accept?.includes('text/html') ? '/index.html' : null
       },
       '/minutes': {
-        target: 'http://localhost:3000',
+        target: 'http://localhost:5000',
         changeOrigin: true,
         secure: false,
         bypass: (req) => req.headers.accept?.includes('text/html') ? '/index.html' : null
       },
       '/commitmentForm': {
-        target: 'http://localhost:3000',
+        target: 'http://localhost:5000',
         changeOrigin: true,
         secure: false
       },
-      '/chat': {
-        target: 'http://localhost:3000',
+      '/chat/': {
+        target: 'http://localhost:5000',
         changeOrigin: true,
         secure: false,
         bypass: (req) => req.headers.accept?.includes('text/html') ? '/index.html' : null
       },
       '/messages': {
-        target: 'http://localhost:3000',
+        target: 'http://localhost:5000',
         changeOrigin: true,
         secure: false,
         bypass: (req) => req.headers.accept?.includes('text/html') ? '/index.html' : null

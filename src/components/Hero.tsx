@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { PlayCircle, Sparkles } from 'lucide-react';
 
 const verses = [
@@ -32,7 +32,7 @@ const Hero = () => {
         return () => clearInterval(interval);
     }, []);
     return (
-        <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#6c0a50] pt-20">
+        <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#6c0a50]">
 
             {/* 1. Background Pattern (Subtle & Professional) */}
             <div className="absolute inset-0 overflow-hidden">

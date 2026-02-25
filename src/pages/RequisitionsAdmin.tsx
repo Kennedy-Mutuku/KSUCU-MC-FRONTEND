@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import UniversalHeader from "../components/UniversalHeader";
-import Footer from "../components/footer";
 import { generateRequisitionPDF } from "../utils/generateRequisitionPDF";
+import AssetTransferForm from "../components/AssetTransferForm";
 import styles from "../styles/RequisitionsAdmin.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -39,9 +39,17 @@ interface RequisitionForm {
   releasedAt?: string;
   returnedAt?: string;
   comments?: string;
+  assetTransfer?: {
+    receivedByName: string;
+    receivedBySignature: string;
+    releasedByName: string;
+    releasedBySignature: string;
+    date?: string;
+  };
 }
 
 const RequisitionsAdmin: React.FC = () => {
+  const navigate = useNavigate();
   const [requisitions, setRequisitions] = useState<RequisitionForm[]>([]);
   const [filteredRequisitions, setFilteredRequisitions] = useState<
     RequisitionForm[]
@@ -91,8 +99,21 @@ const RequisitionsAdmin: React.FC = () => {
   const [releasedBy, setReleasedBy] = useState("");
   const [comments, setComments] = useState("");
   const [loading, setLoading] = useState(true);
+  const [adminAssetTransferData, setAdminAssetTransferData] = useState<{
+    receivedByName: string;
+    receivedBySignature: string;
+    releasedByName: string;
+    releasedBySignature: string;
+    date?: string;
+  }>({
+    receivedByName: "",
+    receivedBySignature: "",
+    releasedByName: "",
+    releasedBySignature: "",
+    date: new Date().toISOString().split("T")[0],
+  });
 
-  const backEndURL = "https://ksucu-mc.co.ke";
+  const backEndURL = ""; // Empty string allows Vite proxy to handle the routing in dev
 
   useEffect(() => {
     loadRequisitions();
@@ -186,11 +207,22 @@ const RequisitionsAdmin: React.FC = () => {
       const reqId = requisition._id || requisition.id;
       const updateData: any = { status: newStatus };
 
-      // For approved/rejected status, include overseer details
-      if (
-        (newStatus === "approved" || newStatus === "rejected") &&
-        releasedBy
-      ) {
+      // For approved status, require admin signature
+      if (newStatus === "approved" && releasedBy) {
+        updateData.releasedBy = releasedBy;
+        updateData.releasedAt = new Date().toISOString();
+        // Merge requester's existing signature with admin's new signature
+        updateData.assetTransfer = {
+          receivedByName: requisition.assetTransfer?.receivedByName || adminAssetTransferData.receivedByName,
+          receivedBySignature: requisition.assetTransfer?.receivedBySignature || adminAssetTransferData.receivedBySignature,
+          releasedByName: adminAssetTransferData.releasedByName || releasedBy,
+          releasedBySignature: adminAssetTransferData.releasedBySignature,
+          date: adminAssetTransferData.date,
+        };
+      }
+
+      // For rejected status, include overseer details
+      if (newStatus === "rejected" && releasedBy) {
         updateData.releasedBy = releasedBy;
         updateData.releasedAt = new Date().toISOString();
       }
@@ -201,10 +233,18 @@ const RequisitionsAdmin: React.FC = () => {
         updateData.releasedAt = new Date().toISOString();
       }
 
-      // For reset to pending, clear processing data
+      // For reset to pending, clear processing data and admin signature
       if (newStatus === "pending") {
         updateData.releasedBy = undefined;
         updateData.releasedAt = undefined;
+        // Preserve requester's original signature, clear admin signature
+        if (requisition.assetTransfer) {
+          updateData.assetTransfer = {
+            ...requisition.assetTransfer,
+            releasedByName: "",
+            releasedBySignature: "",
+          };
+        }
       }
 
       if (comments) {
@@ -222,14 +262,30 @@ const RequisitionsAdmin: React.FC = () => {
       setReleasedBy("");
       setComments("");
       setEditingRequisition(null);
+      // Reset admin signature
+      setAdminAssetTransferData({
+        receivedByName: "",
+        receivedBySignature: "",
+        releasedByName: "",
+        releasedBySignature: "",
+        date: new Date().toISOString().split("T")[0],
+      });
     } catch (error) {
       console.error("Error updating status:", error);
       // Fallback to local update
-      const updatedReq = { ...requisition, status: newStatus };
-      if (
-        (newStatus === "approved" || newStatus === "rejected") &&
-        releasedBy
-      ) {
+      const updatedReq: any = { ...requisition, status: newStatus };
+      if (newStatus === "approved" && releasedBy) {
+        updatedReq.releasedBy = releasedBy;
+        updatedReq.releasedAt = new Date().toISOString();
+        updatedReq.assetTransfer = {
+          receivedByName: requisition.assetTransfer?.receivedByName || "",
+          receivedBySignature: requisition.assetTransfer?.receivedBySignature || "",
+          releasedByName: adminAssetTransferData.releasedByName || releasedBy,
+          releasedBySignature: adminAssetTransferData.releasedBySignature,
+          date: adminAssetTransferData.date,
+        };
+      }
+      if (newStatus === "rejected" && releasedBy) {
         updatedReq.releasedBy = releasedBy;
         updatedReq.releasedAt = new Date().toISOString();
       }
@@ -237,15 +293,25 @@ const RequisitionsAdmin: React.FC = () => {
         updatedReq.releasedBy = "System Admin";
         updatedReq.releasedAt = new Date().toISOString();
       }
-      if (newStatus === "pending") {
-        updatedReq.releasedBy = undefined;
-        updatedReq.releasedAt = undefined;
+      if (newStatus === "pending" && requisition.assetTransfer) {
+        updatedReq.assetTransfer = {
+          ...requisition.assetTransfer,
+          releasedByName: "",
+          releasedBySignature: "",
+        };
       }
       if (comments) {
         updatedReq.comments = comments;
       }
       await updateRequisition(updatedReq);
       setEditingRequisition(null);
+      setAdminAssetTransferData({
+        receivedByName: "",
+        receivedBySignature: "",
+        releasedByName: "",
+        releasedBySignature: "",
+        date: new Date().toISOString().split("T")[0],
+      });
     }
   };
 
@@ -340,7 +406,6 @@ const RequisitionsAdmin: React.FC = () => {
   if (!authenticated) {
     return (
       <>
-        <UniversalHeader />
         <div className={styles.container}>
           <div className={styles.header}>
             <h1>Requisitions Admin - Authentication Required</h1>
@@ -348,7 +413,7 @@ const RequisitionsAdmin: React.FC = () => {
               Please access this page through the Password Overseer dashboard.
             </p>
             <button
-              onClick={() => (window.location.href = "/worship-docket-admin")}
+              onClick={() => navigate("/worship-docket-admin")}
               style={{
                 padding: "10px 20px",
                 background: "#730051",
@@ -362,14 +427,12 @@ const RequisitionsAdmin: React.FC = () => {
             </button>
           </div>
         </div>
-        <Footer />
       </>
     );
   }
 
   return (
     <>
-      <UniversalHeader />
       <div className={styles.container}>
         <div className={styles.header}>
           <h1>
@@ -772,7 +835,16 @@ const RequisitionsAdmin: React.FC = () => {
               <div className={styles.modalHeader}>
                 <h3>Update Requisition Status</h3>
                 <button
-                  onClick={() => setEditingRequisition(null)}
+                  onClick={() => {
+                    setEditingRequisition(null);
+                    setAdminAssetTransferData({
+                      receivedByName: "",
+                      receivedBySignature: "",
+                      releasedByName: "",
+                      releasedBySignature: "",
+                      date: new Date().toISOString().split("T")[0],
+                    });
+                  }}
                   className={styles.closeButton}
                 >
                   <FontAwesomeIcon icon={faTimes} />
@@ -790,22 +862,57 @@ const RequisitionsAdmin: React.FC = () => {
                   {editingRequisition.status === "pending" && (
                     <>
                       <div className={styles.formGroup}>
-                        <label>Overseer/Reviewer Name</label>
+                        <label>Overseer/Reviewer Name *</label>
                         <input
                           type="text"
                           value={releasedBy}
-                          onChange={(e) => setReleasedBy(e.target.value)}
+                          onChange={(e) => {
+                            setReleasedBy(e.target.value);
+                            setAdminAssetTransferData((prev) => ({
+                              ...prev,
+                              releasedByName: e.target.value,
+                            }));
+                          }}
                           placeholder="Enter your name for approval"
                           required
                         />
                       </div>
+
+                      {/* Admin Signature Section */}
+                      <div className={styles.signatureSection}>
+                        <p className={styles.signatureNote}>
+                          ✍️ <strong>Admin signature required</strong> before approving.
+                          The requester's signature is shown on the left (read-only).
+                          Draw your signature on the right.
+                        </p>
+                        <AssetTransferForm
+                          data={{
+                            receivedByName: editingRequisition.assetTransfer?.receivedByName || editingRequisition.recipientName,
+                            receivedBySignature: editingRequisition.assetTransfer?.receivedBySignature || "",
+                            releasedByName: adminAssetTransferData.releasedByName || releasedBy,
+                            releasedBySignature: adminAssetTransferData.releasedBySignature,
+                            date: adminAssetTransferData.date,
+                          }}
+                          onDataChange={(newData) =>
+                            setAdminAssetTransferData((prev) => ({
+                              ...prev,
+                              releasedByName: newData.releasedByName,
+                              releasedBySignature: newData.releasedBySignature,
+                              date: newData.date,
+                            }))
+                          }
+                          isRequesterOnly={false}
+                        />
+                      </div>
+
                       <div className={styles.actionButtons}>
                         <button
                           onClick={() =>
                             handleStatusUpdate(editingRequisition, "approved")
                           }
                           className={styles.approveButton}
-                          disabled={!releasedBy}
+                          disabled={!releasedBy || !adminAssetTransferData.releasedBySignature}
+                          title={!adminAssetTransferData.releasedBySignature ? "Please draw your signature above to approve" : ""}
                         >
                           <FontAwesomeIcon icon={faCheck} /> Approve
                         </button>
@@ -823,37 +930,37 @@ const RequisitionsAdmin: React.FC = () => {
 
                   {(editingRequisition.status === "approved" ||
                     editingRequisition.status === "rejected") && (
-                    <div className={styles.statusInfo}>
-                      <p>
-                        <strong>Status:</strong>{" "}
-                        {editingRequisition.status.toUpperCase()}
-                      </p>
-                      {editingRequisition.releasedBy && (
+                      <div className={styles.statusInfo}>
                         <p>
-                          <strong>Processed by:</strong>{" "}
-                          {editingRequisition.releasedBy}
+                          <strong>Status:</strong>{" "}
+                          {editingRequisition.status.toUpperCase()}
                         </p>
-                      )}
-                      {editingRequisition.releasedAt && (
-                        <p>
-                          <strong>Date:</strong>{" "}
-                          {new Date(
-                            editingRequisition.releasedAt,
-                          ).toLocaleString()}
-                        </p>
-                      )}
-                      <div className={styles.actionButtons}>
-                        <button
-                          onClick={() =>
-                            handleStatusUpdate(editingRequisition, "pending")
-                          }
-                          className={styles.pendingButton}
-                        >
-                          ↻ Reset to Pending
-                        </button>
+                        {editingRequisition.releasedBy && (
+                          <p>
+                            <strong>Processed by:</strong>{" "}
+                            {editingRequisition.releasedBy}
+                          </p>
+                        )}
+                        {editingRequisition.releasedAt && (
+                          <p>
+                            <strong>Date:</strong>{" "}
+                            {new Date(
+                              editingRequisition.releasedAt,
+                            ).toLocaleString()}
+                          </p>
+                        )}
+                        <div className={styles.actionButtons}>
+                          <button
+                            onClick={() =>
+                              handleStatusUpdate(editingRequisition, "pending")
+                            }
+                            className={styles.pendingButton}
+                          >
+                            ↻ Reset to Pending
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
 
                   <div className={styles.formGroup}>
                     <label>Comments (Optional)</label>
@@ -870,7 +977,6 @@ const RequisitionsAdmin: React.FC = () => {
           </div>
         )}
       </div>
-      <Footer />
     </>
   );
 };

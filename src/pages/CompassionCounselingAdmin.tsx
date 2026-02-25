@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getApiUrl } from '../config/environment';
 import styles from '../styles/compassionAdmin.module.css';
-import UniversalHeader from '../components/UniversalHeader';
-import Footer from '../components/footer';
 import { 
   Heart, 
   Phone, 
@@ -618,7 +616,6 @@ const CompassionCounselingAdmin: React.FC = () => {
 
   return (
     <>
-      <UniversalHeader />
       <div className={styles.container}>
         {/* Header */}
         <div className={styles.header}>
@@ -1275,7 +1272,6 @@ const CompassionCounselingAdmin: React.FC = () => {
         {showModal && selectedRequest && <RequestModal />}
         {showModal && selectedDonation && <DonationModal />}
       </div>
-      <Footer />
     </>
   );
 };

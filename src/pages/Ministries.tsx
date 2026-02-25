@@ -1,8 +1,11 @@
 import React, { useEffect } from 'react';
 import styles from '../styles/ministries.module.css';
 
+<<<<<<< HEAD
 import MinistryHeader from '../components/MinistryHeader';
 import MinistryFooter from '../components/MinistryFooter';
+=======
+>>>>>>> 48cfd2009546c7f66d045eb78952fc0474a4ee79
 import { useLocation } from 'react-router-dom';
 import PW from '../assets/praise-and-worship.jpg'
 import wananzambe from '../assets/wananzambe.jpg'
@@ -98,7 +101,10 @@ const MinistriesPage: React.FC = () => {
             </div>
       )} */}
 
+<<<<<<< HEAD
       <MinistryHeader />
+=======
+>>>>>>> 48cfd2009546c7f66d045eb78952fc0474a4ee79
 
       <div className={styles.main}>
         <h2 className={styles['ministries--title']}>MINISTRIES</h2>
@@ -263,7 +269,10 @@ const MinistriesPage: React.FC = () => {
 
         </div>
       </div>
+<<<<<<< HEAD
       <MinistryFooter />
+=======
+>>>>>>> 48cfd2009546c7f66d045eb78952fc0474a4ee79
     </>
   );
 };

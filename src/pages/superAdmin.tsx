@@ -4,7 +4,6 @@ import axios from 'axios';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import styles from '../styles/superAdmin.module.css';
-import Footer from '../components/footer';
 import { Menu, X } from 'lucide-react';
 import { getApiUrl } from '../config/environment';
 import letterhead from '../assets/letterhead.png';
@@ -12,6 +11,7 @@ import DocumentUploader from '../components/DocumentUploader';
 import MinutesManager from '../components/MinutesManager';
 import AdminSidebar, { AdminSection } from '../components/AdminSidebar';
 import PinEntry from '../components/PinEntry';
+import CommitteeManager from '../components/CommitteeManager';
 
 interface Message {
     _id: string;
@@ -328,7 +328,7 @@ const SuperAdmin: React.FC = () => {
                         6: { cellWidth: 30 }
                     },
                     margin: { left: 10, right: 10 },
-                    didDrawPage: function(data: any) {
+                    didDrawPage: function (data: any) {
                         if (data.pageNumber > 1) {
                             doc.addImage(letterhead, 'PNG', 10, 10, 270, 35);
                         }
@@ -561,27 +561,27 @@ const SuperAdmin: React.FC = () => {
                     {messages
                         .filter(msg => selectedCategory === 'all' || msg.category === selectedCategory)
                         .map((msg) => (
-                        <div key={msg._id} className={styles.messageCard}>
-                            <div className={styles.messageHeader}>
-                                <span className={styles.categoryBadge}>{msg.category}</span>
-                                <span className={styles.timestamp}>
-                                    {new Date(msg.timestamp).toLocaleDateString()} {new Date(msg.timestamp).toLocaleTimeString()}
-                                </span>
-                            </div>
-                            <h4 className={styles.messageSubject}>{msg.subject}</h4>
-                            <p className={styles.messageContent}>{msg.message}</p>
-                            <div className={styles.messageFooter}>
-                                {msg.isAnonymous ? (
-                                    <span className={styles.anonymousBadge}>Anonymous</span>
-                                ) : (
-                                    <span className={styles.senderInfo}>
-                                        From: {msg.senderInfo?.username || 'Unknown'}
-                                        {msg.senderInfo?.email && ` (${msg.senderInfo.email})`}
+                            <div key={msg._id} className={styles.messageCard}>
+                                <div className={styles.messageHeader}>
+                                    <span className={styles.categoryBadge}>{msg.category}</span>
+                                    <span className={styles.timestamp}>
+                                        {new Date(msg.timestamp).toLocaleDateString()} {new Date(msg.timestamp).toLocaleTimeString()}
                                     </span>
-                                )}
+                                </div>
+                                <h4 className={styles.messageSubject}>{msg.subject}</h4>
+                                <p className={styles.messageContent}>{msg.message}</p>
+                                <div className={styles.messageFooter}>
+                                    {msg.isAnonymous ? (
+                                        <span className={styles.anonymousBadge}>Anonymous</span>
+                                    ) : (
+                                        <span className={styles.senderInfo}>
+                                            From: {msg.senderInfo?.username || 'Unknown'}
+                                            {msg.senderInfo?.email && ` (${msg.senderInfo.email})`}
+                                        </span>
+                                    )}
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        ))}
                 </div>
             )}
         </div>
@@ -616,6 +616,28 @@ const SuperAdmin: React.FC = () => {
     );
 
     const renderActiveSection = () => {
+        // Committee section is offline/local-only, so it should render regardless of backend status
+        if (activeSection === 'committee') {
+            return <CommitteeManager />;
+        }
+
+        // Other sections depend on data fetching
+        if (loading) {
+            return (
+                <div className={styles.loadingContainer}>
+                    <p>Loading...</p>
+                </div>
+            );
+        }
+
+        if (error) {
+            return (
+                <div className={styles.errorContainer}>
+                    <p>{error}</p>
+                </div>
+            );
+        }
+
         switch (activeSection) {
             case 'dashboard':
                 return renderDashboard();
@@ -633,22 +655,6 @@ const SuperAdmin: React.FC = () => {
                 return renderDashboard();
         }
     };
-
-    if (loading) {
-        return (
-            <div className={styles.loadingContainer}>
-                <p>Loading...</p>
-            </div>
-        );
-    }
-
-    if (error) {
-        return (
-            <div className={styles.errorContainer}>
-                <p>{error}</p>
-            </div>
-        );
-    }
 
     return (
         <div className={styles.pageWrapper}>
@@ -673,7 +679,6 @@ const SuperAdmin: React.FC = () => {
                 </main>
             </div>
             <footer className={styles.footerWrapper}>
-                <Footer />
             </footer>
 
             {/* Confirmation Dialog */}

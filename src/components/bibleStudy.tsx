@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import styles from '../styles/bs.module.css';
 import { Link } from 'react-router-dom';
-import UniversalHeader from '../components/UniversalHeader';
-import Footer from '../components/footer';
 import { getBaseUrl } from '../config/environment';
 
 const Bs: React.FC = () => {
@@ -183,7 +181,6 @@ const Bs: React.FC = () => {
 
     return (
         <>
-            <UniversalHeader />
             <h2 className={styles.bsTitle}>Bible Study</h2>
             
             {error && (
@@ -315,7 +312,6 @@ const Bs: React.FC = () => {
                 </div>
 
             </div>
-            <Footer />
         </>
     );
 };

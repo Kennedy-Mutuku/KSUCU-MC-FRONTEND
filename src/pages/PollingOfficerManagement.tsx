@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styles from '../styles/pollingManagement.module.css';
-import UniversalHeader from '../components/UniversalHeader';
-import Footer from '../components/footer';
 import ConfirmDialog from '../components/ConfirmDialog';
 import ToastContainer from '../components/ToastContainer';
 import { getApiUrl } from '../config/environment';
@@ -234,7 +232,6 @@ const PollingOfficerManagement: React.FC = () => {
 
     return (
         <>
-            <UniversalHeader />
             <ToastContainer toasts={toasts} onClose={removeToast} />
             <ConfirmDialog
                 isOpen={confirmDialog.isOpen}
@@ -414,7 +411,6 @@ const PollingOfficerManagement: React.FC = () => {
                     )}
                 </div>
             </div>
-            <Footer />
         </>
     );
 };
