@@ -58,7 +58,7 @@ const WorshipDocketAdmin: React.FC = () => {
 
     const leadershipRoles = [
         'Chairperson',
-        'Vice Chairperson',
+        'Vice Chair',
         'Secretary',
         'Treasurer',
         'Publicity Secretary',

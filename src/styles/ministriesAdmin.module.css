@@ -586,12 +586,14 @@
     }
 
     .ministrySelector {
-        grid-column: 1 / -1; /* Full width for ministry selector */
+        grid-column: 1 / -1;
+        /* Full width for ministry selector */
         min-width: auto;
     }
 
     .viewModeSelector {
-        grid-column: 1 / -1; /* Full width for view mode selector */
+        grid-column: 1 / -1;
+        /* Full width for view mode selector */
         min-width: auto;
     }
 
@@ -626,7 +628,8 @@
     }
 
     .actionButton.download {
-        grid-column: 1 / -1; /* Download button takes full width */
+        grid-column: 1 / -1;
+        /* Download button takes full width */
     }
 }
 
@@ -652,7 +655,8 @@
     }
 
     .actionButton.download {
-        grid-column: auto; /* Reset to single column on very small screens */
+        grid-column: auto;
+        /* Reset to single column on very small screens */
     }
 
     .commitmentCard {
@@ -667,25 +671,25 @@
     .commitmentDetails {
         font-size: 0.75rem;
     }
-    
+
     .sessionControls {
         flex-direction: column;
         width: 100%;
     }
-    
+
     .sessionInfo {
         width: 100%;
         justify-content: space-between;
     }
-    
+
     .attendeeGrid {
         grid-template-columns: 1fr;
     }
-    
+
     .attendanceStats {
         flex-direction: column;
     }
-    
+
     .statCard {
         width: 100%;
     }
@@ -862,7 +866,8 @@
     flex-wrap: wrap;
 }
 
-.formType, .formCount {
+.formType,
+.formCount {
     background: rgba(0, 198, 255, 0.1);
     color: #0066cc;
     padding: 0.25rem 0.75rem;
@@ -933,12 +938,12 @@
     .leadershipRoleGrid {
         grid-template-columns: 1fr;
     }
-    
+
     .leadershipRoleButton {
         padding: 0.875rem 1.25rem;
         font-size: 0.85rem;
     }
-    
+
     .leadershipSelection {
         padding: 1.5rem;
     }
@@ -948,52 +953,271 @@
     .leadershipRoleGrid {
         gap: 0.75rem;
     }
-    
+
     .leadershipRoleButton {
         padding: 0.75rem 1rem;
         font-size: 0.8rem;
     }
-    
+
     .leadershipTitle {
         font-size: 1.1rem;
     }
-    
+
     .formsGrid {
         gap: 1rem;
     }
-    
+
     .formCard {
         padding: 1.25rem;
     }
-    
+
     .formHeader {
         flex-direction: column;
         gap: 0.75rem;
         align-items: flex-start;
     }
-    
+
     .formNumber {
         align-self: flex-start;
     }
-    
+
     .formActions {
         flex-direction: column;
         gap: 0.5rem;
     }
-    
+
     .formActions .actionButton {
         width: 100%;
         justify-content: center;
     }
-    
+
     .generateFormSection {
         margin-top: 1rem;
         padding: 0.75rem;
     }
-    
+
     .formMeta {
         flex-direction: column;
         gap: 0.5rem;
         align-items: flex-start;
+    }
+}
+
+/* Messages Section */
+.messageGrid {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: 1fr;
+    padding: 1.5rem;
+}
+
+.messageCard {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.messageCard:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.messageCard.newMessage {
+    border-left: 4px solid var(--secondary-color);
+    background-color: rgba(0, 198, 255, 0.02);
+}
+
+.messageHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 0.75rem;
+}
+
+.messageSubject {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem 0;
+    color: var(--primary-color);
+}
+
+.sender {
+    font-size: 0.85rem;
+    color: var(--text-muted-color);
+    margin: 0;
+}
+
+.messageMeta {
+    text-align: right;
+}
+
+.messageBody {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--text-color);
+    margin-bottom: 1.5rem;
+    white-space: pre-wrap;
+}
+
+.overseerReply {
+    background-color: #f8fafc;
+    border-radius: var(--radius);
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border-left: 3px solid var(--primary-color);
+}
+
+.replyHeader {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.replyDate {
+    font-size: 0.75rem;
+    color: var(--text-muted-color);
+    display: block;
+    margin-top: 0.5rem;
+}
+
+.messageActions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.replyButton {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.replyButton:hover {
+    background-color: var(--primary-hover-color);
+}
+
+/* Modal Styles */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+}
+
+.modalContent {
+    background: white;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.modalHeader {
+    padding: 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modalHeader h3 {
+    margin: 0;
+    color: var(--primary-color);
+    font-size: 1.25rem;
+}
+
+.closeModal {
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    color: var(--text-muted-color);
+    cursor: pointer;
+}
+
+.modalBody {
+    padding: 1.5rem;
+}
+
+.originalMessage {
+    background-color: #f3f4f6;
+    padding: 1rem;
+    border-radius: var(--radius);
+    margin-bottom: 1.5rem;
+}
+
+.originalMessage p {
+    margin: 0.5rem 0 0 0;
+    font-style: italic;
+    color: var(--text-color);
+}
+
+.replyForm label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    font-family: inherit;
+    resize: vertical;
+}
+
+.modalActions {
+    padding: 1rem 1.5rem;
+    background-color: #f9fafb;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    border-top: 1px solid #e5e7eb;
+}
+
+.cancelButton {
+    padding: 0.6rem 1.2rem;
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    cursor: pointer;
+}
+
+.confirmButton {
+    padding: 0.6rem 1.2rem;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+}
+
+.confirmButton:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+    .messageHeader {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .messageMeta {
+        text-align: left;
     }
 }

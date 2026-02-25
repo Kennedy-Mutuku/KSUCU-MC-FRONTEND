@@ -74,8 +74,13 @@
 }
 
 @keyframes glow {
-    0% { text-shadow: 0 0 5px rgba(255, 215, 0, 0.7); }
-    100% { text-shadow: 0 0 15px rgba(255, 215, 0, 1), 0 0 25px rgba(255, 215, 0, 0.8); }
+    0% {
+        text-shadow: 0 0 5px rgba(255, 215, 0, 0.7);
+    }
+
+    100% {
+        text-shadow: 0 0 15px rgba(255, 215, 0, 1), 0 0 25px rgba(255, 215, 0, 0.8);
+    }
 }
 
 /* Message */
@@ -202,9 +207,17 @@
 }
 
 @keyframes pulse-warning {
-    0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4); }
-    70% { box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+    0% {
+        box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(220, 53, 69, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
+    }
 }
 
 .controlButton:disabled {
@@ -337,76 +350,129 @@
     .container {
         padding: 10px;
     }
-    
+
     .header {
         padding: 1.5rem;
         text-align: center;
     }
-    
+
     .header h1 {
         font-size: 1.5rem;
     }
-    
+
     .backButton {
         position: static;
         margin-bottom: 1rem;
     }
-    
+
     .activeRoleIndicator {
         padding: 0.5rem 1rem;
         margin-bottom: 1rem;
     }
-    
+
     .activeRoleText {
         font-size: 1rem;
     }
-    
+
     .activeRoleIcon {
         font-size: 1.25rem;
     }
-    
+
     .controlButtons {
         flex-direction: column;
         align-items: center;
     }
-    
+
     .controlButton {
         width: 100%;
         max-width: 250px;
     }
-    
+
     .recordsHeader {
         flex-direction: column;
         align-items: stretch;
     }
-    
+
     .recordsList {
         grid-template-columns: 1fr;
     }
-    
+
     .recordCard {
         padding: 1rem;
     }
-    
+
     .noRecords {
         padding: 2rem 1rem;
     }
 }
 
 @media (max-width: 767px) {
+
     .sessionControls,
     .attendanceRecords {
         padding: 1rem;
     }
-    
+
     .recordCard {
         flex-direction: column;
         text-align: center;
     }
-    
+
     .recordNumber {
         align-self: center;
     }
+}
+
+/* Records Section & Table */
+.recordsSection {
+    margin-top: 2rem;
+}
+
+.recordsSection h2 {
+    color: #730051;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.recordsTable {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.recordsTable thead {
+    background: #f8f9fa;
+}
+
+.recordsTable th {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: #495057;
+    border-bottom: 2px solid #e9ecef;
+    font-size: 0.9rem;
+}
+
+.recordsTable td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #f1f3f5;
+    color: #495057;
+    font-size: 0.9rem;
+}
+
+.recordsTable tbody tr:hover {
+    background: #f8f9fa;
+}
+
+/* Blocked status for session card */
+.statusCard.blocked {
+    background: linear-gradient(135deg, #fce4ec, #ffcdd2);
+    border: 2px solid #ef5350;
 }
 
 /* Time-related styles */
@@ -424,7 +490,15 @@
 }
 
 @keyframes pulse {
-    0% { opacity: 1; }
-    50% { opacity: 0.7; }
-    100% { opacity: 1; }
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.7;
+    }
+
+    100% {
+        opacity: 1;
+    }
 }

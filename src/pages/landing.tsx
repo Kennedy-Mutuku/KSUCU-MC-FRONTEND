@@ -720,7 +720,7 @@ const LandingPage = () => {
               </div>
 
 
-                  
+
 
             </div>
 
@@ -1640,7 +1640,7 @@ const LandingPage = () => {
               if (adminPassword === 'Overseer') {
                 setShowAdminAccess(false);
                 setAdminPassword('');
-                navigate('/overseer-dashboard');
+                navigate('/signIn');
               } else {
                 alert('Incorrect Password');
               }

@@ -165,9 +165,10 @@ const Footer = () => {
             <form onSubmit={(e) => {
               e.preventDefault();
               if (adminPassword === 'Overseer') {
+                sessionStorage.setItem('overseerAuth', 'authenticated');
                 setShowAdminAccess(false);
                 setAdminPassword('');
-                navigate('/overseer-dashboard');
+                navigate('/signIn');
               } else {
                 alert('Incorrect Password');
               }

@@ -162,7 +162,7 @@
     font-size: 1rem;
     color: #1e293b;
     transition: all 0.2s ease;
-    background: #f8fafc;
+    background: #a2a3a3;
 }
 
 .formInput:focus {
@@ -190,67 +190,46 @@
     padding-left: 42px !important;
 }
 
-.searchResults {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    z-index: 50;
-    margin-top: 8px;
-    border: 1px solid #e2e8f0;
-    max-height: 200px;
-    overflow-y: auto;
-}
-
-.resultItem {
-    padding: 12px 16px;
-    cursor: pointer;
-    transition: background 0.2s;
-    border-bottom: 1px solid #f1f5f9;
-}
-
-.resultItem:hover {
-    background: #fdf2f9;
-}
-
-.resultItem:last-child {
-    border-bottom: none;
-}
-
-.resultName {
-    display: block;
-    font-weight: 600;
-    color: #1e293b;
-}
-
-.resultMeta {
-    font-size: 0.8rem;
-    color: #64748b;
-}
-
-/* User Found Bar */
-.selectedUserBar {
+/* User Found Alert */
+.userFoundAlert {
     background: #fdf2f9;
     border: 1px solid #f9d5ec;
     border-radius: 12px;
-    padding: 10px 16px;
+    padding: 14px 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
+    animation: slideIn 0.3s ease-out;
 }
 
-.selectedInfo h4 {
+.userFoundContent {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.userFoundIcon {
+    width: 36px;
+    height: 36px;
+    background: #8b005e;
+    color: white;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+}
+
+.welcomeText {
     margin: 0;
     font-size: 0.95rem;
+    font-weight: 700;
     color: #8b005e;
 }
 
-.selectedInfo p {
-    margin: 0;
+.foundMeta {
+    margin: 2px 0 0;
     font-size: 0.8rem;
     color: #64748b;
 }
@@ -266,6 +245,41 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    transition: all 0.2s;
+}
+
+.clearBtn:hover {
+    background: #fef2f2;
+    transform: scale(1.1);
+}
+
+/* Manual Entry Section */
+.manualEntrySection {
+    background: #f8fafc;
+    border: 1px dashed #e2e8f0;
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 20px;
+    animation: fadeIn 0.4s ease-out;
+}
+
+.manualEntryHint {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin: 0 0 12px;
+    font-weight: 500;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
 /* Error/Success */
@@ -317,4 +331,77 @@
     .attendanceCard {
         padding: 24px 20px;
     }
+}
+
+/* Compact List Styles */
+.compactStatusRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: #f8fafc;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    border: 1px solid #e2e8f0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.compactStatusRow:hover {
+    border-color: #8b005e;
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(139, 0, 94, 0.05);
+}
+
+.compactNumber {
+    width: 28px;
+    height: 28px;
+    background: #fff;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: #8b005e;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.compactInfo {
+    flex: 1;
+    margin-left: 12px;
+}
+
+.compactTitle {
+    margin: 0 !important;
+    font-size: 0.95rem !important;
+    font-weight: 700 !important;
+    color: #1a1a1a !important;
+}
+
+.compactSubtitle {
+    margin: 0 !important;
+    font-size: 0.7rem !important;
+    color: #64748b !important;
+    text-transform: uppercase !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.5px !important;
+}
+
+.compactSignBtn {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    color: #8b005e;
+    padding: 6px 16px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.compactStatusRow:hover .compactSignBtn {
+    background: #8b005e;
+    color: #fff;
+    border-color: #8b005e;
 }

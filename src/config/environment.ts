@@ -61,6 +61,8 @@ interface ApiConfig {
     commitmentFormMinistry: string;
     commitmentFormApprove: string;
     commitmentFormRevoke: string;
+    commitmentFormByRole: string;
+    worshipCoordinatorCommitments: string;
     pollingOfficerLogin: string;
     pollingOfficerLogout: string;
     pollingOfficerCreate: string;
@@ -162,6 +164,8 @@ const developmentConfig: ApiConfig = {
     commitmentFormMinistry: '/commitmentForm/ministry',
     commitmentFormApprove: '/commitmentForm/approve',
     commitmentFormRevoke: '/commitmentForm/revoke',
+    commitmentFormByRole: '/commitmentForm/by-role',
+    worshipCoordinatorCommitments: '/commitmentForm/worship-coordinator',
     pollingOfficerLogin: '/polling-officer/login',
     pollingOfficerLogout: '/polling-officer/logout',
     pollingOfficerCreate: '/polling-officer/create',
@@ -256,6 +260,8 @@ const productionConfig: ApiConfig = {
     commitmentFormMinistry: '/commitmentForm/ministry',
     commitmentFormApprove: '/commitmentForm/approve',
     commitmentFormRevoke: '/commitmentForm/revoke',
+    commitmentFormByRole: '/commitmentForm/by-role',
+    worshipCoordinatorCommitments: '/commitmentForm/worship-coordinator',
     pollingOfficerLogin: '/polling-officer/login',
     pollingOfficerLogout: '/polling-officer/logout',
     pollingOfficerCreate: '/polling-officer/create',

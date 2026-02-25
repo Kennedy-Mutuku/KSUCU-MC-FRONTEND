@@ -4,6 +4,7 @@ import { config } from './environment';
 // Create axios instance with no-cache configuration
 const axiosInstance = axios.create({
   baseURL: config.baseUrl,
+  withCredentials: true,
   timeout: 30000,
   headers: {
     'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -22,12 +23,12 @@ axiosInstance.interceptors.request.use(
         _t: Date.now()
       };
     }
-    
+
     // Add no-cache headers
     config.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate';
     config.headers['Pragma'] = 'no-cache';
     config.headers['Expires'] = '0';
-    
+
     return config;
   },
   (error) => {

@@ -1,9 +1,11 @@
 import { Outlet } from "react-router-dom"
+import NotificationBubble from "./components/NotificationBubble"
 
 function App() {
-  return(
+  return (
     <>
       <Outlet />
+      <NotificationBubble />
     </>
   )
 }

@@ -1,204 +1,91 @@
-
-import React, { useEffect, useRef } from 'react';
-import styles from '../../styles/ministryPage.module.css';
-import UniversalHeader from '../../components/UniversalHeader';
-import Footer from '../../components/footer';
-import { Link } from 'react-router-dom';
+import React from 'react';
 import usheringImg from '../../assets/ushering.jpg';
-import MinistryRegistrationModal from '../../components/MinistryRegistrationModal';
-
-
+import MinistryLayout from '../../components/MinistryLayout';
+import { Calendar, Utensils, ClipboardList, ShieldCheck, Clock, Church, CalendarDays, BookOpen } from 'lucide-react';
 
 const UsheringPage: React.FC = () => {
-  const contentRef1 = useRef<HTMLDivElement>(null);
-  const contentRef2 = useRef<HTMLDivElement>(null);
-
-  const [showModal, setShowModal] = React.useState(false);
-
-  useEffect(() => {
-    // Smooth scroll behavior
-    document.documentElement.style.scrollBehavior = 'smooth';
-
-    // Simple scroll animation observer
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px',
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
-      });
-    }, observerOptions);
-
-    // Observe elements if they exist
-    if (contentRef1.current) observer.observe(contentRef1.current);
-    if (contentRef2.current) observer.observe(contentRef2.current);
-
-
-    return () => {
-      document.documentElement.style.scrollBehavior = 'auto';
-      observer.disconnect();
-    };
-  }, []);
-
   return (
-    <>
-      <UniversalHeader />
-      <div className={styles.container}>
-        <div className={styles.heroSection}>
-          <div className={styles.heroContent}>
-            <h1 className={styles.title}>Ushering and Hospitality Ministry</h1>
-            <p className={styles.subtitle}>The welcoming heart of our church</p>
-          </div>
-
-          <div className={styles.heroImage}>
-            <img src={usheringImg} alt="Ushering and Hospitality Ministry" />
-          </div>
-        </div>
-
-        <div className={`${styles.contentSection} ${styles.animate}`} ref={contentRef1}>
-          <div className={styles.description}>
-            <h2>About Ushering and Hospitality Ministry</h2>
-            <p>
-              The Ushering and Hospitality Ministry is the welcoming heart of our church, committed to creating a warm and
-              inviting atmosphere where everyone feels valued and at home. Our ushers and hospitality team serve as the hands
-              and feet of Christ, greeting each person with kindness, guiding them with care, and ensuring
-              that every service runs smoothly and orderly.
-            </p>
-
-            <p>
-              From welcoming guests at the door to assisting with seating, offering directions, and
-              facilitating worship elements, the Ushering and Hospitality Ministry plays a vital role in enhancing the
-              worship experience. Our team is dedicated to embodying hospitality, joy, and excellence,
-              reflecting God's love in every interaction.
-            </p>
-
-            <h3>Our Mission</h3>
-            <p>
-              To create an atmosphere of warmth, welcome, and worship excellence that allows every person
-              who enters our church to feel the love of God and experience His presence.
-            </p>
-
-            <h3>What We Do</h3>
-            <ul className={styles.activitiesList}>
-              <li data-number="01">Welcome and greet congregation members and visitors</li>
-              <li data-number="02">Assist with seating and provide service information</li>
-              <li data-number="03">Distribute bulletins, programs, and other materials</li>
-              <li data-number="04">Manage offering collection during services</li>
-              <li data-number="05">Maintain order and assist with crowd control</li>
-              <li data-number="06">Provide directions and answer questions</li>
-              <li data-number="07">Assist elderly, disabled, and families with children</li>
-              <li data-number="08">Coordinate with other ministries during services</li>
-            </ul>
-
-          </div>
-
-          <div className={styles.joinSection}>
-            <h2>Join Our Hospitality Team</h2>
-            <p>
-              If you have a heart for service and a friendly smile, we invite you to join us in making
-              every worship experience meaningful and memorable. Together, we can help create an environment
-              where God's presence is felt and His people are blessed.
-            </p>
-
-            <div className={styles.requirements}>
-              <h3>Qualities We Value</h3>
-              <ul>
-                <li>Warm, friendly personality and genuine smile</li>
-                <li>Heart for hospitality and serving others</li>
-                <li>Punctuality and reliability for scheduled services</li>
-                <li>Professional appearance and positive attitude</li>
-                <li>Ability to remain calm under pressure</li>
-                <li>Good communication and interpersonal skills</li>
-              </ul>
-            </div>
-
-
-            <div className={styles.schedule}>
-              <h3>Service Schedule</h3>
-              <div className={styles.scheduleGrid}>
-                <div className={styles.scheduleItem}>
-                  <strong>First Service</strong>
-                  <p>Sundays: 7:30 AM - 10:00 AM</p>
-                </div>
-                <div className={styles.scheduleItem}>
-                  <strong>Second Service</strong>
-                  <p>Sundays: 10:30 AM - 1:00 PM</p>
-                </div>
-                <div className={styles.scheduleItem}>
-                  <strong>Special Events</strong>
-                  <p>As scheduled for conferences</p>
-                </div>
-                <div className={styles.scheduleItem}>
-                  <strong>Training Sessions</strong>
-                  <p>Quarterly: Saturdays 10:00 AM</p>
-                </div>
-              </div>
-            </div>
-
-            <div className={styles.actionButtons}>
-              <Link to="/contact-us" className={styles.commitmentButton} onClick={() => setShowModal(true)}>
-                Join Ushering Team
-              </Link>
-              <Link to="/contact-us" className={styles.contactButton}>
-                Contact Head Usher
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        <div className={`${styles.contentSection} ${styles.animate}`} ref={contentRef1} >
-          <div className={styles.description}>
-            <h3>Our Service Philosophy</h3>
-            <p>
-              "Better is one day in your courts than a thousand elsewhere; I would rather be a doorkeeper
-              in the house of my God." – Psalm 84:10
-            </p>
-            <p>
-              We believe that serving as an usher is a sacred privilege. Every person who walks through
-              our doors carries hopes, fears, and needs. Our role is to be Jesus with skin on - to offer
-              the warmth, care, and welcome that reflects God's heart for His people.
-            </p>
-
-            <h3>Training and Development</h3>
-            <p>
-              We provide comprehensive training covering hospitality excellence, crowd management, emergency
-              procedures, and conflict resolution. Regular workshops help our team stay updated on best
-              practices and continue growing in their service skills.
-            </p>
-          </div>
-        </div>
-        <div className={`${styles.testimonialsSection} ${styles.animate}`}>
-          <h2>Hearts of Service</h2>
-          <div className={styles.testimonials}>
-            <div className={styles.testimonial}>
-              <p>"Being an usher has taught me that the smallest acts of kindness can have the biggest impact on someone's day."</p>
-              <span>- John, Head Usher</span>
-            </div>
-            <div className={styles.testimonial}>
-              <p>"I love seeing first-time visitors feel welcomed and comfortable. It's a privilege to be their first impression of our church."</p>
-              <span>- Susan, Greeting Team</span>
-            </div>
-            <div className={styles.testimonial}>
-              <p>"This ministry has shown me that serving others is not just a duty, but a joy and a way to worship God."</p>
-              <span>- Peter, Offering Team</span>
-            </div>
-          </div>
-        </div>
-
-
-      </div>
-
-      <Footer />
-      <MinistryRegistrationModal
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
-        ministryName="Ushering and Hospitality Ministry"
-      />
-    </>
+    <MinistryLayout
+      title="Ushering and Hospitality Ministry"
+      subtitle="Serving people as Jesus Would"
+      heroImage={usheringImg}
+      ministryName="Ushering"
+      aboutText={
+        <>
+          <p>
+            We as ushers we prepare venue for major KSUCU events , preparing meals for guests in the guest room and on other major events such as the AGM. We also organize for Carol Sundays , Holy communion and hymn Sundays( if scheduled by the KSUCU executive committee). We also collect offerings during the KSUCU services.
+          </p>
+          <p>
+            We are governed by three leaders that is the Chief usher , usher in charge and caterer in charge, we also work with the Vice chair of the KSUCU MC as the overseer and the executive committee link. We also have micro families managed by leaders selected by the ushering leaders.
+          </p>
+        </>
+      }
+      missionText={
+        <p>
+          Our activities as therefore service to the people oriented from CU community, to visitors and the entire student fraternity. We collaborate with other spiritual groups in Kisii University to ensure we stay to our mission.
+        </p>
+      }
+      joinText={
+        <p>
+          If you have a heart for service towards God's people and a friendly smile, then here is your place, we invite you to ushering family a place where we touch hearts and build capacity in service. We invite you to join us in making every worship experience meaningful and memorable. Together, we can help create an environment where God's presence is felt and His people are blessed.
+        </p>
+      }
+      requirements={[
+        "Warm, friendly personality and genuine smile",
+        "Inline with core values of KSUCU",
+        "Attend all meetings and services consecutively",
+        "Professional appearance and positive attitude",
+        "Ability to remain calm under pressure",
+        "Good communication and interpersonal skills"
+      ]}
+      whatWeDoHeader="Here’s how our Ushering and Hospitality team serves our congregation and the entire Kisii University community."
+      whatWeDoCards={[
+        { icon: <Calendar size={32} className="text-[#730051]" />, title: "Church Service", description: "We ensure members are comfortable during services" },
+        { icon: <Utensils size={32} className="text-[#730051]" />, title: "Community", description: "Ensuring the community get meals during the major KSUCU events." },
+        { icon: <ClipboardList size={32} className="text-[#730051]" />, title: "Major Events", description: "Preparing services and major CU events" },
+        { icon: <ShieldCheck size={32} className="text-[#730051]" />, title: "Order and Protocol", description: "Ensuring a smooth running of the services by maintaining order." }
+      ]}
+      ourRole="We ensure every visitor feels valued and at home."
+      ensureList={[
+        "Warm welcoming atmosphere for members",
+        "Welcome of guest speakers",
+        "Organized seating",
+        "Visitor assistance"
+      ]}
+      scheduleCards={[
+        { icon: <Clock size={40} className="text-[#730051]" />, title: "Ministry meeting", time: "Tuesday: 6:50 PM - 8:00 PM" },
+        { icon: <Church size={40} className="text-[#730051]" />, title: "Friday Fellowship", time: "Friday: 5:00 PM - 6:30 PM" },
+        { icon: <CalendarDays size={40} className="text-[#730051]" />, title: "Prayers", time: "Saturday: 3:00 PM - 4:40 PM" },
+        { icon: <BookOpen size={40} className="text-[#730051]" />, title: "Sunday Service Preparation", time: "Saturday: 4:00 PM" }
+      ]}
+      philosophyText={
+        <>
+          <p>
+            "Better is one day in your courts than a thousand elsewhere; I would rather be a doorkeeper
+            in the house of my God." – Psalm 84:10
+          </p>
+          <p>
+            We believe that serving as an usher is a sacred privilege. Every person who walks through
+            our doors carries hopes, fears, and needs. Our role is to be Jesus with skin on - to offer
+            the warmth, care, and welcome that reflects God's heart for His people.
+          </p>
+        </>
+      }
+      communityImpactText={
+        <p>
+          We provide comprehensive training covering hospitality excellence, crowd management, emergency
+          procedures, and conflict resolution. Regular workshops help our team stay updated on best
+          practices and continue growing in their service skills.
+        </p>
+      }
+      testimonials={[
+        { quote: "Being an usher has taught that a service to God's people is also a thanksgiving to God, and this has helped to draw closer to God through our meetings where we edify each other. It has helped me to cultivate humility and kindness cause that what ushering is.", author: "Joachim, Head Usher" },
+        { quote: "Ushering and hospitality ministry has been of impact in my ministry life. Spiritually, ushering has helped me focus on serving others, grow in humility, and experiencing God in my service. Hospitality is also part of ushering and have learn how to cook varieties and even it has open doors for more connections and friendships", author: "Viviane Odhiambo, Member" },
+        { quote: "There's a special joy in being the first smile a person sees when they walk into God's house.", author: "David, Team Member" }
+      ]}
+      ministryId="ushering"
+      testimonialTitle="Hearts of Service"
+    />
   );
 };
 

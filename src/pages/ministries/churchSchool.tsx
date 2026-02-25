@@ -1,179 +1,80 @@
-import React, { useEffect, useRef } from 'react';
-import styles from '../../styles/ministryPage.module.css';
-import UniversalHeader from '../../components/UniversalHeader';
-import Footer from '../../components/footer';
-import { Link } from 'react-router-dom';
-import churshSchoolImg from '../../assets/churchschool.jpg';
+import React from 'react';
+import churchSchoolImg from '../../assets/churchschool.jpg';
+import MinistryLayout from '../../components/MinistryLayout';
+import { Calendar, Utensils, ClipboardList, Clock, Church, BookOpen } from 'lucide-react';
 
 const ChurchSchoolPage: React.FC = () => {
-  const contentRef1 = useRef<HTMLDivElement>(null);
-  const contentRef2 = useRef<HTMLDivElement>(null);
-  const testimonialsRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    // Smooth scroll behavior
-    document.documentElement.style.scrollBehavior = 'smooth';
-
-    // Simple scroll animation observer
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px',
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
-      });
-    }, observerOptions);
-
-    // Observe elements if they exist
-    if (contentRef1.current) observer.observe(contentRef1.current);
-    if (contentRef2.current) observer.observe(contentRef2.current);
-    if (testimonialsRef.current) observer.observe(testimonialsRef.current);
-
-    return () => {
-      document.documentElement.style.scrollBehavior = 'auto';
-      observer.disconnect();
-    };
-  }, []);
-
   return (
-    <>
-      <UniversalHeader />
-      <div className={styles.container}>
-        <div className={styles.heroSection}>
-          <div className={styles.heroContent}>
-            <h1 className={styles.title}>Church School Ministry</h1>
-            <p className={styles.subtitle}>Bridging faith and education</p>
-          </div>
-          
-          <div className={styles.heroImage}>
-            <img src={churshSchoolImg} alt="Ushering and Hospitality Ministry" />
-          </div>
-        </div>
-
-        <div className={`${styles.contentSection} ${styles.animate}`} ref={contentRef1}>
-          <div className={styles.description}>
-            <h2>About Church School Ministry</h2>
-            <p>
-              The Church-School Ministry is dedicated to building a bridge between our church and local schools, fostering relationships that reflect God's love and make a lasting impact on students, teachers, and families. This ministry exists to serve, support, and inspire the next generation by meeting practical needs, encouraging spiritual growth, and sharing the hope of Christ.
-            </p>
-            
-            <p>
-              Through partnerships with schools, we provide mentorship, tutoring, prayer support, and resources that enhance both academic success and personal development. Whether through after-school programs, teacher appreciation initiatives, or outreach events, our goal is to create an environment where faith, education, and community come together to transform lives.
-            </p>
-            
-            <h3>Our Vision</h3>
-            <p>
-              To be a beacon of hope and support within our educational community, demonstrating Christ's love through practical service and building relationships that lead to positive change in students' lives.
-            </p>
-            
-            <h3>What We Do</h3>
-            <ul className={styles.activitiesList}>
-              <li data-number="01">After-school tutoring and homework assistance</li>
-              <li data-number="02">Mentorship programs for at-risk students</li>
-              <li data-number="03">Teacher appreciation events and support</li>
-              <li data-number="04">School supply drives and resource provision</li>
-              <li data-number="05">Prayer support for schools and educators</li>
-              <li data-number="06">Volunteer coordination for school events</li>
-              <li data-number="06">Scholarship programs for deserving students</li>
-            </ul>
-            
-          </div>
-
-          <div className={styles.joinSection}>
-            <h2>Make a Difference in Education</h2>
-            <p>
-             Join us as we invest in the lives of students and educators, planting seeds of faith and hope that will bear fruit for years to come. Every student deserves support and encouragement to reach their full potential.
-            </p>
-            
-            <div className={styles.requirements}>
-              <h3>How to Get Involved</h3>
-              <ul>
-                <li>Heart for children and young people's development</li>
-                <li>Background check clearance for working with minors</li>
-                <li>Basic academic skills or willingness to be trained</li>
-                <li>Patience and understanding with diverse learning needs</li>
-                <li>Commitment to regular volunteer schedule</li>
-                <li>Respect for diverse backgrounds and beliefs</li>
-              </ul>
-            </div>
-            
-
-            <div className={styles.schedule}>
-              <h3>Ministry Schedule</h3>
-              <div className={styles.scheduleGrid}>
-                <div className={styles.scheduleItem}>
-                  <strong>Tutoring Sessions</strong>
-                  <p>Mon-Thu: 3:30 PM - 5:30 PM</p>
-                </div>
-                <div className={styles.scheduleItem}>
-                  <strong>Mentorship Meetings</strong>
-                  <p>Saturdays: 10:00 AM - 12:00 PM</p>
-                </div>
-                <div className={styles.scheduleItem}>
-                  <strong>Planning & Training</strong>
-                  <p>Second Saturday: 9:00 AM - 11:00 AM</p>
-                </div>
-                <div className={styles.scheduleItem}>
-                  <strong>School Visits</strong>
-                  <p>As arranged with schools</p>
-                </div>
-              </div>
-            </div>
-            
-            <div className={styles.actionButtons}>
-              <Link to="/contact-us" className={styles.commitmentButton}>
-                Join Church School
-              </Link>
-              <Link to="/contact-us" className={styles.contactButton}>
-                Contact Overseer
-              </Link>
-            </div>
-          </div>
-        </div>
-
-<div className={`${styles.contentSection} ${styles.animate}`} ref={contentRef1} >
-          <div className={styles.description}>
-            <h3>Our Education Philosophy</h3>
-            <p>
-              "Train up a child in the way he should go, and when he is old he will not depart from it." â€“ Proverbs 22:6
-            </p>
-            <p>
-             We believe that education is a partnership between school, family, church, and community. By working together, we can provide students with the academic support, life skills, and moral foundation they need to succeed not just in school, but in life.
-            </p>
-            
-            <h3>Community Impact</h3>
-            <p>
-              Our ministry has touched hundreds of lives through tutoring, mentorship, and support programs. We've seen students improve their grades, gain confidence, and develop positive life goals. Teachers and parents consistently report the positive impact our volunteers have on their students.
-            </p>
-          </div>
-        </div>
-        <div className={`${styles.testimonialsSection} ${styles.animate}`} ref={testimonialsRef}>
-          <h2>Transforming Lives Through Education</h2>
-          <div className={styles.testimonials}>
-            <div className={styles.testimonial}>
-              <p>"Seeing a struggling student finally understand a concept and smile with confidence - that's what this ministry is about."</p>
-              <span>- Patricia, Tutor</span>
-            </div>
-            <div className={styles.testimonial}>
-              <p>"This ministry has shown me that education is not just about academics, but about building character and hope."</p>
-              <span>- David, Mentor</span>
-            </div>
-            <div className={styles.testimonial}>
-              <p>"Through this ministry, I've learned that every child has potential - they just need someone who believes in them."</p>
-              <span>- Grace, Volunteer Coordinator</span>
-            </div>
-          </div>
-        </div>
-
-        
-      </div>
-      
-      <Footer />
-    </>
+    <MinistryLayout
+      title="Church School Ministry"
+      subtitle="Service to children is service to God"
+      heroImage={churchSchoolImg}
+      ministryName="Church School Ministry"
+      aboutText={
+        <>
+          <p>
+            The Church-School Ministry is dedicated to building a bridge between our church and local schools, fostering relationships that reflect God's love and make a lasting impact on students, teachers, and families. This ministry exists to serve, support, and inspire the next generation by meeting practical needs, encouraging spiritual growth, and sharing the hope of Christ.
+          </p>
+          <p>
+            We operate under a well-defined structure to ensure accountability and efficiency, working closely with the Vice Chair of the KSUCU MC as our overseer.
+          </p>
+        </>
+      }
+      missionText={
+        <p>
+          To nurture children spiritually by teaching them the word of God in a loving, fun and safe environment hence helping them grow in faith, character, obedience and love for others as they discover their identity in Christ.
+        </p>
+      }
+      joinText={
+        <p>
+          Whether individuals feel called to teaching, prayer, mentorship or support, there is a place for them. Availability, willingness, and a heart for God matter more than perfection.
+        </p>
+      }
+      requirements={[
+        "Integrity",
+        "Love for children",
+        "Responsibility",
+        "Humility",
+        "Obedience to God"
+      ]}
+      whatWeDoHeader="Here’s how we serve God through the children"
+      whatWeDoCards={[
+        { icon: <Calendar size={32} className="text-[#730051]" />, title: "Church Service", description: "The ministry does presentations on Sundays before the Church at least twice a month." },
+        { icon: <Utensils size={32} className="text-[#730051]" />, title: "Community", description: "Provides hikes each semester for the children to enjoy themselves and have fun." },
+        { icon: <ClipboardList size={32} className="text-[#730051]" />, title: "Major Events", description: "Grounding children in the word of God, prayer and Christian discipline." }
+      ]}
+      ourRole="We ensure every visitor feels valued and at home."
+      ensureList={[
+        "Nurturing and guiding children in the ways of God",
+        "Ensuring holistic growth - spiritual, moral, emotional and social",
+        "Producing spiritually mature believers"
+      ]}
+      scheduleCards={[
+        { icon: <Clock size={40} className="text-[#730051]" />, title: "Ministry meeting", time: "Tuesday: 6:50 PM - 8:00 PM" },
+        { icon: <Church size={40} className="text-[#730051]" />, title: "Ministrations", time: "Friday: 8:00 AM - 9:00 PM" },
+        { icon: <Calendar size={40} className="text-[#730051]" />, title: "Prayers", time: "Saturday: 6:00 AM - 7:00 AM" },
+        { icon: <BookOpen size={40} className="text-[#730051]" />, title: "Sunday School Service", time: "Sunday: 10:00 AM - 12:00 PM" }
+      ]}
+      philosophyTitle="Our Education Philosophy"
+      philosophyText={
+        <>
+          <p>"Train up a child in the way he should go, and when he is old he will not depart from it." – Proverbs 22:6</p>
+          <p>We believe that education is a partnership between school, family, church, and community. By working together, we can provide students with the academic support, life skills, and moral foundation they need to succeed in life.</p>
+        </>
+      }
+      communityImpactText={
+        <p>
+          Our ministry has touched hundreds of lives through tutoring, mentorship, and support programs. We've seen students improve their grades, gain confidence, and develop positive life goals.
+        </p>
+      }
+      testimonials={[
+        { quote: "Teaching children about God's love is a privilege that brings so much joy.", author: "Sarah, Sunday School Teacher" },
+        { quote: "Our kids are growing in faith every Sunday. It's beautiful to witness.", author: "James, Ministry Leader" },
+        { quote: "Children are our priority because they are the church of today and tomorrow.", author: "Martha, Teacher" }
+      ]}
+      ministryId="cs"
+      testimonialTitle="Transforming Lives Through Education"
+    />
   );
 };
 

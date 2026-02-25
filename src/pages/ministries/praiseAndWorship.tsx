@@ -1,182 +1,87 @@
-import React, { useEffect, useRef } from 'react';
-import styles from '../../styles/ministryPage.module.css';
-import UniversalHeader from '../../components/UniversalHeader';
-import Footer from '../../components/footer';
-import { Link } from 'react-router-dom';
+import React from 'react';
 import praiseAndWorshipImg from '../../assets/praise-and-worship.jpg';
-import MinistryRegistrationModal from '../../components/MinistryRegistrationModal';
-import { useState } from 'react';
+import MinistryLayout from '../../components/MinistryLayout';
+import { Music, Piano, Mic2, Heart, Clock, Church, Calendar, Users as UsersIcon } from 'lucide-react';
 
 const PraiseAndWorshipPage: React.FC = () => {
-  const contentRef1 = useRef<HTMLDivElement>(null);
-  const contentRef2 = useRef<HTMLDivElement>(null);
-  const testimonialsRef = useRef<HTMLDivElement>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  useEffect(() => {
-    // Smooth scroll behavior
-    document.documentElement.style.scrollBehavior = 'smooth';
-
-    // Simple scroll animation observer
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px',
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
-      });
-    }, observerOptions);
-
-    // Observe elements if they exist
-    if (contentRef1.current) observer.observe(contentRef1.current);
-    if (contentRef2.current) observer.observe(contentRef2.current);
-    if (testimonialsRef.current) observer.observe(testimonialsRef.current);
-
-    return () => {
-      document.documentElement.style.scrollBehavior = 'auto';
-      observer.disconnect();
-    };
-  }, []);
-
   return (
-    <>
-      <UniversalHeader />
-      <div className={styles.container}>
-        <div className={styles.heroSection}>
-          <div className={styles.heroContent}>
-            <h1 className={styles.title}>Praise and Worship Ministry</h1>
-            <p className={styles.subtitle}>Leading hearts into God's presence through worship</p>
-          </div>
-
-          <div className={styles.heroImage}>
-            <img src={praiseAndWorshipImg} alt="Ushering and Hospitality Ministry" />
-          </div>
-        </div>
-
-        <div className={`${styles.contentSection} ${styles.animate}`} ref={contentRef1}>
-          <div className={styles.description}>
-            <h2>About Praise and Worship</h2>
-            <p>
-              The Praise and Worship Ministry exists to lead our congregation into the presence of God through heartfelt worship, uplifting music, and a lifestyle of praise. We are passionate about glorifying God and creating an atmosphere where people can encounter Him, experience His love, and respond in worship.
-            </p>
-
-            <p>
-              Our ministry is committed to excellence in musicianship, unity in spirit, and authenticity in worship. Whether through singing, playing instruments, or leading in prayer, our team's mission is to magnify God and inspire others to do the same
-            </p>
-
-            <h3>Our Vision</h3>
-            <p>
-              To create transformative worship experiences that draw people closer to God, encouraging every heart to worship in spirit and truth. We believe worship is not just about music, but about the condition of our hearts before God.
-            </p>
-
-            <h3>What We Do</h3>
-            <ul className={styles.activitiesList}>
-              <li data-number="01">Lead corporate worship during Sunday services</li>
-              <li data-number="02">Facilitate prayer and worship nights</li>
-              <li data-number="03">Organize special worship concerts and events</li>
-              <li data-number="04">Mentor upcoming worship leaders and musicians</li>
-              <li data-number="05">Participate in community outreach through worship</li>
-              <li data-number="06">Lead worship during retreats and conferences</li>
-            </ul>
-
-          </div>
-
-          <div className={styles.joinSection}>
-            <h2>Join Our Worship Team</h2>
-            <p>
-              If you have a heart for worship and a desire to use your gifts for God's glory, we invite you to join us. Together, we'll lift up the name of Jesus and create moments that touch heaven and change lives.
-            </p>
-
-            <div className={styles.requirements}>
-              <h3>Requirements to Join</h3>
-              <ul>
-                <li>Personal relationship with Jesus Christ</li>
-                <li>Heart for worship and leading others into God's presence</li>
-                <li>Musical ability (voice or instruments) - all skill levels welcome</li>
-                <li>Commitment to team practices and Sunday services</li>
-                <li>Willingness to grow spiritually and musically</li>
-                <li>Team spirit and humble servant's heart</li>
-              </ul>
-            </div>
-
-
-            <div className={styles.schedule}>
-              <h3>Our Schedule</h3>
-              <div className={styles.scheduleGrid}>
-                <div className={styles.scheduleItem}>
-                  <strong>Team Practice</strong>
-                  <p>Saturdays: 8:00 PM - 4:00 PM</p>
-                </div>
-                <div className={styles.scheduleItem}>
-                  <strong>Pre-Service Prep</strong>
-                  <p>Sundays: 7:00 AM - 8:15 AM</p>
-                </div>
-                <div className={styles.scheduleItem}>
-                  <strong>Worship Service</strong>
-                  <p>Sundays: 8:30 AM - 11:30 AM</p>
-                </div>
-                <div className={styles.scheduleItem}>
-                  <strong>Prayer Sessions</strong>
-                  <p>Wednesdays: 6:00 PM - 7:30 PM</p>
-                </div>
-              </div>
-            </div>
-
-            <div className={styles.actionButtons}>
-              <Link to="/contact-us" className={styles.commitmentButton}>
-                Join Worship Team
-              </Link>
-              <Link to="/contact-us" className={styles.contactButton}>
-                Contact Worship Coodinator
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        <div className={`${styles.contentSection} ${styles.animate}`} ref={contentRef1} >
-          <div className={styles.description}>
-            <h3>Our Worship Philosophy</h3>
-            <p>
-              "Let everything that has breath praise the Lord. Praise the Lord!" Psalm 150:6
-            </p>
-            <p>
-              We believe that worship is both a privilege and a responsibility. It's our response to who God is and what He has done for us. Our goal is not just to perform music, but to create an environment where every person can encounter the living God and respond with their whole heart.
-            </p>
-
-          </div>
-        </div>
-        <div className={`${styles.testimonialsSection} ${styles.animate}`} ref={testimonialsRef}>
-          <h2>Hearts Transformed Through Worship</h2>
-          <div className={styles.testimonials}>
-            <div className={styles.testimonial}>
-              <p>"Being part of this ministry has taught me that worship is a lifestyle, not just a Sunday activity."</p>
-              <span>- Mary, Worship Leader</span>
-            </div>
-            <div className={styles.testimonial}>
-              <p>"Through this team, I've grown not just as a musician, but as a worshipper who seeks God's heart."</p>
-              <span>- Peter, Guitarist</span>
-            </div>
-            <div className={styles.testimonial}>
-              <p>"The unity and love in this ministry reflects God's heart for His people. It's truly a family."</p>
-              <span>- Ruth, Vocalist</span>
-            </div>
-          </div>
-        </div>
-
-
-      </div>
-
-      <Footer />
-      <MinistryRegistrationModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        ministryName="Praise and Worship Ministry"
-      />
-    </>
+    <MinistryLayout
+      title="Praise and Worship Ministry"
+      subtitle="Where Jesus is Lord"
+      heroImage={praiseAndWorshipImg}
+      ministryName="Praise and Worship"
+      aboutText={
+        <>
+          <p>
+            Praise and worship is a vibrant key ministry in KSUCU-MC that is mandated to lead the church in heartfelt intense worship in songs with accompaniment of Instruments for power packed encounter, experience with God.
+          </p>
+          <p>
+            We advocate for True worship of Worshipping the Father in Spirit and Truth (John 4:23-25) to mentor worship leaders in the ministry and as the church at large.
+          </p>
+        </>
+      }
+      missionText={
+        <p>
+          To create an atmosphere of warmth, welcome, and worship excellence that allows every person who enters our church to feel the love of God and experience His presence.
+        </p>
+      }
+      joinText={
+        <p>
+          Worship begins from your heart, therefore willingness and sincerity is key to encourage you for that desire and gift in singing or playing Instruments. The ministry gives you a ground to grow in word, prayer and skillfully in music.
+        </p>
+      }
+      requirements={[
+        "Have a personal relationship with Jesus Christ",
+        "Heart of worship and leading others into God’s presence",
+        "Music ability /gift in vocals (voice) or instruments",
+        "Professional appearance and positive attitude",
+        "Consistency to team practices, activities and church services",
+        "Discipline"
+      ]}
+      whatWeDoHeader="Here’s how our Praise and Worship team serves our congregation every Sunday."
+      whatWeDoCards={[
+        { icon: <Music size={32} className="text-[#730051]" />, title: "Leading Worship", description: "Guiding the congregation into meaningful praise and heartfelt worship during services." },
+        { icon: <Piano size={32} className="text-[#730051]" />, title: "Instrumental Excellence", description: "Creating a spirit-filled atmosphere through skillful and disciplined instrumentation." },
+        { icon: <Mic2 size={32} className="text-[#730051]" />, title: "Vocal Ministry", description: "Ministering through song with unity, harmony, and spiritual sensitivity." },
+        { icon: <Heart size={32} className="text-[#730051]" />, title: "Spiritual Preparation", description: "Engaging in prayer, rehearsals, and intentional preparation before every service." }
+      ]}
+      ourRole="We create an atmosphere of warmth, welcome and excellence that allows the congregation to experience God's presence."
+      ensureList={[
+        "Spiritual atmosphere",
+        "Unity in the congregation",
+        "Alignment with the message",
+        "Spiritual engagement"
+      ]}
+      scheduleCards={[
+        { icon: <Clock size={40} className="text-[#730051]" />, title: "Rehearsals", time: "Saturday: 2:00 PM - 5:00 PM TCG2" },
+        { icon: <Church size={40} className="text-[#730051]" />, title: "Friday Fellowship Rehearsals", time: "Friday: 5:00 PM - 6:30 PM Sagini Hall" },
+        { icon: <Calendar size={40} className="text-[#730051]" />, title: "Ministry Prayers", time: "Thursday: 5:50 PM - 6:50 PM" },
+        { icon: <UsersIcon size={40} className="text-[#730051]" />, title: "Ministry Meeting", time: "Tuesday: 6:50 PM - 8:50 PM" }
+      ]}
+      philosophyText={
+        <>
+          <p>
+            Psalm 150:6(NIV) - Let everything that has breath praise the Lord. Praise the Lord.
+          </p>
+          <p>
+            We advocate for true worship and therefore we believe worship is an opportunity and responsibility to Worship God for Who He is and what He has done.
+          </p>
+        </>
+      }
+      communityImpactText={
+        <p>
+          Our Praise and Worship team is committed to continuous growth both spiritually and musically. Through structured rehearsals and mentorship, we develop excellence and sensitivity in ministry.
+        </p>
+      }
+      testimonials={[
+        { quote: "The unity and love in this ministry reflects God's heart for His people. It's truly a family.", author: "Ruth, Vocalist" },
+        { quote: "Worship is personal from the heart and it's never on our terms but on God’s terms . Worship is not about singing but about my heart. And have seen growth in music both skills and understanding to magnify who God i", author: "Amos Opicho, Worship Leader" },
+        { quote: "Through this team, I've grown not just as a musician, but as a worshipper who seeks God's heart.", author: "Peter, Guitarist" }
+      ]}
+      joinPath="/p&w"
+      ministryId="pw"
+      testimonialTitle="Hearts Transformed Through Worship"
+    />
   );
 };
 

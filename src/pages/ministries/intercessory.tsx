@@ -1,176 +1,86 @@
-import React, { useEffect, useRef } from 'react';
-import styles from '../../styles/ministryPage.module.css';
-import UniversalHeader from '../../components/UniversalHeader';
-import Footer from '../../components/footer';
-import { Link } from 'react-router-dom';
-import intercesorryImg from '../../assets/intersesory.jpg';
+import React from 'react';
+import intercessoryImg from '../../assets/intersesory.jpg';
+import MinistryLayout from '../../components/MinistryLayout';
+import { Users, User, Activity, GraduationCap, Clock, Heart, Users2 } from 'lucide-react';
 
 const IntercessoryPage: React.FC = () => {
-  const contentRef1 = useRef<HTMLDivElement>(null);
-  const contentRef2 = useRef<HTMLDivElement>(null);
-  const testimonialsRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    // Smooth scroll behavior
-    document.documentElement.style.scrollBehavior = 'smooth';
-
-    // Simple scroll animation observer
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px',
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
-      });
-    }, observerOptions);
-
-    // Observe elements if they exist
-    if (contentRef1.current) observer.observe(contentRef1.current);
-    if (contentRef2.current) observer.observe(contentRef2.current);
-    if (testimonialsRef.current) observer.observe(testimonialsRef.current);
-
-    return () => {
-      document.documentElement.style.scrollBehavior = 'auto';
-      observer.disconnect();
-    };
-  }, []);
-
   return (
-    <>
-      <UniversalHeader />
-      <div className={styles.container}>
-        <div className={styles.heroSection}>
-          <div className={styles.heroContent}>
-            <h1 className={styles.title}>Intercessory Ministry</h1>
-            <p className={styles.subtitle}>Standing in the gap through prayer</p>
-          </div>
-          
-          <div className={styles.heroImage}>
-            <img src={intercesorryImg} alt="Ushering and Hospitality Ministry" />
-          </div>
-        </div>
-
-        <div className={`${styles.contentSection} ${styles.animate}`} ref={contentRef1}>
-          <div className={styles.description}>
-            <h2>About Intercessory Prayer</h2>
-            <p>
-              The Intercessory Ministry is dedicated to standing in the gap through prayer, seeking God's heart, and lifting the needs of others before Him. Rooted in faith and compassion, this ministry strives to align with God's will and bring hope, healing, and transformation through the power of prayer.
-            </p>
-            
-            <p>
-              We believe in the importance of interceding for individuals, families, communities, and nations, trusting in the promises of God to hear and answer our petitions. Our prayer warriors are committed to creating a spiritual covering, offering support during times of challenge, and celebrating breakthroughs as God moves.
-            </p>
-            
-            <h3>Our Mission</h3>
-            <p>
-              To be a house of prayer for all nations, interceding for the needs of our church, community, and world. We seek to build a bridge between heaven and earth through persistent, faithful prayer.
-            </p>
-            
-            <h3>What We Do</h3>
-            <ul className={styles.activitiesList}>
-              <li data-number="01">Corporate prayer sessions and prayer meetings</li>
-              <li data-number="02">Individual prayer requests and follow-up</li>
-              <li data-number="03">24/7 prayer chain for urgent needs</li>
-              <li data-number="04">Fasting and prayer retreats</li>
-              <li data-number="05">Spiritual warfare and deliverance ministry</li>
-              <li data-number="06">Prayer walks and community intercession</li>
-              <li data-number="06">Training in prayer principles and techniques</li>
-              <li data-number="06">Prophetic intercession and listening prayer</li>
-            </ul>
-            
-          </div>
-
-          <div className={styles.joinSection}>
-            <h2>Join Our Prayer Army</h2>
-            <p>
-             Whether you're in need of prayer, feel called to intercede for others, or want to deepen your connection with God, we welcome you to join us in this vital and impactful ministry.
-            </p>
-            
-            <div className={styles.requirements}>
-              <h3>How to Get Involved</h3>
-              <ul>
-                <li>Heart for prayer and seeking God's presence</li>
-                <li>Commitment to confidentiality and sensitivity</li>
-                <li>Regular participation in prayer meetings</li>
-                <li>Willingness to pray for others consistently</li>
-                <li>Desire to grow in prayer and spiritual maturity</li>
-                <li>Availability for emergency prayer needs</li>
-              </ul>
-            </div>
-            
-
-            <div className={styles.schedule}>
-              <h3>Prayer Schedule</h3>
-              <div className={styles.scheduleGrid}>
-                <div className={styles.scheduleItem}>
-                  <strong>Weekly Prayer Meeting</strong>
-                  <p>Wednesdays: 6:00 PM - 7:30 PM</p>
-                </div>
-                <div className={styles.scheduleItem}>
-                  <strong>Early Morning Prayer</strong>
-                  <p>Daily: 5:30 AM - 6:30 AM</p>
-                </div>
-                <div className={styles.scheduleItem}>
-                  <strong>Friday Night Prayer</strong>
-                  <p>Fridays: 8:00 PM - 10:00 PM</p>
-                </div>
-                <div className={styles.scheduleItem}>
-                  <strong>Prayer & Fasting</strong>
-                  <p>First Friday of each month</p>
-                </div>
-              </div>
-            </div>
-            
-            <div className={styles.actionButtons}>
-              <Link to="/contact-us" className={styles.commitmentButton}>
-                Join Prayer Team
-              </Link>
-              <Link to="/contact-us" className={styles.contactButton}>
-                Submit Prayer Request
-              </Link>
-            </div>
-          </div>
-        </div>
-
-<div className={`${styles.contentSection} ${styles.animate}`} ref={contentRef1} >
-          <div className={styles.description}>
-            <h3>Our Prayer Philosophy</h3>
-            <p>
-              "The prayer of a righteous person is powerful and effective." James 5:1
-            </p>
-            <p>
-             We believe prayer is both a privilege and a responsibility. It's our direct line of communication with our Heavenly Father and the means by which His will is accomplished on earth. Through intercession, we partner with God in His work of transformation and redemption.
-            </p>
-            
-          </div>
-        </div>
-        <div className={`${styles.testimonialsSection} ${styles.animate}`} ref={testimonialsRef}>
-          <h2>Testimonies of God's Faithfulness</h2>
-          <div className={styles.testimonials}>
-            <div className={styles.testimonial}>
-              <p>"Through intercession, I've learned that prayer is not just asking, but listening for God's heart and will."</p>
-              <span>- Elizabeth, Prayer Warrior</span>
-            </div>
-            <div className={styles.testimonial}>
-              <p>"This ministry has taught me the power of persistent prayer and how God moves when His people unite in prayer."</p>
-              <span>- Samuel, Intercessor</span>
-            </div>
-            <div className={styles.testimonial}>
-              <p>"Being part of this ministry has deepened my relationship with God and shown me His faithfulness in answering prayer."</p>
-              <span>- Mary, Prayer Team Leader</span>
-            </div>
-          </div>
-        </div>
-
-        
-      </div>
-      
-      <Footer />
-    </>
+    <MinistryLayout
+      title="Intercessory Ministry"
+      subtitle="Acts 6:4- But we will give ourselves continually to prayers and to the ministry of the word."
+      heroImage={intercessoryImg}
+      ministryName="Intercessory Ministry"
+      aboutText={
+        <>
+          <p>
+            The Intercessory Ministry is dedicated to standing in the gap through prayer, seeking God's heart, and lifting the needs of others before Him. Rooted in faith and compassion, this ministry strives to align with God's will and bring hope, healing, and transformation through the power of prayer.
+          </p>
+          <p>
+            We believe in the importance of interceding for individuals, families, communities, and nations, trusting in the promises of God to hear and answer our petitions.
+          </p>
+        </>
+      }
+      missionText={
+        <p>
+          To be a house of prayer for all nations, interceding for the needs of our church, community, and world. We seek to build a bridge between heaven and earth through persistent, faithful prayer.
+        </p>
+      }
+      joinText={
+        <p>
+          To those interested in joining, we really welcome them and ensure them that they will experience a growth in their salvation life.
+        </p>
+      }
+      requirements={[
+        "Heart for prayer and seeking God's presence",
+        "Commitment to confidentiality and sensitivity",
+        "Regular participation in prayer meetings",
+        "Willingness to pray for others",
+        "Desire to grow in spiritual maturity",
+        "Availability for emergency prayer needs"
+      ]}
+      whatWeDoHeader="Here’s how our Intercessory Ministry serves the KSUCU community."
+      whatWeDoCards={[
+        { icon: <Users size={32} className="text-[#730051]" />, title: "Corporate Prayer", description: "Corporate prayer sessions and group prayer meetings." },
+        { icon: <User size={32} className="text-[#730051]" />, title: "Individual Prayer", description: "Handling individual prayer requests and follow-ups." },
+        { icon: <Activity size={32} className="text-[#730051]" />, title: "Prayer Chain", description: "24/7 prayer chain for urgent and emergency needs." },
+        { icon: <GraduationCap size={32} className="text-[#730051]" />, title: "Training", description: "Training in prayer principles and spiritual warfare." }
+      ]}
+      ourRole="Standing in the gap between God and people."
+      ensureList={[
+        "Petition prayer",
+        "Supplication prayer",
+        "Prayer of thanksgiving",
+        "Prayer of confession",
+        "Prayer of worship"
+      ]}
+      scheduleCards={[
+        { icon: <Clock size={40} className="text-[#730051]" />, title: "Ministry meeting", time: "Tuesday: 6:50 PM - 8:50 PM" },
+        { icon: <Heart size={40} className="text-[#730051]" />, title: "Prayer and fasting", time: "Friday: 1:00 PM - 2:00 PM & 5:00 PM - 6:00 PM" },
+        { icon: <Users2 size={40} className="text-[#730051]" />, title: "Prayers", time: "Separate sessions for ladies and gents" }
+      ]}
+      philosophyText={
+        <>
+          <p>
+            "The prayer of a righteous person is powerful and effective." – James 5:16
+          </p>
+          <p>
+            We believe prayer is both a privilege and a responsibility. It's our direct line of communication with our Heavenly Father and the means by which His will is accomplished on earth.
+          </p>
+        </>
+      }
+      communityImpactText={
+        <p>
+          Through intercession, we partner with God in His work of transformation and redemption within the university and the broader community.
+        </p>
+      }
+      testimonials={[
+        { quote: "Intercession is the engine of the church. Seeing God answer our prayers is the greatest reward.", author: "Moses, Team Member" },
+        { quote: "It has help me to build a consistent bible reading habits. There is growth in my prayer life. The ministry has link me to people that l walk with them", author: "Sammy, Intercessor" },
+        { quote: "Spiritual life it has helped me a lot in my personal devotion life(prayer) i am exposed to prayerful men and women of God they have impacted me a lot. Socially I have made new friends who are very beneficial to me both spiritually and mentally", author: "Emily Awour, Intercessor" },
+      ]}
+      ministryId="intercessory"
+      testimonialTitle="Testimonies of God’s Faithfulness"
+    />
   );
 };
 
