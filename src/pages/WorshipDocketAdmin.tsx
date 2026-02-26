@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ModernNewsDisplay from '../components/ModernNewsDisplay';
+import OverseerLogoutButton from '../components/OverseerLogoutButton';
 import styles from '../styles/worshipDocketAdmin.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -11,61 +12,49 @@ import {
     faBox,
     faBookOpen,
     faHeart,
-    faSignOutAlt,
     faComments
 } from '@fortawesome/free-solid-svg-icons';
+import { useOverseerAuth } from '../hooks/useOverseerAuth';
 
 const WorshipDocketAdmin: React.FC = () => {
     const navigate = useNavigate();
-    const [authenticated, setAuthenticated] = useState(false);
+    const { authenticated, loading: authLoading, login } = useOverseerAuth();
     const [password, setPassword] = useState('');
     const [authError, setAuthError] = useState('');
     const [message, setMessage] = useState('');
     const [selectedRole, setSelectedRole] = useState<string>('');
 
-    // Check for existing session login on mount
-    useEffect(() => {
-        const storedAuth = sessionStorage.getItem('adminAuth');
-        if (storedAuth === 'Overseer') {
-            setAuthenticated(true);
-        }
-    }, []);
-
-    const handleLogin = () => {
-        if (password === 'Overseer') {
-            setAuthenticated(true);
+    const handleLogin = async () => {
+        const result = await login(password);
+        if (result.success) {
             setAuthError('');
             setMessage('Successfully logged in to Leadership Admin');
-
-            // Persist login for this session
-            sessionStorage.setItem('adminAuth', 'Overseer');
-
             setTimeout(() => setMessage(''), 3000);
         } else {
-            setAuthError('Invalid password');
+            setAuthError(result.message || 'Invalid password');
             setTimeout(() => setAuthError(''), 3000);
         }
         setPassword('');
     };
-
-    const handleLogout = () => {
-        setAuthenticated(false);
-        sessionStorage.removeItem('adminAuth');
-        setMessage('Logged out successfully');
-        setTimeout(() => setMessage(''), 3000);
-    };
-
 
     const handleRoleSelection = () => {
         const role = 'Executive Admin';
         setSelectedRole(role);
         setMessage(`Redirecting to attendance management...`);
         setTimeout(() => {
-            sessionStorage.setItem('adminAuth', 'Overseer');
+            sessionStorage.setItem('adminAuth', 'authenticated');
             sessionStorage.setItem('leadershipRole', role);
             navigate(`/attendance-session-management?role=${encodeURIComponent(role)}`);
         }, 800);
     };
+
+    if (authLoading) {
+        return (
+            <div className={styles.container}>
+                <p style={{ textAlign: 'center', color: '#666', marginTop: '50px' }}>Verifying session...</p>
+            </div>
+        );
+    }
 
     if (!authenticated) {
         return (
@@ -107,35 +96,13 @@ const WorshipDocketAdmin: React.FC = () => {
     return (
         <>
             <div className={styles.container}>
+                <OverseerLogoutButton />
                 <div className={styles.adminHeader}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-                        <div>
-                            <h1>
-                                <FontAwesomeIcon icon={faUsers} />
-                                Leadership Attendance Administration
-                            </h1>
-                            <p>Centralized management for all church attendance sessions</p>
-                        </div>
-                        <button
-                            onClick={handleLogout}
-                            title="Sign out of admin session"
-                            style={{
-                                background: 'transparent',
-                                border: '1px solid #730051',
-                                color: '#730051',
-                                padding: '8px 15px',
-                                borderRadius: '5px',
-                                cursor: 'pointer',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '8px',
-                                fontSize: '14px'
-                            }}
-                        >
-                            <FontAwesomeIcon icon={faSignOutAlt} />
-                            Log Out
-                        </button>
-                    </div>
+                    <h1>
+                        <FontAwesomeIcon icon={faUsers} />
+                        Leadership Attendance Administration
+                    </h1>
+                    <p>Centralized management for all church attendance sessions</p>
                 </div>
 
                 {message && (
@@ -167,7 +134,7 @@ const WorshipDocketAdmin: React.FC = () => {
                                 className={styles.functionButton}
                                 onClick={() => {
                                     // Store authentication state
-                                    sessionStorage.setItem('adminAuth', 'Overseer');
+                                    sessionStorage.setItem('adminAuth', 'authenticated');
                                     navigate('/news-admin');
                                 }}
                             >
@@ -190,7 +157,7 @@ const WorshipDocketAdmin: React.FC = () => {
                                 className={styles.functionButton}
                                 onClick={() => {
                                     // Store authentication state  
-                                    sessionStorage.setItem('adminAuth', 'Overseer');
+                                    sessionStorage.setItem('adminAuth', 'authenticated');
                                     navigate('/media-admin');
                                 }}
                             >
@@ -213,7 +180,7 @@ const WorshipDocketAdmin: React.FC = () => {
                                 className={styles.functionButton}
                                 onClick={() => {
                                     // Store authentication state
-                                    sessionStorage.setItem('adminAuth', 'Overseer');
+                                    sessionStorage.setItem('adminAuth', 'authenticated');
                                     navigate('/requisitions-admin');
                                 }}
                             >
@@ -236,7 +203,7 @@ const WorshipDocketAdmin: React.FC = () => {
                                 className={styles.functionButton}
                                 onClick={() => {
                                     // Store authentication state
-                                    sessionStorage.setItem('adminAuth', 'Overseer');
+                                    sessionStorage.setItem('adminAuth', 'authenticated');
                                     navigate('/adminBs');
                                 }}
                             >
@@ -259,7 +226,7 @@ const WorshipDocketAdmin: React.FC = () => {
                                 className={styles.functionButton}
                                 onClick={() => {
                                     // Store authentication state
-                                    sessionStorage.setItem('adminAuth', 'Overseer');
+                                    sessionStorage.setItem('adminAuth', 'authenticated');
                                     navigate('/compassion-counseling-admin');
                                 }}
                             >
@@ -302,7 +269,7 @@ const WorshipDocketAdmin: React.FC = () => {
                                 className={styles.functionButton}
                                 onClick={() => {
                                     // Store authentication state
-                                    sessionStorage.setItem('adminAuth', 'Overseer');
+                                    sessionStorage.setItem('adminAuth', 'authenticated');
                                     navigate('/chat-admin');
                                 }}
                             >

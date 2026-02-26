@@ -179,7 +179,7 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #730051, #00c6ff, #730051);
+  background: linear-gradient(90deg, #730051, #730051, #730051);
 }
 
 .heroIcon {
@@ -265,7 +265,7 @@
 }
 
 .shieldIcon {
-  color: #00c6ff;
+  color: #730051;
   filter: drop-shadow(0 0 4px rgba(0, 198, 255, 0.3));
 }
 

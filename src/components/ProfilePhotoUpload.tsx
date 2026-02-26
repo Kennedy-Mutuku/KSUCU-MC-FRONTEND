@@ -127,7 +127,7 @@ const ProfilePhotoUpload: React.FC<ProfilePhotoUploadProps> = ({ onUploadSuccess
             const formData = new FormData();
             formData.append('profilePhoto', croppedBlob, 'profile.webp');
 
-            const apiUrl = getApiUrl('users/upload-profile-photo');
+            const apiUrl = getApiUrl('api/users/upload-profile-photo');
             const response = await fetch(apiUrl, {
                 method: 'POST',
                 credentials: 'include',
@@ -209,7 +209,7 @@ const ProfilePhotoUpload: React.FC<ProfilePhotoUploadProps> = ({ onUploadSuccess
                                 alignItems: 'center',
                                 gap: '8px',
                                 padding: '12px 24px',
-                                backgroundColor: '#00c6ff',
+                                backgroundColor: '#730051',
                                 color: '#ffffff',
                                 border: 'none',
                                 borderRadius: '8px',
@@ -218,8 +218,8 @@ const ProfilePhotoUpload: React.FC<ProfilePhotoUploadProps> = ({ onUploadSuccess
                                 cursor: 'pointer',
                                 transition: 'all 0.3s ease'
                             }}
-                            onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#0099cc'}
-                            onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#00c6ff'}
+                            onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#5a0040'}
+                            onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#730051'}
                         >
                             <Camera size={20} />
                             Take Photo

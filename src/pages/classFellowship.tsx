@@ -24,6 +24,7 @@ const ClassFellowship = () => {
                                 These fellowships provide a platform for members to connect, share experiences, and support each other in their spiritual journey.
                                 These classes create an environment for deeper understanding of Scripture and meaningful fellowship.
                                 Each class is designed to encourage participation, discussion, and spiritual growth in a friendly and supportive setting.
+                                Class fellowships are usually held on Saturday mornings.
                             </p>
                         </div>
 

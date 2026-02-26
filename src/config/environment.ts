@@ -15,6 +15,7 @@ interface ApiConfig {
     usersBibleStudy: string;
     usersCountSaved: string;
     usersSearch: string;
+    usersAdvanceYears: string;
     newsAdmin: string;
     newsAdminUpload: string;
     newsAdminLogout: string;
@@ -116,6 +117,7 @@ const developmentConfig: ApiConfig = {
     usersBibleStudy: '/users/bibleStudy',
     usersCountSaved: '/users/countSaved',
     usersSearch: '/users/search',
+    usersAdvanceYears: '/users/advance-years',
     newsAdmin: '/adminnews/login',
     newsAdminUpload: '/adminnews/upload',
     newsAdminLogout: '/adminnews/logout',
@@ -210,6 +212,7 @@ const productionConfig: ApiConfig = {
     usersBibleStudy: '/users/bibleStudy',
     usersCountSaved: '/users/countSaved',
     usersSearch: '/users/search',
+    usersAdvanceYears: '/users/advance-years',
     newsAdmin: '/adminnews/login',
     newsAdminUpload: '/adminnews/upload',
     newsAdminLogout: '/adminnews/logout',

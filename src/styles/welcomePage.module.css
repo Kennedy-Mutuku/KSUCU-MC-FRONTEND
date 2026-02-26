@@ -1,0 +1,446 @@
+@import url(global.css);
+
+.page {
+    min-height: 100vh;
+    background: linear-gradient(160deg, #730051 0%, #4a0035 100%);
+    padding: 40px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    max-width: 440px;
+    padding: 36px 28px 28px;
+    position: relative;
+    overflow: hidden;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #730051, #a0006e, #730051);
+}
+
+/* Header */
+.header {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.iconCircle {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #730051, #a0006e);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 14px;
+    box-shadow: 0 4px 14px rgba(115, 0, 81, 0.25);
+}
+
+.title {
+    color: #1a1a2e;
+    font-size: 1.4em;
+    font-weight: 700;
+    margin: 0 0 6px;
+}
+
+.subtitle {
+    color: #666;
+    font-size: 0.92em;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Verse */
+.verse {
+    text-align: center;
+    color: #730051;
+    font-size: 0.85em;
+    font-style: italic;
+    font-weight: 500;
+    margin: 0 0 24px;
+    padding: 12px 16px;
+    background: #f8f0f5;
+    border-radius: 10px;
+    border-left: 3px solid #730051;
+}
+
+/* Photo section */
+.photoSection {
+    margin-bottom: 20px;
+}
+
+.photoLabel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.photoLabelText {
+    font-size: 0.88em;
+    font-weight: 600;
+    color: #333;
+}
+
+.optionalBadge {
+    font-size: 0.75em;
+    color: #999;
+    background: #f3f4f6;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+.uploadArea {
+    border: 1.5px dashed #d0d0d0;
+    border-radius: 12px;
+    padding: 24px 16px;
+    text-align: center;
+    background: #fafafa;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.uploadArea:hover {
+    border-color: #730051;
+    background: #fdf5fa;
+}
+
+.uploadAreaActive {
+    border-color: #730051;
+    background: #fdf5fa;
+}
+
+.uploadIcon {
+    color: #730051;
+    margin-bottom: 8px;
+}
+
+.uploadText {
+    font-size: 0.88em;
+    color: #444;
+    font-weight: 500;
+    margin: 0 0 4px;
+}
+
+.uploadHint {
+    font-size: 0.78em;
+    color: #999;
+    margin: 0;
+}
+
+.uploadActions {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 12px;
+}
+
+.cameraBtn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: #f8f0f5;
+    color: #730051;
+    border: 1.5px solid #e0c0d6;
+    border-radius: 8px;
+    font-size: 0.82em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.cameraBtn:hover {
+    background: #730051;
+    color: white;
+    border-color: #730051;
+}
+
+/* Cropper container — react-easy-crop needs a positioned parent with dimensions */
+.cropperWrapper {
+    position: relative;
+    width: 220px;
+    height: 220px;
+    margin: 0 auto 8px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.cropHint {
+    text-align: center;
+    font-size: 0.78em;
+    color: #999;
+    margin: 4px 0 8px;
+}
+
+/* Zoom slider */
+.zoomRow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 0 auto 14px;
+    max-width: 220px;
+}
+
+.zoomSlider {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    background: #e0c0d6;
+    border-radius: 4px;
+    outline: none;
+}
+
+.zoomSlider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #730051;
+    cursor: pointer;
+    border: 2px solid #fff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+}
+
+.zoomSlider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #730051;
+    cursor: pointer;
+    border: 2px solid #fff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+}
+
+.cropActions {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+.savePhotoBtn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 20px;
+    background: #730051;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.88em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.savePhotoBtn:hover {
+    background: #5a0040;
+}
+
+.savePhotoBtn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+.changePhotoBtn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 20px;
+    background: #f3f4f6;
+    color: #555;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.88em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.changePhotoBtn:hover {
+    background: #e5e7eb;
+}
+
+.changePhotoBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Success state */
+.photoSuccess {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: #f0fdf4;
+    border: 1.5px solid #bbf7d0;
+    border-radius: 10px;
+    margin-bottom: 8px;
+}
+
+.photoSuccessText {
+    flex: 1;
+    font-size: 0.88em;
+    color: #166534;
+    font-weight: 500;
+}
+
+.photoChangeLink {
+    font-size: 0.8em;
+    color: #730051;
+    font-weight: 600;
+    cursor: pointer;
+    background: none;
+    border: none;
+    text-decoration: underline;
+}
+
+/* Error */
+.error {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 0.85em;
+}
+
+/* Continue button */
+.continueBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #730051, #a0006e);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 0.95em;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(115, 0, 81, 0.25);
+    transition: all 0.2s ease;
+    margin-top: 4px;
+}
+
+.continueBtn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(115, 0, 81, 0.35);
+}
+
+/* Loading */
+.loadingPage {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fafafa;
+}
+
+.loadingText {
+    text-align: center;
+    font-size: 1rem;
+    color: #666;
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    .page {
+        padding: 16px 10px;
+        padding-bottom: 100px;
+    }
+
+    .card {
+        padding: 24px 16px 20px;
+        border-radius: 14px;
+    }
+
+    .iconCircle {
+        width: 48px;
+        height: 48px;
+        margin-bottom: 10px;
+    }
+
+    .title {
+        font-size: 1.2em;
+    }
+
+    .subtitle {
+        font-size: 0.85em;
+    }
+
+    .verse {
+        font-size: 0.8em;
+        padding: 10px 12px;
+        margin-bottom: 18px;
+    }
+
+    .uploadArea {
+        padding: 18px 12px;
+    }
+
+    .uploadText {
+        font-size: 0.82em;
+    }
+
+    .cropperWrapper {
+        width: 180px;
+        height: 180px;
+    }
+
+    .cropActions {
+        flex-direction: column;
+    }
+
+    .savePhotoBtn,
+    .changePhotoBtn {
+        justify-content: center;
+    }
+
+    .continueBtn {
+        padding: 12px;
+        font-size: 0.9em;
+    }
+}
+
+/* Tablet+ */
+@media (min-width: 768px) {
+    .card {
+        max-width: 440px;
+        padding: 40px 32px 32px;
+    }
+}

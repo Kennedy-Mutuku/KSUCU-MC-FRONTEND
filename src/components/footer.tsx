@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Facebook, Instagram, Youtube, Twitter, Mail, Phone, MapPin } from 'lucide-react';
 import cuLogo from '../assets/cuLogoUAR.png';
+import { getApiUrl } from '../config/environment';
 
 const quickLinks = [
   { label: 'Home', href: '/' },
@@ -23,6 +24,7 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
   const [showAdminAccess, setShowAdminAccess] = useState(false);
   const [adminPassword, setAdminPassword] = useState('');
+  const [loginLoading, setLoginLoading] = useState(false);
   const navigate = useNavigate();
 
   return (
@@ -162,14 +164,28 @@ const Footer = () => {
             color: '#333'
           }}>
             <h3 style={{ color: '#730051', margin: '0 0 20px 0', fontSize: '1.5rem', fontWeight: 'bold' }}>Overseer Access</h3>
-            <form onSubmit={(e) => {
+            <form onSubmit={async (e) => {
               e.preventDefault();
-              if (adminPassword === 'Overseer') {
-                setShowAdminAccess(false);
-                setAdminPassword('');
-                navigate('/overseer-dashboard');
-              } else {
-                alert('Incorrect Password');
+              setLoginLoading(true);
+              try {
+                const response = await fetch(getApiUrl('overseer/login'), {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  credentials: 'include',
+                  body: JSON.stringify({ password: adminPassword }),
+                });
+                if (response.ok) {
+                  sessionStorage.setItem('adminAuth', 'authenticated');
+                  setShowAdminAccess(false);
+                  setAdminPassword('');
+                  navigate('/worship-docket-admin');
+                } else {
+                  alert('Incorrect Password');
+                }
+              } catch {
+                alert('Login failed. Please try again.');
+              } finally {
+                setLoginLoading(false);
               }
             }}>
               <input

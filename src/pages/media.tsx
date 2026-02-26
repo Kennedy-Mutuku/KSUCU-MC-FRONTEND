@@ -192,22 +192,14 @@ const Media: React.FC = () => {
 
       if (!response.ok) {
         setError('You need to login or sign up to access this page');
-        setTimeout(() => {
-          navigate('/');
-        }, 5000);
         return;
-      }  
+      }
 
       setIsAuthenticated(true);
-        
+
     } catch (error) {
-      if (error instanceof Error && error.message === 'Authentication failed: jwt expired') {
-        // Silently handle expired session
-        navigate('/');
-      } else {
-        console.error('Error fetching user data:', error);
-        navigate('/');
-      }
+      console.error('Error fetching user data:', error);
+      setError('You need to login or sign up to access this page');
     } finally {    
       document.body.style.overflow = '';  
       setGeneralLoading(false);      
@@ -262,7 +254,59 @@ const Media: React.FC = () => {
         </div>
       )}
 
-      {error && <div className={styles.error}>{error}</div>}
+      {error && !isAuthenticated && (
+        <div style={{
+          minHeight: '70vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '2rem'
+        }}>
+          <div style={{
+            textAlign: 'center',
+            padding: '3rem 2rem',
+            maxWidth: '480px',
+            background: '#fff',
+            borderRadius: '20px',
+            boxShadow: '0 12px 40px rgba(0,0,0,0.1)',
+          }}>
+            <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'linear-gradient(135deg, #730051, #a0006e)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', fontSize: '1.8rem' }}>
+              🖼️
+            </div>
+            <h2 style={{ color: '#730051', fontSize: '1.5rem', fontWeight: 700, marginBottom: '0.75rem' }}>
+              Sign In to View Gallery
+            </h2>
+            <p style={{ color: '#6b7280', fontSize: '0.95rem', lineHeight: 1.6, marginBottom: '2rem' }}>
+              Please sign in to your account to access the media gallery and photo albums.
+            </p>
+            <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+              <Link to="/signIn" style={{
+                padding: '10px 24px',
+                background: 'linear-gradient(135deg, #730051, #a0006e)',
+                color: 'white',
+                borderRadius: '10px',
+                textDecoration: 'none',
+                fontWeight: 600,
+                fontSize: '0.9rem',
+              }}>
+                Sign In
+              </Link>
+              <Link to="/" style={{
+                padding: '10px 24px',
+                background: '#f3f4f6',
+                color: '#374151',
+                borderRadius: '10px',
+                textDecoration: 'none',
+                fontWeight: 600,
+                fontSize: '0.9rem',
+              }}>
+                Go Home
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+      {error && isAuthenticated && <div className={styles.error}>{error}</div>}
 
       {isAuthenticated && (
         <main className={styles.main}>

@@ -20,7 +20,7 @@
     transform: translateX(-50%);
     width: 80px;
     height: 4px;
-    background: linear-gradient(135deg, #730051, #00c6ff);
+    background: linear-gradient(135deg, #730051, #730051);
     border-radius: 2px;
 }
 
@@ -43,7 +43,7 @@
     left: 0;
     right: 0;
     height: 6px;
-    background: linear-gradient(135deg, #730051, #00c6ff);
+    background: linear-gradient(135deg, #730051, #730051);
 }
 
 .text {
@@ -195,13 +195,13 @@
 
 .pastorCard:hover {
     background: #f0f4ff;
-    border-color: #00c6ff;
+    border-color: #730051;
     transform: translateY(-1px);
     box-shadow: 0 6px 20px rgba(115, 0, 81, 0.2);
 }
 
 .pastorCard:hover::after {
-    background: #00c6ff;
+    background: #730051;
     opacity: 1;
 }
 
@@ -224,7 +224,7 @@
 }
 
 .pastorCheckbox:checked {
-    accent-color: #00c6ff;
+    accent-color: #730051;
 }
 
 .pastorLabel {
@@ -284,7 +284,7 @@
 }
 
 .submitData {
-    background: linear-gradient(135deg, #730051, #00c6ff);
+    background: linear-gradient(135deg, #730051, #730051);
     color: white;
     border: none;
     padding: 12px 24px;
@@ -345,7 +345,7 @@
 }
 
 .form-footer a:hover {
-    color: #00c6ff;
+    color: #730051;
     text-decoration: underline;
 }
 

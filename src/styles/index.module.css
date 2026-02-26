@@ -30,7 +30,7 @@ body {
     width: 100%;
     display: flex;
     gap: 10px;
-    background: #00c6ff;
+    background: #730051;
     justify-content: space-around;
     align-items: center;
     padding: 10px;
@@ -181,7 +181,7 @@ body {
     left: 0;
     height: 4px;
     width: 100%;
-    background: linear-gradient(90deg, #730051, #00c6ff, #730051);
+    background: linear-gradient(90deg, #730051, #730051, #730051);
     background-size: 200% 100%;
     animation: loadingAnimation 10s linear infinite, gradientShift 3s ease-in-out infinite;
     border-radius: 0 0 15px 15px;
@@ -420,7 +420,7 @@ body {
 }
 
 .quick-item--link:first-child {
-    background: linear-gradient(135deg, #00c6ff, #0099cc);
+    background: linear-gradient(135deg, #730051, #5a0040);
     color: #ffffff;
     border-color: rgba(0, 198, 255, 0.3);
     font-weight: 700;
@@ -428,7 +428,7 @@ body {
 }
 
 .quick-item--link:first-child:hover {
-    background: linear-gradient(135deg, #0099cc, #007aa3);
+    background: linear-gradient(135deg, #5a0040, #007aa3);
     transform: translateY(-4px);
     box-shadow: 0 10px 30px rgba(0, 198, 255, 0.3);
 }
@@ -512,7 +512,7 @@ body {
 .comm-item--link:hover {
     background: rgba(0, 198, 255, 0.15);
     color: #ffffff;
-    border-left-color: #00c6ff;
+    border-left-color: #730051;
     transform: translateX(5px);
     box-shadow: 0 4px 15px rgba(0, 198, 255, 0.2);
 }
@@ -559,7 +559,7 @@ body {
     font-size: 1.2rem;
     bottom: 15px;
     right: 15px;
-    background: linear-gradient(135deg, #00c6ff, #0099cc);
+    background: linear-gradient(135deg, #730051, #5a0040);
     box-shadow: 0 8px 25px rgba(0, 198, 255, 0.4), 0 0 20px rgba(0, 198, 255, 0.3);
     color: white;
     transition: all 0.3s ease;
@@ -641,7 +641,7 @@ body {
 .commission-claimer:hover {
     cursor: pointer;
     transform: translate(50%, 50%) scale(1.1);
-    background: linear-gradient(135deg, #0099cc, #0077aa);
+    background: linear-gradient(135deg, #5a0040, #0077aa);
     box-shadow: 0 15px 40px rgba(0, 198, 255, 0.6);
     animation: none;
 }
@@ -674,7 +674,7 @@ body {
     font-size: 1.2rem;
     text-shadow: var(--bs);
 
-    background: #00c6ff;
+    background: #730051;
     width: 100%;
     text-align: center;
     margin: 0;
@@ -745,7 +745,7 @@ body {
 }
 
 .modalHeader {
-    background: #00c6ff;
+    background: #730051;
     color: #fff;
     font-weight: 700;
     font-size: 1.15rem;
@@ -780,7 +780,7 @@ body {
 
 
 .boldBlue {
-    color: #00c6ff;
+    color: #730051;
     font-weight: bold;
 }
 
@@ -799,7 +799,7 @@ body {
 .closeBtn {
     background: #fff;
     color: #730051;
-    border: 2px solid #00c6ff;
+    border: 2px solid #730051;
     box-shadow: 0 1px 4px #0001;
     border-radius: 50%;
     width: 40px;
@@ -817,7 +817,7 @@ body {
 }
 
 .closeBtn:hover {
-    background: #00c6ff;
+    background: #730051;
     color: #fff;
     border-color: #730051;
 }
@@ -825,7 +825,7 @@ body {
 .newsInModal {
     width: 90%;
     margin: 1em auto 0.5em auto;
-    background: #00c6ff;
+    background: #730051;
     color: #fff;
     border-radius: 13px;
     padding: 0.9em 1em;
@@ -1137,7 +1137,7 @@ div.boardsCategoryDiv:focus h3 {
     transform: translateX(-50%);
     width: 120px;
     height: 4px;
-    background: linear-gradient(90deg, #00c6ff, #730051);
+    background: linear-gradient(90deg, #730051, #730051);
     border-radius: 2px;
 }
 
@@ -1313,7 +1313,7 @@ div.boardsCategoryDiv:focus h3 {
     content: '•';
     position: absolute;
     left: 0;
-    color: #00c6ff;
+    color: #730051;
     font-weight: bold;
     font-size: 1.3rem;
 }
@@ -1360,7 +1360,7 @@ div.boardsCategoryDiv:focus h3 {
 }
 
 .othersColumns {
-    color: #00c6ff;
+    color: #730051;
     position: relative;
     width: 100%;
     max-width: 300px;
@@ -1453,7 +1453,7 @@ div.boardsCategoryDiv:focus h3 {
     font-weight: 700;
     margin-bottom: 20px;
     text-align: center;
-    color: #00c6ff;
+    color: #730051;
     text-shadow: 0 2px 10px rgba(0, 198, 255, 0.3);
 }
 
@@ -1572,7 +1572,7 @@ hr {
     transform: translateX(-50%);
     width: clamp(60px, 15vw, 80px);
     height: 4px;
-    background: linear-gradient(90deg, #730051, #00c6ff);
+    background: linear-gradient(90deg, #730051, #730051);
     border-radius: 2px;
 }
 
@@ -1634,7 +1634,7 @@ hr {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, #730051, #00c6ff);
+    background: linear-gradient(90deg, #730051, #730051);
 }
 
 .cardClasses:hover {
@@ -1756,7 +1756,7 @@ hr {
 }
 
 .registerSpan {
-    color: #00c6ff;
+    color: #730051;
     text-decoration: underline;
     transition: color 0.3s ease;
 }
@@ -1925,7 +1925,7 @@ hr {
     }
 
     .flex-title {
-        background: #00c6ff;
+        background: #730051;
         width: 100%;
     }
 
@@ -2232,7 +2232,7 @@ hr {
         cursor: pointer;
         background: linear-gradient(135deg, #730051, #8e1a6b);
         color: white;
-        border-left: 2px solid #00c6ff;
+        border-left: 2px solid #730051;
         transform: translateX(3px);
         box-shadow: 0 3px 12px rgba(115, 0, 81, 0.25);
     }
@@ -2298,7 +2298,7 @@ hr {
         left: -2px;
         right: -2px;
         bottom: -2px;
-        background: linear-gradient(135deg, #730051, #00c6ff, #730051);
+        background: linear-gradient(135deg, #730051, #730051, #730051);
         border-radius: 25px;
         z-index: -1;
         opacity: 0;
@@ -2351,7 +2351,7 @@ hr {
 
 
     .quick-link-item:hover {
-        background: linear-gradient(135deg, #00c6ff, #0099cc);
+        background: linear-gradient(135deg, #730051, #5a0040);
         border-radius: 15px;
         box-shadow: 0 4px 15px rgba(0, 198, 255, 0.3);
     }
@@ -2394,7 +2394,7 @@ hr {
         content: attr(data-text);
         position: absolute;
         right: 32px;
-        background: linear-gradient(135deg, #00c6ff, #0099cc);
+        background: linear-gradient(135deg, #730051, #5a0040);
         color: white;
         padding: 6px 12px;
         border-radius: 12px;
@@ -2420,7 +2420,7 @@ hr {
         height: 30px !important;
         border-radius: 9px !important;
         /* Rounded rectangle, not circle */
-        background: linear-gradient(135deg, #00c6ff, #0099cc) !important;
+        background: linear-gradient(135deg, #730051, #5a0040) !important;
         box-shadow: 0 3px 12px rgba(0, 198, 255, 0.5) !important;
         opacity: 1 !important;
         visibility: visible !important;
@@ -2438,7 +2438,7 @@ hr {
     }
 
     .back-to-top:hover {
-        background: linear-gradient(135deg, #0099cc, #0088bb) !important;
+        background: linear-gradient(135deg, #5a0040, #0088bb) !important;
         box-shadow: 0 5px 18px rgba(0, 198, 255, 0.7) !important;
         transform: scale(1.05) !important;
         border: 1px solid rgba(255, 255, 255, 0.4) !important;
@@ -2465,7 +2465,7 @@ hr {
         bottom: 70px !important;
         width: 34px !important;
         height: 34px !important;
-        background: #00c6ff !important;
+        background: #730051 !important;
         color: white !important;
         border-radius: 50% !important;
         display: flex !important;
@@ -2492,7 +2492,7 @@ hr {
     }
 
     .universal-back-to-top:hover {
-        background: linear-gradient(135deg, #0099cc, #0088bb) !important;
+        background: linear-gradient(135deg, #5a0040, #0088bb) !important;
         box-shadow: 0 6px 25px rgba(0, 198, 255, 0.8) !important;
         transform: scale(1.1) !important;
     }
@@ -2742,7 +2742,7 @@ hr {
 /* Specific fixes for ~1110px width */
 @media (min-width: 1050px) and (max-width: 1150px) {
     .flex-title {
-        background: #00c6ff !important;
+        background: #730051 !important;
         /* Ensure blue background */
         width: 100%;
         padding: 0;
@@ -3011,7 +3011,7 @@ hr {
 /* Mobile view (anything up to 767px) */
 @media (max-width: 767px) {
     .flex-title {
-        background: #00c6ff;
+        background: #730051;
     }
 
     /* Show full title on mobile, hide short title */
@@ -3383,7 +3383,7 @@ hr {
 
 .worshipAdminButton {
     display: inline-block;
-    background: linear-gradient(45deg, #ff6b35, #f7931e);
+    background: linear-gradient(45deg, #730051, #a0006e);
     color: white;
     text-decoration: none;
     padding: 15px 40px;
@@ -3393,7 +3393,7 @@ hr {
     text-transform: uppercase;
     letter-spacing: 1px;
     transition: all 0.3s ease;
-    box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+    box-shadow: 0 8px 25px rgba(115, 0, 81, 0.4);
     position: relative;
     overflow: hidden;
 }
@@ -3411,8 +3411,8 @@ hr {
 
 .worshipAdminButton:hover {
     transform: translateY(-3px);
-    box-shadow: 0 12px 35px rgba(255, 107, 53, 0.5);
-    background: linear-gradient(45deg, #f7931e, #ff6b35);
+    box-shadow: 0 12px 35px rgba(115, 0, 81, 0.5);
+    background: linear-gradient(45deg, #a0006e, #730051);
     text-decoration: none;
     color: white;
 }
@@ -3479,7 +3479,7 @@ hr {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, #730051, #00c6ff);
+    background: linear-gradient(90deg, #730051, #730051);
 }
 
 .attendanceSectionTitle {
@@ -3553,7 +3553,7 @@ hr {
 /* Attendance Button */
 .attendanceButton {
     display: inline-block;
-    background: linear-gradient(135deg, #00c6ff, #0099cc);
+    background: linear-gradient(135deg, #730051, #5a0040);
     color: white;
     text-decoration: none;
     padding: 18px 40px;
@@ -3574,7 +3574,7 @@ hr {
 }
 
 .attendanceButton:hover {
-    background: linear-gradient(135deg, #0099cc, #007aa3);
+    background: linear-gradient(135deg, #5a0040, #007aa3);
     transform: translateY(-3px);
     box-shadow: 0 12px 35px rgba(0, 198, 255, 0.5);
     color: white;
@@ -3675,7 +3675,7 @@ hr {
 
 .formInput:focus {
     outline: none;
-    border-color: #00c6ff;
+    border-color: #730051;
     background: white;
     box-shadow: 0 0 0 3px rgba(0, 198, 255, 0.1);
 }
@@ -3694,7 +3694,7 @@ hr {
 
 .formSelect:focus {
     outline: none;
-    border-color: #00c6ff;
+    border-color: #730051;
     background: white;
     box-shadow: 0 0 0 3px rgba(0, 198, 255, 0.1);
 }
@@ -3710,7 +3710,7 @@ hr {
 }
 
 .signatureCanvas:focus {
-    border-color: #00c6ff;
+    border-color: #730051;
     box-shadow: 0 0 0 3px rgba(0, 198, 255, 0.1);
 }
 
@@ -3893,7 +3893,7 @@ hr {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, #730051, #00c6ff);
+    background: linear-gradient(90deg, #730051, #730051);
 }
 
 .adminPageTitle {
@@ -3963,13 +3963,13 @@ hr {
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, #730051, #00c6ff);
+    background: linear-gradient(90deg, #730051, #730051);
     transform: scaleX(0);
     transition: transform 0.3s ease;
 }
 
 .leadershipRoleCard:hover {
-    border-color: #00c6ff;
+    border-color: #730051;
     background: linear-gradient(135deg, #e3f2fd, #ffffff);
     transform: translateY(-3px);
     box-shadow: 0 8px 25px rgba(0, 198, 255, 0.2);
@@ -3988,7 +3988,7 @@ hr {
 
 .leadershipRoleCard.selected::before {
     transform: scaleX(1);
-    background: linear-gradient(90deg, #00c6ff, #0099cc);
+    background: linear-gradient(90deg, #730051, #5a0040);
 }
 
 .roleIcon {
@@ -4000,7 +4000,7 @@ hr {
 }
 
 .leadershipRoleCard.selected .roleIcon {
-    color: #00c6ff;
+    color: #730051;
 }
 
 .roleName {
@@ -4078,7 +4078,7 @@ hr {
     left: 0;
     right: 0;
     height: 3px;
-    background: linear-gradient(90deg, #00c6ff, #0099cc);
+    background: linear-gradient(90deg, #730051, #5a0040);
 }
 
 .selectedRoleText {
@@ -4138,13 +4138,13 @@ hr {
 }
 
 .refreshSessionBtn {
-    background: linear-gradient(135deg, #00c6ff, #0099cc);
+    background: linear-gradient(135deg, #730051, #5a0040);
     color: white;
     box-shadow: 0 6px 20px rgba(0, 198, 255, 0.4);
 }
 
 .refreshSessionBtn:hover {
-    background: linear-gradient(135deg, #0099cc, #007aa3);
+    background: linear-gradient(135deg, #5a0040, #007aa3);
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(0, 198, 255, 0.5);
 }

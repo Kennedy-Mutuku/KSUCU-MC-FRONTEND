@@ -1,4 +1,5 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useEffect, useCallback } from "react";
+import SignatureCanvas from "react-signature-canvas";
 
 interface AssetTransferData {
   receivedByName: string;
@@ -14,286 +15,243 @@ interface AssetTransferFormProps {
   isRequesterOnly?: boolean;
 }
 
+const SignatureField: React.FC<{
+  label: string;
+  signatureData: string;
+  onEnd: (dataUrl: string) => void;
+  onClear: () => void;
+  disabled?: boolean;
+}> = ({ label, signatureData, onEnd, onClear, disabled }) => {
+  const sigRef = useRef<SignatureCanvas>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const resizeCanvas = useCallback(() => {
+    if (!sigRef.current || !containerRef.current) return;
+    const canvas = sigRef.current.getCanvas();
+    const container = containerRef.current;
+    const ratio = Math.max(window.devicePixelRatio || 1, 1);
+    const width = container.offsetWidth;
+    const height = 150;
+
+    canvas.width = width * ratio;
+    canvas.height = height * ratio;
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+    const ctx = canvas.getContext("2d");
+    if (ctx) {
+      ctx.scale(ratio, ratio);
+    }
+
+    // Restore signature if exists
+    if (signatureData && signatureData.startsWith("data:image")) {
+      sigRef.current.fromDataURL(signatureData, {
+        width,
+        height,
+        ratio: 1,
+      });
+    }
+  }, [signatureData]);
+
+  useEffect(() => {
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
+    return () => window.removeEventListener("resize", resizeCanvas);
+  }, [resizeCanvas]);
+
+  // Load existing signature when data changes externally
+  useEffect(() => {
+    if (!sigRef.current) return;
+    if (signatureData && signatureData.startsWith("data:image")) {
+      const container = containerRef.current;
+      if (!container) return;
+      sigRef.current.fromDataURL(signatureData, {
+        width: container.offsetWidth,
+        height: 150,
+        ratio: 1,
+      });
+    } else if (!signatureData) {
+      sigRef.current.clear();
+    }
+  }, [signatureData]);
+
+  const handleEnd = () => {
+    if (!sigRef.current || disabled) return;
+    const dataUrl = sigRef.current.toDataURL("image/png");
+    onEnd(dataUrl);
+  };
+
+  const handleClear = () => {
+    if (sigRef.current) {
+      sigRef.current.clear();
+    }
+    onClear();
+  };
+
+  return (
+    <div>
+      <label className="text-xs font-bold tracking-wider block mb-2 text-gray-700">
+        {label}
+      </label>
+      <div
+        ref={containerRef}
+        className={`relative border-2 rounded-lg overflow-hidden transition-colors ${
+          disabled
+            ? "border-gray-200 bg-gray-50"
+            : "border-[#730051]/30 bg-white hover:border-[#730051]/50"
+        }`}
+      >
+        <SignatureCanvas
+          ref={sigRef}
+          penColor="#1a1a2e"
+          minWidth={1.5}
+          maxWidth={3}
+          velocityFilterWeight={0.7}
+          canvasProps={{
+            className: `w-full block ${disabled ? "cursor-not-allowed opacity-40" : "cursor-crosshair"}`,
+            style: { height: "150px", touchAction: "none" },
+          }}
+          onEnd={handleEnd}
+          onBegin={() => {
+            if (disabled && sigRef.current) {
+              // Prevent drawing when disabled
+              sigRef.current.off();
+              setTimeout(() => sigRef.current?.on(), 0);
+            }
+          }}
+        />
+        {!disabled && !signatureData && (
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <span className="text-gray-300 text-sm italic">Sign here</span>
+          </div>
+        )}
+      </div>
+      {!disabled && (
+        <button
+          type="button"
+          onClick={handleClear}
+          className="mt-2 text-xs font-medium text-[#730051] hover:text-[#5a0040] hover:underline transition-colors"
+        >
+          Clear signature
+        </button>
+      )}
+    </div>
+  );
+};
+
 const AssetTransferForm: React.FC<AssetTransferFormProps> = ({
   data,
   onDataChange,
   isRequesterOnly = true,
 }) => {
-  const receivedSigCanvasRef = useRef<HTMLCanvasElement>(null);
-  const releasedSigCanvasRef = useRef<HTMLCanvasElement>(null);
-  const [isDrawing, setIsDrawing] = useState(false);
-  const [activeCanvas, setActiveCanvas] = useState<
-    "received" | "released" | null
-  >(null);
-
-  const initializeCanvas = (
-    canvasRef: React.RefObject<HTMLCanvasElement>,
-    signature: string,
-  ) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext("2d");
-    if (ctx) {
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      if (signature && signature.startsWith("data:image")) {
-        const img = new Image();
-        img.onload = () => {
-          ctx.drawImage(img, 0, 0);
-        };
-        img.src = signature;
-      }
-    }
-  };
-
-  React.useEffect(() => {
-    initializeCanvas(receivedSigCanvasRef, data.receivedBySignature);
-  }, [data.receivedBySignature]);
-
-  React.useEffect(() => {
-    initializeCanvas(releasedSigCanvasRef, data.releasedBySignature);
-  }, [data.releasedBySignature]);
-
-  const startDrawing = (
-    e:
-      | React.MouseEvent<HTMLCanvasElement>
-      | React.TouchEvent<HTMLCanvasElement>,
-    side: "received" | "released",
-  ) => {
-    const canvas =
-      side === "received"
-        ? receivedSigCanvasRef.current
-        : releasedSigCanvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    const rect = canvas.getBoundingClientRect();
-    const x = ("clientX" in e ? e.clientX : e.touches[0].clientX) - rect.left;
-    const y = ("clientY" in e ? e.clientY : e.touches[0].clientY) - rect.top;
-
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-    setIsDrawing(true);
-    setActiveCanvas(side);
-  };
-
-  const draw = (
-    e:
-      | React.MouseEvent<HTMLCanvasElement>
-      | React.TouchEvent<HTMLCanvasElement>,
-  ) => {
-    if (!isDrawing) return;
-
-    const canvas =
-      activeCanvas === "received"
-        ? receivedSigCanvasRef.current
-        : releasedSigCanvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    const rect = canvas.getBoundingClientRect();
-    const x = ("clientX" in e ? e.clientX : e.touches[0].clientX) - rect.left;
-    const y = ("clientY" in e ? e.clientY : e.touches[0].clientY) - rect.top;
-
-    ctx.lineWidth = 1.5;
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
-    ctx.strokeStyle = "#000000";
-    ctx.lineTo(x, y);
-    ctx.stroke();
-  };
-
-  const stopDrawing = () => {
-    if (!isDrawing) return;
-    setIsDrawing(false);
-
-    if (activeCanvas === "received") {
-      const canvas = receivedSigCanvasRef.current;
-      if (canvas) {
-        const signatureData = canvas.toDataURL("image/png");
-        onDataChange({
-          ...data,
-          receivedBySignature: signatureData,
-        });
-      }
-    } else if (activeCanvas === "released") {
-      const canvas = releasedSigCanvasRef.current;
-      if (canvas) {
-        const signatureData = canvas.toDataURL("image/png");
-        onDataChange({
-          ...data,
-          releasedBySignature: signatureData,
-        });
-      }
-    }
-    setActiveCanvas(null);
-  };
-
-  const clearSignature = (side: "received" | "released") => {
-    const canvasRef =
-      side === "received" ? receivedSigCanvasRef : releasedSigCanvasRef;
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext("2d");
-    if (ctx) {
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      onDataChange({
-        ...data,
-        [side === "received" ? "receivedBySignature" : "releasedBySignature"]:
-          "",
-      });
-    }
-  };
-
   return (
-    <div className="w-full bg-white border-2 border-black p-8">
+    <div className="w-full bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
       {/* Title */}
-      <div className="text-center mb-8 pb-4 border-b-2 border-black">
-        <h2 className="text-lg font-bold tracking-wide">ASSET TRANSFER FORM</h2>
+      <div className="bg-gradient-to-r from-[#730051] to-[#a0006e] px-6 py-4">
+        <h2 className="text-base sm:text-lg font-bold tracking-wide text-white text-center">
+          ASSET TRANSFER FORM
+        </h2>
       </div>
 
-      {/* Two Column Layout */}
-      <div className="grid grid-cols-2 gap-8">
+      {/* Two Column Layout - stacks on mobile */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-0 md:divide-x divide-gray-200">
         {/* LEFT SIDE - ASSETS RECEIVED BY */}
-        <div className="border-r-2 border-black pr-8">
-          <div className="mb-8">
-            <h3 className="text-sm font-bold tracking-widest mb-6 border-b border-black pb-2">
-              ASSETS RECEIVED BY:
+        <div className="p-5 sm:p-6">
+          <div className="mb-2">
+            <h3 className="text-sm font-bold tracking-wide text-[#730051] mb-1">
+              ASSETS RECEIVED BY
             </h3>
-
-            {/* Name Field */}
-            <div className="mb-8">
-              <label className="text-xs font-bold tracking-wider block mb-2">
-                NAME:
-              </label>
-              <input
-                type="text"
-                value={data.receivedByName}
-                onChange={(e) =>
-                  onDataChange({
-                    ...data,
-                    receivedByName: e.target.value,
-                  })
-                }
-                className="w-full border-b-2 border-black bg-transparent px-0 py-1 text-sm focus:outline-none"
-                placeholder="_______________________________"
-              />
-            </div>
-
-            {/* Signature Box */}
-            <div>
-              <label className="text-xs font-bold tracking-wider block mb-2">
-                SIGNATURE:
-              </label>
-              <div className="border-2 border-black bg-white">
-                <canvas
-                  ref={receivedSigCanvasRef}
-                  width={180}
-                  height={80}
-                  onMouseDown={(e) => startDrawing(e, "received")}
-                  onMouseMove={draw}
-                  onMouseUp={stopDrawing}
-                  onMouseLeave={stopDrawing}
-                  onTouchStart={(e) => startDrawing(e, "received")}
-                  onTouchMove={draw}
-                  onTouchEnd={stopDrawing}
-                  className="w-full cursor-crosshair block bg-white"
-                />
-              </div>
-              <button
-                type="button"
-                onClick={() => clearSignature("received")}
-                className="mt-2 text-xs underline text-black hover:font-semibold"
-              >
-                Clear
-              </button>
-            </div>
+            <div className="h-0.5 w-12 bg-[#730051]/30 rounded-full mb-5"></div>
           </div>
+
+          {/* Name Field */}
+          <div className="mb-6">
+            <label className="text-xs font-bold tracking-wider block mb-2 text-gray-700">
+              NAME:
+            </label>
+            <input
+              type="text"
+              value={data.receivedByName}
+              onChange={(e) =>
+                onDataChange({
+                  ...data,
+                  receivedByName: e.target.value,
+                })
+              }
+              className="w-full border-b-2 border-gray-300 focus:border-[#730051] bg-transparent px-0 py-2 text-sm transition-colors focus:outline-none"
+              placeholder="Enter full name"
+            />
+          </div>
+
+          {/* Signature */}
+          <SignatureField
+            label="SIGNATURE:"
+            signatureData={data.receivedBySignature}
+            onEnd={(dataUrl) =>
+              onDataChange({ ...data, receivedBySignature: dataUrl })
+            }
+            onClear={() =>
+              onDataChange({ ...data, receivedBySignature: "" })
+            }
+          />
         </div>
+
+        {/* Divider on mobile */}
+        <div className="md:hidden border-t border-gray-200"></div>
 
         {/* RIGHT SIDE - ASSETS RELEASED BY */}
         <div
-          className={`pl-8 ${isRequesterOnly ? "opacity-50 pointer-events-none" : ""}`}
+          className={`p-5 sm:p-6 ${isRequesterOnly ? "opacity-50 pointer-events-none" : ""}`}
         >
-          <div className="mb-8">
-            <h3 className="text-sm font-bold tracking-widest mb-6 border-b border-black pb-2">
-              ASSETS RELEASED BY:
+          <div className="mb-2">
+            <h3 className="text-sm font-bold tracking-wide text-[#730051] mb-1">
+              ASSETS RELEASED BY
               {isRequesterOnly && (
-                <span className="text-xs font-normal ml-2 text-gray-600">
+                <span className="text-xs font-normal ml-2 text-gray-400">
                   (Staff Only)
                 </span>
               )}
             </h3>
-
-            {/* Name Field */}
-            <div className="mb-8">
-              <label className="text-xs font-bold tracking-wider block mb-2">
-                NAME:
-              </label>
-              <input
-                type="text"
-                value={data.releasedByName}
-                onChange={(e) =>
-                  onDataChange({
-                    ...data,
-                    releasedByName: e.target.value,
-                  })
-                }
-                disabled={isRequesterOnly}
-                className="w-full border-b-2 border-black bg-transparent px-0 py-1 text-sm focus:outline-none disabled:opacity-50"
-                placeholder="_______________________________"
-              />
-            </div>
-
-            {/* Signature Box */}
-            <div>
-              <label className="text-xs font-bold tracking-wider block mb-2">
-                SIGNATURE:
-              </label>
-              <div className="border-2 border-black bg-white">
-                <canvas
-                  ref={releasedSigCanvasRef}
-                  width={180}
-                  height={80}
-                  onMouseDown={(e) =>
-                    !isRequesterOnly && startDrawing(e, "released")
-                  }
-                  onMouseMove={draw}
-                  onMouseUp={stopDrawing}
-                  onMouseLeave={stopDrawing}
-                  onTouchStart={(e) =>
-                    !isRequesterOnly && startDrawing(e, "released")
-                  }
-                  onTouchMove={draw}
-                  onTouchEnd={stopDrawing}
-                  className={`w-full block bg-white ${!isRequesterOnly ? "cursor-crosshair" : "cursor-not-allowed"}`}
-                />
-              </div>
-              {!isRequesterOnly && (
-                <button
-                  type="button"
-                  onClick={() => clearSignature("released")}
-                  className="mt-2 text-xs underline text-black hover:font-semibold"
-                >
-                  Clear
-                </button>
-              )}
-            </div>
+            <div className="h-0.5 w-12 bg-[#730051]/30 rounded-full mb-5"></div>
           </div>
+
+          {/* Name Field */}
+          <div className="mb-6">
+            <label className="text-xs font-bold tracking-wider block mb-2 text-gray-700">
+              NAME:
+            </label>
+            <input
+              type="text"
+              value={data.releasedByName}
+              onChange={(e) =>
+                onDataChange({
+                  ...data,
+                  releasedByName: e.target.value,
+                })
+              }
+              disabled={isRequesterOnly}
+              className="w-full border-b-2 border-gray-300 focus:border-[#730051] bg-transparent px-0 py-2 text-sm transition-colors focus:outline-none disabled:opacity-50"
+              placeholder="Enter full name"
+            />
+          </div>
+
+          {/* Signature */}
+          <SignatureField
+            label="SIGNATURE:"
+            signatureData={data.releasedBySignature}
+            onEnd={(dataUrl) =>
+              onDataChange({ ...data, releasedBySignature: dataUrl })
+            }
+            onClear={() =>
+              onDataChange({ ...data, releasedBySignature: "" })
+            }
+            disabled={isRequesterOnly}
+          />
         </div>
       </div>
 
       {/* Date Field */}
-      <div className="mt-8 pt-8 border-t-2 border-black flex items-center gap-2">
-        <label className="text-sm font-bold tracking-wider whitespace-nowrap">
+      <div className="px-5 sm:px-6 py-4 border-t border-gray-200 bg-gray-50/50 flex flex-col sm:flex-row items-start sm:items-center gap-2">
+        <label className="text-sm font-bold tracking-wider text-gray-700 whitespace-nowrap">
           DATE:
         </label>
         <input
@@ -306,7 +264,7 @@ const AssetTransferForm: React.FC<AssetTransferFormProps> = ({
             })
           }
           disabled={isRequesterOnly && !data.date}
-          className="px-3 py-2 text-sm border-b-2 border-black bg-white focus:outline-none focus:bg-gray-50 disabled:opacity-50"
+          className="px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#730051]/20 focus:border-[#730051] disabled:opacity-50 w-full sm:w-auto"
         />
       </div>
     </div>

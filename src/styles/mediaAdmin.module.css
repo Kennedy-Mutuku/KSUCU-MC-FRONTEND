@@ -9,7 +9,7 @@
 .header {
   text-align: center;
   margin-bottom: 3rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #730051, #a0006e);
   color: white;
   padding: 2rem;
   border-radius: 12px;
@@ -81,7 +81,7 @@
 }
 
 .refreshButton {
-  background: #17a2b8;
+  background: #730051;
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -96,7 +96,7 @@
 }
 
 .refreshButton:hover:not(:disabled) {
-  background: #138496;
+  background: #5a0040;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
@@ -171,7 +171,7 @@
 
 .formGroup input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #730051;
 }
 
 /* Date Input Styling */
@@ -188,24 +188,24 @@
 }
 
 .dateInput:hover {
-  border-color: #667eea;
+  border-color: #730051;
 }
 
 .dateInput:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: #730051;
+  box-shadow: 0 0 0 3px rgba(115, 0, 81, 0.1);
 }
 
 .dateInput::-webkit-calendar-picker-indicator {
   cursor: pointer;
-  background-color: #667eea;
+  background-color: #730051;
   border-radius: 4px;
   padding: 2px;
 }
 
 .dateInput::-webkit-calendar-picker-indicator:hover {
-  background-color: #764ba2;
+  background-color: #5a0040;
 }
 
 .fileInput {
@@ -245,12 +245,12 @@
 }
 
 .saveButton {
-  background: #007bff;
+  background: #730051;
   color: white;
 }
 
 .saveButton:hover {
-  background: #0056b3;
+  background: #5a0040;
 }
 
 .cancelButton {
@@ -295,7 +295,7 @@
 }
 
 .mediaCard.editing {
-  border: 2px solid #007bff;
+  border: 2px solid #730051;
 }
 
 .mediaImage {
@@ -359,12 +359,12 @@
 }
 
 .viewButton {
-  background: #17a2b8;
+  background: #730051;
   color: white;
 }
 
 .viewButton:hover {
-  background: #138496;
+  background: #5a0040;
   color: white;
 }
 
@@ -402,7 +402,7 @@
 
 .editForm input:focus {
   outline: none;
-  border-color: #007bff;
+  border-color: #730051;
 }
 
 .editActions {

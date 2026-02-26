@@ -141,7 +141,7 @@ const AdminUserSelector = ({ onUserSelected, selectedUserId }: AdminUserSelector
                 borderBottom: '1px solid #eee',
                 cursor: 'pointer',
                 backgroundColor: selectedUserId === user._id ? '#f0f9ff' : '#fff',
-                borderLeft: selectedUserId === user._id ? '4px solid #00c6ff' : 'none',
+                borderLeft: selectedUserId === user._id ? '4px solid #730051' : 'none',
                 paddingLeft: selectedUserId === user._id ? '12px' : '16px',
                 transition: 'all 0.2s'
               }}
@@ -170,7 +170,7 @@ const AdminUserSelector = ({ onUserSelected, selectedUserId }: AdminUserSelector
                 </div>
                 {selectedUserId === user._id && (
                   <div style={{
-                    backgroundColor: '#00c6ff',
+                    backgroundColor: '#730051',
                     color: '#000',
                     padding: '4px 8px',
                     borderRadius: '4px',

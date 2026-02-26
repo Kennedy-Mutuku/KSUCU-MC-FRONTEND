@@ -44,7 +44,7 @@
   margin: 0;
   font-size: 18px;
   font-weight: 600;
-  color: #00c6ff;
+  color: #730051;
 }
 
 .closeButton {
@@ -90,12 +90,12 @@
 }
 
 .menuItem:hover {
-  background: #e6f7ff;
-  color: #00c6ff;
+  background: #f8f4f7;
+  color: #730051;
 }
 
 .menuItem.active {
-  background: #00c6ff;
+  background: #730051;
   color: white;
 }
 
@@ -112,7 +112,7 @@
 }
 
 .menuItem:hover .menuIcon {
-  color: #00c6ff;
+  color: #730051;
 }
 
 .menuLabel {

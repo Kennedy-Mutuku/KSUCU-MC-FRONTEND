@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { getApiUrl } from '../config/environment';
 import styles from '../styles/NewsPage.module.css';
 
 interface NewsData {
@@ -28,7 +30,7 @@ const NewsPage: React.FC = () => {
     // Fetch the news data from the backend
     const fetchNewsData = async () => {
       try {
-        const response = await fetch('https://ksucu-mc.co.ke/news/news', {
+        const response = await fetch(getApiUrl('news'), {
           method: 'GET',
           credentials: 'include'
         });
@@ -162,15 +164,69 @@ const NewsPage: React.FC = () => {
   }, [newsData]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className={styles.newsPageContainer} style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ textAlign: 'center', padding: '3rem 1.5rem' }}>
+          <div style={{ width: '48px', height: '48px', border: '4px solid rgba(255,255,255,0.2)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 1.5rem' }} />
+          <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '1.1rem' }}>Loading news...</p>
+          <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+        </div>
+      </div>
+    );
   }
 
-  if (error) {
-    return <div>Error: {error}, Log in if you haven't and try again</div>;
-  }
-
-  if (!newsData) {
-    return <div>No news available.</div>;
+  if (error || !newsData) {
+    return (
+      <div className={styles.newsPageContainer} style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{
+          textAlign: 'center',
+          padding: '3rem 2rem',
+          maxWidth: '480px',
+          background: 'rgba(255,255,255,0.95)',
+          borderRadius: '20px',
+          boxShadow: '0 12px 40px rgba(0,0,0,0.15)',
+          margin: '2rem'
+        }}>
+          <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'linear-gradient(135deg, #730051, #a0006e)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', fontSize: '1.8rem' }}>
+            📰
+          </div>
+          <h2 style={{ color: '#730051', fontSize: '1.5rem', fontWeight: 700, marginBottom: '0.75rem' }}>
+            {error ? 'Unable to Load News' : 'No News Available'}
+          </h2>
+          <p style={{ color: '#6b7280', fontSize: '0.95rem', lineHeight: 1.6, marginBottom: '2rem' }}>
+            {error
+              ? 'We couldn\'t fetch the latest news. Please sign in to your account and try again.'
+              : 'There are no news updates at the moment. Check back later for the latest from KSUCU-MC.'}
+          </p>
+          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <Link to="/signIn" style={{
+              padding: '10px 24px',
+              background: 'linear-gradient(135deg, #730051, #a0006e)',
+              color: 'white',
+              borderRadius: '10px',
+              textDecoration: 'none',
+              fontWeight: 600,
+              fontSize: '0.9rem',
+              transition: 'transform 0.2s',
+            }}>
+              Sign In
+            </Link>
+            <Link to="/" style={{
+              padding: '10px 24px',
+              background: '#f3f4f6',
+              color: '#374151',
+              borderRadius: '10px',
+              textDecoration: 'none',
+              fontWeight: 600,
+              fontSize: '0.9rem',
+              transition: 'transform 0.2s',
+            }}>
+              Go Home
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (

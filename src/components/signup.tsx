@@ -3,7 +3,7 @@ import axios from 'axios';
 import cuLogo from '../assets/KSUCU logo updated document.png';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from '../styles/signup.module.css';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Copy, Check, LogIn, Home } from 'lucide-react';
 import { getApiUrl } from '../config/environment';
 
 type FormData = {
@@ -15,6 +15,7 @@ type FormData = {
   yos: string;
   ministry: string;
   et: string;
+  graduationYear: string;
 };
 
 type RegistrationSuccess = {
@@ -38,6 +39,7 @@ const ministriesList = [
 
 const SignUp: React.FC = () => {
   const navigate = useNavigate();
+  const [role, setRole] = useState<'student' | 'associate'>('student');
   const [formData, setFormData] = useState<FormData>({
     username: '',
     phone: '',
@@ -46,12 +48,14 @@ const SignUp: React.FC = () => {
     reg: '',
     yos: '',
     ministry: '',
-    et: ''
+    et: '',
+    graduationYear: ''
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [selectedMinistries, setSelectedMinistries] = useState<string[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showETDropdown, setShowETDropdown] = useState(false);
   const [registrationSuccess, setRegistrationSuccess] = useState<RegistrationSuccess>(null);
   const [fieldErrors, setFieldErrors] = useState<{
     email?: string;
@@ -59,6 +63,8 @@ const SignUp: React.FC = () => {
     reg?: string;
   }>({});
   const [checkingField, setCheckingField] = useState<string | null>(null);
+
+  const isAssociate = role === 'associate';
 
   // Check if a field value already exists in database
   const checkFieldExists = async (field: 'email' | 'phone', value: string) => {
@@ -99,10 +105,24 @@ const SignUp: React.FC = () => {
     );
   };
 
+  const etGroups = [
+    { id: 'rivet', label: 'Rivet' },
+    { id: 'cet', label: 'Cet' },
+    { id: 'eset', label: 'Eset' },
+    { id: 'net', label: 'Net' },
+    { id: 'weso', label: 'Weso' },
+  ];
+
   // Function to close dropdown when clicking outside
-  const handleBlur = (e: React.FocusEvent<HTMLDivElement>) => {
+  const handleMinistryBlur = (e: React.FocusEvent<HTMLDivElement>) => {
     if (!e.currentTarget.contains(e.relatedTarget)) {
       setShowDropdown(false);
+    }
+  };
+
+  const handleETBlur = (e: React.FocusEvent<HTMLDivElement>) => {
+    if (!e.currentTarget.contains(e.relatedTarget)) {
+      setShowETDropdown(false);
     }
   };
 
@@ -134,7 +154,8 @@ const SignUp: React.FC = () => {
       reg: '',
       yos: '',
       ministry: '',
-      et: ''
+      et: '',
+      graduationYear: ''
     });
     setSelectedMinistries([]);
     setFieldErrors({});
@@ -150,25 +171,47 @@ const SignUp: React.FC = () => {
     // Convert selected ministries array to a comma-separated string
     const ministriesString = selectedMinistries.join(', ');
 
-    // Update formData to include ministries as a string
-    const dataToSend = { ...formData, ministry: ministriesString };
+    // Build data to send
+    const dataToSend: any = {
+      username: formData.username,
+      phone: formData.phone,
+      email: formData.email,
+      course: formData.course,
+      role
+    };
 
-    // Check if any field is empty
-    for (const [key, value] of Object.entries(dataToSend)) {
-      if (!value) {
-        const fieldName = key === 'yos' ? 'Year of Study' : key === 'et' ? 'ET' : key.charAt(0).toUpperCase() + key.slice(1);
-        setError(`Please fill in the ${fieldName} field`);
+    if (isAssociate) {
+      // Associates: only required fields are name, phone, email, course
+      if (!formData.username || !formData.phone || !formData.email || !formData.course) {
+        setError('Please fill in all required fields');
+        return;
+      }
+      if (formData.graduationYear) {
+        dataToSend.graduationYear = formData.graduationYear;
+      }
+    } else {
+      // Students: all fields required
+      dataToSend.reg = formData.reg;
+      dataToSend.yos = formData.yos;
+      dataToSend.ministry = ministriesString;
+      dataToSend.et = formData.et;
+
+      for (const [key, value] of Object.entries(dataToSend)) {
+        if (!value) {
+          const fieldName = key === 'yos' ? 'Year of Study' : key === 'et' ? 'ET' : key.charAt(0).toUpperCase() + key.slice(1);
+          setError(`Please fill in the ${fieldName} field`);
+          return;
+        }
+      }
+
+      if (!validateYOS(dataToSend.yos)) {
+        setError('Year of study must be a number between 1 and 6');
         return;
       }
     }
 
     if (!validatePhone(dataToSend.phone)) {
       setError('Phone number must be 10 digits starting with 0 (e.g., 0712345678)');
-      return;
-    }
-
-    if (!validateYOS(dataToSend.yos)) {
-      setError('Year of study must be a number between 1 and 6');
       return;
     }
 
@@ -191,8 +234,12 @@ const SignUp: React.FC = () => {
       }
     } catch (error: any) {
       console.error('Signup error:', error);
-      if (error.response?.status === 400) {
-        setError(error.response.data?.message || 'Email, Phone, or Registration number already exists');
+      if (error.response?.data?.message) {
+        setError(error.response.data.message);
+      } else if (error.response?.status === 400) {
+        setError('Email, Phone, or Registration number already exists');
+      } else if (!error.response) {
+        setError('Network error. Please check your connection and try again.');
       } else {
         setError('Registration failed. Please try again.');
       }
@@ -203,93 +250,59 @@ const SignUp: React.FC = () => {
 
   // Show success screen if registration was successful
   if (registrationSuccess) {
+    const CopyField = ({ label, value, hint }: { label: string; value: string; hint?: string }) => {
+      const [copied, setCopied] = React.useState(false);
+      const handleCopy = () => {
+        navigator.clipboard.writeText(value).then(() => {
+          setCopied(true);
+          setTimeout(() => setCopied(false), 2000);
+        });
+      };
+      return (
+        <div style={{ marginBottom: '16px' }}>
+          <p className={styles.copyFieldLabel}>{label}</p>
+          <div className={styles.copyFieldRow}>
+            <span className={styles.copyFieldValue}>{value}</span>
+            <button
+              onClick={handleCopy}
+              className={`${styles.copyBtn} ${copied ? styles.copyBtnCopied : ''}`}
+            >
+              {copied ? <><Check size={14} /> Copied</> : <><Copy size={14} /> Copy</>}
+            </button>
+          </div>
+          {hint && <p className={styles.copyFieldHint}>{hint}</p>}
+        </div>
+      );
+    };
+
     return (
       <div className={styles.body}>
-        <div className={styles['container']}>
-          <Link to={"/"}>
-            <div className={styles['logo_signUp']}><img src={cuLogo} alt="CU logo" /></div>
-          </Link>
+        <div className={`${styles.container} ${styles.successContainer}`}>
+          <div className={styles.successAccentBar} />
 
-          <div style={{
-            background: '#dcfce7',
-            border: '2px solid #16a34a',
-            borderRadius: '12px',
-            padding: '25px',
-            textAlign: 'center',
-            marginTop: '20px'
-          }}>
-            <div style={{ fontSize: '48px', marginBottom: '15px' }}>✅</div>
-            <h2 style={{ color: '#166534', marginBottom: '15px' }}>Registration Successful!</h2>
-            <p style={{ color: '#166534', marginBottom: '20px' }}>
-              Your account has been created successfully.
-            </p>
-
-            <div style={{
-              background: '#f0fdf4',
-              border: '1px solid #bbf7d0',
-              borderRadius: '8px',
-              padding: '20px',
-              marginBottom: '20px',
-              textAlign: 'left'
-            }}>
-              <h3 style={{ color: '#166534', marginBottom: '15px', textAlign: 'center' }}>
-                How to Login
-              </h3>
-
-              <div style={{ marginBottom: '15px' }}>
-                <p style={{ color: '#166534', fontWeight: 'bold', marginBottom: '5px' }}>
-                  Email (Username):
-                </p>
-                <p style={{
-                  background: 'white',
-                  padding: '10px',
-                  borderRadius: '5px',
-                  fontFamily: 'monospace',
-                  color: '#730051',
-                  wordBreak: 'break-all'
-                }}>
-                  {registrationSuccess.email}
-                </p>
-              </div>
-
-              <div style={{ marginBottom: '15px' }}>
-                <p style={{ color: '#166534', fontWeight: 'bold', marginBottom: '5px' }}>
-                  Password:
-                </p>
-                <p style={{
-                  background: 'white',
-                  padding: '10px',
-                  borderRadius: '5px',
-                  fontFamily: 'monospace',
-                  color: '#730051'
-                }}>
-                  {registrationSuccess.password}
-                </p>
-                <p style={{ fontSize: '12px', color: '#166534', marginTop: '5px' }}>
-                  (Your phone number is your password)
-                </p>
-              </div>
+          <div className={styles.successIconWrapper}>
+            <div className={styles.successIcon}>
+              <Check size={32} color="white" strokeWidth={3} />
             </div>
-
-            <Link
-              to="/signIn"
-              style={{
-                display: 'inline-block',
-                background: '#730051',
-                color: 'white',
-                padding: '12px 30px',
-                borderRadius: '25px',
-                textDecoration: 'none',
-                fontWeight: 'bold',
-                fontSize: '16px'
-              }}
-            >
-              Go to Login
-            </Link>
+            <h2 className={styles.successTitle}>You're All Set!</h2>
+            <p className={styles.successSubtitle}>
+              Your {isAssociate ? 'associate' : 'student'} account is ready
+            </p>
           </div>
 
-          <div className={styles['form-footer']} style={{ marginTop: '20px' }}>
-            <p><Link to={"/Home"}>← Back to Home</Link></p>
+          <div className={styles.credentialsCard}>
+            <p className={styles.credentialsTitle}>Your Login Credentials</p>
+            <CopyField label="Email (Username)" value={registrationSuccess.email} />
+            <CopyField label="Password" value={registrationSuccess.password} hint="Your phone number is your password" />
+          </div>
+
+          <div className={styles.successActions}>
+            <Link to="/signIn" className={styles.loginLink}>
+              <LogIn size={18} /> Go to Login
+            </Link>
+            <Link to="/" className={styles.homeLink}>
+              <Home size={16} /> Back to Home
+            </Link>
           </div>
         </div>
       </div>
@@ -307,8 +320,60 @@ const SignUp: React.FC = () => {
         </Link>
         <h2 className={styles['text']}>Sign Up</h2>
 
-        <p style={{ fontSize: '13px', color: '#777', textAlign: 'center', marginBottom: '15px' }}>
-          Create your account • Phone number is your password
+        {/* Student / Associate Toggle */}
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          marginBottom: '20px',
+          position: 'relative',
+          background: '#f3f4f6',
+          borderRadius: '12px',
+          padding: '4px',
+        }}>
+          <div style={{
+            position: 'absolute',
+            top: '4px',
+            left: role === 'student' ? '4px' : '50%',
+            width: 'calc(50% - 4px)',
+            height: 'calc(100% - 8px)',
+            background: 'linear-gradient(135deg, #730051, #a0006e)',
+            borderRadius: '10px',
+            transition: 'left 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            boxShadow: '0 2px 8px rgba(115, 0, 81, 0.3)',
+          }} />
+          <button
+            type="button"
+            onClick={() => { setRole('student'); setError(''); }}
+            style={{
+              flex: 1, padding: '10px 16px', border: 'none', cursor: 'pointer',
+              backgroundColor: 'transparent',
+              color: role === 'student' ? 'white' : '#6b7280',
+              fontWeight: 600, fontSize: '13px',
+              transition: 'color 0.3s ease',
+              position: 'relative', zIndex: 1,
+              borderRadius: '10px',
+            }}
+          >Student</button>
+          <button
+            type="button"
+            onClick={() => { setRole('associate'); setError(''); }}
+            style={{
+              flex: 1, padding: '10px 16px', border: 'none', cursor: 'pointer',
+              backgroundColor: 'transparent',
+              color: role === 'associate' ? 'white' : '#6b7280',
+              fontWeight: 600, fontSize: '13px',
+              transition: 'color 0.3s ease',
+              position: 'relative', zIndex: 1,
+              borderRadius: '10px',
+            }}
+          >Associate / Alumni</button>
+        </div>
+
+        <p style={{ fontSize: '12px', color: '#9ca3af', textAlign: 'center', marginBottom: '18px', letterSpacing: '0.3px' }}>
+          {isAssociate
+            ? 'Join as an alumni/associate \u2022 Phone number is your password'
+            : 'Create your account \u2022 Phone number is your password'
+          }
         </p>
 
         {error && <p className={styles.error}>{error}</p>}
@@ -402,7 +467,7 @@ const SignUp: React.FC = () => {
           </div>
 
           <div className={styles['form-div']}>
-            <label htmlFor="course">Course</label>
+            <label htmlFor="course">{isAssociate ? 'Course (studied)' : 'Course'}</label>
             <input
               type="text"
               id="course"
@@ -415,74 +480,118 @@ const SignUp: React.FC = () => {
             />
           </div>
 
-          <div className={styles['form-div']}>
-            <label htmlFor="reg">Reg Number</label>
-            <input
-              type="text"
-              id="reg"
-              className={styles['input']}
-              value={formData.reg}
-              onChange={handleChange}
-              placeholder="e.g., BCS/1234/21"
-              required
-              maxLength={50}
-            />
-          </div>
+          {/* Associate-only: Graduation Year */}
+          {isAssociate && (
+            <div className={styles['form-div']}>
+              <label htmlFor="graduationYear">Year of Graduation (optional)</label>
+              <input
+                type="number"
+                id="graduationYear"
+                className={styles['input']}
+                value={formData.graduationYear}
+                onChange={handleChange}
+                min="2000"
+                max={new Date().getFullYear()}
+                placeholder={`e.g., ${new Date().getFullYear() - 1}`}
+              />
+            </div>
+          )}
 
-          <div className={styles['form-div']}>
-            <label htmlFor="yos">Year of Study</label>
-            <input
-              type="number"
-              id="yos"
-              className={styles['input']}
-              value={formData.yos}
-              onChange={handleChange}
-              min="1"
-              max="6"
-              placeholder="1-6"
-              required
-            />
-          </div>
-
-          <div className={styles['form-div']}>
-            <label htmlFor="ministry">Ministry</label>
-            <div className={styles['ministry-container']} tabIndex={0} onBlur={handleBlur}>
-              <div className={styles['ministry-header']} onClick={() => setShowDropdown(!showDropdown)}>
-                <span>
-                  {selectedMinistries.length > 0 ? selectedMinistries.join(', ') : 'Select your ministry...'}
-                </span>
-                <ChevronDown size={20} />
+          {/* Student-only fields */}
+          {!isAssociate && (
+            <>
+              <div className={styles['form-div']}>
+                <label htmlFor="reg">Reg Number</label>
+                <input
+                  type="text"
+                  id="reg"
+                  className={styles['input']}
+                  value={formData.reg}
+                  onChange={handleChange}
+                  placeholder="e.g., BCS/1234/21"
+                  required
+                  maxLength={50}
+                />
               </div>
 
-              {showDropdown && (
-                <div className={styles['ministry-menu']}>
-                  {ministriesList.map(ministry => (
-                    <label key={ministry.id} className={styles['ministry-item']}>
-                      <input
-                        type="checkbox"
-                        checked={selectedMinistries.includes(ministry.id)}
-                        onChange={() => toggleMinistrySelection(ministry.id)}
-                      />
-                      {ministry.label}
-                    </label>
-                  ))}
+              <div className={styles['form-div']}>
+                <label htmlFor="yos">Year of Study</label>
+                <input
+                  type="number"
+                  id="yos"
+                  className={styles['input']}
+                  value={formData.yos}
+                  onChange={handleChange}
+                  min="1"
+                  max="6"
+                  placeholder="1-6"
+                  required
+                />
+              </div>
+
+              <div className={styles['form-div']}>
+                <label htmlFor="ministry">Ministry</label>
+                <div className={styles['ministry-container']} tabIndex={0} onBlur={handleMinistryBlur}>
+                  <div className={styles['ministry-header']} onClick={() => setShowDropdown(!showDropdown)}>
+                    <span>
+                      {selectedMinistries.length > 0 ? selectedMinistries.join(', ') : 'Select your ministry...'}
+                    </span>
+                    <ChevronDown size={20} />
+                  </div>
+
+                  {showDropdown && (
+                    <div className={styles['ministry-menu']}>
+                      {ministriesList.map(ministry => (
+                        <label key={ministry.id} className={styles['ministry-item']}>
+                          <input
+                            type="checkbox"
+                            checked={selectedMinistries.includes(ministry.id)}
+                            onChange={() => toggleMinistrySelection(ministry.id)}
+                          />
+                          {ministry.label}
+                        </label>
+                      ))}
+                    </div>
+                  )}
+
                 </div>
-              )}
+              </div>
 
-            </div>
-          </div>
+              <div className={styles['form-div']}>
+                <label htmlFor="et">ET Group</label>
+                <div className={styles['ministry-container']} tabIndex={0} onBlur={handleETBlur}>
+                  <div className={styles['ministry-header']} onClick={() => setShowETDropdown(!showETDropdown)}>
+                    <span>
+                      {formData.et ? etGroups.find(g => g.id === formData.et)?.label : 'Select ET group...'}
+                    </span>
+                    <ChevronDown size={20} />
+                  </div>
 
-          <div className={styles['form-div']}>
-            <label htmlFor="et">ET Group</label>
-            <select id="et" className={styles['select']} value={formData.et} onChange={handleChange} required>
-              <option value="">Select ET...</option>
-              <option value="rivet">Rivet</option>
-              <option value="cet">Cet</option>
-              <option value="eset">Eset</option>
-              <option value="net">Net</option>
-              <option value="weso">Weso</option>
-            </select>
-          </div>
+                  {showETDropdown && (
+                    <div className={styles['ministry-menu']}>
+                      {etGroups.map(group => (
+                        <label key={group.id} className={styles['ministry-item']}
+                          onClick={() => {
+                            setFormData(prev => ({ ...prev, et: group.id }));
+                            setShowETDropdown(false);
+                          }}
+                          style={{ cursor: 'pointer' }}
+                        >
+                          <input
+                            type="radio"
+                            name="et-group"
+                            checked={formData.et === group.id}
+                            readOnly
+                          />
+                          {group.label}
+                        </label>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
 
           <div className={styles['submisions']}>
             <div className={styles['clearForm']} onClick={() => {

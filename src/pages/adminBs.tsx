@@ -78,7 +78,7 @@ const BsMembersList = () => {
     } else {
       // For production, check if coming from worship docket admin
       const adminAuth = sessionStorage.getItem('adminAuth');
-      if (adminAuth === 'Overseer') {
+      if (adminAuth === 'authenticated') {
         setShowLoginForm(true);
         setLoading(false); // Stop loading to show login form
       } else {
@@ -259,7 +259,7 @@ const BsMembersList = () => {
 
     // Auto-authenticate for localhost if needed
     if (isLocalhost && !adminAuth) {
-      sessionStorage.setItem('adminAuth', 'Overseer');
+      sessionStorage.setItem('adminAuth', 'authenticated');
     }
 
     const defaultResidences = [

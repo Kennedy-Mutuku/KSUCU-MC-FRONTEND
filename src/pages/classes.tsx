@@ -1,6 +1,5 @@
 import React from 'react';
 import styles from '../styles/classes.module.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebook, faTiktok, faXTwitter, faYoutube } from '@fortawesome/free-brands-svg-icons';
 import betPImg from '../assets/Best-p.png'
@@ -21,7 +20,7 @@ const classData: ClassInfo[] = [
   {
     title: 'BEST-P CLASSES',
     description:
-      '“BEST-P” is an acronym for Bible Expository Self-Training Program. It is a long term group oriented training program on inductive Bible study, principles of bible interpretation, expository preaching, and apologetics.',
+      '"BEST-P" is an acronym for Bible Expository Self-Training Program. It is a long term group oriented training program on inductive Bible study, principles of bible interpretation, expository preaching, and apologetics.',
     imgSrc: betPImg,
     delay: '0.1s',
     socialLink: 'https://www.facebook.com/ksucumc/',
@@ -51,41 +50,38 @@ const classData: ClassInfo[] = [
       "Brothers' fellowships deal with matters concerning gents and Sisters' fellowships for ladies. Both fellowships handle topics that benefit members academically, spiritually, financially, socially, and physically.",
     imgSrc: fellowshipImg,
     delay: '0.4s',
-    socialLink: 'http://ww.youtube.com/c/KISIIUNIVERSITYCUMAINCAMPUS',
+    socialLink: 'http://www.youtube.com/c/KISIIUNIVERSITYCUMAINCAMPUS',
     socialIconClass: faYoutube,
   },
 ];
 
 const ClassesSection: React.FC = () => {
   return (
-    <section id="Classes" className="">
+    <section id="Classes">
       <div className={styles.container}>
-
         <div className={styles.title}>
           <h2>CLASSES AND FELLOWSHIPS</h2>
-          <p>Meet some of our educative and interesting classes and fellowships:</p>
+          <p>Meet some of our educative and interesting classes and fellowships</p>
         </div>
 
         <div className={styles.row}>
-
           {classData.map((classInfo, index) => (
             <div
               key={index}
-              className={`col-xs-12 col-sm-6 col-md-3 ${styles.animated} ${index % 2 === 0 ? styles.fadeInDown : styles.fadeInUp
-                }`}
+              className={`${styles.card} ${styles.animated} ${
+                index % 2 === 0 ? styles.fadeInDown : styles.fadeInUp
+              }`}
               style={{ animationDelay: classInfo.delay }}
             >
               <div className={styles.classimg}>
-                <img src={classInfo.imgSrc} alt={classInfo.title} className="img-fluid" />
+                <img src={classInfo.imgSrc} alt={classInfo.title} />
               </div>
               <div className={styles.classBox}>
-                <h3>
-                  <b>{classInfo.title}</b>
-                </h3>
+                <h3>{classInfo.title}</h3>
                 <p>{classInfo.description}</p>
                 <ul className={styles.socialLinks}>
                   <li>
-                    <a href={classInfo.socialLink}>
+                    <a href={classInfo.socialLink} target="_blank" rel="noopener noreferrer">
                       <FontAwesomeIcon icon={classInfo.socialIconClass} />
                     </a>
                   </li>
@@ -100,5 +96,3 @@ const ClassesSection: React.FC = () => {
 };
 
 export default ClassesSection;
-
-

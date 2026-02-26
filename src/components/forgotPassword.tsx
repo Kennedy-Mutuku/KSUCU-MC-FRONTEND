@@ -1,35 +1,89 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import styles from '../styles/signin.module.css';
 import cuLogo from '../assets/cuLogoUAR.png';
 import { Link } from 'react-router-dom';
+import { getApiUrl } from '../config/environment';
 
 const Forgotpassword: React.FC = () => {
-    const [formData, setFormData] = useState({
-        name: '',
-        regNumber: ''
-    });
+    const [email, setEmail] = useState('');
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [successMessage, setSuccessMessage] = useState('');
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { id, value } = e.target;
-        setFormData(prev => ({ ...prev, [id]: value }));
-    };
-
-    const handleWhatsAppRedirect = () => {
-        if (!formData.name.trim() || !formData.regNumber.trim()) {
-            setError('Please fill in all fields');
+    const handleSubmit = async () => {
+        if (!email.trim()) {
+            setError('Please enter your email address');
             return;
         }
 
-        const message = `Hello admin, I am ${formData.name.trim()}, of reg no ${formData.regNumber.trim()}, kindly help me in resetting my KSUCU MC password.`;
-        const encodedMessage = encodeURIComponent(message);
-
-        // Open both WhatsApp windows - 0717481883 first, then 0740881485
-        window.open(`https://wa.me/254717481883?text=${encodedMessage}`, '_blank');
-        window.open(`https://wa.me/254740881485?text=${encodedMessage}`, '_blank');
-
+        setLoading(true);
         setError('');
+        setSuccessMessage('');
+
+        try {
+            await axios.post(getApiUrl('usersForgetPassword'), {
+                email: email.trim().toLowerCase()
+            });
+
+            setSuccessMessage('Password reset link has been sent to your email. Please check your inbox.');
+            setEmail('');
+        } catch (err: any) {
+            if (err.response?.status === 404) {
+                setError('No account found with this email address.');
+            } else {
+                setError(err.response?.data?.message || 'Something went wrong. Please try again.');
+            }
+        } finally {
+            setLoading(false);
+        }
     };
+
+    if (successMessage) {
+        return (
+            <div className={styles.body}>
+                <div className={styles['container']}>
+                    <Link to={"/"}>
+                        <div className={styles['logo_signUp']}><img src={cuLogo} alt="CU logo" /></div>
+                    </Link>
+
+                    <div style={{
+                        background: '#dcfce7',
+                        border: '2px solid #16a34a',
+                        borderRadius: '12px',
+                        padding: '25px',
+                        textAlign: 'center',
+                        marginTop: '20px'
+                    }}>
+                        <div style={{ fontSize: '48px', marginBottom: '15px' }}>✅</div>
+                        <h2 style={{ color: '#166534', marginBottom: '15px' }}>Check Your Email</h2>
+                        <p style={{ color: '#166534', marginBottom: '20px', fontSize: '14px' }}>
+                            {successMessage}
+                        </p>
+                        <p style={{ color: '#555', fontSize: '13px', marginBottom: '20px' }}>
+                            Tip: Your default password is your phone number
+                        </p>
+
+                        <Link
+                            to="/signIn"
+                            style={{
+                                display: 'inline-block',
+                                background: '#730051',
+                                color: 'white',
+                                padding: '12px 30px',
+                                borderRadius: '25px',
+                                textDecoration: 'none',
+                                fontWeight: 'bold',
+                                fontSize: '16px'
+                            }}
+                        >
+                            Back to Login
+                        </Link>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className={styles.body}>
@@ -46,43 +100,40 @@ const Forgotpassword: React.FC = () => {
                     marginBottom: '20px',
                     padding: '0 20px'
                 }}>
-                    Enter your details to request password reset from admin
+                    Enter your email and we'll send you a password reset link
                 </p>
 
                 {error && <p className={styles.error}>{error}</p>}
 
                 <form action="" className={styles['form']}>
                     <div className={styles['form-div']}>
-                        <label htmlFor="name">Full Name</label>
+                        <label htmlFor="email">E-mail</label>
                         <input
-                            type="text"
-                            id="name"
+                            type="email"
+                            id="email"
                             className={styles['input']}
-                            value={formData.name}
-                            onChange={handleChange}
-                            placeholder="Enter your full name"
-                            required
-                        />
-                    </div>
-
-                    <div className={styles['form-div']}>
-                        <label htmlFor="regNumber">Reg Number</label>
-                        <input
-                            type="text"
-                            id="regNumber"
-                            className={styles['input']}
-                            value={formData.regNumber}
-                            onChange={handleChange}
-                            placeholder="e.g., BCS/1234/21"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="Enter your registered email"
                             required
                         />
                     </div>
                 </form>
 
                 <div className={styles['submisions']}>
-                    <div className={styles['clearForm']} onClick={() => setFormData({ name: '', regNumber: '' })}>Clear</div>
-                    <div className={styles['submitData']} onClick={handleWhatsAppRedirect}>Request Password Reset</div>
+                    <div className={styles['clearForm']} onClick={() => { setEmail(''); setError(''); }}>Clear</div>
+                    <div
+                        className={styles['submitData']}
+                        onClick={loading ? undefined : handleSubmit}
+                        style={{ opacity: loading ? 0.7 : 1, pointerEvents: loading ? 'none' : 'auto' }}
+                    >
+                        {loading ? 'Sending...' : 'Send Reset Link'}
+                    </div>
                 </div>
+
+                <p style={{ fontSize: '12px', color: '#555', textAlign: 'center', marginTop: '10px' }}>
+                    Tip: Your default password is your phone number
+                </p>
 
                 <div className={styles['form-footer']}>
                     <p><Link to={"/signIn"}>← Back to Login</Link></p>
@@ -98,5 +149,3 @@ const Forgotpassword: React.FC = () => {
 };
 
 export default Forgotpassword;
-
-

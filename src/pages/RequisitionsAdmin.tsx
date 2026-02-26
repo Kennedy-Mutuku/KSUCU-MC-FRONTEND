@@ -15,6 +15,8 @@ import {
   faClock,
   faFileAlt,
 } from "@fortawesome/free-solid-svg-icons";
+import { useOverseerAuth } from "../hooks/useOverseerAuth";
+import OverseerLogoutButton from "../components/OverseerLogoutButton";
 
 interface RequisitionItem {
   id: string;
@@ -50,6 +52,7 @@ interface RequisitionForm {
 
 const RequisitionsAdmin: React.FC = () => {
   const navigate = useNavigate();
+  const { authenticated, loading: authLoading } = useOverseerAuth();
   const [requisitions, setRequisitions] = useState<RequisitionForm[]>([]);
   const [filteredRequisitions, setFilteredRequisitions] = useState<
     RequisitionForm[]
@@ -59,14 +62,9 @@ const RequisitionsAdmin: React.FC = () => {
   const [showDetails, setShowDetails] = useState(false);
   const [editingRequisition, setEditingRequisition] =
     useState<RequisitionForm | null>(null);
-  const [authenticated, setAuthenticated] = useState(false);
   const [adminPhone, setAdminPhone] = useState<string>("");
 
   React.useEffect(() => {
-    const adminAuth = sessionStorage.getItem("adminAuth");
-    if (adminAuth === "Overseer") {
-      setAuthenticated(true);
-    }
     // Load admin phone number from API first, fallback to localStorage
     loadAdminPhone();
   }, []);
@@ -434,6 +432,7 @@ const RequisitionsAdmin: React.FC = () => {
   return (
     <>
       <div className={styles.container}>
+        <OverseerLogoutButton />
         <div className={styles.header}>
           <h1>
             <FontAwesomeIcon icon={faBox} />

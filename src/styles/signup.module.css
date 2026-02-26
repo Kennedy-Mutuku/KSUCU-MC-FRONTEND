@@ -2,8 +2,7 @@
 
 .body {
     background-image: url("../assets/loginbg.png");
-    min-height: 100vh;
-    padding: 10px 0;
+    padding: 30px 0;
     position: relative;
 }
 
@@ -14,21 +13,18 @@
     box-shadow: var(--bs);
     border-radius: 12px;
     background: #fff;
-    max-height: 90vh;
-    overflow-y: auto;
 }
 
 /* Mobile-specific styles */
 @media (max-width: 480px) {
     .body {
-        padding: 5px 0;
+        padding: 50px 0 100px;
     }
 
     .container {
         width: 98%;
         padding: 10px 0;
         border-radius: 10px;
-        max-height: 95vh;
     }
 
     .logo_signUp img {
@@ -224,13 +220,14 @@
 }
 
 .submitData {
-    background: #00c6ff;
-    color: #000;
+    background: #730051;
+    color: #fff;
 }
 
 .clearForm {
-    background: #980000;
-    color: #F5ECC9;
+    background: #f5f5f5;
+    color: #555;
+    border: 1px solid #ddd;
 }
 
 .clearForm,
@@ -338,4 +335,229 @@ select {
 .input-pswd {
     width: 100%;
     margin: 0;
+}
+
+/* Success card styles */
+.successContainer {
+    padding: 32px 24px 24px;
+    position: relative;
+    overflow: hidden;
+}
+
+.successAccentBar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #730051, #a0006e, #730051);
+}
+
+.successIconWrapper {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.successIcon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #730051, #a0006e);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    box-shadow: 0 4px 16px rgba(115, 0, 81, 0.3);
+}
+
+.successTitle {
+    color: #1a1a2e;
+    font-size: 1.4em;
+    font-weight: 700;
+    margin: 0 0 6px;
+}
+
+.successSubtitle {
+    color: #666;
+    font-size: 0.95em;
+    margin: 0;
+}
+
+.credentialsCard {
+    background: #fff;
+    border: 1.5px solid #eee;
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+}
+
+.credentialsTitle {
+    text-align: center;
+    color: #333;
+    font-weight: 600;
+    font-size: 15px;
+    margin-bottom: 16px;
+}
+
+.copyFieldRow {
+    display: flex;
+    align-items: center;
+    background: #f8f0f5;
+    border: 1.5px solid #e0c0d6;
+    border-radius: 10px;
+    padding: 12px 14px;
+    gap: 10px;
+}
+
+.copyFieldValue {
+    flex: 1;
+    font-family: monospace;
+    font-size: 15px;
+    color: #730051;
+    font-weight: 600;
+    word-break: break-all;
+}
+
+.copyBtn {
+    background: #730051;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.copyBtnCopied {
+    background: #16a34a;
+}
+
+.copyFieldLabel {
+    color: #555;
+    font-weight: 600;
+    font-size: 13px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.copyFieldHint {
+    font-size: 12px;
+    color: #888;
+    margin-top: 4px;
+}
+
+.successActions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.loginLink {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #730051, #a0006e);
+    color: white;
+    padding: 14px 24px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 15px;
+    box-shadow: 0 4px 12px rgba(115, 0, 81, 0.3);
+    transition: all 0.2s ease;
+}
+
+.loginLink:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.homeLink {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    color: #730051;
+    padding: 10px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 14px;
+    transition: color 0.2s;
+}
+
+.homeLink:hover {
+    color: #a0006e;
+}
+
+/* Success card mobile */
+@media (max-width: 480px) {
+    .successContainer {
+        padding: 24px 14px 16px;
+    }
+
+    .successIcon {
+        width: 52px;
+        height: 52px;
+        margin-bottom: 12px;
+    }
+
+    .successTitle {
+        font-size: 1.2em;
+    }
+
+    .successSubtitle {
+        font-size: 0.85em;
+    }
+
+    .credentialsCard {
+        padding: 14px;
+        margin-bottom: 16px;
+        border-radius: 10px;
+    }
+
+    .credentialsTitle {
+        font-size: 13px;
+        margin-bottom: 12px;
+    }
+
+    .copyFieldRow {
+        padding: 10px;
+        gap: 8px;
+        border-radius: 8px;
+    }
+
+    .copyFieldValue {
+        font-size: 13px;
+    }
+
+    .copyBtn {
+        padding: 6px 10px;
+        font-size: 11px;
+        border-radius: 6px;
+    }
+
+    .copyFieldLabel {
+        font-size: 11px;
+    }
+
+    .loginLink {
+        padding: 12px 16px;
+        font-size: 14px;
+        border-radius: 10px;
+    }
+
+    .homeLink {
+        font-size: 13px;
+        padding: 8px;
+    }
 }

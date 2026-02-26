@@ -21,7 +21,7 @@
 }
 
 .welcomeText {
-    color: #0072ff;
+    color: #a0006e;
     font-size: 18px;
     font-weight: 600;
     margin: 0;
@@ -43,7 +43,7 @@
 }
 
 .statCard {
-    background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
+    background: linear-gradient(135deg, #730051 0%, #a0006e 100%);
     padding: 25px;
     border-radius: 10px;
     text-align: center;
@@ -92,12 +92,12 @@
 
 .searchBar input:focus {
     outline: none;
-    border-color: #00c6ff;
+    border-color: #730051;
 }
 
 .searchBtn {
     padding: 12px 30px;
-    background: #00c6ff;
+    background: #730051;
     color: white;
     border: none;
     border-radius: 5px;
@@ -107,7 +107,7 @@
 }
 
 .searchBtn:hover {
-    background: #0072ff;
+    background: #a0006e;
 }
 
 .searchResults {
@@ -257,12 +257,12 @@
 }
 
 .yearFilter:hover {
-    border-color: #00c6ff;
+    border-color: #730051;
 }
 
 .yearFilter:focus {
     outline: none;
-    border-color: #0072ff;
+    border-color: #a0006e;
     box-shadow: 0 0 0 3px rgba(0, 114, 255, 0.1);
 }
 
@@ -288,7 +288,7 @@
 }
 
 .userTable th {
-    background: #00c6ff;
+    background: #730051;
     color: white;
     font-weight: bold;
     text-transform: uppercase;

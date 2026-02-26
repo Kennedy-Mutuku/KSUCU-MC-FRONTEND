@@ -10,7 +10,7 @@
     text-align: center;
     margin-bottom: 40px;
     padding: 30px 40px;
-    background: linear-gradient(135deg, #730051 0%, #00c6ff 100%);
+    background: linear-gradient(135deg, #730051 0%, #730051 100%);
     border-radius: 25px;
     box-shadow: 0 5px 15px rgba(115, 0, 81, 0.3);
     max-width: 800px;
@@ -72,7 +72,7 @@
     border-radius: 15px;
     padding: 30px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    border-left: 4px solid #00c6ff;
+    border-left: 4px solid #730051;
 }
 
 .userStatusSection h3 {
@@ -114,7 +114,7 @@
     padding: 12px;
     border-radius: 8px;
     margin-bottom: 10px;
-    border-left: 3px solid #00c6ff;
+    border-left: 3px solid #730051;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -137,7 +137,7 @@
 }
 
 .downloadButton {
-    background: linear-gradient(135deg, #00c6ff 0%, #00a8d8 100%);
+    background: linear-gradient(135deg, #730051 0%, #00a8d8 100%);
     color: white;
     border: none;
     padding: 6px 12px;
@@ -379,7 +379,7 @@
 .gridHeader {
     display: grid;
     grid-template-columns: 50px 2fr 120px 2fr 80px;
-    background: linear-gradient(90deg, #730051 0%, #00c6ff 100%);
+    background: linear-gradient(90deg, #730051 0%, #730051 100%);
     color: white;
     font-weight: 700;
     font-size: 0.9rem;
@@ -469,7 +469,7 @@
 }
 
 .addButton {
-    background: linear-gradient(135deg, #730051 0%, #00c6ff 100%);
+    background: linear-gradient(135deg, #730051 0%, #730051 100%);
     color: white;
     border: none;
     padding: 12px 30px;
@@ -547,7 +547,7 @@
     padding: 12px 15px;
     margin-bottom: 8px;
     border-radius: 8px;
-    border-left: 3px solid #00c6ff;
+    border-left: 3px solid #730051;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
     line-height: 1.5;
 }
@@ -597,7 +597,7 @@
 }
 
 .submitButton {
-    background: linear-gradient(135deg, #730051 0%, #00c6ff 100%);
+    background: linear-gradient(135deg, #730051 0%, #730051 100%);
     color: white;
     border: none;
     padding: 15px 40px;
@@ -717,7 +717,7 @@
     .header {
         margin-bottom: 20px;
         padding: 25px 30px;
-        background: linear-gradient(135deg, #730051 0%, #00c6ff 100%);
+        background: linear-gradient(135deg, #730051 0%, #730051 100%);
         border-radius: 25px;
         box-shadow: 0 5px 15px rgba(115, 0, 81, 0.3);
         transition: all 0.3s ease;
@@ -802,7 +802,7 @@
     .gridHeader {
         display: grid;
         grid-template-columns: 35px 2fr 70px 1.5fr 50px;
-        background: linear-gradient(90deg, #730051 0%, #00c6ff 100%);
+        background: linear-gradient(90deg, #730051 0%, #730051 100%);
         color: white;
         font-weight: 700;
         font-size: 0.75rem;
@@ -1034,7 +1034,7 @@
     .header {
         padding: 20px 25px;
         margin: 0 auto 15px;
-        background: linear-gradient(135deg, #730051 0%, #00c6ff 100%);
+        background: linear-gradient(135deg, #730051 0%, #730051 100%);
         border-radius: 25px;
         box-shadow: 0 5px 15px rgba(115, 0, 81, 0.3);
         transition: all 0.3s ease;
@@ -1068,7 +1068,7 @@
         grid-template-columns: 30px 1.8fr 60px 1.2fr 45px;
         font-size: 0.7rem;
         min-width: 280px;
-        background: linear-gradient(90deg, #730051 0%, #00c6ff 100%);
+        background: linear-gradient(90deg, #730051 0%, #730051 100%);
         border-radius: 8px 8px 0 0;
         transition: all 0.3s ease;
     }

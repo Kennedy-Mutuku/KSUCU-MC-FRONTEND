@@ -1096,7 +1096,7 @@ const CommunityChat: React.FC = () => {
 
   const generateUserColor = (username: string): string => {
     const colors = [
-      '#730051', '#8b1c5b', '#0099cc', '#00c6ff', '#ef4444',
+      '#730051', '#8b1c5b', '#5a0040', '#730051', '#ef4444',
       '#f59e0b', '#10b981', '#8b5cf6', '#f97316', '#06b6d4'
     ];
     let hash = 0;

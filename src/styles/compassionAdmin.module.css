@@ -9,7 +9,7 @@
 
 /* Header */
 .header {
-  background: linear-gradient(135deg, #730051 0%, #00c6ff 100%);
+  background: linear-gradient(135deg, #730051 0%, #730051 100%);
   color: white;
   text-align: center;
   padding: 40px 20px;
@@ -111,7 +111,7 @@
 }
 
 .tabButton.active {
-  background: linear-gradient(135deg, #730051, #00c6ff);
+  background: linear-gradient(135deg, #730051, #730051);
   color: white;
 }
 
@@ -164,7 +164,7 @@
 .statusFilter select:focus,
 .urgencyFilter select:focus {
   outline: none;
-  border-color: #00c6ff;
+  border-color: #730051;
   box-shadow: 0 0 0 3px rgba(0, 198, 255, 0.1);
 }
 
@@ -407,7 +407,7 @@
   align-items: center;
   padding: 20px 30px;
   border-bottom: 1px solid #e9ecef;
-  background: linear-gradient(135deg, #730051, #00c6ff);
+  background: linear-gradient(135deg, #730051, #730051);
   color: white;
   border-radius: 15px 15px 0 0;
 }
@@ -643,7 +643,7 @@
   background: #e3f2fd;
   border-radius: 10px;
   padding: 20px;
-  border: 2px dashed #00c6ff;
+  border: 2px dashed #730051;
 }
 
 .addMethodSection h4,
@@ -663,7 +663,7 @@
   padding: 10px 15px;
   border: none;
   border-radius: 8px;
-  background: linear-gradient(135deg, #730051, #00c6ff);
+  background: linear-gradient(135deg, #730051, #730051);
   color: white;
   font-size: 0.9rem;
   font-weight: 600;
@@ -1302,8 +1302,8 @@
 .formGroup select:focus,
 .formGroup textarea:focus {
   outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+  border-color: #730051;
+  box-shadow: 0 0 0 2px rgba(115, 0, 81, 0.25);
 }
 
 .detailsSection {
@@ -1375,7 +1375,7 @@
 }
 
 .saveButton {
-  background: #007bff;
+  background: #730051;
   color: white;
   border: none;
   border-radius: 4px;
@@ -1387,7 +1387,7 @@
 }
 
 .saveButton:hover:not(:disabled) {
-  background: #0056b3;
+  background: #5a0040;
 }
 
 .saveButton:disabled {

@@ -38,7 +38,7 @@ const BackButton: React.FC = () => {
       }}
       onMouseOver={(e) => {
         const target = e.target as HTMLButtonElement;
-        target.style.background = '#00c6ff';
+        target.style.background = '#730051';
         target.style.transform = 'scale(1.05)';
         target.style.boxShadow = '0 6px 20px rgba(0, 198, 255, 0.4)';
       }}

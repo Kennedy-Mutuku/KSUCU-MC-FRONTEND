@@ -40,7 +40,7 @@
 
 /* Statistics Card */
 .statsCard {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #730051, #a0006e);
     color: white;
     padding: 20px;
     border-radius: 12px;
@@ -114,7 +114,7 @@
 }
 
 .refreshButton {
-    background: linear-gradient(45deg, #17a2b8, #20c997);
+    background: linear-gradient(45deg, #730051, #a0006e);
 }
 
 .seedButton {
@@ -127,7 +127,7 @@
 }
 
 .refreshButton:hover {
-    box-shadow: 0 4px 12px rgba(23, 162, 184, 0.3);
+    box-shadow: 0 4px 12px rgba(115, 0, 81, 0.3);
 }
 
 .seedButton:hover {
@@ -191,7 +191,7 @@
 }
 
 .editButton {
-    background: #17a2b8;
+    background: #730051;
     color: white;
 }
 
@@ -201,7 +201,7 @@
 }
 
 .editButton:hover {
-    background: #138496;
+    background: #5a0040;
     transform: scale(1.05);
 }
 
@@ -446,8 +446,8 @@
 
 /* Authentication Section */
 .authSection {
-    background: linear-gradient(135deg, #fff3cd, #ffeaa7);
-    border: 2px solid #ffc107;
+    background: linear-gradient(135deg, #f8f0f5, #f3e6ef);
+    border: 2px solid #730051;
     border-radius: 12px;
     padding: 20px;
     margin-bottom: 20px;
@@ -456,19 +456,19 @@
 
 .authSection h3 {
     margin: 0 0 20px 0;
-    color: #856404;
+    color: #730051;
     font-size: 1.3rem;
 }
 
 .authSection h5 {
     margin: 0 0 15px 0;
-    color: #856404;
+    color: #730051;
     font-size: 1.2rem;
 }
 
 .authSection p {
     margin: 10px 0;
-    color: #856404;
+    color: #730051;
 }
 
 .authForm {
@@ -486,13 +486,13 @@
     display: block;
     margin-bottom: 5px;
     font-weight: 500;
-    color: #856404;
+    color: #730051;
 }
 
 .authFormGroup input {
     width: 100%;
     padding: 10px;
-    border: 2px solid #ffc107;
+    border: 2px solid #730051;
     border-radius: 6px;
     font-size: 0.9rem;
     transition: border-color 0.2s ease;
@@ -501,7 +501,7 @@
 
 .authFormGroup input:focus {
     outline: none;
-    border-color: #e0a800;
+    border-color: #5a0040;
 }
 
 .authSubmit {

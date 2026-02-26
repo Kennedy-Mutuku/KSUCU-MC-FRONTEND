@@ -18,12 +18,12 @@ interface CategoryManagerProps {
 }
 
 const CategoryManager = ({ isOpen, onClose, onCategoryCreated, categories = [] }: CategoryManagerProps) => {
-  const [newCategory, setNewCategory] = useState({ name: '', description: '', color: '#00c6ff', icon: '📄' });
+  const [newCategory, setNewCategory] = useState({ name: '', description: '', color: '#730051', icon: '📄' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  const colors = ['#00c6ff', '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#F7DC6F', '#BB8FCE'];
+  const colors = ['#730051', '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#F7DC6F', '#BB8FCE'];
   const icons = ['📄', '📋', '🎓', '💰', '📧', '🆔', '📊', '🔒'];
 
   const handleCreateCategory = async (e: React.FormEvent) => {
@@ -54,7 +54,7 @@ const CategoryManager = ({ isOpen, onClose, onCategoryCreated, categories = [] }
       }
 
       setSuccess('Category created successfully!');
-      setNewCategory({ name: '', description: '', color: '#00c6ff', icon: '📄' });
+      setNewCategory({ name: '', description: '', color: '#730051', icon: '📄' });
 
       setTimeout(() => {
         if (onCategoryCreated) {
@@ -225,7 +225,7 @@ const CategoryManager = ({ isOpen, onClose, onCategoryCreated, categories = [] }
                     padding: '10px',
                     borderRadius: '8px',
                     backgroundColor: newCategory.icon === icon ? '#f0f0f0' : '#fff',
-                    border: newCategory.icon === icon ? '2px solid #00c6ff' : '1px solid #ddd',
+                    border: newCategory.icon === icon ? '2px solid #730051' : '1px solid #ddd',
                     fontSize: '1.5rem',
                     cursor: 'pointer',
                     transition: 'all 0.3s'
@@ -245,7 +245,7 @@ const CategoryManager = ({ isOpen, onClose, onCategoryCreated, categories = [] }
               style={{
                 flex: 1,
                 padding: '12px',
-                backgroundColor: '#00c6ff',
+                backgroundColor: '#730051',
                 color: '#000',
                 border: 'none',
                 borderRadius: '6px',

@@ -109,7 +109,7 @@
 .input:focus,
 .select:focus {
   outline: none;
-  border-color: #00c6ff;
+  border-color: #730051;
   box-shadow: 0 0 0 3px rgba(0, 198, 255, 0.1);
   transform: translateY(-1px);
 }
@@ -167,7 +167,7 @@
 .submitButton {
   flex: 2;
   padding: 12px 20px;
-  background: linear-gradient(135deg, #00c6ff, #0099cc);
+  background: linear-gradient(135deg, #730051, #5a0040);
   color: white;
   border: none;
   border-radius: 10px;
@@ -179,7 +179,7 @@
 }
 
 .submitButton:hover {
-  background: linear-gradient(135deg, #0099cc, #007aa3);
+  background: linear-gradient(135deg, #5a0040, #007aa3);
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(0, 198, 255, 0.4);
 }
@@ -206,7 +206,7 @@
 }
 
 .footerNote {
-  color: #00c6ff;
+  color: #730051;
   font-size: 0.85rem;
   text-align: center;
   margin: 5px 0 0 0;

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from '../styles/NewsAdmin.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-    faLock, 
+import {
+    faLock,
     faUnlock,
     faNewspaper,
     faCalendarAlt,
@@ -14,6 +15,8 @@ import {
     faCheckCircle
 } from '@fortawesome/free-solid-svg-icons';
 import { getApiUrl } from '../config/environment';
+import { useOverseerAuth } from '../hooks/useOverseerAuth';
+import OverseerLogoutButton from '../components/OverseerLogoutButton';
 
 interface NewsFormData {
     title: string;
@@ -23,7 +26,8 @@ interface NewsFormData {
 }
 
 const NewsAdmin: React.FC = () => {
-    const [authenticated, setAuthenticated] = useState(false);
+    const navigate = useNavigate();
+    const { authenticated, loading: authLoading, login } = useOverseerAuth();
     const [password, setPassword] = useState('');
     const [authError, setAuthError] = useState('');
     const [message, setMessage] = useState('');
@@ -31,16 +35,12 @@ const NewsAdmin: React.FC = () => {
     const [currentNews, setCurrentNews] = useState<NewsFormData | null>(null);
     const [previewMode, setPreviewMode] = useState(false);
 
-    // Check for existing authentication on mount
     React.useEffect(() => {
-        const adminAuth = sessionStorage.getItem('adminAuth');
-        if (adminAuth === 'Overseer') {
-            setAuthenticated(true);
-            setMessage('Already authenticated from admin dashboard');
-            setTimeout(() => setMessage(''), 3000);
+        if (authenticated) {
+            fetchCurrentNews();
         }
-    }, []);
-    
+    }, [authenticated]);
+
     const [formData, setFormData] = useState<NewsFormData>({
         title: '',
         body: '',
@@ -49,15 +49,14 @@ const NewsAdmin: React.FC = () => {
     });
 
     // Authentication
-    const handleLogin = () => {
-        if (password === 'Overseer') {
-            setAuthenticated(true);
+    const handleLogin = async () => {
+        const result = await login(password);
+        if (result.success) {
             setAuthError('');
             setMessage('Successfully logged in to News Admin');
             setTimeout(() => setMessage(''), 3000);
-            fetchCurrentNews();
         } else {
-            setAuthError('Invalid password');
+            setAuthError(result.message || 'Invalid password');
             setTimeout(() => setAuthError(''), 3000);
         }
         setPassword('');
@@ -253,6 +252,7 @@ const NewsAdmin: React.FC = () => {
     return (
         <>
             <div className={styles.container}>
+                <OverseerLogoutButton />
                 <div className={styles.adminHeader}>
                     <h1>
                         <FontAwesomeIcon icon={faNewspaper} />

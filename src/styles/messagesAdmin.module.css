@@ -118,7 +118,7 @@
 
 .userIcon {
   font-size: 18px;
-  color: #00c6ff;
+  color: #730051;
 }
 
 .username {
@@ -323,7 +323,7 @@
 }
 
 .messageCard.unread::before {
-  background: linear-gradient(135deg, #730051, #00c6ff);
+  background: linear-gradient(135deg, #730051, #730051);
 }
 
 .messageCard.unread {
@@ -338,7 +338,7 @@
 
 .messageCard.selected {
   background: linear-gradient(135deg, rgba(115, 0, 81, 0.08), rgba(0, 198, 255, 0.03));
-  border-left: 4px solid #00c6ff;
+  border-left: 4px solid #730051;
 }
 
 .messageHeader {

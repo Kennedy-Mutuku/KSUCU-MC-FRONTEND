@@ -192,7 +192,7 @@ const DocumentUploader = ({ userId, onUploadSuccess, onClose, userName }: Docume
           onDrop={handleDrop}
           onClick={() => fileInputRef.current?.click()}
           style={{
-            border: '2px dashed #00c6ff',
+            border: '2px dashed #730051',
             borderRadius: '8px',
             padding: '40px 20px',
             textAlign: 'center',
@@ -202,11 +202,11 @@ const DocumentUploader = ({ userId, onUploadSuccess, onClose, userName }: Docume
             transition: 'all 0.3s'
           }}
           onMouseEnter={(e) => {
-            (e.currentTarget as HTMLDivElement).style.borderColor = '#0099cc';
+            (e.currentTarget as HTMLDivElement).style.borderColor = '#5a0040';
             (e.currentTarget as HTMLDivElement).style.backgroundColor = '#e3f2fd';
           }}
           onMouseLeave={(e) => {
-            (e.currentTarget as HTMLDivElement).style.borderColor = '#00c6ff';
+            (e.currentTarget as HTMLDivElement).style.borderColor = '#730051';
             (e.currentTarget as HTMLDivElement).style.backgroundColor = file ? '#e3f2fd' : '#f0f9ff';
           }}
         >
@@ -224,7 +224,7 @@ const DocumentUploader = ({ userId, onUploadSuccess, onClose, userName }: Docume
 
           {file ? (
             <div>
-              <Upload size={32} style={{ color: '#00c6ff', marginBottom: '10px' }} />
+              <Upload size={32} style={{ color: '#730051', marginBottom: '10px' }} />
               <p style={{ margin: '10px 0 0 0', color: '#333', fontWeight: '600' }}>
                 {file.name}
               </p>
@@ -234,7 +234,7 @@ const DocumentUploader = ({ userId, onUploadSuccess, onClose, userName }: Docume
             </div>
           ) : (
             <div>
-              <Upload size={32} style={{ color: '#00c6ff', marginBottom: '10px' }} />
+              <Upload size={32} style={{ color: '#730051', marginBottom: '10px' }} />
               <p style={{ margin: '10px 0 0 0', color: '#333', fontWeight: '600' }}>
                 Drag and drop your file here
               </p>
@@ -276,7 +276,7 @@ const DocumentUploader = ({ userId, onUploadSuccess, onClose, userName }: Docume
             style={{
               flex: 1,
               padding: '12px',
-              backgroundColor: file && !loading ? '#00c6ff' : '#ccc',
+              backgroundColor: file && !loading ? '#730051' : '#ccc',
               color: 'white',
               border: 'none',
               borderRadius: '6px',
@@ -287,12 +287,12 @@ const DocumentUploader = ({ userId, onUploadSuccess, onClose, userName }: Docume
             }}
             onMouseEnter={(e) => {
               if (file && !loading) {
-                (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#0099cc';
+                (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#5a0040';
               }
             }}
             onMouseLeave={(e) => {
               if (file && !loading) {
-                (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#00c6ff';
+                (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#730051';
               }
             }}
           >

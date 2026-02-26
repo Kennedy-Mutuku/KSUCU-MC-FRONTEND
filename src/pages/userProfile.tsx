@@ -16,6 +16,8 @@ interface UserData {
     ministry: string;
     course?: string;
     reg?: string;
+    role?: string;
+    graduationYear?: number;
 }
 
 const UserProfilePage: React.FC = () => {
@@ -167,7 +169,25 @@ const UserProfilePage: React.FC = () => {
                         </div>
                     </Link>
 
-                    <h2 className={styles.text} style={{ marginTop: '10px', marginBottom: '15px', fontSize: '1.3rem' }}>Welcome back, {userData.username}!</h2>
+                    <h2 className={styles.text} style={{ marginTop: '10px', marginBottom: '10px', fontSize: '1.3rem' }}>Welcome back, {userData.username}!</h2>
+
+                    {/* Associate Badge */}
+                    {userData.role === 'associate' && (
+                        <div style={{
+                            display: 'inline-block',
+                            background: 'linear-gradient(135deg, #730051, #a0006e)',
+                            color: 'white',
+                            padding: '4px 16px',
+                            borderRadius: '20px',
+                            fontSize: '12px',
+                            fontWeight: 'bold',
+                            textAlign: 'center',
+                            marginBottom: '15px',
+                            letterSpacing: '0.5px'
+                        }}>
+                            Associate / Alumni {userData.graduationYear ? `\u2022 Class of ${userData.graduationYear}` : ''}
+                        </div>
+                    )}
 
                     {/* Success/Error Messages */}
                     {successMessage && (
@@ -203,7 +223,7 @@ const UserProfilePage: React.FC = () => {
                         <button
                             onClick={handleContinueToKSUCUMC}
                             style={{
-                                backgroundColor: '#007bff',
+                                backgroundColor: '#730051',
                                 color: 'white',
                                 border: 'none',
                                 padding: '12px 30px',
@@ -211,19 +231,19 @@ const UserProfilePage: React.FC = () => {
                                 fontSize: '14px',
                                 fontWeight: '600',
                                 cursor: 'pointer',
-                                boxShadow: '0 3px 6px rgba(0,123,255,0.3)',
+                                boxShadow: '0 3px 6px rgba(115,0,81,0.3)',
                                 transition: 'all 0.3s ease',
                                 minWidth: '200px'
                             }}
                             onMouseOver={(e) => {
-                                e.currentTarget.style.backgroundColor = '#0056b3';
+                                e.currentTarget.style.backgroundColor = '#5a0040';
                                 e.currentTarget.style.transform = 'translateY(-1px)';
-                                e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,123,255,0.4)';
+                                e.currentTarget.style.boxShadow = '0 4px 8px rgba(115,0,81,0.4)';
                             }}
                             onMouseOut={(e) => {
-                                e.currentTarget.style.backgroundColor = '#007bff';
+                                e.currentTarget.style.backgroundColor = '#730051';
                                 e.currentTarget.style.transform = 'translateY(0)';
-                                e.currentTarget.style.boxShadow = '0 3px 6px rgba(0,123,255,0.3)';
+                                e.currentTarget.style.boxShadow = '0 3px 6px rgba(115,0,81,0.3)';
                             }}
                         >
                             Continue to KSUCUMC
@@ -249,20 +269,26 @@ const UserProfilePage: React.FC = () => {
                                 <div style={{ marginTop: '3px', fontSize: '14px' }}>{userData.phone}</div>
                             </div>
 
-                            <div style={{ marginBottom: '10px', padding: '8px', backgroundColor: '#f8f9fa', borderRadius: '6px', border: '1px solid #dee2e6' }}>
-                                <strong style={{ color: '#495057', fontSize: '13px' }}>Year of Study:</strong>
-                                <div style={{ marginTop: '3px', fontSize: '14px' }}>Year {userData.yos}</div>
-                            </div>
+                            {userData.role !== 'associate' && userData.yos && (
+                                <div style={{ marginBottom: '10px', padding: '8px', backgroundColor: '#f8f9fa', borderRadius: '6px', border: '1px solid #dee2e6' }}>
+                                    <strong style={{ color: '#495057', fontSize: '13px' }}>Year of Study:</strong>
+                                    <div style={{ marginTop: '3px', fontSize: '14px' }}>Year {userData.yos}</div>
+                                </div>
+                            )}
 
-                            <div style={{ marginBottom: '10px', padding: '8px', backgroundColor: '#f8f9fa', borderRadius: '6px', border: '1px solid #dee2e6' }}>
-                                <strong style={{ color: '#495057', fontSize: '13px' }}>Evangelistic Team:</strong>
-                                <div style={{ marginTop: '3px', fontSize: '14px' }}>{userData.et}</div>
-                            </div>
+                            {userData.role !== 'associate' && userData.et && userData.et !== 'none' && (
+                                <div style={{ marginBottom: '10px', padding: '8px', backgroundColor: '#f8f9fa', borderRadius: '6px', border: '1px solid #dee2e6' }}>
+                                    <strong style={{ color: '#495057', fontSize: '13px' }}>Evangelistic Team:</strong>
+                                    <div style={{ marginTop: '3px', fontSize: '14px' }}>{userData.et}</div>
+                                </div>
+                            )}
 
-                            <div style={{ marginBottom: '10px', padding: '8px', backgroundColor: '#f8f9fa', borderRadius: '6px', border: '1px solid #dee2e6' }}>
-                                <strong style={{ color: '#495057', fontSize: '13px' }}>Ministry:</strong>
-                                <div style={{ marginTop: '3px', fontSize: '14px' }}>{userData.ministry}</div>
-                            </div>
+                            {userData.role !== 'associate' && userData.ministry && userData.ministry !== 'alumni' && (
+                                <div style={{ marginBottom: '10px', padding: '8px', backgroundColor: '#f8f9fa', borderRadius: '6px', border: '1px solid #dee2e6' }}>
+                                    <strong style={{ color: '#495057', fontSize: '13px' }}>Ministry:</strong>
+                                    <div style={{ marginTop: '3px', fontSize: '14px' }}>{userData.ministry}</div>
+                                </div>
+                            )}
 
                             {userData.course && (
                                 <div style={{ marginBottom: '10px', padding: '8px', backgroundColor: '#f8f9fa', borderRadius: '6px', border: '1px solid #dee2e6' }}>

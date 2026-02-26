@@ -22,18 +22,22 @@ const SignIn: React.FC = () => {
     });
     const [showWhatsAppHelp, setShowWhatsAppHelp] = useState(false);
     const [showSignupLink, setShowSignupLink] = useState(false);
-    const [regNumberInput, setRegNumberInput] = useState('');
     const [failedEmail, setFailedEmail] = useState('');
 
-    // Function to send WhatsApp message with user details
-    const handleWhatsAppSubmit = () => {
-        if (!regNumberInput.trim()) {
-            alert('Please enter your registration number');
-            return;
+    const [resetSending, setResetSending] = useState(false);
+    const [resetSent, setResetSent] = useState(false);
+
+    const handleSendResetLink = async () => {
+        if (!failedEmail) return;
+        setResetSending(true);
+        try {
+            await axios.post(getApiUrl('usersForgetPassword'), { email: failedEmail });
+            setResetSent(true);
+        } catch (err: any) {
+            setError(err.response?.data?.message || 'Failed to send reset link. Please try again.');
+        } finally {
+            setResetSending(false);
         }
-        const message = `Hello, I need help with my KSUCU-MC account password.\n\nMy details:\n- Email: ${failedEmail}\n- Reg No: ${regNumberInput.trim()}\n\nPlease help me reset my password.`;
-        const encodedMessage = encodeURIComponent(message);
-        window.open(`https://wa.me/254740881485?text=${encodedMessage}`, '_blank');
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -240,7 +244,7 @@ const SignIn: React.FC = () => {
                         setShowWhatsAppHelp(true);
                         setShowSignupLink(false);
                         setFailedEmail(processedEmail);
-                        setRegNumberInput('');
+
                     } else {
                         // User doesn't exist - show signup link
                         setError('Seems you don\'t have an account.');
@@ -305,10 +309,8 @@ const SignIn: React.FC = () => {
                     </div>
                 )}
                 <div className={styles['container']}>
-                    <Link to={"/"} className={styles.logo_div} style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
-                        <div className={styles['logo_signUp']} style={{ textAlign: 'center' }}>
-                            <img src={cuLogo} alt="CU logo" style={{ maxWidth: '150px', height: 'auto' }} />
-                        </div>
+                    <Link to={"/"} style={{ display: 'flex', justifyContent: 'center', marginBottom: '12px' }}>
+                        <img src={cuLogo} alt="CU logo" style={{ width: '72px', height: '72px', objectFit: 'contain' }} />
                     </Link>
 
                     {error && <div className={styles.error}>{error}</div>}
@@ -324,44 +326,39 @@ const SignIn: React.FC = () => {
                             <p style={{ margin: '0 0 15px 0', color: '#730051', fontSize: '15px', fontWeight: 'bold', textAlign: 'center' }}>
                                 Forgot your password?
                             </p>
-                            <p style={{ margin: '0 0 10px 0', color: '#555', fontSize: '13px' }}>
-                                Enter your registration number below to get help:
-                            </p>
-                            <input
-                                type="text"
-                                placeholder="e.g., BCS/1234/21"
-                                value={regNumberInput}
-                                onChange={(e) => setRegNumberInput(e.target.value)}
-                                style={{
-                                    width: '100%',
-                                    padding: '12px',
-                                    borderRadius: '8px',
-                                    border: '1px solid #730051',
-                                    fontSize: '14px',
-                                    marginBottom: '12px',
-                                    boxSizing: 'border-box'
-                                }}
-                            />
-                            <button
-                                onClick={handleWhatsAppSubmit}
-                                style={{
-                                    width: '100%',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    gap: '8px',
-                                    background: '#730051',
-                                    color: 'white',
-                                    padding: '12px 20px',
-                                    borderRadius: '25px',
-                                    border: 'none',
-                                    cursor: 'pointer',
-                                    fontWeight: 'bold',
-                                    fontSize: '14px'
-                                }}
-                            >
-                                Submit
-                            </button>
+                            {resetSent ? (
+                                <p style={{ margin: '0', color: '#16a34a', fontSize: '14px', textAlign: 'center', fontWeight: 'bold' }}>
+                                    Reset link sent! Check your email inbox.
+                                </p>
+                            ) : (
+                                <>
+                                    <p style={{ margin: '0 0 12px 0', color: '#555', fontSize: '13px', textAlign: 'center' }}>
+                                        We'll send a password reset link to <strong>{failedEmail}</strong>
+                                    </p>
+                                    <button
+                                        onClick={handleSendResetLink}
+                                        disabled={resetSending}
+                                        style={{
+                                            width: '100%',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            gap: '8px',
+                                            background: '#730051',
+                                            color: 'white',
+                                            padding: '12px 20px',
+                                            borderRadius: '25px',
+                                            border: 'none',
+                                            cursor: resetSending ? 'default' : 'pointer',
+                                            fontWeight: 'bold',
+                                            fontSize: '14px',
+                                            opacity: resetSending ? 0.7 : 1
+                                        }}
+                                    >
+                                        {resetSending ? 'Sending...' : 'Send Reset Link'}
+                                    </button>
+                                </>
+                            )}
                             <p style={{ margin: '12px 0 0 0', color: '#730051', fontSize: '12px', textAlign: 'center' }}>
                                 Tip: Your default password is your phone number
                             </p>
@@ -370,14 +367,14 @@ const SignIn: React.FC = () => {
 
                     {showSignupLink && (
                         <div style={{
-                            background: '#fef3c7',
-                            border: '1px solid #f59e0b',
-                            borderRadius: '8px',
+                            background: '#f8f0f5',
+                            border: '1px solid #e0c0d6',
+                            borderRadius: '10px',
                             padding: '15px',
                             marginBottom: '15px',
                             textAlign: 'center'
                         }}>
-                            <p style={{ margin: '0 0 10px 0', color: '#92400e', fontSize: '14px' }}>
+                            <p style={{ margin: '0 0 10px 0', color: '#730051', fontSize: '14px' }}>
                                 You don't have an account yet. Register now to get started!
                             </p>
                             <Link

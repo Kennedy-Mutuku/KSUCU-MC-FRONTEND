@@ -666,7 +666,7 @@ const Header = () => {
     <>
       <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b-2 border-[#730051]/15 ${isScrolled ? 'bg-white shadow-lg shadow-black/5' : 'bg-white/95 backdrop-blur-sm'}`}>
         <div className="max-w-7xl mx-auto px-4 md:px-6">
-          <div className="flex items-center h-16 md:h-20 md:pl-0">
+          <div className="flex items-center h-16 md:h-16 xl:h-20 md:pl-0">
             <button
               onClick={() => setIsSidebarExpanded(!isSidebarExpanded)}
               className="md:hidden p-2 rounded-lg flex-shrink-0 hover:bg-gray-100 transition-colors"
@@ -691,15 +691,16 @@ const Header = () => {
               </div>
             </Link>
 
-            <Link to="/" className="hidden md:flex items-center gap-2 lg:gap-3 flex-shrink-0 max-w-[280px] lg:max-w-none">
-              <img src={cuLogo} alt="KSUCU Logo" className="w-10 h-10 lg:w-14 lg:h-14 object-contain flex-shrink-0" />
+            <Link to="/" className="hidden md:flex items-center gap-2 xl:gap-3 flex-shrink-0">
+              <img src={cuLogo} alt="KSUCU Logo" className="w-10 h-10 xl:w-14 xl:h-14 object-contain flex-shrink-0" />
               <div className="flex flex-col min-w-0">
-                <div className="font-extrabold text-gray-900 leading-none text-[10px] lg:text-base tracking-tight uppercase" style={{ fontFamily: 'Montserrat, sans-serif' }}>
-                  KISII UNIVERSITY CHRISTIAN UNION
+                <div className="font-extrabold text-gray-900 leading-none tracking-tight uppercase" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                  <span className="hidden xl:inline text-base">KISII UNIVERSITY CHRISTIAN UNION</span>
+                  <span className="xl:hidden text-[11px]">KSUCU</span>
                 </div>
-                <div className="flex items-center gap-2 mt-1 lg:mt-1.5 w-full">
+                <div className="hidden xl:flex items-center gap-2 mt-1.5 w-full">
                   <div className="h-[1px] flex-1 bg-[#730051]/30"></div>
-                  <span className="text-[#730051] text-[8px] lg:text-sm whitespace-nowrap px-1" style={{ fontFamily: 'Satisfy, cursive' }}>
+                  <span className="text-[#730051] text-sm whitespace-nowrap px-1" style={{ fontFamily: 'Satisfy, cursive' }}>
                     Transforming Campus, Impacting nations
                   </span>
                   <div className="h-[1px] flex-1 bg-[#730051]/30"></div>
@@ -707,65 +708,70 @@ const Header = () => {
               </div>
             </Link>
 
-            <nav className="hidden md:flex items-center justify-end gap-1.5 lg:gap-4 flex-1 min-w-0 md:ml-4 lg:ml-8">
-              <Link to="/" className={`nav-link-underline px-1.5 lg:px-3 py-2 font-medium text-xs lg:text-sm whitespace-nowrap ${location.pathname === '/' ? 'text-[#730051] nav-link-active' : 'text-gray-700'}`}>Home</Link>
+            <nav className="hidden md:flex items-center flex-1 min-w-0 md:ml-2 lg:ml-4 xl:ml-8">
+              {/* Centered nav links */}
+              <div className="flex-1 flex items-center justify-center gap-0.5 lg:gap-1.5 xl:gap-4 min-w-0">
+                <Link to="/" className={`nav-link-underline px-1 lg:px-2 xl:px-3 py-2 font-medium text-[11px] lg:text-xs xl:text-sm whitespace-nowrap ${location.pathname === '/' ? 'text-[#730051] nav-link-active' : 'text-gray-700'}`}>Home</Link>
 
-              {/* Join Us dropdown */}
-              <div className="relative" onMouseEnter={() => handleMouseEnter('joinUs')} onMouseLeave={handleMouseLeave}>
-                <button className={`nav-link-underline flex items-center gap-0.5 lg:gap-1 px-1.5 lg:px-3 py-2 font-medium text-xs lg:text-sm whitespace-nowrap ${activeDropdown === 'joinUs' || ['ministries', 'boards', 'eteams', 'fellowships', 'biblestudy', 'classes'].includes(activeNav || '') ? 'text-[#730051] nav-link-active' : 'text-gray-700'}`}>
-                  Join Us
-                  <ChevronDown size={14} className={`transition-transform ${activeDropdown === 'joinUs' ? 'rotate-180' : ''}`} />
-                </button>
-                {activeDropdown === 'joinUs' && renderJoinUsPanel()}
+                {/* Join Us dropdown */}
+                <div className="relative" onMouseEnter={() => handleMouseEnter('joinUs')} onMouseLeave={handleMouseLeave}>
+                  <button className={`nav-link-underline flex items-center gap-0.5 px-1 lg:px-2 xl:px-3 py-2 font-medium text-[11px] lg:text-xs xl:text-sm whitespace-nowrap ${activeDropdown === 'joinUs' || ['ministries', 'boards', 'eteams', 'fellowships', 'biblestudy', 'classes'].includes(activeNav || '') ? 'text-[#730051] nav-link-active' : 'text-gray-700'}`}>
+                    Join Us
+                    <ChevronDown size={12} className={`xl:w-[14px] xl:h-[14px] transition-transform ${activeDropdown === 'joinUs' ? 'rotate-180' : ''}`} />
+                  </button>
+                  {activeDropdown === 'joinUs' && renderJoinUsPanel()}
+                </div>
+
+                <div className="relative" onMouseEnter={() => handleMouseEnter('services')} onMouseLeave={handleMouseLeave}>
+                  <button className={`nav-link-underline flex items-center gap-0.5 px-1 lg:px-2 xl:px-3 py-2 font-medium text-[11px] lg:text-xs xl:text-sm whitespace-nowrap ${activeDropdown === 'services' || ['financials', 'feedback', 'compassion', 'requisitions', 'filemanager', 'library', 'winasoul'].includes(activeNav || '') ? 'text-[#730051] nav-link-active' : 'text-gray-700'}`}>
+                    Services
+                    <ChevronDown size={12} className={`xl:w-[14px] xl:h-[14px] transition-transform ${activeDropdown === 'services' ? 'rotate-180' : ''}`} />
+                  </button>
+                  {activeDropdown === 'services' && renderServicesCascade()}
+                </div>
+
+                <div className="relative" onMouseEnter={() => handleMouseEnter('governance')} onMouseLeave={handleMouseLeave}>
+                  <button className={`nav-link-underline flex items-center gap-0.5 px-1 lg:px-2 xl:px-3 py-2 font-medium text-[11px] lg:text-xs xl:text-sm whitespace-nowrap ${activeDropdown === 'governance' || ['leadership', 'governingdocs', 'committees'].includes(activeNav || '') ? 'text-[#730051] nav-link-active' : 'text-gray-700'}`}>
+                    Governance
+                    <ChevronDown size={12} className={`xl:w-[14px] xl:h-[14px] transition-transform ${activeDropdown === 'governance' ? 'rotate-180' : ''}`} />
+                  </button>
+                  {activeDropdown === 'governance' && renderCascadePanel(headerNavGroups.governance, true)}
+                </div>
+
+                {/* Media Desk dropdown */}
+                <div className="relative" onMouseEnter={() => handleMouseEnter('mediaDesk')} onMouseLeave={handleMouseLeave}>
+                  <button className={`nav-link-underline flex items-center gap-0.5 px-1 lg:px-2 xl:px-3 py-2 font-medium text-[11px] lg:text-xs xl:text-sm whitespace-nowrap ${activeDropdown === 'mediaDesk' || activeNav === 'mediaDesk' ? 'text-[#730051] nav-link-active' : 'text-gray-700'}`}>
+                    Media
+                    <span className="hidden xl:inline">&nbsp;Desk</span>
+                    <ChevronDown size={12} className={`xl:w-[14px] xl:h-[14px] transition-transform ${activeDropdown === 'mediaDesk' ? 'rotate-180' : ''}`} />
+                  </button>
+                  {activeDropdown === 'mediaDesk' && renderMediaDeskPanel()}
+                </div>
+
+                <div className="relative" onMouseEnter={() => handleMouseEnter('attendance')} onMouseLeave={handleMouseLeave}>
+                  <button className={`nav-link-underline flex items-center gap-0.5 xl:gap-2 px-1 lg:px-2 xl:px-3 py-2 font-medium text-[11px] lg:text-xs xl:text-sm transition-all relative whitespace-nowrap ${activeDropdown === 'attendance' || activeNav === 'attendance' ? 'text-[#730051] nav-link-active' : 'text-gray-700'}`}>
+                    Attendance
+                    {activeSessions.length > 0 && (
+                      <span className="relative flex h-2 w-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)]" />
+                      </span>
+                    )}
+                    <ChevronDown size={12} className={`xl:w-[14px] xl:h-[14px] transition-transform duration-300 ${activeDropdown === 'attendance' ? 'rotate-180' : ''}`} />
+                  </button>
+                  {activeDropdown === 'attendance' && renderAttendanceDropdown()}
+                </div>
               </div>
 
-              <div className="relative" onMouseEnter={() => handleMouseEnter('services')} onMouseLeave={handleMouseLeave}>
-                <button className={`nav-link-underline flex items-center gap-0.5 lg:gap-1 px-1.5 lg:px-3 py-2 font-medium text-xs lg:text-sm whitespace-nowrap ${activeDropdown === 'services' || ['financials', 'feedback', 'compassion', 'requisitions', 'filemanager', 'library', 'winasoul'].includes(activeNav || '') ? 'text-[#730051] nav-link-active' : 'text-gray-700'}`}>
-                  Services
-                  <ChevronDown size={14} className={`transition-transform ${activeDropdown === 'services' ? 'rotate-180' : ''}`} />
-                </button>
-                {activeDropdown === 'services' && renderServicesCascade()}
-              </div>
-
-              <div className="relative" onMouseEnter={() => handleMouseEnter('governance')} onMouseLeave={handleMouseLeave}>
-                <button className={`nav-link-underline flex items-center gap-0.5 lg:gap-1 px-1.5 lg:px-3 py-2 font-medium text-xs lg:text-sm whitespace-nowrap ${activeDropdown === 'governance' || ['leadership', 'governingdocs', 'committees'].includes(activeNav || '') ? 'text-[#730051] nav-link-active' : 'text-gray-700'}`}>
-                  Governance
-                  <ChevronDown size={14} className={`transition-transform ${activeDropdown === 'governance' ? 'rotate-180' : ''}`} />
-                </button>
-                {activeDropdown === 'governance' && renderCascadePanel(headerNavGroups.governance, true)}
-              </div>
-
-              {/* Media Desk dropdown */}
-              <div className="relative" onMouseEnter={() => handleMouseEnter('mediaDesk')} onMouseLeave={handleMouseLeave}>
-                <button className={`nav-link-underline flex items-center gap-0.5 lg:gap-1 px-1.5 lg:px-3 py-2 font-medium text-xs lg:text-sm whitespace-nowrap ${activeDropdown === 'mediaDesk' || activeNav === 'mediaDesk' ? 'text-[#730051] nav-link-active' : 'text-gray-700'}`}>
-                  Media Desk
-                  <ChevronDown size={14} className={`transition-transform ${activeDropdown === 'mediaDesk' ? 'rotate-180' : ''}`} />
-                </button>
-                {activeDropdown === 'mediaDesk' && renderMediaDeskPanel()}
-              </div>
-
-              <div className="relative" onMouseEnter={() => handleMouseEnter('attendance')} onMouseLeave={handleMouseLeave}>
-                <button className={`nav-link-underline flex items-center gap-1 lg:gap-2 px-1.5 lg:px-3 py-2 font-medium text-xs lg:text-sm transition-all relative whitespace-nowrap ${activeDropdown === 'attendance' || activeNav === 'attendance' ? 'text-[#730051] nav-link-active' : 'text-gray-700'}`}>
-                  Attendance
-                  {activeSessions.length > 0 && (
-                    <span className="relative flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)]" />
-                    </span>
-                  )}
-                  <ChevronDown size={14} className={`transition-transform duration-300 ${activeDropdown === 'attendance' ? 'rotate-180' : ''}`} />
-                </button>
-                {activeDropdown === 'attendance' && renderAttendanceDropdown()}
-              </div>
-
-              <div className="flex-shrink-0 ml-1 lg:ml-4">
+              {/* Sign In / User button - always right */}
+              <div className="flex-shrink-0 ml-2 xl:ml-4">
                 {userData ? (
-                  <button onClick={() => navigate('/home')} className="flex items-center gap-2 px-2 lg:px-3 py-2 rounded-lg font-medium text-xs lg:text-sm text-gray-700 hover:bg-gray-100 transition-colors whitespace-nowrap">
-                    <User size={18} />
-                    {userData.username}
+                  <button onClick={() => navigate('/home')} className="flex items-center gap-1.5 px-1.5 xl:px-3 py-2 rounded-lg font-medium text-[11px] xl:text-sm text-gray-700 hover:bg-gray-100 transition-colors whitespace-nowrap">
+                    <User size={16} className="xl:w-[18px] xl:h-[18px]" />
+                    <span className="hidden xl:inline">{userData.username}</span>
                   </button>
                 ) : (
-                  <Link to="/signIn" className="px-3 lg:px-5 py-1.5 lg:py-2 bg-[#730051] text-white font-medium text-xs lg:text-sm rounded-lg hover:bg-[#5a0040] transition-colors shadow-lg shadow-purple-900/10 active:scale-95 transform transition-all whitespace-nowrap">Sign In</Link>
+                  <Link to="/signIn" className="px-2.5 xl:px-5 py-1.5 xl:py-2 bg-[#730051] text-white font-medium text-[11px] xl:text-sm rounded-lg hover:bg-[#5a0040] transition-colors shadow-lg shadow-purple-900/10 active:scale-95 transform transition-all whitespace-nowrap">Sign In</Link>
                 )}
               </div>
             </nav>

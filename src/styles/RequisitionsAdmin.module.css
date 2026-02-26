@@ -74,7 +74,7 @@
 
 .phoneInput:focus {
     outline: none;
-    border-color: #00c6ff;
+    border-color: #730051;
     box-shadow: 0 0 0 3px rgba(0, 198, 255, 0.1);
 }
 
@@ -126,7 +126,7 @@
 
 .searchInput:focus {
     outline: none;
-    border-color: #00c6ff;
+    border-color: #730051;
     box-shadow: 0 0 0 3px rgba(0, 198, 255, 0.1);
 }
 
@@ -247,7 +247,7 @@
     font-weight: 700;
     line-height: 1.3;
     text-transform: capitalize;
-    background: linear-gradient(135deg, #730051 0%, #00c6ff 100%);
+    background: linear-gradient(135deg, #730051 0%, #730051 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -272,7 +272,7 @@
 }
 
 .actionButton {
-    background: #00c6ff;
+    background: #730051;
     color: white;
     border: none;
     padding: 6px 8px;
@@ -283,7 +283,7 @@
 }
 
 .actionButton:hover {
-    background: #0099cc;
+    background: #5a0040;
     transform: scale(1.1);
 }
 
@@ -364,12 +364,12 @@
 }
 
 .viewButton {
-    background: #17a2b8;
+    background: #730051;
     color: white;
 }
 
 .viewButton:hover {
-    background: #138496;
+    background: #5a0040;
     transform: scale(1.1);
 }
 
@@ -476,7 +476,7 @@
 }
 
 .modalHeader {
-    background: linear-gradient(135deg, #730051 0%, #00c6ff 100%);
+    background: linear-gradient(135deg, #730051 0%, #730051 100%);
     color: white;
     padding: 20px;
     display: flex;
@@ -565,7 +565,7 @@
 
 .formGroup input:focus, .formGroup textarea:focus {
     outline: none;
-    border-color: #00c6ff;
+    border-color: #730051;
     box-shadow: 0 0 0 3px rgba(0, 198, 255, 0.1);
 }
 

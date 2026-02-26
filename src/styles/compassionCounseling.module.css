@@ -14,7 +14,7 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #730051 0%, #00c6ff 100%);
+  background: linear-gradient(135deg, #730051 0%, #730051 100%);
   color: white;
 }
 
@@ -45,7 +45,7 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #730051 0%, #00c6ff 100%);
+  background: linear-gradient(135deg, #730051 0%, #730051 100%);
   padding: 20px;
 }
 
@@ -92,7 +92,7 @@
 }
 
 .loginButton {
-  background: linear-gradient(135deg, #730051, #00c6ff);
+  background: linear-gradient(135deg, #730051, #730051);
   color: white;
   border: none;
   padding: 15px 30px;
@@ -115,7 +115,7 @@
 
 /* Hero Section */
 .heroSection {
-  background:  #00c6ff;
+  background:  #730051;
   color: white;
   text-align: center;
   padding: 60px 20px;
@@ -214,7 +214,7 @@
   right: 15px;
   width: 8px;
   height: 8px;
-  background: #00c6ff;
+  background: #730051;
   border-radius: 50%;
   animation: blink 1s ease-in-out infinite;
 }
@@ -410,7 +410,7 @@
   padding: 8px;
   background: white;
   border-radius: 5px;
-  border-left: 3px solid #00c6ff;
+  border-left: 3px solid #730051;
 }
 
 .message.success {
@@ -474,7 +474,7 @@
 }
 
 .tabButton.active {
-  background: linear-gradient(135deg, #730051, #00c6ff);
+  background: linear-gradient(135deg, #730051, #730051);
   color: white;
 }
 
@@ -568,7 +568,7 @@
 .formGroup select:focus,
 .formGroup textarea:focus {
   outline: none;
-  border-color: #00c6ff;
+  border-color: #730051;
   box-shadow: 0 0 0 3px rgba(0, 198, 255, 0.1);
 }
 
@@ -630,7 +630,7 @@
 .submitButton {
   width: 100%;
   padding: 15px 30px;
-  background: linear-gradient(135deg, #730051, #00c6ff);
+  background: linear-gradient(135deg, #730051, #730051);
   color: white;
   border: none;
   border-radius: 10px;

@@ -57,7 +57,7 @@
 }
 
 .pinInput:focus {
-    border-color: #00c6ff;
+    border-color: #730051;
     background: white;
     box-shadow: 0 0 0 4px rgba(0, 198, 255, 0.15);
 }
@@ -110,7 +110,7 @@
     font-size: 14px;
     font-weight: 600;
     border: none;
-    background: #00c6ff;
+    background: #730051;
     color: white;
     border-radius: 8px;
     cursor: pointer;
@@ -118,7 +118,7 @@
 }
 
 .submitButton:hover:not(:disabled) {
-    background: #0099cc;
+    background: #5a0040;
 }
 
 .submitButton:disabled {

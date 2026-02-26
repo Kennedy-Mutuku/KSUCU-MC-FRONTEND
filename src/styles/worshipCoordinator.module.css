@@ -40,7 +40,7 @@
 }
 
 .tabButton.active {
-  background: linear-gradient(135deg, #730051, #00c6ff);
+  background: linear-gradient(135deg, #730051, #730051);
   color: white;
   box-shadow: 0 4px 15px rgba(115, 0, 81, 0.3);
 }
@@ -109,7 +109,7 @@
 }
 
 .statCard {
-  background: linear-gradient(135deg, #730051, #00c6ff);
+  background: linear-gradient(135deg, #730051, #730051);
   color: white;
   padding: 20px;
   border-radius: 12px;
@@ -209,7 +209,7 @@
 }
 
 .saveButton {
-  background: linear-gradient(135deg, #730051, #00c6ff);
+  background: linear-gradient(135deg, #730051, #730051);
   color: white;
   border: none;
   padding: 15px 30px;
@@ -380,7 +380,7 @@
 }
 
 .reportButton:hover {
-  background: linear-gradient(135deg, #730051, #00c6ff);
+  background: linear-gradient(135deg, #730051, #730051);
   color: white;
   border-color: transparent;
   transform: translateY(-2px);

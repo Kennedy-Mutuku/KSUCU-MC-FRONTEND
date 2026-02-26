@@ -2,11 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getApiUrl } from '../config/environment';
 import styles from '../styles/chatAdmin.module.css';
-import { 
-  MessageCircle, 
-  Send, 
-  Trash2, 
-  Reply, 
+import {
+  MessageCircle,
+  Send,
+  Trash2,
+  Reply,
   AlertCircle,
   Users,
   Calendar,
@@ -14,6 +14,8 @@ import {
 } from 'lucide-react';
 import io, { Socket } from 'socket.io-client';
 import Cookies from 'js-cookie';
+import { useOverseerAuth } from '../hooks/useOverseerAuth';
+import OverseerLogoutButton from '../components/OverseerLogoutButton';
 
 interface ChatMessage {
   _id: string;
@@ -34,7 +36,7 @@ interface ChatMessage {
 
 const ChatAdmin: React.FC = () => {
   const navigate = useNavigate();
-  const [authenticated, setAuthenticated] = useState(false);
+  const { authenticated, loading: authLoading } = useOverseerAuth();
   const [userAuthenticated, setUserAuthenticated] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(true);
@@ -45,14 +47,13 @@ const ChatAdmin: React.FC = () => {
 
   // Check authentication
   useEffect(() => {
-    const adminAuth = sessionStorage.getItem('adminAuth');
-    if (adminAuth === 'Overseer') {
-      setAuthenticated(true);
+    if (authLoading) return;
+    if (authenticated) {
       checkUserAuth();
     } else {
       navigate('/worship-docket-admin');
     }
-  }, [navigate]);
+  }, [authenticated, authLoading, navigate]);
 
   const checkUserAuth = async () => {
     try {
@@ -285,12 +286,9 @@ const ChatAdmin: React.FC = () => {
   return (
     <>
       <div className={styles.container}>
+        <OverseerLogoutButton />
         {/* Header */}
         <div className={styles.header}>
-          <button onClick={() => navigate('/worship-docket-admin')} className={styles.backButton}>
-            <ArrowLeft size={20} />
-            Back
-          </button>
           <div className={styles.headerContent}>
             <MessageCircle size={32} className={styles.headerIcon} />
             <div>

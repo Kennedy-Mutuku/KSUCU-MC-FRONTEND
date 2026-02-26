@@ -61,6 +61,9 @@ const SuperAdmin: React.FC = () => {
     const [pollingOfficers, setPollingOfficers] = useState<PollingOfficer[]>([]);
     const [showResetConfirm, setShowResetConfirm] = useState<boolean>(false);
     const [isResetting, setIsResetting] = useState<boolean>(false);
+    const [showAdvanceConfirm, setShowAdvanceConfirm] = useState<boolean>(false);
+    const [isAdvancing, setIsAdvancing] = useState<boolean>(false);
+    const [advanceResult, setAdvanceResult] = useState<{ advanced: number; promoted: number; skipped: number } | null>(null);
     const [selectedUserForDocUpload, setSelectedUserForDocUpload] = useState<{ _id: string; username: string } | null>(null);
     const [showDocUploadModal, setShowDocUploadModal] = useState<boolean>(false);
     const [showMinutesManager, setShowMinutesManager] = useState<boolean>(false);
@@ -225,6 +228,26 @@ const SuperAdmin: React.FC = () => {
             alert(`Error resetting polling data: ${err.response?.data?.message || 'Unknown error'}`);
         } finally {
             setIsResetting(false);
+        }
+    };
+
+    const handleAdvanceYears = async () => {
+        setIsAdvancing(true);
+        setAdvanceResult(null);
+        try {
+            const response = await axios.post(getApiUrl('usersAdvanceYears'), {}, { withCredentials: true });
+            setAdvanceResult({
+                advanced: response.data.advanced,
+                promoted: response.data.promoted,
+                skipped: response.data.skipped
+            });
+            await fetchUserData();
+        } catch (err: any) {
+            console.error('Error advancing years:', err);
+            alert(`Error advancing years: ${err.response?.data?.message || 'Unknown error'}`);
+            setShowAdvanceConfirm(false);
+        } finally {
+            setIsAdvancing(false);
         }
     };
 
@@ -410,6 +433,28 @@ const SuperAdmin: React.FC = () => {
                         ))}
                     </ul>
                 </div>
+            </div>
+
+            {/* Academic Year Advancement */}
+            <div style={{
+                marginTop: '30px',
+                padding: '20px',
+                background: '#f8f4f7',
+                borderRadius: '12px',
+                border: '2px solid #730051'
+            }}>
+                <h3 style={{ color: '#730051', marginBottom: '10px' }}>Academic Year Advancement</h3>
+                <p style={{ color: '#555', fontSize: '14px', marginBottom: '15px' }}>
+                    Advance all students by one year. Students at year 4 (or year 6 for medical) will be
+                    promoted to Associate status automatically.
+                </p>
+                <button
+                    className={styles.primaryButton}
+                    onClick={() => setShowAdvanceConfirm(true)}
+                    style={{ background: '#730051' }}
+                >
+                    Start Year Advancement
+                </button>
             </div>
         </div>
     );
@@ -709,6 +754,68 @@ const SuperAdmin: React.FC = () => {
                                 {isResetting ? 'Resetting...' : 'Yes, Reset'}
                             </button>
                         </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Year Advancement Confirmation Dialog */}
+            {showAdvanceConfirm && (
+                <div className={styles.modalOverlay}>
+                    <div className={styles.modalContent}>
+                        {advanceResult ? (
+                            <>
+                                <h3 style={{ color: '#166534' }}>Year Advancement Complete</h3>
+                                <div style={{
+                                    background: '#dcfce7',
+                                    border: '1px solid #16a34a',
+                                    borderRadius: '8px',
+                                    padding: '15px',
+                                    margin: '15px 0'
+                                }}>
+                                    <p><strong>{advanceResult.advanced}</strong> students advanced to the next year</p>
+                                    <p><strong>{advanceResult.promoted}</strong> students promoted to Associate</p>
+                                    {advanceResult.skipped > 0 && (
+                                        <p><strong>{advanceResult.skipped}</strong> students skipped (no valid year)</p>
+                                    )}
+                                </div>
+                                <div className={styles.modalActions}>
+                                    <button
+                                        className={styles.primaryButton}
+                                        onClick={() => { setShowAdvanceConfirm(false); setAdvanceResult(null); }}
+                                    >
+                                        Done
+                                    </button>
+                                </div>
+                            </>
+                        ) : (
+                            <>
+                                <h3>Advance Academic Year?</h3>
+                                <p>
+                                    This will advance ALL students by one year (1→2, 2→3, 3→4).
+                                    Students at year 4 (or year 6 for medical students) will be promoted to Associate status.
+                                </p>
+                                <p className={styles.warningText}>
+                                    <strong>Warning:</strong> This action cannot be undone! Make sure this is the right time to advance.
+                                </p>
+                                <div className={styles.modalActions}>
+                                    <button
+                                        className={styles.secondaryButton}
+                                        onClick={() => setShowAdvanceConfirm(false)}
+                                        disabled={isAdvancing}
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        className={styles.dangerButton}
+                                        onClick={handleAdvanceYears}
+                                        disabled={isAdvancing}
+                                        style={{ background: '#730051' }}
+                                    >
+                                        {isAdvancing ? 'Advancing...' : 'Yes, Advance All'}
+                                    </button>
+                                </div>
+                            </>
+                        )}
                     </div>
                 </div>
             )}

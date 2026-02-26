@@ -14,6 +14,8 @@ import {
     faSync
 } from '@fortawesome/free-solid-svg-icons';
 import { getApiUrl, getImageUrl, getBaseUrl, isDevMode } from '../config/environment';
+import { useOverseerAuth } from '../hooks/useOverseerAuth';
+import OverseerLogoutButton from '../components/OverseerLogoutButton';
 
 interface MediaItem {
     _id?: string;
@@ -48,10 +50,10 @@ const defaultEvents: MediaItem[] = [
 
 const MediaAdmin: React.FC = () => {
     const navigate = useNavigate();
+    const { authenticated, loading: authLoading } = useOverseerAuth();
     const [mediaItems, setMediaItems] = useState<MediaItem[]>(defaultEvents);
     const [isAddingNew, setIsAddingNew] = useState(false);
     const [editingItem, setEditingItem] = useState<string | null>(null);
-    const [authenticated, setAuthenticated] = useState(false);
     const [loading, setLoading] = useState(false);
     const [syncStatus, setSyncStatus] = useState<'idle' | 'syncing' | 'success' | 'error'>('idle');
     const [newItem, setNewItem] = useState<MediaItem>({
@@ -93,19 +95,7 @@ const MediaAdmin: React.FC = () => {
         console.log('  - hostname:', window.location.hostname);
         console.log('  - sample imageUrl:', getImageUrl('/uploads/media/test.png'));
 
-        // Check for authentication first
-        const adminAuth = sessionStorage.getItem('adminAuth');
-        console.log('MediaAdmin Debug: adminAuth =', adminAuth);
-        console.log('MediaAdmin Debug: defaultEvents length =', defaultEvents.length);
-        console.log('MediaAdmin Debug: current mediaItems length =', mediaItems.length);
-
-        if (adminAuth === 'Overseer') {
-            setAuthenticated(true);
-            loadMediaItems();
-        } else {
-            // Load items for preview even without auth
-            loadMediaItems();
-        }
+        loadMediaItems();
     }, []);
 
     const loadMediaItems = async () => {
@@ -204,7 +194,6 @@ const MediaAdmin: React.FC = () => {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'x-admin-password': 'Overseer'
                     },
                     credentials: 'include',
                     body: JSON.stringify(newItem)
@@ -249,7 +238,6 @@ const MediaAdmin: React.FC = () => {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    'x-admin-password': 'Overseer'
                 },
                 credentials: 'include',
                 body: JSON.stringify(updatedItem)
@@ -284,9 +272,6 @@ const MediaAdmin: React.FC = () => {
 
                 const response = await fetch(getApiUrl(`api/media-items/${itemId}`), {
                     method: 'DELETE',
-                    headers: {
-                        'x-admin-password': 'Overseer'
-                    },
                     credentials: 'include'
                 });
 
@@ -334,9 +319,6 @@ const MediaAdmin: React.FC = () => {
 
             const response = await fetch(getApiUrl('api/media-items/upload-image'), {
                 method: 'POST',
-                headers: {
-                    'x-admin-password': 'Overseer'
-                },
                 credentials: 'include',
                 body: formData
             });
@@ -377,70 +359,42 @@ const MediaAdmin: React.FC = () => {
         }
     };
 
+    if (authLoading) {
+        return (
+            <div className={styles.container}>
+                <p style={{ textAlign: 'center', color: '#666', marginTop: '50px' }}>Verifying session...</p>
+            </div>
+        );
+    }
+
     if (!authenticated) {
         return (
-            <>
-                <div className={styles.container}>
-                    <div className={styles.header}>
-                        <h1>Media Admin - Authentication Required</h1>
-                        <p>Please access this page through the Password Overseer dashboard.</p>
-                        <p>Items loaded: {mediaItems.length} (showing first 3 for preview)</p>
-
-                        <button
-                            onClick={() => {
-                                sessionStorage.setItem('adminAuth', 'Overseer');
-                                setAuthenticated(true);
-                                loadMediaItems();
-                            }}
-                            style={{
-                                padding: '10px 20px',
-                                background: '#730051',
-                                color: 'white',
-                                border: 'none',
-                                borderRadius: '5px',
-                                cursor: 'pointer',
-                                marginRight: '10px'
-                            }}
-                        >
-                            Quick Login (Dev)
-                        </button>
-                        <button
-                            onClick={() => navigate('/worship-docket-admin')}
-                            style={{
-                                padding: '10px 20px',
-                                background: '#730051',
-                                color: 'white',
-                                border: 'none',
-                                borderRadius: '5px',
-                                cursor: 'pointer'
-                            }}
-                        >
-                            Go to Admin Dashboard
-                        </button>
-                    </div>
-
-                    {/* Preview of media items */}
-                    <div className={styles.header}>
-                        <h2>Media Items Preview</h2>
-                        <p>Found {mediaItems.length} media items in database</p>
-                        {mediaItems.slice(0, 3).map(item => (
-                            <div key={item._id || item.id} style={{ border: '1px solid #ccc', padding: '10px', margin: '10px', borderRadius: '5px' }}>
-                                <h4>{item.event}</h4>
-                                <p><strong>Date:</strong> {item.date}</p>
-                                <p><strong>Link:</strong> <a href={item.link} target="_blank" rel="noopener noreferrer">{item.link.substring(0, 50)}...</a></p>
-                                {item.imageUrl && <img src={item.imageUrl} alt={item.event} style={{ maxWidth: '100px', maxHeight: '100px' }} />}
-                            </div>
-                        ))}
-                        {mediaItems.length > 3 && <p>...and {mediaItems.length - 3} more items</p>}
-                    </div>
+            <div className={styles.container}>
+                <div className={styles.header}>
+                    <h1>Media Admin - Authentication Required</h1>
+                    <p>Please access this page through the Overseer dashboard.</p>
+                    <button
+                        onClick={() => navigate('/worship-docket-admin')}
+                        style={{
+                            padding: '10px 20px',
+                            background: '#730051',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '5px',
+                            cursor: 'pointer'
+                        }}
+                    >
+                        Go to Admin Dashboard
+                    </button>
                 </div>
-            </>
+            </div>
         );
     }
 
     return (
         <>
             <div className={styles.container}>
+                <OverseerLogoutButton />
                 <div className={styles.header}>
                     <h1>
                         <FontAwesomeIcon icon={faImages} />

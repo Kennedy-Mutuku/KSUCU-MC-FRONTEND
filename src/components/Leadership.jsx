@@ -11,29 +11,11 @@ import lyndraImg from '../assets/IMG-20260130-WA0045.jpg';
 import williamImg from '../assets/IMG-20260129-WA0063.jpg';
 import victoriaImg from '../assets/IMG-20260129-WA0058.jpg';
 import ookoImg from '../assets/IMG-20260130-WA0050.jpg';
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import './Leadership.css'
 import { FaYoutube, FaInstagram, FaXTwitter, FaTiktok, FaFacebook, FaWhatsapp } from "react-icons/fa6";
 const Leadership = () => {
-  const [menuActive, setMenuActive] = useState(false);
-  const committees = [
-    "Software Development Committee", "Worship Committee", "Prayer Committee",
-    "Discipleship Committee", "Christian Minds", "Best-P",
-    "Bible Study Committee", "Missions Committee", "Accounts Committee",
-    "Development Committee", "Orientation Committee", "Elders Committee",
-    "Strategic Plan Oversight"
-  ];
-  const [quicklinksActive, setQuicklinksActive] = useState(false);
-
-  const toggleMenu = () => {
-    setMenuActive(!menuActive);
-  };
-
-  const toggleQuicklinks = () => {
-    setQuicklinksActive(!quicklinksActive);
-  };
-
   const executiveCommittee = [
     {
       title: 'Chairperson',
@@ -157,55 +139,11 @@ const Leadership = () => {
         {/* Main Content */}
         <div className="container">
 
-          <div className="committees-dropdown-wrapper" style={{ marginBottom: '2rem', textAlign: 'center' }}>
-            <button
-              onClick={() => setMenuActive(!menuActive)}
-              className="dropdown-toggle-btn"
-              style={{
-                padding: '12px 24px',
-                backgroundColor: '#730051',
-                color: 'white',
-                border: 'none',
-                borderRadius: '5px',
-                cursor: 'pointer',
-                fontSize: '1rem',
-                fontWeight: 'bold'
-              }}
-            >
-              {menuActive ? 'Close Committees List ▲' : 'View Our Committees ▼'}
-            </button>
-
-            {menuActive && (
-              <div className="committees-list" style={{
-                marginTop: '10px',
-                background: 'white',
-                boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
-                borderRadius: '8px',
-                padding: '1rem',
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                gap: '10px',
-                zIndex: 10
-              }}>
-                {committees.map((item, index) => (
-                  <div key={index} style={{
-                    padding: '10px',
-                    borderBottom: '1px solid #eee',
-                    color: '#333',
-                    fontSize: '0.9rem'
-                  }}>
-                    {item}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
           {/* Executive Committee Section */}
           <section className="section">
             <div className="section-header">
               <h2>Executive Committee</h2>
-              <p>Our elected leadership team guiding the spiritual journey of our community</p>
+              <p style={{ color: '#2d2d2d' }}>Our elected leadership team guiding the spiritual journey of our community</p>
             </div>
 
             <div className="section-container">

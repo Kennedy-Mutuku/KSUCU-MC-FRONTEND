@@ -11,6 +11,8 @@ interface User {
   ministry: string;
   course?: string;
   reg?: string;
+  role?: string;
+  graduationYear?: number;
 }
 
 interface AuthContextType {

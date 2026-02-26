@@ -10,12 +10,6 @@
     --shadow: rgba(0, 0, 0, 0.08);
 }
 
-*,
-*::before,
-*::after {
-    box-sizing: border-box;
-}
-
 .leadership-page {
     font-family: Arial, sans-serif;
     color: var(--text-dark);
@@ -23,10 +17,10 @@
     line-height: 1.7;
     overflow-x: hidden;
     position: relative;
-    padding-top: 80px;
+    padding-top: 64px;
 }
 
-/* Blurred fixed background using a pseudo-element so content stays crisp */
+/* Blurred fixed background */
 .leadership-page::before {
     content: "";
     position: fixed;
@@ -40,124 +34,16 @@
     z-index: -1;
 }
 
-/* NO PAGE TRANSITIONS - INSTANT NAVIGATION */
-
-/* Navigation Bar */
-nav {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    background: var(--navbar-bg);
-    padding: 1.2rem 5%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 20px var(--shadow);
-    z-index: 1000;
-}
-
-.logo-section {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.logo {
-    width: 50px;
-    height: 50px;
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--white);
-    font-size: 1.5rem;
-    font-weight: 700;
-    font-family: Arial, sans-serif;
-    box-shadow: 0 4px 12px rgba(115, 0, 81, 0.3);
-}
-
-.site-title {
-    font-family: Arial, sans-serif;
-    font-size: 1.3rem;
-    font-weight: 600;
-    color: var(--primary);
-    letter-spacing: 0.5px;
-}
-
-.nav-links {
-    display: flex;
-    gap: 2.5rem;
-    align-items: center;
-}
-
-.nav-links a {
-    text-decoration: none;
-    color: var(--text-dark);
-    font-size: 1rem;
-    font-weight: 500;
-    position: relative;
-    transition: color 0.3s ease;
-}
-
-.nav-links a::after {
-    content: '';
-    position: absolute;
-    bottom: -5px;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background: var(--accent);
-    transition: width 0.3s ease;
-}
-
-.nav-links a:hover {
-    color: var(--primary);
-}
-
-.nav-links a:hover::after {
-    width: 100%;
-}
-
-/* Hamburger Menu */
-.hamburger {
-    display: none;
-    flex-direction: column;
-    cursor: pointer;
-    gap: 5px;
-}
-
-.hamburger span {
-    width: 25px;
-    height: 3px;
-    background: var(--primary);
-    transition: all 0.3s ease;
-    border-radius: 3px;
-}
-
-.hamburger.active span:nth-child(1) {
-    transform: rotate(45deg) translate(8px, 8px);
-}
-
-.hamburger.active span:nth-child(2) {
-    opacity: 0;
-}
-
-.hamburger.active span:nth-child(3) {
-    transform: rotate(-45deg) translate(7px, -7px);
-}
-
 /* Hero Section */
-.hero {
-    padding: 4rem 5%;
+.leadership-page .hero {
+    padding: 3rem 5%;
     background: rgba(255, 255, 255, 0.9);
     text-align: center;
     position: relative;
     overflow: hidden;
 }
 
-.hero::before {
+.leadership-page .hero::before {
     content: '';
     position: absolute;
     top: -50%;
@@ -168,26 +54,26 @@ nav {
     border-radius: 50%;
 }
 
-.hero h1 {
-    font-family: Arial, sans-serif;
-    font-size: 3.5rem;
+.leadership-page .hero h1 {
+    font-size: clamp(1.8rem, 5vw, 3.5rem);
     color: var(--primary);
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
     position: relative;
+    font-weight: 700;
 }
 
-.hero p {
-    font-size: 1.2rem;
+.leadership-page .hero p {
+    font-size: clamp(0.95rem, 2vw, 1.2rem);
     color: var(--text-light);
     max-width: 600px;
     margin: 0 auto;
 }
 
 /* Main Content */
-.container {
+.leadership-page .container {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 4rem 5%;
+    padding: 2rem 4%;
     background: rgba(255, 255, 255, 0.45);
     border-radius: 12px;
     box-shadow: 0 8px 40px rgba(0, 0, 0, 0.06);
@@ -195,69 +81,68 @@ nav {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     width: 100%;
     text-align: center;
 }
 
 /* Section Styling */
-.section {
-    margin-bottom: 5rem;
+.leadership-page .section {
+    margin-bottom: 3rem;
+    width: 100%;
 }
 
-.section-container {
+.leadership-page .section-container {
     background: var(--white);
     border: 2px solid rgba(115, 0, 81, 0.2);
-    border-radius: 24px;
-    padding: 3rem;
+    border-radius: 16px;
+    padding: 1.5rem;
     box-shadow: 0 8px 40px rgba(0, 0, 0, 0.1);
-    margin-top: 2rem;
+    margin-top: 1.5rem;
 }
 
-.section-header {
+.leadership-page .section-header {
     text-align: center;
-    margin-bottom: 3rem;
+    margin-bottom: 1.5rem;
 }
 
-.section-header h2 {
-    font-family: Arial, sans-serif;
-    font-size: 2.5rem;
+.leadership-page .section-header h2 {
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
     color: var(--primary);
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
     position: relative;
     display: inline-block;
 }
 
-.section-header h2::after {
+.leadership-page .section-header h2::after {
     content: '';
     position: absolute;
     bottom: -10px;
     left: 50%;
     transform: translateX(-50%);
-    width: 80px;
+    width: 60px;
     height: 3px;
     background: var(--accent);
 }
 
-.section-header p {
+.leadership-page .section-header p {
     color: var(--text-light);
-    font-size: 1.1rem;
+    font-size: clamp(0.9rem, 2vw, 1.1rem);
     max-width: 700px;
     margin: 1.5rem auto 0;
 }
 
 /* Executive Committee Grid */
-.committee-grid {
+.leadership-page .committee-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 2rem;
-    margin-top: 2rem;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.25rem;
+    margin-top: 1.5rem;
 }
 
-.profile-card {
+.leadership-page .profile-card {
     background: var(--white);
     border-radius: 16px;
-    padding: 2rem;
+    padding: 1.5rem 1rem;
     text-align: center;
     box-shadow: 0 4px 20px var(--shadow);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -265,7 +150,7 @@ nav {
     overflow: hidden;
 }
 
-.profile-card::before {
+.leadership-page .profile-card::before {
     content: '';
     position: absolute;
     top: 0;
@@ -273,104 +158,102 @@ nav {
     right: 0;
     height: 4px;
     background: linear-gradient(90deg, var(--primary), var(--accent));
-    transform: scaleX(1);
-    transition: transform 0.3s ease;
 }
 
-.profile-card:hover {
+.leadership-page .profile-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
 }
 
-.profile-image {
-    width: 120px;
-    height: 120px;
-    margin: 0 auto 1rem;
+.leadership-page .profile-image {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 0.75rem;
     border-radius: 50%;
     object-fit: cover;
-    border: 4px solid var(--primary);
+    border: 3px solid var(--primary);
     box-shadow: 0 4px 15px rgba(115, 0, 81, 0.2);
 }
 
-.profile-name {
-    font-size: 1.1rem;
+.leadership-page .profile-name {
+    font-size: 1rem;
     color: var(--text-dark);
     font-weight: 600;
-    margin-bottom: 0.3rem;
+    margin-bottom: 0.2rem;
 }
 
-.profile-phone {
-    font-size: 0.9rem;
+.leadership-page .profile-phone {
+    font-size: 0.85rem;
     color: var(--text-light);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.3rem;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.3rem;
 }
 
-.profile-card h3 {
-    font-family: Arial, sans-serif;
-    font-size: 1.3rem;
+.leadership-page .profile-card h3 {
+    font-size: 1.1rem;
     color: var(--primary);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
 }
 
-.profile-card .role {
+.leadership-page .profile-card .role {
     color: var(--text-light);
-    font-size: 0.95rem;
-    margin-bottom: 1rem;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    word-break: break-all;
 }
 
 /* Role Descriptions */
-.roles-section {
+.leadership-page .roles-section {
     background: transparent;
     border-radius: 0;
-    padding: 2rem 0 0 0;
-    margin-top: 3rem;
+    padding: 1.5rem 0 0 0;
+    margin-top: 2rem;
     box-shadow: none;
     border-top: 2px solid rgba(115, 0, 81, 0.1);
 }
 
-.roles-section h3 {
-    font-family: Arial, sans-serif;
-    font-size: 2rem;
+.leadership-page .roles-section h3 {
+    font-size: clamp(1.3rem, 3vw, 2rem);
     color: var(--primary);
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
     text-align: center;
 }
 
-.role-item {
-    margin-bottom: 1.5rem;
-    padding-left: 2rem;
+.leadership-page .role-item {
+    margin-bottom: 1.25rem;
+    padding-left: 1.75rem;
     position: relative;
+    text-align: left;
 }
 
-.role-item::before {
+.leadership-page .role-item::before {
     content: '✦';
     position: absolute;
     left: 0;
     color: var(--accent);
-    font-size: 1.2rem;
+    font-size: 1rem;
 }
 
-.role-item strong {
+.leadership-page .role-item strong {
     color: var(--primary);
     font-weight: 600;
 }
 
 /* Sub-committee Section */
-.subcommittee-box {
+.leadership-page .subcommittee-box {
     background: linear-gradient(135deg, var(--primary), var(--primary-dark));
     color: var(--white);
     border-radius: 16px;
-    padding: 2.5rem;
-    box-shadow: none;
+    padding: 2rem;
     position: relative;
     overflow: hidden;
+    text-align: left;
 }
 
-.subcommittee-box::before {
+.leadership-page .subcommittee-box::before {
     content: '';
     position: absolute;
     top: -100px;
@@ -381,33 +264,32 @@ nav {
     border-radius: 50%;
 }
 
-.subcommittee-box h3 {
-    font-family: Arial, sans-serif;
-    font-size: 2rem;
-    margin-bottom: 1.5rem;
+.leadership-page .subcommittee-box h3 {
+    font-size: clamp(1.3rem, 3vw, 2rem);
+    margin-bottom: 1rem;
     position: relative;
 }
 
-.subcommittee-box p {
-    font-size: 1.1rem;
+.leadership-page .subcommittee-box p {
+    font-size: clamp(0.9rem, 2vw, 1.1rem);
     line-height: 1.8;
     position: relative;
 }
 
-/* Other Committees Button */
-.cta-section {
+/* CTA Button */
+.leadership-page .cta-section {
     text-align: center;
-    margin: 4rem 0;
+    margin: 2.5rem 0;
 }
 
-.cta-button {
+.leadership-page .cta-button {
     display: inline-block;
-    padding: 1.2rem 3rem;
+    padding: 1rem 2.5rem;
     background: linear-gradient(135deg, var(--accent), var(--accent-light));
     color: var(--white);
     text-decoration: none;
     border-radius: 50px;
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 600;
     box-shadow: 0 6px 25px rgba(152, 0, 0, 0.3);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -415,7 +297,7 @@ nav {
     overflow: hidden;
 }
 
-.cta-button::before {
+.leadership-page .cta-button::before {
     content: '';
     position: absolute;
     top: 50%;
@@ -428,190 +310,127 @@ nav {
     transition: width 0.5s ease, height 0.5s ease;
 }
 
-.cta-button:hover::before {
+.leadership-page .cta-button:hover::before {
     width: 300px;
     height: 300px;
 }
 
-.cta-button:hover {
+.leadership-page .cta-button:hover {
     transform: translateY(-3px);
     box-shadow: 0 10px 35px rgba(152, 0, 0, 0.4);
 }
 
-.cta-button span {
+.leadership-page .cta-button span {
     position: relative;
     z-index: 1;
 }
 
-/* Footer */
-footer {
-    background: var(--primary-dark);
-    color: var(--white);
-    padding: 3rem 5% 1.5rem;
-}
-
-.footer-content {
-    max-width: 1400px;
-    margin: 0 auto;
-    text-align: center;
-}
-
-.quicklinks-section {
-    margin-bottom: 2rem;
-}
-
-.quicklinks-btn {
-    background: var(--accent);
-    color: var(--white);
+/* Committees dropdown */
+.leadership-page .dropdown-toggle-btn {
+    padding: 10px 20px;
+    background-color: #730051;
+    color: white;
     border: none;
-    padding: 0.8rem 2rem;
-    border-radius: 30px;
-    font-size: 1rem;
-    font-weight: 600;
+    border-radius: 8px;
     cursor: pointer;
-    transition: all 0.3s ease;
-    font-family: Arial, sans-serif;
+    font-size: 0.95rem;
+    font-weight: bold;
+    transition: background-color 0.3s;
 }
 
-.quicklinks-btn:hover {
-    background: var(--accent-light);
-    transform: scale(1.05);
+.leadership-page .dropdown-toggle-btn:hover {
+    background-color: #a00070;
 }
 
-.quicklinks-dropdown {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.4s ease, margin-top 0.4s ease;
-    margin-top: 0;
-}
+/* ====== RESPONSIVE ====== */
 
-.quicklinks-dropdown.active {
-    max-height: 300px;
-    margin-top: 1rem;
-}
-
-.quicklinks-list {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    flex-wrap: wrap;
-}
-
-.quicklinks-list a {
-    color: var(--white);
-    text-decoration: none;
-    font-size: 1rem;
-    transition: color 0.3s ease;
-}
-
-.quicklinks-list a:hover {
-    color: var(--accent);
-}
-
-.social-media {
-    margin: 2rem 0;
-    display: flex;
-    justify-content: center;
-    gap: 1.5rem;
-}
-
-.social-icon {
-    width: 50px;
-    height: 50px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--white);
-    font-size: 1.3rem;
-    text-decoration: none;
-    transition: all 0.3s ease;
-}
-
-.social-icon:hover {
-    background: var(--accent);
-    color: var(--white);
-    transform: translateY(-5px);
-}
-
-.footer-bottom {
-    margin-top: 2rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    font-size: 0.9rem;
-    opacity: 0.8;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    nav {
-        flex-direction: row;
-        justify-content: space-between;
-        padding: 1rem 5%;
+/* Small phones */
+@media (max-width: 480px) {
+    .leadership-page {
+        padding-top: 60px;
     }
 
-    .hamburger {
-        display: flex;
+    .leadership-page .hero {
+        padding: 2rem 1rem;
     }
 
-    .nav-links {
-        position: fixed;
-        top: 80px;
-        right: -100%;
-        width: 250px;
-        height: calc(100vh - 80px);
-        background: var(--white);
-        flex-direction: column;
-        padding: 2rem;
-        gap: 1.5rem;
-        box-shadow: -2px 0 20px var(--shadow);
-        transition: right 0.3s ease;
-        z-index: 999;
+    .leadership-page .container {
+        padding: 1.25rem 3%;
     }
 
-    .nav-links.active {
-        right: 0;
+    .leadership-page .section-container {
+        padding: 1rem;
+        border-radius: 12px;
     }
 
-    .nav-links a::after {
-        display: none;
-    }
-
-    .hero {
-        padding: 2rem 5%;
-    }
-
-    .hero h1 {
-        font-size: 2.2rem;
-    }
-
-    .section-header h2 {
-        font-size: 2rem;
-    }
-
-    .committee-grid {
+    .leadership-page .committee-grid {
         grid-template-columns: 1fr;
+        gap: 1rem;
     }
 
-    .roles-section,
-    .subcommittee-box {
-        padding: 2rem;
+    .leadership-page .profile-card {
+        padding: 1.25rem 1rem;
     }
 
-    .section-container {
-        padding: 2rem;
+    .leadership-page .profile-image {
+        width: 80px;
+        height: 80px;
     }
 
-    .dropdown-toggle-btn:hover {
-        background-color: #a00070 !important;
-        transition: 0.3s;
+    .leadership-page .subcommittee-box {
+        padding: 1.25rem;
     }
 
-    .committees-list div:hover {
-        background-color: #f9f9f9;
-        font-weight: bold;
-        color: #730051;
+    .leadership-page .role-item {
+        font-size: 0.9rem;
     }
 
+    .leadership-page .cta-button {
+        padding: 0.85rem 2rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Tablets */
+@media (min-width: 481px) and (max-width: 768px) {
+    .leadership-page .committee-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+
+    .leadership-page .section-container {
+        padding: 1.25rem;
+    }
+}
+
+/* Medium screens */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .leadership-page .committee-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Large screens */
+@media (min-width: 1025px) {
+    .leadership-page {
+        padding-top: 80px;
+    }
+
+    .leadership-page .hero {
+        padding: 4rem 5%;
+    }
+
+    .leadership-page .container {
+        padding: 3rem 5%;
+    }
+
+    .leadership-page .section-container {
+        padding: 2.5rem;
+        border-radius: 24px;
+    }
+
+    .leadership-page .committee-grid {
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 1.5rem;
+    }
 }

@@ -250,7 +250,7 @@ const MyDocs = () => {
                       <button
                         onClick={() => handleView(doc._id)}
                         style={{
-                          backgroundColor: '#00c6ff',
+                          backgroundColor: '#730051',
                           color: '#000',
                           border: 'none',
                           borderRadius: '6px',
@@ -263,10 +263,10 @@ const MyDocs = () => {
                           transition: 'background-color 0.3s'
                         }}
                         onMouseEnter={(e) => {
-                          (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#0099cc';
+                          (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#5a0040';
                         }}
                         onMouseLeave={(e) => {
-                          (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#00c6ff';
+                          (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#730051';
                         }}
                       >
                         <Eye size={16} /> View

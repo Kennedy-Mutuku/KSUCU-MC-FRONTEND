@@ -47,9 +47,9 @@ const SignaturePad: React.FC<SignaturePadProps> = ({ onSignatureChange, loading 
 
             ctx.lineWidth = 2.5;
             ctx.lineCap = 'round';
-            ctx.strokeStyle = '#00c6ff';
+            ctx.strokeStyle = '#730051';
             ctx.shadowBlur = 1;
-            ctx.shadowColor = '#00c6ff';
+            ctx.shadowColor = '#730051';
             ctx.beginPath();
             ctx.moveTo(lastX, lastY);
             ctx.lineTo(currentX, currentY);

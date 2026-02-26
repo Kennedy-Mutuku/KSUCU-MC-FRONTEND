@@ -2,7 +2,7 @@
 
 /* Header Container */
 .header {
-    background: #00c6ff;
+    background: #730051;
     color: #000;
     position: sticky;
     top: 0;
@@ -17,7 +17,7 @@
     justify-content: center;
     padding: 15px 20px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    background: #00c6ff;
+    background: #730051;
 }
 
 .container {
@@ -151,7 +151,7 @@
 @media (min-width: 768px) {
     .flex-title-phone {
         padding: 20px 30px;
-        background: #00c6ff;
+        background: #730051;
     }
 
     .container {
@@ -241,7 +241,7 @@
 @media (max-width: 767px) {
     .flex-title-phone {
         padding: 10px 15px;
-        background: #00c6ff;
+        background: #730051;
     }
 
     .container {
