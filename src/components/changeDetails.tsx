@@ -16,6 +16,7 @@ type FormData = {
   yos: string;
   ministry: string;
   et: string;
+  graduationYear: string;
   password: string;
   confirmPassword: string;
 };
@@ -43,6 +44,7 @@ const ChangeDetails: React.FC = () => {
     yos: '',
     ministry: '',
     et: '',
+    graduationYear: '',
     password: '',
     confirmPassword: ''
   });
@@ -53,6 +55,9 @@ const ChangeDetails: React.FC = () => {
   const [selectedMinistries, setSelectedMinistries] = useState<string[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [userRole, setUserRole] = useState<'student' | 'associate'>('student');
+
+  const isAssociate = userRole === 'associate';
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -120,6 +125,11 @@ const ChangeDetails: React.FC = () => {
           ? response.data.ministry.split(", ").map((m: string) => m.trim().toLocaleLowerCase())
           : [];
 
+          // Store user role
+          if (response.data.role) {
+            setUserRole(response.data.role === 'associate' ? 'associate' : 'student');
+          }
+
           //Ensure all form fields are set properly
           setFormData({
             username: response.data.username || '',
@@ -130,10 +140,11 @@ const ChangeDetails: React.FC = () => {
             yos: response.data.yos || '',
             ministry: response.data.ministry || '', // Store ministry string
             et: response.data.et || '',
+            graduationYear: response.data.graduationYear || '',
             password: '', // Keep password empty for security
             confirmPassword: '' // Keep confirm password empty
           });
-        
+
         setSelectedMinistries(ministriesArray); // Set selected ministries
   
       } catch (error: any) {
@@ -264,37 +275,71 @@ const ChangeDetails: React.FC = () => {
   };
 
   const handleSubmit = async () => {
-    // Convert selected ministries array to a comma-separated string
-    const ministriesString = selectedMinistries.join(', ');
-  
-    // Prepare the final form data, excluding password if it's empty
     const { password, confirmPassword, ...dataWithoutPassword } = formData;
-    const finalFormData = {
-      ...dataWithoutPassword,
-      ministry: ministriesString, // Ensure ministries are stored as a string
-    };
-  
-    // Check if any field (except password) is empty
-    for (const [key, value] of Object.entries(finalFormData)) {
-      if (!value) {
-        setError(`Please fill in the ${key} field 😊`);
+
+    let finalFormData: Record<string, string>;
+
+    if (isAssociate) {
+      // Associates: only send relevant fields
+      finalFormData = {
+        username: dataWithoutPassword.username,
+        phone: dataWithoutPassword.phone,
+        email: dataWithoutPassword.email,
+        course: dataWithoutPassword.course,
+      };
+
+      // Check required fields for associates
+      for (const [key, value] of Object.entries(finalFormData)) {
+        if (!value) {
+          const fieldName = key === 'username' ? 'Name' : key.charAt(0).toUpperCase() + key.slice(1);
+          setError(`Please fill in the ${fieldName} field 😊`);
+          return;
+        }
+      }
+
+      // Graduation year is required for associates
+      if (!dataWithoutPassword.graduationYear) {
+        setError('Please fill in the Graduation Year field 😊');
+        return;
+      }
+      finalFormData.graduationYear = dataWithoutPassword.graduationYear;
+    } else {
+      // Students: all fields required
+      const ministriesString = selectedMinistries.join(', ');
+      finalFormData = {
+        username: dataWithoutPassword.username,
+        phone: dataWithoutPassword.phone,
+        email: dataWithoutPassword.email,
+        course: dataWithoutPassword.course,
+        reg: dataWithoutPassword.reg,
+        yos: dataWithoutPassword.yos,
+        ministry: ministriesString,
+        et: dataWithoutPassword.et,
+      };
+
+      // Check if any field is empty
+      for (const [key, value] of Object.entries(finalFormData)) {
+        if (!value) {
+          const fieldName = key === 'yos' ? 'Year of Study' : key === 'et' ? 'ET' : key.charAt(0).toUpperCase() + key.slice(1);
+          setError(`Please fill in the ${fieldName} field 😊`);
+          return;
+        }
+      }
+
+      // Validate ET selection
+      if (finalFormData.et === "choose..." || finalFormData.et.trim() === "") {
+        setError("Please select a valid ET option 😊");
+        return;
+      }
+
+      if (!validateYOS(finalFormData.yos)) {
+        setError('Year of study must be a number between 1 and 6. 🤨');
         return;
       }
     }
-  
-    // Validate ET selection
-    if (finalFormData.et === "choose..." || finalFormData.et.trim() === "") {
-      setError("Please select a valid ET option 😊");
-      return;
-    }
-  
+
     if (!validatePhone(finalFormData.phone)) {
       setError('Phone number must be 10 digits starting with 0 and having no spaces 🤨');
-      return;
-    }
-  
-    if (!validateYOS(finalFormData.yos)) {
-      setError('Year of study must be a number between 1 and 6. 🤨');
       return;
     }
 
@@ -304,27 +349,27 @@ const ChangeDetails: React.FC = () => {
         setError('Password must be at least 8 characters long and contain at least one uppercase letter and one digit 🤨');
         return;
       }
-      
+
       if (password !== confirmPassword) {
         setError('Passwords do not match 😕');
         return;
       }
     }
-  
+
     setLoading(true);
-  
+
     try {
       // Include password in request only if user enters it
       const payload = (password && password.trim() !== '') ? { ...finalFormData, password } : finalFormData;
-  
+
       const response = await axios.put(getApiUrl('usersUpdate'), payload, {
         withCredentials: true,
       });
-  
+
       console.log(response.data);
       setSuccessMessage('Details updated successfully');
       setError('');
-  
+
       setFormData({
         username: '',
         phone: '',
@@ -334,12 +379,13 @@ const ChangeDetails: React.FC = () => {
         yos: '',
         ministry: '',
         et: '',
+        graduationYear: '',
         password: '',
         confirmPassword: ''
       });
-  
+
       setSelectedMinistries([]); // Clear selected ministries after submission
-  
+
     } catch (error) {
       console.error('Error updating details', error);
       setError('Error updating details');
@@ -355,7 +401,24 @@ const ChangeDetails: React.FC = () => {
           <div className={styles['logo_signUp']}><img src={cuLogo} alt="CU logo" /></div>
         </Link>
         <h2 className={styles['text']}>Update Details</h2>
-        
+
+        {isAssociate && (
+          <div style={{ textAlign: 'center', marginBottom: '15px' }}>
+            <span style={{
+              display: 'inline-block',
+              background: 'linear-gradient(135deg, #730051, #a0006e)',
+              color: 'white',
+              padding: '4px 16px',
+              borderRadius: '20px',
+              fontSize: '12px',
+              fontWeight: 'bold',
+              letterSpacing: '0.5px'
+            }}>
+              Associate / Alumni
+            </span>
+          </div>
+        )}
+
         {loading && (
           <div style={{ textAlign: 'center', padding: '20px' }}>
             <p>Loading your details...</p>
@@ -383,59 +446,79 @@ const ChangeDetails: React.FC = () => {
           </div>
 
           <div className={styles['form-div']}>
-            <label htmlFor="course">COURSE</label>
+            <label htmlFor="course">{isAssociate ? 'COURSE STUDIED' : 'COURSE'}</label>
             <input type="text" id="course" className={styles['input']} value={formData.course} onChange={handleChange} />
           </div>
 
-          <div className={styles['form-div']}>
-            <label htmlFor="reg">REG</label>
-            <input type="text" id="reg" className={styles['input']} value={formData.reg} onChange={handleChange} />
-          </div>
-
-          <div className={styles['form-div']}>
-            <label htmlFor="yos">Y.O.S</label>
-            <input type="number" id="yos" className={styles['input']} value={formData.yos} onChange={handleChange} />
-          </div>
-
-          <div className={styles['form-div']}>
-            <label htmlFor="ministry">MINISTRY</label>
-            <div className={styles['ministry-container']} tabIndex={0} onBlur={handleBlur} >
-              <div className={styles['ministry-header']} onClick={() => setShowDropdown(!showDropdown)} >
-                <span>
-                  {selectedMinistries.length > 0 ? selectedMinistries.join(', ') : 'choose...'}
-                </span>
-                <ChevronDown size={20} />
+          {!isAssociate && (
+            <>
+              <div className={styles['form-div']}>
+                <label htmlFor="reg">REG</label>
+                <input type="text" id="reg" className={styles['input']} value={formData.reg} onChange={handleChange} />
               </div>
 
-              {showDropdown && (
-                <div className={styles['ministry-menu']}>
-                  {ministriesList.map(ministry => (
-                    <label key={ministry.id} className={styles['ministry-item']}>
-                      <input
-                        type="checkbox"
-                        checked={selectedMinistries.includes(ministry.id)}
-                        onChange={() => toggleMinistrySelection(ministry.id)}
-                      />
-                      {ministry.label}
-                    </label>
-                  ))}
+              <div className={styles['form-div']}>
+                <label htmlFor="yos">Y.O.S</label>
+                <input type="number" id="yos" className={styles['input']} value={formData.yos} onChange={handleChange} />
+              </div>
+
+              <div className={styles['form-div']}>
+                <label htmlFor="ministry">MINISTRY</label>
+                <div className={styles['ministry-container']} tabIndex={0} onBlur={handleBlur} >
+                  <div className={styles['ministry-header']} onClick={() => setShowDropdown(!showDropdown)} >
+                    <span>
+                      {selectedMinistries.length > 0 ? selectedMinistries.join(', ') : 'choose...'}
+                    </span>
+                    <ChevronDown size={20} />
+                  </div>
+
+                  {showDropdown && (
+                    <div className={styles['ministry-menu']}>
+                      {ministriesList.map(ministry => (
+                        <label key={ministry.id} className={styles['ministry-item']}>
+                          <input
+                            type="checkbox"
+                            checked={selectedMinistries.includes(ministry.id)}
+                            onChange={() => toggleMinistrySelection(ministry.id)}
+                          />
+                          {ministry.label}
+                        </label>
+                      ))}
+                    </div>
+                  )}
                 </div>
-              )} 
+
+              </div>
+
+              <div className={styles['form-div']}>
+                <label htmlFor="et">E.T</label>
+                <select id="et" className={styles['select']} value={formData.et} onChange={handleChange}>
+                  <option>choose...</option>
+                  <option value="rivet">Rivet</option>
+                  <option value="cet">Cet</option>
+                  <option value="eset">Eset</option>
+                  <option value="net">Net</option>
+                  <option value="weso">Weso</option>
+                </select>
+              </div>
+            </>
+          )}
+
+          {isAssociate && (
+            <div className={styles['form-div']}>
+              <label htmlFor="graduationYear">GRADUATION YEAR</label>
+              <input
+                type="number"
+                id="graduationYear"
+                className={styles['input']}
+                value={formData.graduationYear}
+                onChange={handleChange}
+                min="2000"
+                max={new Date().getFullYear()}
+                placeholder="e.g. 2023"
+              />
             </div>
-
-          </div>
-
-          <div className={styles['form-div']}>
-            <label htmlFor="et">E.T</label>
-            <select id="et" className={styles['select']} value={formData.et} onChange={handleChange}>
-              <option>choose...</option>
-              <option value="rivet">Rivet</option>
-              <option value="cet">Cet</option>
-              <option value="eset">Eset</option>
-              <option value="net">Net</option>
-              <option value="weso">Weso</option>
-            </select>
-          </div>
+          )}
         </div>
 
         {/* Password Change Section */}
@@ -529,18 +612,11 @@ const ChangeDetails: React.FC = () => {
           borderTop: '2px solid #e0e0e0',
           textAlign: 'center'
         }}>
-          <p style={{ 
-            marginBottom: '15px', 
-            color: '#666', 
-            fontSize: '14px' 
-          }}>
-            Want to sign out from your account?
-          </p>
           <button
             onClick={handleLogout}
             disabled={loading}
             style={{
-              backgroundColor: '#dc3545',
+              backgroundColor: '#730051',
               color: 'white',
               border: 'none',
               padding: '12px 30px',
@@ -550,19 +626,19 @@ const ChangeDetails: React.FC = () => {
               cursor: loading ? 'not-allowed' : 'pointer',
               opacity: loading ? 0.6 : 1,
               transition: 'all 0.3s ease',
-              boxShadow: '0 2px 10px rgba(220, 53, 69, 0.3)',
+              boxShadow: '0 2px 10px rgba(115, 0, 81, 0.3)',
             }}
             onMouseEnter={(e) => {
               if (!loading) {
-                e.currentTarget.style.backgroundColor = '#c82333';
+                e.currentTarget.style.backgroundColor = '#5a0040';
                 e.currentTarget.style.transform = 'translateY(-2px)';
-                e.currentTarget.style.boxShadow = '0 4px 15px rgba(220, 53, 69, 0.4)';
+                e.currentTarget.style.boxShadow = '0 4px 15px rgba(115, 0, 81, 0.4)';
               }
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '#dc3545';
+              e.currentTarget.style.backgroundColor = '#730051';
               e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 2px 10px rgba(220, 53, 69, 0.3)';
+              e.currentTarget.style.boxShadow = '0 2px 10px rgba(115, 0, 81, 0.3)';
             }}
           >
             {loading ? 'Processing...' : 'Log Out'}

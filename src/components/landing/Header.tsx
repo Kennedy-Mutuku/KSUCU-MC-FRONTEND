@@ -766,7 +766,7 @@ const Header = () => {
               {/* Sign In / User button - always right */}
               <div className="flex-shrink-0 ml-2 xl:ml-4">
                 {userData ? (
-                  <button onClick={() => navigate('/home')} className="flex items-center gap-1.5 px-1.5 xl:px-3 py-2 rounded-lg font-medium text-[11px] xl:text-sm text-gray-700 hover:bg-gray-100 transition-colors whitespace-nowrap">
+                  <button onClick={() => navigate('/changeDetails')} className="flex items-center gap-1.5 px-1.5 xl:px-3 py-2 rounded-lg font-medium text-[11px] xl:text-sm text-gray-700 hover:bg-gray-100 transition-colors whitespace-nowrap">
                     <User size={16} className="xl:w-[18px] xl:h-[18px]" />
                     <span className="hidden xl:inline">{userData.username}</span>
                   </button>

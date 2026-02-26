@@ -365,9 +365,7 @@ const LandingPageHeader = () => {
   }
 
   function handleRedirectToUserInfo() {
-    console.log('Header: User icon clicked, userData:', userData);
-    console.log('Header: Navigating to /profile');
-    navigate('/profile')
+    navigate('/changeDetails')
   }
   function handleRedirectToLogin() {
     navigate('/signIn')
@@ -552,7 +550,7 @@ const LandingPageHeader = () => {
           <div className={styles.nav}>
             <div className={styles['nav-one']}>
               {userData ?
-                <Link to="/profile" className={styles['signUp-btn']}>{userData.username}</Link>
+                <Link to="/changeDetails" className={styles['signUp-btn']}>{userData.username}</Link>
                 : <Link to="/signUp" className={styles['signUp-btn']}>Sign up</Link>
               }
               <div className={styles['About-btn']}>

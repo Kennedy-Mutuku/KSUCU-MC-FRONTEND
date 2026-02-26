@@ -126,9 +126,7 @@ const UniversalHeader: React.FC = () => {
 
 
   function handleRedirectToUserInfo() {
-    console.log('👤 Header: User icon clicked, userData:', userData);
-    console.log('👤 Header: Navigating to /profile');
-    navigate('/profile')
+    navigate('/changeDetails')
   }
 
   function handleRedirectToLogin() {
@@ -267,7 +265,7 @@ const UniversalHeader: React.FC = () => {
           <div className={styles.nav}>
             <div className={styles['nav-one']}>
               {userData ?
-                <Link to="/profile" className={styles['signUp-btn']}>{userData.username}</Link>
+                <Link to="/changeDetails" className={styles['signUp-btn']}>{userData.username}</Link>
                 : <Link to="/signUp" className={styles['signUp-btn']}>Sign up</Link>
               }
               <Link to="/signIn" className={styles['Login-btn']}>Log in</Link>
