@@ -30,21 +30,27 @@
 }
 
 .backButton {
-<<<<<<< HEAD
-    position: absolute;
-    top: 1rem;
-    left: 1rem;
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    padding: 0.6rem 1.2rem;
+    border-radius: 50px;
+    color: #64748b;
+    font-size: 0.9rem;
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
+    margin-bottom: 1.5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
 .backButton:hover {
-    background: rgba(255, 255, 255, 0.3);
+    color: #730051;
+    border-color: #730051;
+    transform: translateX(-3px);
+    box-shadow: 0 4px 12px rgba(115, 0, 81, 0.1);
 }
 
 /* Active Role Indicator */
@@ -85,44 +91,6 @@
     }
 }
 
-/* Message */
-.message {
-    background: #e8f5e8;
-    color: #2d5a2d;
-    padding: 1rem;
-    border-radius: 8px;
-    margin-bottom: 2rem;
-    text-align: center;
-    border-left: 4px solid #4caf50;
-}
-
-/* Session Controls */
-.sessionControls {
-=======
->>>>>>> 48cfd2009546c7f66d045eb78952fc0474a4ee79
-    background: white;
-    border: 1px solid #e2e8f0;
-    padding: 0.6rem 1.2rem;
-    border-radius: 50px;
-    color: #64748b;
-    font-size: 0.9rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-bottom: 1.5rem;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-}
-
-.backButton:hover {
-    color: #730051;
-    border-color: #730051;
-    transform: translateX(-3px);
-    box-shadow: 0 4px 12px rgba(115, 0, 81, 0.1);
-}
-
 .header h1 {
     color: #2d3748;
     font-size: 2.5rem;
@@ -139,6 +107,7 @@
     font-size: 1.1rem;
 }
 
+/* Message */
 .message {
     padding: 1.2rem;
     border-radius: 12px;
@@ -197,7 +166,6 @@
     box-shadow: 0 15px 30px rgba(115, 0, 81, 0.3);
 }
 
-<<<<<<< HEAD
 .resetButton {
     background: #ff9800;
     color: white;
@@ -252,11 +220,31 @@
     transform: none !important;
 }
 
+/* Session Controls */
+.sessionControls {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 24px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 500px;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+}
+
 /* Attendance Records */
 .attendanceRecords {
-=======
+    background: white;
+    padding: 2.5rem;
+    border-radius: 24px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 500px;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+}
+
 .startForm {
->>>>>>> 48cfd2009546c7f66d045eb78952fc0474a4ee79
     background: white;
     padding: 2.5rem;
     border-radius: 24px;
@@ -458,6 +446,16 @@
     border-radius: 24px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
     animation: fadeInUp 0.5s ease-out;
+    margin-top: 2rem;
+}
+
+.recordsSection h2 {
+    color: #730051;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.2rem;
 }
 
 @keyframes fadeInUp {
@@ -552,6 +550,21 @@
     transform: scale(1.005);
 }
 
+.recordsTable thead {
+    background: #f8f9fa;
+}
+
+.recordsTable td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #f1f3f5;
+    color: #495057;
+    font-size: 0.9rem;
+}
+
+.recordsTable tbody tr:hover {
+    background: #f8f9fa;
+}
+
 .regBadge {
     background: #e2e8f0;
     color: #475569;
@@ -575,7 +588,6 @@
     background: transparent !important;
 }
 
-<<<<<<< HEAD
 .noRecordsIcon {
     font-size: 4rem;
     color: #ccc;
@@ -590,134 +602,6 @@
 .noRecords p {
     color: #666;
     line-height: 1.6;
-}
-
-/* Responsive Design */
-@media (max-width: 767px) {
-    .container {
-        padding: 10px;
-    }
-
-    .header {
-        padding: 1.5rem;
-        text-align: center;
-    }
-
-=======
-@media (max-width: 640px) {
->>>>>>> 48cfd2009546c7f66d045eb78952fc0474a4ee79
-    .header h1 {
-        font-size: 1.8rem;
-    }
-
-<<<<<<< HEAD
-    .backButton {
-        position: static;
-        margin-bottom: 1rem;
-    }
-
-    .activeRoleIndicator {
-        padding: 0.5rem 1rem;
-        margin-bottom: 1rem;
-    }
-
-    .activeRoleText {
-        font-size: 1rem;
-    }
-
-    .activeRoleIcon {
-        font-size: 1.25rem;
-    }
-
-    .controlButtons {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .controlButton {
-        width: 100%;
-        max-width: 250px;
-    }
-
-    .recordsHeader {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .recordsList {
-        grid-template-columns: 1fr;
-    }
-
-    .recordCard {
-        padding: 1rem;
-    }
-
-    .noRecords {
-        padding: 2rem 1rem;
-    }
-}
-
-@media (max-width: 767px) {
-
-    .sessionControls,
-    .attendanceRecords {
-        padding: 1rem;
-    }
-
-    .recordCard {
-        flex-direction: column;
-        text-align: center;
-    }
-
-    .recordNumber {
-        align-self: center;
-    }
-}
-
-/* Records Section & Table */
-.recordsSection {
-    margin-top: 2rem;
-}
-
-.recordsSection h2 {
-    color: #730051;
-    margin-bottom: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 1.2rem;
-}
-
-.recordsTable {
-    width: 100%;
-    border-collapse: collapse;
-    background: white;
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-.recordsTable thead {
-    background: #f8f9fa;
-}
-
-.recordsTable th {
-    padding: 0.75rem 1rem;
-    text-align: left;
-    font-weight: 600;
-    color: #495057;
-    border-bottom: 2px solid #e9ecef;
-    font-size: 0.9rem;
-}
-
-.recordsTable td {
-    padding: 0.75rem 1rem;
-    border-bottom: 1px solid #f1f3f5;
-    color: #495057;
-    font-size: 0.9rem;
-}
-
-.recordsTable tbody tr:hover {
-    background: #f8f9fa;
 }
 
 /* Blocked status for session card */
@@ -752,7 +636,14 @@
     100% {
         opacity: 1;
     }
-=======
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+    .header h1 {
+        font-size: 1.8rem;
+    }
+
     .sessionList {
         grid-template-columns: 1fr;
     }
@@ -761,5 +652,68 @@
         flex-direction: column;
         text-align: center;
     }
->>>>>>> 48cfd2009546c7f66d045eb78952fc0474a4ee79
+}
+
+@media (max-width: 767px) {
+    .container {
+        padding: 10px;
+    }
+
+    .header {
+        padding: 1.5rem;
+        text-align: center;
+    }
+
+    .backButton {
+        margin-bottom: 1rem;
+    }
+
+    .activeRoleIndicator {
+        padding: 0.5rem 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .activeRoleText {
+        font-size: 1rem;
+    }
+
+    .activeRoleIcon {
+        font-size: 1.25rem;
+    }
+
+    .controlButtons {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .controlButton {
+        width: 100%;
+        max-width: 250px;
+    }
+
+    .recordsList {
+        grid-template-columns: 1fr;
+    }
+
+    .recordCard {
+        padding: 1rem;
+    }
+
+    .noRecords {
+        padding: 2rem 1rem;
+    }
+
+    .sessionControls,
+    .attendanceRecords {
+        padding: 1rem;
+    }
+
+    .recordCard {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .recordNumber {
+        align-self: center;
+    }
 }

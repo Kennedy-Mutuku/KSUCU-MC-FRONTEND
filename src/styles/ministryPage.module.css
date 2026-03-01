@@ -1,24 +1,32 @@
 @import url(global.css);
 
-<<<<<<< HEAD
-/* ====== GLOBAL CONTAINER ====== */
-/* ===============================
-   HERO SECTION (More Alive)
-================================= */
+/* ministryPage.module.css - Professional Version */
+
+/* Container & Global Setup */
+.container {
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+  background: #ffffff;
+  color: #333333;
+}
+
+/* Hero Section: Compact full-width page header */
 .heroSection {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-height: 70vh;
-  padding: 60px 5%;
-  margin-top: 80px;
-  background: #730051;
+  height: 350px;
+  width: 100%;
+  margin-top: 0;
+  padding: 0 5%;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(115, 0, 81, 0.6)), var(--hero-bg);
+  background-size: cover;
+  background-position: center 30%;
   color: #ffffff;
+  text-align: center;
   position: relative;
   overflow: hidden;
-  border-bottom: 6px solid #ffb1e1;
-  text-align: center;
 }
 
 /* Subtle animated gradient overlay */
@@ -32,37 +40,50 @@
 .heroContent {
   position: relative;
   z-index: 2;
-  max-width: 800px;
+  max-width: 700px;
   animation: fadeInUp 0.9s ease-out;
 }
 
 .title {
-  font-size: clamp(2rem, 5vw, 4rem);
+  font-size: 2.8rem;
   font-weight: 800;
-  line-height: 1.2;
   margin-bottom: 12px;
-  text-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
-  color: #f8f9fb;
+  text-shadow: 0 3px 8px rgba(0, 0, 0, 0.6);
+  line-height: 1.2;
 }
 
 .subtitle {
-  font-size: 1.1rem;
-  margin-bottom: 25px;
-  color: #ffd6f5;
-  animation: fadeInUp 1.2s ease forwards;
+  font-size: 1.15rem;
+  opacity: 0.95;
+  font-weight: 400;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
 }
 
-/* HERO IMAGE REMOVED IN FAVOR OF BACKGROUND */
+@media (max-width: 768px) {
+  .heroSection {
+    height: 280px;
+    padding: 0 6%;
+  }
+  .title {
+    font-size: 1.9rem;
+  }
+  .subtitle {
+    font-size: 1rem;
+  }
+}
 
 /* ===============================
    SECTION STRUCTURE
 ================================= */
 .contentSection {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 60px;
-  padding: 60px 5%;
-  align-items: center;
+  padding: 80px 10%;
+  overflow-x: hidden;
+}
+
+.contentSection h2,
+.contentSection h3 {
+  color: #730051;
+  font-weight: 700;
 }
 
 .fullWidthSection {
@@ -116,6 +137,14 @@
   background: #f8f9fb;
   text-align: center;
   visibility: visible;
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+  transition: all 1s ease;
+}
+
+:global(.whatWeDoSection.visible) {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .whatWeDoHeader h2 {
@@ -242,7 +271,7 @@
 }
 
 .ensureList li::before {
-  content: "✔";
+  content: "\2714";
   position: absolute;
   left: 0;
   color: #b31247;
@@ -382,12 +411,6 @@
   line-height: 1.6;
 }
 
-/* ===== RESPONSIVE ===== */
-
-@media (max-width: 1024px) {
-  /* Cards will naturally wrap and center due to flex layout */
-}
-
 @media (max-width: 768px) {
   .serviceScheduleSection h2 {
     font-size: 2.2rem;
@@ -400,22 +423,7 @@
 }
 
 /* ===============================
-   ANIMATION
-================================= */
-
-.whatWeDoSection {
-  opacity: 1 !important;
-  transform: translateY(0) !important;
-  transition: all 1s ease;
-}
-
-:global(.whatWeDoSection.visible) {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* ===============================
-   RESPONSIVE
+   RESPONSIVE (What We Do)
 ================================= */
 
 @media (max-width: 1024px) {
@@ -532,78 +540,6 @@
 
 .qualitiesCard h3 {
   color: #8B1C3F;
-=======
-/* ministryPage.module.css - Professional Version */
-
-/* Container & Global Setup */
-.container {
-  min-height: 100vh;
-  font-family: 'Inter', sans-serif;
-  background: #ffffff;
-  color: #333333;
-}
-
-/* Hero Section: Compact full-width page header */
-.heroSection {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 350px;
-  width: 100%;
-  margin-top: 0;
-  padding: 0 5%;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(115, 0, 81, 0.6)), var(--hero-bg);
-  background-size: cover;
-  background-position: center 30%;
-  color: #ffffff;
-  text-align: center;
-}
-
-.heroContent {
-  z-index: 2;
-  max-width: 700px;
-}
-
-.title {
-  font-size: 2.8rem;
-  font-weight: 800;
-  margin-bottom: 12px;
-  text-shadow: 0 3px 8px rgba(0, 0, 0, 0.6);
-  line-height: 1.2;
-}
-
-.subtitle {
-  font-size: 1.15rem;
-  opacity: 0.95;
-  font-weight: 400;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-}
-
-@media (max-width: 768px) {
-  .heroSection {
-    height: 280px;
-    padding: 0 6%;
-  }
-  .title {
-    font-size: 1.9rem;
-  }
-  .subtitle {
-    font-size: 1rem;
-  }
-}
-
-/* Content Sections */
-.contentSection {
-  padding: 80px 10%;
-  overflow-x: hidden;
-}
-
-.contentSection h2, 
-.contentSection h3 {
-  color: #730051; /* Your requested purple */
-  font-weight: 700;
->>>>>>> 48cfd2009546c7f66d045eb78952fc0474a4ee79
   margin-bottom: 25px;
   font-size: 1.5rem;
   font-weight: 700;
@@ -625,7 +561,7 @@
 }
 
 .requirementsList li::before {
-  content: "✦";
+  content: "\2726";
   position: absolute;
   left: 0;
   color: #8B1C3F;

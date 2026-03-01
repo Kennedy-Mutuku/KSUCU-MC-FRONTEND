@@ -1072,10 +1072,6 @@ const MinistriesAdmin: React.FC = () => {
 
     return (
         <div className={styles.container}>
-<<<<<<< HEAD
-            <UniversalHeader />
-=======
->>>>>>> 48cfd2009546c7f66d045eb78952fc0474a4ee79
             <div className={styles.adminContainer}>
                 <div className={styles.adminHeader}>
                     <h1 className={styles.adminTitle}>

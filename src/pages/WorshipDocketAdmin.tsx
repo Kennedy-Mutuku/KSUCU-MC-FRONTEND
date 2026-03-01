@@ -55,23 +55,6 @@ const WorshipDocketAdmin: React.FC = () => {
         setTimeout(() => setMessage(''), 3000);
     };
 
-<<<<<<< HEAD
-    const leadershipRoles = [
-        'Chairperson',
-        'Vice Chair',
-        'Secretary',
-        'Treasurer',
-        'Publicity Secretary',
-        'Worship Coordinator',
-        'Bible Study Coordinator',
-        'Discipleship Coordinator',
-        'Prayer Coordinator',
-        'Missions Coordinator',
-        'Boards Coordinator'
-    ];
-=======
->>>>>>> 48cfd2009546c7f66d045eb78952fc0474a4ee79
-
     const handleRoleSelection = () => {
         const role = 'Executive Admin';
         setSelectedRole(role);
@@ -205,7 +188,7 @@ const WorshipDocketAdmin: React.FC = () => {
                             <button
                                 className={styles.functionButton}
                                 onClick={() => {
-                                    // Store authentication state  
+                                    // Store authentication state
                                     sessionStorage.setItem('adminAuth', 'Overseer');
                                     navigate('/media-admin');
                                 }}

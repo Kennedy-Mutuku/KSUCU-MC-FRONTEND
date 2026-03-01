@@ -87,14 +87,11 @@ export const router = createBrowserRouter([
             { path: "/financial", element: <FinancialsPage /> },
             { path: "/ministries", element: <MinistriesPage /> },
             { path: "/ets", element: <Etpage /> },
-<<<<<<< HEAD
-=======
             { path: "/ets/rivet", element: <RivetPage /> },
             { path: "/ets/net", element: <NetPage /> },
             { path: "/ets/eset", element: <EsetPage /> },
             { path: "/ets/weso", element: <WesoPage /> },
             { path: "/ets/cet", element: <CetPage /> },
->>>>>>> 48cfd2009546c7f66d045eb78952fc0474a4ee79
             { path: "/signIn", element: <SignIn /> },
             { path: "/signUp", element: <SignUp /> },
             { path: "/Bs", element: <Bs /> },
@@ -144,8 +141,6 @@ export const router = createBrowserRouter([
             { path: "/admin/documents", element: <SuperAdminDocumentDashboard /> },
             /*newly added Christian Minds*/
             { path: "/christianminds", element: <ChristianMinds /> },
-<<<<<<< HEAD
-=======
             { path: "/kairos", element: <Kairos /> },
             { path: "/focus", element: <Focus /> },
             { path: "/leadership", element: <Leadership /> },
@@ -161,7 +156,6 @@ export const router = createBrowserRouter([
             { path: "/classFellowship", element: <ClassFellowship /> },
             { path: "/chat-admin", element: <ChatAdmin /> },
             { path: "/sign-attendance/:shortId", element: <DirectSignPage /> },
->>>>>>> 48cfd2009546c7f66d045eb78952fc0474a4ee79
             { path: "*", element: <NoPage /> }
         ]
     }

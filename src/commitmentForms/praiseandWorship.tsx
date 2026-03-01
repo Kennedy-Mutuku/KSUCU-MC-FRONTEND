@@ -155,7 +155,7 @@ const PraiseandWorshipCommitment: React.FC = () => {
     <div className={styles.container}>
       <div className={styles.containerForm}>
         <div className={styles.commitmentForm}>
-          <h2 className={styles.formTitle}>🙌 Praise & Worship Ministry Commitment Form</h2>
+          <h2 className={styles.formTitle}>Praise & Worship Ministry Commitment Form</h2>
           <p className={styles.textMuted}>"Serving with Excellence and Integrity"</p>
 
           {/* Status Display */}
@@ -163,15 +163,15 @@ const PraiseandWorshipCommitment: React.FC = () => {
             <div className={`${styles.statusAlert} ${commitmentStatus === 'approved' ? styles.approved :
               commitmentStatus === 'revoked' ? styles.revoked : styles.pending
               }`}>
-              {commitmentStatus === 'pending' && '⏳ Waiting for admin approval'}
-              {commitmentStatus === 'approved' && '✅ Commitment form approved!'}
-              {commitmentStatus === 'revoked' && '❌ Commitment form revoked'}
+              {commitmentStatus === 'pending' && 'Waiting for admin approval'}
+              {commitmentStatus === 'approved' && 'Commitment form approved!'}
+              {commitmentStatus === 'revoked' && 'Commitment form revoked'}
             </div>
           )}
 
           {/* Practices & Service Ministration */}
           <div className={styles.section}>
-            <h4 className={styles.sectionTitle}>🎵 Practices & Service Ministration</h4>
+            <h4 className={styles.sectionTitle}>Practices & Service Ministration</h4>
             <ul className={styles.customList}>
               <li>Leads must select one song that has not been used in the past three weeks.</li>
               <li>BGVs should study the song structure, instrumentation, and voices.</li>
@@ -183,45 +183,45 @@ const PraiseandWorshipCommitment: React.FC = () => {
 
           {/* Clothing Section */}
           <div className={styles.section}>
-            <h4 className={styles.sectionTitle}>📜 Ministry Overview</h4>
+            <h4 className={styles.sectionTitle}>Ministry Overview</h4>
             <input type="hidden" name="ministry" value="Praise and Worship" />
             <ul className={styles.customList}>
-              <li>🚫 <b>Not Allowed:</b>
+              <li><b>Not Allowed:</b>
                 <ul>
                   <li>Short skirts/dresses, trousers (for ladies), T-shirts, shorts, tight or rugged trousers (for gents).</li>
                   <li>Open shoes for men.</li>
                 </ul>
               </li>
-              <li>✅ Members must wear the prescribed attire for worship services.</li>
-              <li>🛑 No one will minister without approved attire during worship weekends.</li>
-              <li>✨ Maintain neatness at all times.</li>
+              <li>Members must wear the prescribed attire for worship services.</li>
+              <li>No one will minister without approved attire during worship weekends.</li>
+              <li>Maintain neatness at all times.</li>
             </ul>
           </div>
 
           {/* PROBATION SECTION */}
           <div className={styles.probationSection}>
-            <h4 className={styles.sectionTitle}>🕰️ Probation Guidelines</h4>
+            <h4 className={styles.sectionTitle}>Probation Guidelines</h4>
             <ul className={styles.customList}>
               <li>New members:
                 <ul>
-                  <li>🎤 5 weeks probation before back-up singing.</li>
-                  <li>🎼 10 weeks probation before leading worship.</li>
+                  <li>5 weeks probation before back-up singing.</li>
+                  <li>10 weeks probation before leading worship.</li>
                 </ul>
               </li>
-              <li>🚨 Probation for:
+              <li>Probation for:
                 <ul>
                   <li>Secularism</li>
                   <li>Sexual immorality (fornication, cohabiting, etc.)</li>
                   <li>Sexual advances (towards any gender)</li>
                 </ul>
               </li>
-              <li>❌ Inconsistent members will remain on probation until consistency is shown.</li>
+              <li>Inconsistent members will remain on probation until consistency is shown.</li>
             </ul>
           </div>
 
           {/* Commitment Section */}
           <div className={styles.section}>
-            <h4 className={styles.sectionTitle}>✍️ Why Do You Wish to Join the Ministry?</h4>
+            <h4 className={styles.sectionTitle}>Why Do You Wish to Join the Ministry?</h4>
             {errors.reasonForJoining && <div className={styles.error}>{errors.reasonForJoining}</div>}
             <textarea
               className={styles.formControl}
@@ -234,7 +234,7 @@ const PraiseandWorshipCommitment: React.FC = () => {
           </div>
 
           <div className={styles.personalCommitment}>
-            <h4 className={styles.sectionTitle}>💖 Personal Commitment</h4>
+            <h4 className={styles.sectionTitle}>Personal Commitment</h4>
             <p>By signing below, I commit to actively participating in the ministry, upholding its values, and dedicating my time to service.</p>
 
             <div className={styles.row}>
@@ -354,11 +354,7 @@ const PraiseandWorshipCommitment: React.FC = () => {
           )}
 
         </div>
-<<<<<<< HEAD
       </div>
-      <Footer />
-=======
->>>>>>> 48cfd2009546c7f66d045eb78952fc0474a4ee79
     </div>
   );
 };
