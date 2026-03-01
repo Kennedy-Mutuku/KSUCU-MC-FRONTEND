@@ -313,12 +313,12 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, activeNav, is
       {/* Icon strip / Sidebar */}
       <div style={{
         position: 'fixed', top: '64px', left: 0, bottom: 0,
-        width: isExpanded ? '160px' : '48px',
+        width: isExpanded ? '180px' : '52px',
         backgroundColor: '#730051',
         display: 'flex', flexDirection: 'column', alignItems: isExpanded ? 'flex-start' : 'center',
-        paddingTop: '2px', paddingBottom: '4px',
+        paddingTop: '6px', paddingBottom: '6px',
         paddingLeft: isExpanded ? '6px' : '0',
-        overflowY: 'auto', gap: '0px', zIndex: 99999,
+        overflowY: 'auto', gap: '2px', zIndex: 99999,
         transition: 'width 0.3s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s ease',
         boxShadow: isExpanded ? '4px 0 20px rgba(0,0,0,0.3)' : 'none',
       }}>
@@ -338,8 +338,8 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, activeNav, is
                 onClick={() => handleTabClick(tab.key)}
                 title={tab.label}
                 style={{
-                  width: isExpanded ? '148px' : '42px',
-                  minHeight: '30px',
+                  width: isExpanded ? '168px' : '46px',
+                  minHeight: '38px',
                   display: 'flex',
                   flexDirection: isExpanded ? 'row' : 'column',
                   alignItems: 'center',
@@ -348,15 +348,15 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, activeNav, is
                   borderRadius: '6px', border: 'none', cursor: 'pointer',
                   backgroundColor: isActive ? 'rgba(255,255,255,0.95)' : 'transparent',
                   color: isActive ? '#730051' : 'rgba(255,255,255,0.85)',
-                  gap: isExpanded ? '6px' : '1px',
+                  gap: isExpanded ? '10px' : '2px',
                   flexShrink: 0, position: 'relative',
                   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                   boxShadow: isActive ? '0 1px 6px rgba(0,0,0,0.1)' : 'none',
                   transform: isActive ? 'scale(1.02)' : 'scale(1)',
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '24px' }}>
-                  {isUser ? <User size={18} /> : <Icon size={18} />}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '28px' }}>
+                  {isUser ? <User size={22} /> : <Icon size={22} />}
                 </div>
 
                 {isAttendance && hasActiveSessions && (
@@ -374,10 +374,10 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, activeNav, is
 
                 {isExpanded && (
                   <span style={{
-                    fontSize: '10.5px',
-                    lineHeight: 1,
-                    fontWeight: isActive ? 750 : 600,
-                    letterSpacing: '0.05px',
+                    fontSize: '13px',
+                    lineHeight: 1.1,
+                    fontWeight: isActive ? 700 : 500,
+                    letterSpacing: '0.1px',
                     whiteSpace: 'nowrap',
                     transition: 'all 0.3s ease',
                   }}>
@@ -395,7 +395,7 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, activeNav, is
               {/* Integrated Vertical Expansion */}
               {isExpanded && isActive && sections.length > 0 && (
                 <div style={{
-                  width: '148px',
+                  width: '168px',
                   background: 'rgba(255,255,255,0.98)',
                   borderRadius: '8px',
                   marginTop: '1px',
@@ -412,7 +412,7 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, activeNav, is
                       {(section.title.toLowerCase() !== tab.label.toLowerCase() || sections.length > 1) && (
                         <div style={{
                           padding: '6px 16px 4px',
-                          fontSize: '10px',
+                          fontSize: '11px',
                           fontWeight: 700,
                           color: '#730051',
                           opacity: 0.7,
@@ -437,7 +437,7 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, activeNav, is
                             }}
                             style={{
                               display: 'flex', alignItems: 'center', gap: '6px',
-                              padding: '6px 14px', color: '#374151', fontSize: '10px',
+                              padding: '8px 14px', color: '#374151', fontSize: '12px',
                               textDecoration: 'none', transition: 'all 0.15s',
                               fontWeight: 600
                             }}
