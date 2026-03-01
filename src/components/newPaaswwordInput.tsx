@@ -21,8 +21,8 @@ const PasswordReset: React.FC = () => {
   };
 
   const validatePassword = (password: string) => {
-    const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
-    return passwordRegex.test(password);
+    // Minimum 4 characters — kept simple since default password is phone number
+    return password.length >= 4;
   };
 
   const handleSubmit = async () => {
@@ -34,7 +34,7 @@ const PasswordReset: React.FC = () => {
       return;
     }
     if (!validatePassword(password)) {
-      setError('Password must be at least 8 characters long and contain at least one digit and one uppercase letter.');
+      setError('Password must be at least 4 characters long.');
       return;
     }
     if (password !== confirmPassword) {

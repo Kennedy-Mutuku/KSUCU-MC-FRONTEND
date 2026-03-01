@@ -67,7 +67,7 @@ const SignUp: React.FC = () => {
   const isAssociate = role === 'associate';
 
   // Check if a field value already exists in database
-  const checkFieldExists = async (field: 'email' | 'phone', value: string) => {
+  const checkFieldExists = async (field: 'email' | 'phone' | 'reg', value: string) => {
     if (!value || value.trim() === '') return;
 
     // For phone, validate format first
@@ -75,14 +75,18 @@ const SignUp: React.FC = () => {
 
     setCheckingField(field);
     try {
+      // Backend expects 'regNo' for reg field
+      const bodyKey = field === 'reg' ? 'regNo' : field;
+      const bodyValue = field === 'reg' ? value.trim().toUpperCase() : value.trim().toLowerCase();
       const response = await axios.post(getApiUrl('usersCheckExists'), {
-        [field]: value.trim().toLowerCase()
+        [bodyKey]: bodyValue
       });
 
+      const label = field === 'reg' ? 'reg number' : field;
       if (response.data.exists) {
         setFieldErrors(prev => ({
           ...prev,
-          [field]: `This ${field} is already registered.`
+          [field]: `This ${label} is already registered.`
         }));
       } else {
         setFieldErrors(prev => ({
@@ -163,7 +167,7 @@ const SignUp: React.FC = () => {
 
   const handleSubmit = async () => {
     // Check if there are any field errors (duplicate email/phone)
-    if (fieldErrors.email || fieldErrors.phone) {
+    if (fieldErrors.email || fieldErrors.phone || fieldErrors.reg) {
       setError('Please fix the errors above before registering.');
       return;
     }
@@ -394,7 +398,7 @@ const SignUp: React.FC = () => {
             />
           </div>
 
-          <div className={styles['form-div']}>
+          <div className={styles['form-div']} style={{ flexWrap: 'wrap' }}>
             <label htmlFor="phone">Phone Number</label>
             <input
               type="tel"
@@ -408,30 +412,20 @@ const SignUp: React.FC = () => {
               title="Phone number must start with 0 and be exactly 10 digits"
               required
               maxLength={10}
-              style={fieldErrors.phone ? { borderColor: '#dc2626' } : {}}
+              style={fieldErrors.phone ? { border: '2px solid #dc2626', outline: 'none' } : {}}
             />
             {checkingField === 'phone' && (
-              <p style={{ fontSize: '12px', color: '#666', margin: '5px 0 0' }}>Checking...</p>
+              <p style={{ width: '100%', fontSize: '12px', color: '#666', margin: '2px 0 0', textAlign: 'right' }}>Checking...</p>
             )}
             {fieldErrors.phone && (
-              <div style={{
-                background: '#fef2f2',
-                border: '1px solid #fecaca',
-                borderRadius: '6px',
-                padding: '10px',
-                marginTop: '8px'
-              }}>
-                <p style={{ color: '#dc2626', fontSize: '13px', margin: '0 0 8px' }}>
-                  {fieldErrors.phone}
-                </p>
-                <p style={{ fontSize: '12px', color: '#666', margin: 0 }}>
-                  Already have an account? <Link to="/signIn" style={{ color: '#730051', fontWeight: 'bold' }}>Login here</Link> or <Link to="/forgotPassword" style={{ color: '#730051', fontWeight: 'bold' }}>Forgot Password</Link>
-                </p>
-              </div>
+              <p style={{ width: '100%', color: '#dc2626', fontSize: '11px', margin: '2px 0 0', textAlign: 'right' }}>
+                {fieldErrors.phone}{' '}
+                <Link to="/signIn" style={{ color: '#730051', fontWeight: 'bold' }}>Login</Link> or <Link to="/forgotPassword" style={{ color: '#730051', fontWeight: 'bold' }}>Forgot Password?</Link>
+              </p>
             )}
           </div>
 
-          <div className={styles['form-div']}>
+          <div className={styles['form-div']} style={{ flexWrap: 'wrap' }}>
             <label htmlFor="email">E-mail</label>
             <input
               type="email"
@@ -443,26 +437,16 @@ const SignUp: React.FC = () => {
               placeholder="Enter your email"
               required
               maxLength={100}
-              style={fieldErrors.email ? { borderColor: '#dc2626' } : {}}
+              style={fieldErrors.email ? { border: '2px solid #dc2626', outline: 'none' } : {}}
             />
             {checkingField === 'email' && (
-              <p style={{ fontSize: '12px', color: '#666', margin: '5px 0 0' }}>Checking...</p>
+              <p style={{ width: '100%', fontSize: '12px', color: '#666', margin: '2px 0 0', textAlign: 'right' }}>Checking...</p>
             )}
             {fieldErrors.email && (
-              <div style={{
-                background: '#fef2f2',
-                border: '1px solid #fecaca',
-                borderRadius: '6px',
-                padding: '10px',
-                marginTop: '8px'
-              }}>
-                <p style={{ color: '#dc2626', fontSize: '13px', margin: '0 0 8px' }}>
-                  {fieldErrors.email}
-                </p>
-                <p style={{ fontSize: '12px', color: '#666', margin: 0 }}>
-                  Already have an account? <Link to="/signIn" style={{ color: '#730051', fontWeight: 'bold' }}>Login here</Link> or <Link to="/forgotPassword" style={{ color: '#730051', fontWeight: 'bold' }}>Forgot Password</Link>
-                </p>
-              </div>
+              <p style={{ width: '100%', color: '#dc2626', fontSize: '11px', margin: '2px 0 0', textAlign: 'right' }}>
+                {fieldErrors.email}{' '}
+                <Link to="/signIn" style={{ color: '#730051', fontWeight: 'bold' }}>Login</Link> or <Link to="/forgotPassword" style={{ color: '#730051', fontWeight: 'bold' }}>Forgot Password?</Link>
+              </p>
             )}
           </div>
 
@@ -500,7 +484,7 @@ const SignUp: React.FC = () => {
           {/* Student-only fields */}
           {!isAssociate && (
             <>
-              <div className={styles['form-div']}>
+              <div className={styles['form-div']} style={{ flexWrap: 'wrap' }}>
                 <label htmlFor="reg">Reg Number</label>
                 <input
                   type="text"
@@ -508,10 +492,21 @@ const SignUp: React.FC = () => {
                   className={styles['input']}
                   value={formData.reg}
                   onChange={handleChange}
+                  onBlur={() => checkFieldExists('reg', formData.reg)}
                   placeholder="e.g., BCS/1234/21"
                   required
                   maxLength={50}
+                  style={fieldErrors.reg ? { border: '2px solid #dc2626', outline: 'none' } : {}}
                 />
+                {checkingField === 'reg' && (
+                  <p style={{ width: '100%', fontSize: '12px', color: '#666', margin: '2px 0 0', textAlign: 'right' }}>Checking...</p>
+                )}
+                {fieldErrors.reg && (
+                  <p style={{ width: '100%', color: '#dc2626', fontSize: '11px', margin: '2px 0 0', textAlign: 'right' }}>
+                    {fieldErrors.reg}{' '}
+                    <Link to="/signIn" style={{ color: '#730051', fontWeight: 'bold' }}>Login</Link> or <Link to="/forgotPassword" style={{ color: '#730051', fontWeight: 'bold' }}>Forgot Password?</Link>
+                  </p>
+                )}
               </div>
 
               <div className={styles['form-div']}>

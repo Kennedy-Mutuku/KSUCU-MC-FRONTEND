@@ -12,6 +12,7 @@ interface ApiConfig {
     usersForgetPassword: string;
     usersRecommendations: string;
     usersUpdate: string;
+    usersVerifyPassword: string;
     usersBibleStudy: string;
     usersCountSaved: string;
     usersSearch: string;
@@ -116,6 +117,7 @@ const developmentConfig: ApiConfig = {
     usersForgetPassword: '/users/forget-password',
     usersRecommendations: '/users/recomendations',
     usersUpdate: '/users/update',
+    usersVerifyPassword: '/users/verify-password',
     usersBibleStudy: '/users/bibleStudy',
     usersCountSaved: '/users/countSaved',
     usersSearch: '/users/search',
@@ -213,6 +215,7 @@ const productionConfig: ApiConfig = {
     usersForgetPassword: '/users/forget-password',
     usersRecommendations: '/users/recomendations',
     usersUpdate: '/users/update',
+    usersVerifyPassword: '/users/verify-password',
     usersBibleStudy: '/users/bibleStudy',
     usersCountSaved: '/users/countSaved',
     usersSearch: '/users/search',

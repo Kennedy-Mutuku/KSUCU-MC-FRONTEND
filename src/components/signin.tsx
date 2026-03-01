@@ -209,6 +209,13 @@ const SignIn: React.FC = () => {
             console.log('✅ SignIn: Login successful, response:', response.data);
             console.log('🔐 SignIn: Navigating to:', route);
 
+            // Track admin session for navbar display
+            if (mapping) {
+                localStorage.setItem('adminSession', 'true');
+            } else {
+                localStorage.removeItem('adminSession');
+            }
+
             // Check for profile photo if regular user login
             if (route === '/profile' && response.data.user && !response.data.user.profilePhoto) {
                 navigate('/welcome');

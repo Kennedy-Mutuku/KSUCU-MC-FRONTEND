@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import {
   User, ChevronDown, ChevronRight, ExternalLink, Menu,
   Home, Building2, Globe, Music,
-  UsersRound, GraduationCap, Crown, LogIn,
+  UsersRound, GraduationCap, Crown, LogIn, LogOut,
   ClipboardList, BookOpen, Tv2, FileText, AlertCircle,
   MessageSquare, Coins, Heart, Folder, Book, UserPlus
 } from 'lucide-react';
@@ -280,7 +280,7 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, activeNav, is
       setActiveTab(null);
       setExpandedNestedItem(null);
       setIsManualExpanded(false);
-      onNavigate(userData ? '/home' : '/signIn');
+      onNavigate(userData ? '/changeDetails' : '/signIn');
       return;
     }
     if (activeTab === key) {
@@ -506,12 +506,27 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, activeNav, is
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [userData, setUserData] = useState<UserData | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [activeSessions, setActiveSessions] = useState<Session[]>([]);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [signingSession, setSigningSession] = useState<Session | null>(null);
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const navigate = useNavigate();
+
+  const handleAdminLogout = () => {
+    // Clear all cookies
+    document.cookie.split(';').forEach(cookie => {
+      const name = cookie.split('=')[0].trim();
+      document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
+      document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=${window.location.hostname}`;
+    });
+    localStorage.clear();
+    sessionStorage.clear();
+    setIsAdmin(false);
+    setUserData(null);
+    navigate('/signIn', { replace: true });
+  };
   const location = useLocation();
 
   // Determine which nav group is active based on current path
@@ -575,8 +590,15 @@ const Header = () => {
           const data = await response.json();
           const firstName = data.username?.split(' ')[0] || data.username;
           setUserData({ ...data, username: firstName });
+          setIsAdmin(false);
+        } else if (localStorage.getItem('adminSession') === 'true') {
+          setIsAdmin(true);
         }
-      } catch { }
+      } catch {
+        if (localStorage.getItem('adminSession') === 'true') {
+          setIsAdmin(true);
+        }
+      }
     };
     fetchUser();
   }, []);
@@ -763,9 +785,14 @@ const Header = () => {
                 </div>
               </div>
 
-              {/* Sign In / User button - always right */}
+              {/* Sign In / User / Admin Logout button - always right */}
               <div className="flex-shrink-0 ml-2 xl:ml-4">
-                {userData ? (
+                {isAdmin ? (
+                  <button onClick={handleAdminLogout} className="flex items-center gap-1.5 px-2.5 xl:px-4 py-1.5 xl:py-2 bg-[#730051] text-white font-medium text-[11px] xl:text-sm rounded-lg hover:bg-[#5a0040] transition-colors shadow-lg shadow-purple-900/10 active:scale-95 transform transition-all whitespace-nowrap">
+                    <LogOut size={16} className="xl:w-[18px] xl:h-[18px]" />
+                    <span className="hidden xl:inline">Log Out</span>
+                  </button>
+                ) : userData ? (
                   <button onClick={() => navigate('/changeDetails')} className="flex items-center gap-1.5 px-1.5 xl:px-3 py-2 rounded-lg font-medium text-[11px] xl:text-sm text-gray-700 hover:bg-gray-100 transition-colors whitespace-nowrap">
                     <User size={16} className="xl:w-[18px] xl:h-[18px]" />
                     <span className="hidden xl:inline">{userData.username}</span>

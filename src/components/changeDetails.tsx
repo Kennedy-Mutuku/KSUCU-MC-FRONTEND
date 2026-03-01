@@ -17,8 +17,8 @@ type FormData = {
   ministry: string;
   et: string;
   graduationYear: string;
+  currentPassword: string;
   password: string;
-  confirmPassword: string;
 };
 
 const ministriesList = [
@@ -45,8 +45,8 @@ const ChangeDetails: React.FC = () => {
     ministry: '',
     et: '',
     graduationYear: '',
+    currentPassword: '',
     password: '',
-    confirmPassword: ''
   });
 
   const [loading, setLoading] = useState(false);
@@ -55,9 +55,47 @@ const ChangeDetails: React.FC = () => {
   const [selectedMinistries, setSelectedMinistries] = useState<string[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [userRole, setUserRole] = useState<'student' | 'associate'>('student');
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [pendingPayload, setPendingPayload] = useState<Record<string, string> | null>(null);
+  const [isAdminSession, setIsAdminSession] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<{ phone?: string; reg?: string }>({});
+  const [checkingField, setCheckingField] = useState<string | null>(null);
+  const [originalData, setOriginalData] = useState<{ phone: string; reg: string }>({ phone: '', reg: '' });
 
   const isAssociate = userRole === 'associate';
+
+  const checkFieldExists = async (field: 'phone' | 'reg', value: string) => {
+    if (!value || value.trim() === '') return;
+    // Skip check if value hasn't changed from what's already saved
+    if (field === 'phone' && value === originalData.phone) {
+      setFieldErrors(prev => ({ ...prev, phone: undefined }));
+      return;
+    }
+    if (field === 'reg' && value.trim().toUpperCase() === originalData.reg.trim().toUpperCase()) {
+      setFieldErrors(prev => ({ ...prev, reg: undefined }));
+      return;
+    }
+    if (field === 'phone' && !/^0\d{9}$/.test(value)) return;
+
+    setCheckingField(field);
+    try {
+      const bodyKey = field === 'reg' ? 'regNo' : field;
+      const bodyValue = field === 'reg' ? value.trim().toUpperCase() : value.trim();
+      const response = await axios.post(getApiUrl('usersCheckExists'), { [bodyKey]: bodyValue });
+      const label = field === 'reg' ? 'Reg number' : 'Phone number';
+      if (response.data.exists) {
+        setFieldErrors(prev => ({ ...prev, [field]: `${label} already in use by another account.` }));
+      } else {
+        setFieldErrors(prev => ({ ...prev, [field]: undefined }));
+      }
+    } catch (err) {
+      console.error(`Error checking ${field}:`, err);
+    } finally {
+      setCheckingField(null);
+    }
+  };
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -82,7 +120,7 @@ const ChangeDetails: React.FC = () => {
   //       const response = await axios.get('https://ksucu-mc.co.ke/users/data', { withCredentials: true } );
 
   //       if(loginToken && !response.data.reg){
-  //         setError('Please complete your registration. Google sign-up doesn’t provide this information.')
+  //         setError('Please complete your registration. Google sign-up doesn't provide this information.')
   //       }else{
   //         console.log('clear');
           
@@ -107,63 +145,58 @@ const ChangeDetails: React.FC = () => {
   //   fetchUserData();
   // }, []);
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        
+  const fetchUserData = async () => {
+    try {
       setLoading(true);
-        const loginToken = Cookies.get('loginToken');
-        const response = await axios.get(getApiUrl('users'), { withCredentials: true });
-  
-        if (loginToken && !response.data.reg) {
-          setError('Please complete your registration. Google sign-up doesn’t provide this information.');
-        } else {
-          console.log('clear');
-        }
-        // Convert fetched string into an array
-        const ministriesArray = response.data.ministry
-          ? response.data.ministry.split(", ").map((m: string) => m.trim().toLocaleLowerCase())
-          : [];
+      const loginToken = Cookies.get('loginToken');
+      const response = await axios.get(getApiUrl('users'), { withCredentials: true });
 
-          // Store user role
-          if (response.data.role) {
-            setUserRole(response.data.role === 'associate' ? 'associate' : 'student');
-          }
-
-          //Ensure all form fields are set properly
-          setFormData({
-            username: response.data.username || '',
-            phone: response.data.phone || '',
-            email: response.data.email || '',
-            course: response.data.course || '',
-            reg: response.data.reg || '',
-            yos: response.data.yos || '',
-            ministry: response.data.ministry || '', // Store ministry string
-            et: response.data.et || '',
-            graduationYear: response.data.graduationYear || '',
-            password: '', // Keep password empty for security
-            confirmPassword: '' // Keep confirm password empty
-          });
-
-        setSelectedMinistries(ministriesArray); // Set selected ministries
-  
-      } catch (error: any) {
-        console.error('Error fetching user data:', error);
-        if (error.response && error.response.status === 400) {
-          setError('Email/Reg/Phone already exists 😖');
-        } else if (error.response && error.response.status === 401) {
-          setError('Not authenticated. Redirecting to login...');
-          setTimeout(() => navigate('/signIn'), 1500);
-        } else {
-          setError('Failed to load user data. Please try again.');
-        }
-      } finally {
-        setLoading(false);
+      if (loginToken && !response.data.reg) {
+        setError('Please complete your registration. Google sign-up doesn\'t provide this information.');
+      } else {
+        console.log('clear');
       }
-    };
-  
-    fetchUserData();
+      const ministriesArray = response.data.ministry
+        ? response.data.ministry.split(", ").map((m: string) => m.trim().toLocaleLowerCase())
+        : [];
 
+      if (response.data.role) {
+        setUserRole(response.data.role === 'associate' ? 'associate' : 'student');
+      }
+
+      setFormData({
+        username: response.data.username || '',
+        phone: response.data.phone || '',
+        email: response.data.email || '',
+        course: response.data.course || '',
+        reg: response.data.reg || '',
+        yos: response.data.yos || '',
+        ministry: response.data.ministry || '',
+        et: response.data.et || '',
+        graduationYear: response.data.graduationYear || '',
+        currentPassword: '',
+        password: '',
+      });
+
+      setSelectedMinistries(ministriesArray);
+      setOriginalData({ phone: response.data.phone || '', reg: response.data.reg || '' });
+
+    } catch (error: any) {
+      console.error('Error fetching user data:', error);
+      if (error.response && error.response.status === 400) {
+        setError('Email/Reg/Phone already exists 😖');
+      } else if (error.response && error.response.status === 401) {
+        setIsAdminSession(true);
+      } else {
+        setError('Failed to load user data. Please try again.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserData();
   }, []);
   
 
@@ -192,9 +225,8 @@ const ChangeDetails: React.FC = () => {
   }
 
   function validatePassword(input: string) {
-    // At least 8 characters, 1 uppercase, 1 number
-    const regex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
-    return regex.test(input);
+    // Minimum 4 characters — kept simple since default password is phone number
+    return input.length >= 4;
   }
 
   const handleLogout = async () => {
@@ -275,7 +307,12 @@ const ChangeDetails: React.FC = () => {
   };
 
   const handleSubmit = async () => {
-    const { password, confirmPassword, ...dataWithoutPassword } = formData;
+    if (fieldErrors.phone || fieldErrors.reg) {
+      setError('Please fix the errors above before updating.');
+      return;
+    }
+
+    const { password, currentPassword, ...dataWithoutPassword } = formData;
 
     let finalFormData: Record<string, string>;
 
@@ -343,25 +380,48 @@ const ChangeDetails: React.FC = () => {
       return;
     }
 
-    // Password validation (only if password is provided)
+    // Password validation (only if new password is provided)
     if (password && password.trim() !== '') {
+      if (!formData.currentPassword || formData.currentPassword.trim() === '') {
+        setError('Please enter your current password 😊');
+        return;
+      }
       if (!validatePassword(password)) {
-        setError('Password must be at least 8 characters long and contain at least one uppercase letter and one digit 🤨');
+        setError('Password must be at least 4 characters long 🤨');
         return;
       }
 
-      if (password !== confirmPassword) {
-        setError('Passwords do not match 😕');
-        return;
+      // Verify old password with backend FIRST before showing confirm dialog
+      setLoading(true);
+      setError('');
+      try {
+        await axios.post(getApiUrl('usersVerifyPassword'), { currentPassword: formData.currentPassword }, {
+          withCredentials: true,
+        });
+        // Old password is correct — now show confirmation dialog
+        const payload = { ...finalFormData, currentPassword: formData.currentPassword, password };
+        setPendingPayload(payload);
+        setShowConfirmDialog(true);
+      } catch (err: any) {
+        if (err.response && err.response.status === 401) {
+          setError('Current password is incorrect');
+        } else {
+          setError('Failed to verify password. Please try again.');
+        }
+      } finally {
+        setLoading(false);
       }
+      return;
     }
 
+    // No password change — submit directly
+    await submitUpdate(finalFormData);
+  };
+
+  const submitUpdate = async (payload: Record<string, string>) => {
     setLoading(true);
 
     try {
-      // Include password in request only if user enters it
-      const payload = (password && password.trim() !== '') ? { ...finalFormData, password } : finalFormData;
-
       const response = await axios.put(getApiUrl('usersUpdate'), payload, {
         withCredentials: true,
       });
@@ -370,30 +430,103 @@ const ChangeDetails: React.FC = () => {
       setSuccessMessage('Details updated successfully');
       setError('');
 
-      setFormData({
-        username: '',
-        phone: '',
-        email: '',
-        course: '',
-        reg: '',
-        yos: '',
-        ministry: '',
-        et: '',
-        graduationYear: '',
-        password: '',
-        confirmPassword: ''
-      });
+      // Auto-dismiss success message after 3 seconds
+      setTimeout(() => setSuccessMessage(''), 3000);
 
-      setSelectedMinistries([]); // Clear selected ministries after submission
+      // Re-fetch user data to show updated values
+      await fetchUserData();
 
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error updating details', error);
-      setError('Error updating details');
+      if (error.response && error.response.status === 401) {
+        setError('Current password is incorrect');
+      } else if (error.response && error.response.data && error.response.data.message) {
+        setError(error.response.data.message);
+      } else {
+        setError('Error updating details');
+      }
     } finally {
       setLoading(false);
     }
   };
+
+  const handleConfirmPasswordChange = async () => {
+    setShowConfirmDialog(false);
+    if (pendingPayload) {
+      await submitUpdate(pendingPayload);
+      setPendingPayload(null);
+    }
+  };
+
+  const handleCancelPasswordChange = () => {
+    setShowConfirmDialog(false);
+    setPendingPayload(null);
+    setFormData(prev => ({ ...prev, password: '', currentPassword: '' }));
+  };
   
+  if (isAdminSession) {
+    return (
+      <div className={styles.body}>
+        <div className={styles['container']}>
+          <Link to={"/"}>
+            <div className={styles['logo_signUp']}><img src={cuLogo} alt="CU logo" /></div>
+          </Link>
+          <h2 className={styles['text']}>Admin Session</h2>
+
+          <div style={{ textAlign: 'center', marginBottom: '15px' }}>
+            <span style={{
+              display: 'inline-block',
+              background: 'linear-gradient(135deg, #2c3e50, #34495e)',
+              color: 'white',
+              padding: '4px 16px',
+              borderRadius: '20px',
+              fontSize: '12px',
+              fontWeight: 'bold',
+              letterSpacing: '0.5px'
+            }}>
+              Admin Account
+            </span>
+          </div>
+
+          <p style={{ textAlign: 'center', color: '#666', fontSize: '14px', margin: '20px 0' }}>
+            You are signed in as an admin. Account details cannot be changed from here.
+          </p>
+
+          <div style={{
+            marginTop: '30px',
+            paddingTop: '20px',
+            borderTop: '2px solid #e0e0e0',
+            textAlign: 'center'
+          }}>
+            <button
+              onClick={handleLogout}
+              disabled={loading}
+              style={{
+                backgroundColor: '#730051',
+                color: 'white',
+                border: 'none',
+                padding: '12px 30px',
+                borderRadius: '25px',
+                fontSize: '14px',
+                fontWeight: '600',
+                cursor: loading ? 'not-allowed' : 'pointer',
+                opacity: loading ? 0.6 : 1,
+                transition: 'all 0.3s ease',
+                boxShadow: '0 2px 10px rgba(115, 0, 81, 0.3)',
+              }}
+            >
+              {loading ? 'Processing...' : 'Log Out'}
+            </button>
+          </div>
+
+          <div className={styles['form-footer']}>
+            <p><Link to={"/"}>Home</Link></p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.body}>
       <div className={styles['container']}>
@@ -435,9 +568,15 @@ const ChangeDetails: React.FC = () => {
             <input type="text" id="username" className={styles['input']} value={formData.username} onChange={handleChange} />
           </div>
 
-          <div className={styles['form-div']}>
+          <div className={styles['form-div']} style={{ flexWrap: 'wrap' }}>
             <label htmlFor="phone">PHONE</label>
-            <input type="text" id="phone" className={styles['input']} value={formData.phone} onChange={handleChange} />
+            <input type="text" id="phone" className={styles['input']} value={formData.phone} onChange={handleChange} onBlur={() => checkFieldExists('phone', formData.phone)} style={fieldErrors.phone ? { border: '2px solid #dc2626', outline: 'none' } : {}} />
+            {checkingField === 'phone' && (
+              <p style={{ width: '100%', fontSize: '12px', color: '#666', margin: '2px 0 0', textAlign: 'right' }}>Checking...</p>
+            )}
+            {fieldErrors.phone && (
+              <p style={{ width: '100%', color: '#dc2626', fontSize: '11px', margin: '2px 0 0', textAlign: 'right' }}>{fieldErrors.phone}</p>
+            )}
           </div>
 
           <div className={styles['form-div']}>
@@ -446,15 +585,21 @@ const ChangeDetails: React.FC = () => {
           </div>
 
           <div className={styles['form-div']}>
-            <label htmlFor="course">{isAssociate ? 'COURSE STUDIED' : 'COURSE'}</label>
+            <label htmlFor="course">COURSE</label>
             <input type="text" id="course" className={styles['input']} value={formData.course} onChange={handleChange} />
           </div>
 
           {!isAssociate && (
             <>
-              <div className={styles['form-div']}>
+              <div className={styles['form-div']} style={{ flexWrap: 'wrap' }}>
                 <label htmlFor="reg">REG</label>
-                <input type="text" id="reg" className={styles['input']} value={formData.reg} onChange={handleChange} />
+                <input type="text" id="reg" className={styles['input']} value={formData.reg} onChange={handleChange} onBlur={() => checkFieldExists('reg', formData.reg)} style={fieldErrors.reg ? { border: '2px solid #dc2626', outline: 'none' } : {}} />
+                {checkingField === 'reg' && (
+                  <p style={{ width: '100%', fontSize: '12px', color: '#666', margin: '2px 0 0', textAlign: 'right' }}>Checking...</p>
+                )}
+                {fieldErrors.reg && (
+                  <p style={{ width: '100%', color: '#dc2626', fontSize: '11px', margin: '2px 0 0', textAlign: 'right' }}>{fieldErrors.reg}</p>
+                )}
               </div>
 
               <div className={styles['form-div']}>
@@ -506,7 +651,7 @@ const ChangeDetails: React.FC = () => {
 
           {isAssociate && (
             <div className={styles['form-div']}>
-              <label htmlFor="graduationYear">GRADUATION YEAR</label>
+              <label htmlFor="graduationYear">GRAD. YEAR</label>
               <input
                 type="number"
                 id="graduationYear"
@@ -519,76 +664,65 @@ const ChangeDetails: React.FC = () => {
               />
             </div>
           )}
-        </div>
 
-        {/* Password Change Section */}
-        <div className={styles['form-section']} style={{ marginTop: '30px', paddingTop: '20px', borderTop: '1px solid #e0e0e0' }}>
-          <h3 style={{ marginBottom: '20px', color: '#2c3e50', textAlign: 'center' }}>Change Password (Optional)</h3>
-          
-          <div className={styles['info-note']} style={{ 
-            padding: '10px', 
-            backgroundColor: '#fff3cd', 
-            border: '1px solid #ffeaa7', 
-            borderRadius: '5px', 
-            marginBottom: '15px',
-            textAlign: 'center'
-          }}>
-            <p style={{ margin: 0, color: '#856404', fontSize: '12px' }}>
-              💡 Leave blank to keep your current password. Your current password is your phone number.
-            </p>
+          {/* Password Change Section */}
+          <div style={{ marginTop: '20px', paddingTop: '16px', borderTop: '1px solid #e0e0e0', width: '100%' }}>
+            <h3 style={{ marginBottom: '16px', color: '#2c3e50', textAlign: 'center', fontSize: '0.95em' }}>Change Password (Optional)</h3>
           </div>
 
           <div className={styles['form-div']}>
-            <label htmlFor="password">NEW PASSWORD</label>
-            <div className={styles['password-wrapper']} style={{ position: 'relative' }}>
+            <label htmlFor="currentPassword">OLD PSWD</label>
+            <div className={styles['password-wrapper']} style={{ position: 'relative', width: '65%' }}>
               <input
-                type={showPassword ? "text" : "password"}
-                id="password"
+                type={showCurrentPassword ? "text" : "password"}
+                id="currentPassword"
                 className={styles['input']}
-                value={formData.password}
+                style={{ width: '100%' }}
+                value={formData.currentPassword}
                 onChange={handleChange}
-                placeholder="Enter new password (optional)"
+                placeholder="Current password"
               />
-              <button 
-                type="button" 
-                onClick={togglePasswordVisibility}
-                style={{ 
-                  position: 'absolute', 
-                  right: '10px', 
-                  top: '50%', 
-                  transform: 'translateY(-50%)', 
-                  border: 'none', 
-                  background: 'none', 
+              <button
+                type="button"
+                onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                style={{
+                  position: 'absolute',
+                  right: '10px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  border: 'none',
+                  background: 'none',
                   cursor: 'pointer',
                   color: '#666'
                 }}
               >
-                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                {showCurrentPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
             </div>
           </div>
 
           <div className={styles['form-div']}>
-            <label htmlFor="confirmPassword">CONFIRM PASSWORD</label>
-            <div className={styles['password-wrapper']} style={{ position: 'relative' }}>
+            <label htmlFor="password">NEW PSWD</label>
+            <div className={styles['password-wrapper']} style={{ position: 'relative', width: '65%' }}>
               <input
                 type={showPassword ? "text" : "password"}
-                id="confirmPassword"
+                id="password"
                 className={styles['input']}
-                value={formData.confirmPassword}
+                style={{ width: '100%' }}
+                value={formData.password}
                 onChange={handleChange}
-                placeholder="Confirm new password"
+                placeholder="New password"
               />
-              <button 
-                type="button" 
+              <button
+                type="button"
                 onClick={togglePasswordVisibility}
-                style={{ 
-                  position: 'absolute', 
-                  right: '10px', 
-                  top: '50%', 
-                  transform: 'translateY(-50%)', 
-                  border: 'none', 
-                  background: 'none', 
+                style={{
+                  position: 'absolute',
+                  right: '10px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  border: 'none',
+                  background: 'none',
                   cursor: 'pointer',
                   color: '#666'
                 }}
@@ -654,6 +788,86 @@ const ChangeDetails: React.FC = () => {
         <div className={`${styles.loading} ${loading ? styles['loading-active'] : ''}`}>
           <p>Loading...</p>
         </div>
+
+        {/* Password Confirmation Dialog */}
+        {showConfirmDialog && (
+          <div style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000,
+            padding: '20px'
+          }}>
+            <div style={{
+              backgroundColor: '#fff',
+              borderRadius: '16px',
+              padding: '30px',
+              maxWidth: '380px',
+              width: '100%',
+              textAlign: 'center',
+              boxShadow: '0 10px 40px rgba(0,0,0,0.2)'
+            }}>
+              <div style={{
+                width: '50px',
+                height: '50px',
+                borderRadius: '50%',
+                background: 'linear-gradient(135deg, #730051, #a0006e)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 16px'
+              }}>
+                <Eye size={24} color="#fff" />
+              </div>
+              <h3 style={{ margin: '0 0 8px', color: '#2c3e50', fontSize: '1.1rem' }}>Confirm Password Change</h3>
+              <p style={{ color: '#666', fontSize: '14px', marginBottom: '24px' }}>
+                Are you sure you want to change your password?
+              </p>
+              <div style={{ display: 'flex', gap: '12px' }}>
+                <button
+                  onClick={handleCancelPasswordChange}
+                  style={{
+                    flex: 1,
+                    padding: '12px',
+                    borderRadius: '10px',
+                    border: '1px solid #ddd',
+                    backgroundColor: '#f5f5f5',
+                    color: '#333',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleConfirmPasswordChange}
+                  style={{
+                    flex: 1,
+                    padding: '12px',
+                    borderRadius: '10px',
+                    border: 'none',
+                    background: 'linear-gradient(135deg, #730051, #a0006e)',
+                    color: '#fff',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  Confirm
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
     </div>
   );
