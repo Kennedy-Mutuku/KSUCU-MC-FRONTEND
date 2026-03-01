@@ -23,12 +23,14 @@ export default defineConfig({
       '/news': {
         target: 'http://localhost:3000',
         changeOrigin: true,
-        secure: false
+        secure: false,
+        bypass: (req) => req.headers.accept?.includes('text/html') ? '/index.html' : null
       },
       '/attendance': {
         target: 'http://localhost:3000',
         changeOrigin: true,
-        secure: false
+        secure: false,
+        bypass: (req) => req.headers.accept?.includes('text/html') ? '/index.html' : null
       },
       '/api': {
         target: 'http://localhost:3000',
@@ -38,17 +40,20 @@ export default defineConfig({
       '/adminnews': {
         target: 'http://localhost:3000',
         changeOrigin: true,
-        secure: false
+        secure: false,
+        bypass: (req) => req.headers.accept?.includes('text/html') ? '/index.html' : null
       },
       '/adminmission': {
         target: 'http://localhost:3000',
         changeOrigin: true,
-        secure: false
+        secure: false,
+        bypass: (req) => req.headers.accept?.includes('text/html') ? '/index.html' : null
       },
       '/adminBs': {
         target: 'http://localhost:3000',
         changeOrigin: true,
-        secure: false
+        secure: false,
+        bypass: (req) => req.headers.accept?.includes('text/html') ? '/index.html' : null
       },
       '/sadmin': {
         target: 'http://localhost:3000',
@@ -63,17 +68,20 @@ export default defineConfig({
       '/polling-officer': {
         target: 'http://localhost:3000',
         changeOrigin: true,
-        secure: false
+        secure: false,
+        bypass: (req) => req.headers.accept?.includes('text/html') ? '/index.html' : null
       },
       '/documents': {
         target: 'http://localhost:3000',
         changeOrigin: true,
-        secure: false
+        secure: false,
+        bypass: (req) => req.headers.accept?.includes('text/html') ? '/index.html' : null
       },
       '/minutes': {
         target: 'http://localhost:3000',
         changeOrigin: true,
-        secure: false
+        secure: false,
+        bypass: (req) => req.headers.accept?.includes('text/html') ? '/index.html' : null
       },
       '/commitmentForm': {
         target: 'http://localhost:3000',
@@ -83,7 +91,8 @@ export default defineConfig({
       '/chat/': {
         target: 'http://localhost:3000',
         changeOrigin: true,
-        secure: false
+        secure: false,
+        bypass: (req) => req.headers.accept?.includes('text/html') ? '/index.html' : null
       },
       '/messages': {
         target: 'http://localhost:3000',
@@ -93,7 +102,8 @@ export default defineConfig({
       '/overseer': {
         target: 'http://localhost:3000',
         changeOrigin: true,
-        secure: false
+        secure: false,
+        bypass: (req) => req.headers.accept?.includes('text/html') ? '/index.html' : null
       }
     }
   },

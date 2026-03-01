@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import styles from '../styles/ministriesAdmin.module.css';
 import { getApiUrl } from '../config/environment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-    faUsers, 
-    faLock, 
+import {
+    faUsers,
+    faLock,
     faUnlock,
     faCheckCircle,
     faTimes,
@@ -17,7 +17,10 @@ import {
     faCalendarAlt,
     faFilePdf,
     faTrash,
-    faArchive
+    faArchive,
+    faClipboardList,
+    faCommentDots,
+    faReply
 } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 
@@ -83,23 +86,30 @@ const MinistriesAdmin: React.FC = () => {
     const [password, setPassword] = useState('');
     const [authError, setAuthError] = useState('');
     const [message, setMessage] = useState('');
-    
+
     // Ministry selection and view mode
     const [selectedMinistry, setSelectedMinistry] = useState<'' | MinistryKey>('');
-    const [viewMode, setViewMode] = useState<'attendance' | 'commitments' | 'forms'>('commitments');
+    const [viewMode, setViewMode] = useState<'attendance' | 'commitments' | 'forms' | 'registrations' | 'messages'>('commitments');
     const [commitmentForms, setCommitmentForms] = useState<CommitmentForm[]>([]);
+    const [ministryRegistrations, setMinistryRegistrations] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const [selectedLeaderRole, setSelectedLeaderRole] = useState('');
     const [generatedForms, setGeneratedForms] = useState<GeneratedForm[]>([]);
-    
+
+    // Messages state
+    const [messages, setMessages] = useState<any[]>([]);
+    const [replyText, setReplyText] = useState('');
+    const [selectedMessage, setSelectedMessage] = useState<any | null>(null);
+    const [isReplying, setIsReplying] = useState(false);
+
     // Attendance state
     const [attendanceSession, setAttendanceSession] = useState<AttendanceSession | null>(null);
     const [attendanceRecords, setAttendanceRecords] = useState<AttendanceRecord[]>([]);
-    
+
     // Leadership roles
     const leadershipRoles = [
         'Chairperson',
-        'Vice Chairperson', 
+        'Vice Chair',
         'Secretary',
         'Treasurer',
         'Publicity Secretary',
@@ -115,7 +125,7 @@ const MinistriesAdmin: React.FC = () => {
 
     const ministries: MinistryKey[] = [
         'wananzambe',
-        'compassion', 
+        'compassion',
         'pw',
         'intercessory',
         'cs',
@@ -126,16 +136,70 @@ const MinistriesAdmin: React.FC = () => {
     ];
 
     const ministryNames: Record<MinistryKey, string> = {
-        'wananzambe': 'Wananzambe (Instrumentalists)',
-        'compassion': 'Compassion and Counseling Ministry',
-        'pw': 'Praise & Worship',
-        'intercessory': 'Intercessory Prayer',
+        'wananzambe': 'Wananzambe',
+        'compassion': 'Compassion',
+        'pw': 'Praise and Worship',
+        'intercessory': 'Intercessory',
         'cs': 'Church School',
-        'hs': 'High School Ministry',
-        'ushering': 'Ushering and Hospitality Ministry',
-        'creativity': 'Creativity Ministry',
-        'choir': 'Choir Ministry'
+        'hs': 'High School',
+        'ushering': 'Ushering',
+        'creativity': 'Creativity',
+        'choir': 'Choir'
     };
+
+    // Role to Ministry sets (which ministries belong to which role)
+    const roleMinistries: Record<string, MinistryKey[]> = {
+        'Worship Coordinator': ['wananzambe', 'pw', 'choir'],
+        'Vice Chair': ['ushering', 'cs'],
+        'Missions Coordinator': ['hs', 'compassion'],
+        'Boards Coordinator': ['creativity'],
+        'Prayer Coordinator': ['intercessory'],
+        'Bible Study Coordinator': ['cs']
+    };
+
+    // Primary ministry for each role (used for auto-selection shortcut)
+    const rolePrimaryMinistry: Record<string, MinistryKey> = {
+        'Vice Chair': 'ushering',
+        'Worship Coordinator': 'wananzambe',
+        'Missions Coordinator': 'hs',
+        'Boards Coordinator': 'creativity',
+        'Prayer Coordinator': 'intercessory',
+        'Bible Study Coordinator': 'cs'
+    };
+
+    // Ministry to Role (one-to-one mapping)
+    const ministryToRoleMap: Record<MinistryKey, string> = {
+        'wananzambe': 'Worship Coordinator',
+        'pw': 'Worship Coordinator',
+        'choir': 'Worship Coordinator',
+        'cs': 'Vice Chair',
+        'ushering': 'Vice Chair',
+        'hs': 'Missions Coordinator',
+        'compassion': 'Missions Coordinator',
+        'creativity': 'Boards Coordinator',
+        'intercessory': 'Prayer Coordinator'
+    };
+
+    // Sync Role -> Ministry (Shortcut selection)
+    useEffect(() => {
+        if (selectedLeaderRole && rolePrimaryMinistry[selectedLeaderRole]) {
+            // Only switch ministry if current one is NOT handled by this role
+            const allowedMinistries = roleMinistries[selectedLeaderRole] || [];
+            if (!selectedMinistry || !allowedMinistries.includes(selectedMinistry as MinistryKey)) {
+                setSelectedMinistry(rolePrimaryMinistry[selectedLeaderRole]);
+            }
+        }
+    }, [selectedLeaderRole]);
+
+    // Sync Ministry -> Role (Context for messages)
+    useEffect(() => {
+        if (selectedMinistry && ministryToRoleMap[selectedMinistry]) {
+            const mappedRole = ministryToRoleMap[selectedMinistry];
+            if (selectedLeaderRole !== mappedRole) {
+                setSelectedLeaderRole(mappedRole);
+            }
+        }
+    }, [selectedMinistry]);
 
     // Authentication
     const handleAuth = async () => {
@@ -151,11 +215,11 @@ const MinistriesAdmin: React.FC = () => {
     // Load commitment forms for selected ministry
     const loadCommitmentForms = async () => {
         if (!selectedMinistry) return;
-        
+
         setLoading(true);
         try {
             const response = await axios.get(
-                `${getApiUrl('commitmentFormMinistry')}/${selectedMinistry}`, 
+                `${getApiUrl('commitmentFormMinistry')}/${selectedMinistry}`,
                 { withCredentials: true }
             );
             setCommitmentForms(response.data.commitments);
@@ -172,8 +236,8 @@ const MinistriesAdmin: React.FC = () => {
     const approveCommitment = async (commitmentId: string) => {
         try {
             await axios.put(
-                `${getApiUrl('commitmentFormApprove')}/${commitmentId}`, 
-                {}, 
+                `${getApiUrl('commitmentFormApprove')}/${commitmentId}`,
+                {},
                 { withCredentials: true }
             );
             setMessage('Commitment form approved successfully');
@@ -190,8 +254,8 @@ const MinistriesAdmin: React.FC = () => {
     const revokeCommitment = async (commitmentId: string) => {
         try {
             await axios.put(
-                `${getApiUrl('commitmentFormRevoke')}/${commitmentId}`, 
-                {}, 
+                `${getApiUrl('commitmentFormRevoke')}/${commitmentId}`,
+                {},
                 { withCredentials: true }
             );
             setMessage('Commitment form revoked');
@@ -204,10 +268,81 @@ const MinistriesAdmin: React.FC = () => {
         }
     };
 
+    // Load ministry registrations
+    const loadMinistryRegistrations = async () => {
+        if (!selectedMinistry) return;
+
+        setLoading(true);
+        try {
+            // Use the correct API endpoint with ministry name
+            const ministryName = ministryNames[selectedMinistry];
+            const response = await axios.get(
+                `${getApiUrl('baseUrl')}/api/ministry-registration/${encodeURIComponent(ministryName)}`,
+                { withCredentials: true }
+            );
+            setMinistryRegistrations(response.data);
+        } catch (error) {
+            console.error('Error loading registrations:', error);
+            setMessage('Error loading registrations');
+            setTimeout(() => setMessage(''), 3000);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Load messages for the selected role
+    const loadMessages = async () => {
+        if (!selectedLeaderRole) return;
+
+        setLoading(true);
+        try {
+            const response = await axios.get(
+                `${getApiUrl('messages')}/overseer/${encodeURIComponent(selectedLeaderRole)}`,
+                { withCredentials: true }
+            );
+            setMessages(response.data.messages);
+        } catch (error) {
+            console.error('Error loading messages:', error);
+            setMessage('Error loading messages');
+            setTimeout(() => setMessage(''), 3000);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Reply to a message
+    const handleReply = async (messageId: string) => {
+        if (!replyText.trim()) {
+            setMessage('Please enter a reply');
+            setTimeout(() => setMessage(''), 3000);
+            return;
+        }
+
+        setIsReplying(true);
+        try {
+            await axios.put(
+                `${getApiUrl('messages')}/${messageId}/reply`,
+                { replyText: replyText.trim() },
+                { withCredentials: true }
+            );
+            setMessage('Reply sent successfully');
+            setTimeout(() => setMessage(''), 3000);
+            setReplyText('');
+            setSelectedMessage(null);
+            await loadMessages();
+        } catch (error) {
+            console.error('Error sending reply:', error);
+            setMessage('Error sending reply');
+            setTimeout(() => setMessage(''), 3000);
+        } finally {
+            setIsReplying(false);
+        }
+    };
+
     // Load attendance session and records
     const loadAttendanceData = async () => {
         if (!selectedMinistry) return;
-        
+
         console.log('Loading attendance data for:', selectedMinistry);
         setLoading(true);
         try {
@@ -218,7 +353,7 @@ const MinistriesAdmin: React.FC = () => {
             );
             console.log('Session response:', sessionResponse.data);
             setAttendanceSession(sessionResponse.data.session);
-            
+
             // Load attendance records if there's an active session
             if (sessionResponse.data.session) {
                 const recordsResponse = await axios.get(
@@ -241,11 +376,11 @@ const MinistriesAdmin: React.FC = () => {
             setLoading(false);
         }
     };
-    
+
     // Start attendance session
     const startAttendanceSession = async () => {
         if (!selectedMinistry) return;
-        
+
         setLoading(true);
         try {
             const response = await axios.post(
@@ -256,17 +391,17 @@ const MinistriesAdmin: React.FC = () => {
             const newSession = response.data.session;
             setAttendanceSession(newSession);
             setAttendanceRecords([]);
-            
+
             // Store session in localStorage for cross-device access
             localStorage.setItem(`attendanceSession_${selectedMinistry}`, JSON.stringify(newSession));
-            
+
             // Broadcast session to other tabs/windows on same device
             window.localStorage.setItem('attendanceSessionUpdate', JSON.stringify({
                 ministry: selectedMinistry,
                 session: newSession,
                 timestamp: Date.now()
             }));
-            
+
             setMessage('Attendance session opened - Users can now sign attendance');
             setTimeout(() => setMessage(''), 5000);
         } catch (error) {
@@ -277,15 +412,15 @@ const MinistriesAdmin: React.FC = () => {
             setLoading(false);
         }
     };
-    
+
     // End attendance session
     const endAttendanceSession = async () => {
         if (!attendanceSession) return;
-        
+
         if (!confirm('Are you sure you want to close the attendance session? Users will no longer be able to sign attendance.')) {
             return;
         }
-        
+
         setLoading(true);
         try {
             await axios.post(
@@ -294,19 +429,19 @@ const MinistriesAdmin: React.FC = () => {
                 { withCredentials: true }
             );
             // Keep the session but mark as inactive
-            const closedSession = {...attendanceSession, isActive: false, endTime: new Date().toISOString()};
+            const closedSession = { ...attendanceSession, isActive: false, endTime: new Date().toISOString() };
             setAttendanceSession(closedSession);
-            
+
             // Update localStorage
             localStorage.setItem(`attendanceSession_${selectedMinistry}`, JSON.stringify(closedSession));
-            
+
             // Broadcast session closure to other tabs/windows
             window.localStorage.setItem('attendanceSessionUpdate', JSON.stringify({
                 ministry: selectedMinistry,
                 session: closedSession,
                 timestamp: Date.now()
             }));
-            
+
             setMessage('Attendance session closed - Users can no longer sign attendance');
             setTimeout(() => setMessage(''), 5000);
         } catch (error) {
@@ -317,7 +452,7 @@ const MinistriesAdmin: React.FC = () => {
             setLoading(false);
         }
     };
-    
+
     // Reset attendance (clear records and end session)
     const resetAttendance = async () => {
         if (!selectedMinistry) {
@@ -325,11 +460,11 @@ const MinistriesAdmin: React.FC = () => {
             setTimeout(() => setMessage(''), 3000);
             return;
         }
-        
+
         if (!confirm('Are you sure you want to reset attendance? This will clear all records for the current session and allow users to sign up again.')) {
             return;
         }
-        
+
         setLoading(true);
         try {
             // First end the current session if it exists and is active
@@ -347,21 +482,21 @@ const MinistriesAdmin: React.FC = () => {
                 { ministry: selectedMinistry },
                 { withCredentials: true }
             );
-            
+
             const resetSession = response.data.session;
             setAttendanceSession(resetSession);
             setAttendanceRecords([]);
-            
+
             // Update localStorage with reset session
             localStorage.setItem(`attendanceSession_${selectedMinistry}`, JSON.stringify(resetSession));
-            
+
             // Broadcast reset to other tabs/windows
             window.localStorage.setItem('attendanceSessionUpdate', JSON.stringify({
                 ministry: selectedMinistry,
                 session: resetSession,
                 timestamp: Date.now()
             }));
-            
+
             setMessage('Attendance has been reset - All previous records cleared, users can sign again');
             setTimeout(() => setMessage(''), 5000);
         } catch (error: any) {
@@ -496,16 +631,16 @@ const MinistriesAdmin: React.FC = () => {
                                 <td>${record.year || record.yearOfStudy || 'N/A'}</td>
                                 <td>${record.phoneNumber || record.phone || 'N/A'}</td>
                                 <td>${new Date(record.signedAt || record.timestamp).toLocaleString('en-US', {
-                                    month: 'short', 
-                                    day: 'numeric', 
-                                    hour: '2-digit', 
-                                    minute: '2-digit'
-                                })}</td>
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        })}</td>
                                 <td style="height: 30px; border: 1px solid #ccc; padding: 2px; text-align: center;">
-                                    ${(record.signature && record.signature.startsWith('data:image')) ? 
-                                        `<img src="${record.signature}" style="max-width: 100%; max-height: 26px; object-fit: contain;" alt="Signature" />` : 
-                                        '<span style="font-size: 10px; color: #999;">No signature</span>'
-                                    }
+                                    ${(record.signature && record.signature.startsWith('data:image')) ?
+                `<img src="${record.signature}" style="max-width: 100%; max-height: 26px; object-fit: contain;" alt="Signature" />` :
+                '<span style="font-size: 10px; color: #999;">No signature</span>'
+            }
                                 </td>
                             </tr>
                         `).join('')}
@@ -760,7 +895,7 @@ const MinistriesAdmin: React.FC = () => {
                     filteredForms = forms.filter((form: GeneratedForm) => form.ministry === selectedMinistry);
                 }
                 // Sort by creation date, newest first
-                filteredForms.sort((a: GeneratedForm, b: GeneratedForm) => 
+                filteredForms.sort((a: GeneratedForm, b: GeneratedForm) =>
                     new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
                 );
                 setGeneratedForms(filteredForms);
@@ -783,8 +918,8 @@ const MinistriesAdmin: React.FC = () => {
 
         const ministry = selectedMinistry ? ministryNames[selectedMinistry] : 'All Ministries';
         const leaderRole = selectedLeaderRole || 'Ministry Leader';
-        const sessionDate = attendanceSession?.startTime ? 
-            new Date(attendanceSession.startTime).toLocaleDateString() : 
+        const sessionDate = attendanceSession?.startTime ?
+            new Date(attendanceSession.startTime).toLocaleDateString() :
             new Date().toLocaleDateString();
 
         const formData: GeneratedForm = {
@@ -806,7 +941,7 @@ const MinistriesAdmin: React.FC = () => {
 
         // Generate PDF
         downloadFormPDF(formData);
-        
+
         setMessage('Attendance form generated successfully!');
         setTimeout(() => setMessage(''), 3000);
         loadGeneratedForms();
@@ -842,7 +977,7 @@ const MinistriesAdmin: React.FC = () => {
 
         // Generate PDF
         downloadFormPDF(formData);
-        
+
         setMessage('Commitment forms report generated successfully!');
         setTimeout(() => setMessage(''), 3000);
         loadGeneratedForms();
@@ -851,7 +986,7 @@ const MinistriesAdmin: React.FC = () => {
     // Download form PDF
     const downloadFormPDF = (formData: GeneratedForm) => {
         let htmlContent = '';
-        
+
         if (formData.type === 'attendance') {
             htmlContent = generateAttendancePDFContent(formData);
         } else {
@@ -887,6 +1022,10 @@ const MinistriesAdmin: React.FC = () => {
                 loadAttendanceData();
             } else if (viewMode === 'forms') {
                 loadGeneratedForms();
+            } else if (viewMode === 'registrations') {
+                loadMinistryRegistrations();
+            } else if (viewMode === 'messages') {
+                loadMessages();
             }
         }
     }, [authenticated, selectedMinistry, viewMode, selectedLeaderRole]);
@@ -905,7 +1044,7 @@ const MinistriesAdmin: React.FC = () => {
                         <FontAwesomeIcon icon={faLock} className={styles.lockIcon} />
                         <h2 className={styles.authTitle}>Ministries Administration</h2>
                         <p className={styles.authSubtitle}>Enter password to access admin panel</p>
-                        
+
                         <div className={styles.inputGroup}>
                             <input
                                 type="password"
@@ -916,10 +1055,10 @@ const MinistriesAdmin: React.FC = () => {
                                 onKeyPress={(e) => e.key === 'Enter' && handleAuth()}
                             />
                         </div>
-                        
+
                         {authError && <div className={styles.errorMessage}>{authError}</div>}
-                        
-                        <button 
+
+                        <button
                             className={styles.authButton}
                             onClick={handleAuth}
                         >
@@ -933,6 +1072,10 @@ const MinistriesAdmin: React.FC = () => {
 
     return (
         <div className={styles.container}>
+<<<<<<< HEAD
+            <UniversalHeader />
+=======
+>>>>>>> 48cfd2009546c7f66d045eb78952fc0474a4ee79
             <div className={styles.adminContainer}>
                 <div className={styles.adminHeader}>
                     <h1 className={styles.adminTitle}>
@@ -957,7 +1100,7 @@ const MinistriesAdmin: React.FC = () => {
                         <div className={styles.leadershipRoleGrid}>
                             {[
                                 'Chairperson',
-                                'Vice Chairperson', 
+                                'Vice Chair',
                                 'Secretary',
                                 'Treasurer',
                                 'Publicity Secretary',
@@ -968,7 +1111,7 @@ const MinistriesAdmin: React.FC = () => {
                                 'Missions Coordinator',
                                 'Boards Coordinator'
                             ].map((role) => (
-                                <button 
+                                <button
                                     key={role}
                                     className={styles.leadershipRoleButton}
                                     onClick={() => {
@@ -1029,6 +1172,18 @@ const MinistriesAdmin: React.FC = () => {
                                 >
                                     <FontAwesomeIcon icon={faArchive} /> Forms Management
                                 </button>
+                                <button
+                                    className={`${styles.tabButton} ${viewMode === 'registrations' ? styles.active : ''}`}
+                                    onClick={() => setViewMode('registrations')}
+                                >
+                                    <FontAwesomeIcon icon={faClipboardList} /> Ministry Registrations
+                                </button>
+                                <button
+                                    className={`${styles.tabButton} ${viewMode === 'messages' ? styles.active : ''}`}
+                                    onClick={() => setViewMode('messages')}
+                                >
+                                    <FontAwesomeIcon icon={faCommentDots} /> Messages
+                                </button>
                             </div>
                         </div>
                     )}
@@ -1068,7 +1223,7 @@ const MinistriesAdmin: React.FC = () => {
                                                     </span>
                                                 </div>
                                             </div>
-                                            
+
                                             <div className={styles.commitmentMeta}>
                                                 <p><strong>Phone:</strong> {commitment.phoneNumber}</p>
                                                 <p><strong>Submitted:</strong> {new Date(commitment.submittedAt).toLocaleDateString()}</p>
@@ -1094,7 +1249,7 @@ const MinistriesAdmin: React.FC = () => {
                                                         </button>
                                                     </>
                                                 )}
-                                                
+
                                                 {commitment.status === 'approved' && (
                                                     <button
                                                         className={`${styles.actionButton} ${styles.revoke}`}
@@ -1119,14 +1274,14 @@ const MinistriesAdmin: React.FC = () => {
                                                 >
                                                     <FontAwesomeIcon icon={faDownload} /> Download PDF
                                                 </button>
-                        
-                                        <button
-                                            className={`${styles.actionButton} ${styles.generate}`}
-                                            onClick={generateCommitmentForm}
-                                            title="Generate forms report with KSUCU header"
-                                        >
-                                            <FontAwesomeIcon icon={faFilePdf} /> Generate Report
-                                        </button>
+
+                                                <button
+                                                    className={`${styles.actionButton} ${styles.generate}`}
+                                                    onClick={generateCommitmentForm}
+                                                    title="Generate forms report with KSUCU header"
+                                                >
+                                                    <FontAwesomeIcon icon={faFilePdf} /> Generate Report
+                                                </button>
                                             </div>
                                         </div>
                                     ))
@@ -1140,25 +1295,25 @@ const MinistriesAdmin: React.FC = () => {
                     <div className={styles.contentArea}>
                         <div className={styles.sectionHeader}>
                             <h2 className={styles.sectionTitle}>
-                                {selectedMinistry ? 
-                                    `${ministryNames[selectedMinistry]} - Attendance Management` : 
+                                {selectedMinistry ?
+                                    `${ministryNames[selectedMinistry]} - Attendance Management` :
                                     'Centralized Attendance Management'
                                 }
                             </h2>
                             {/* Debug info */}
                             {import.meta.env.DEV && (
-                                <div style={{fontSize: '12px', color: '#666', marginTop: '10px'}}>
+                                <div style={{ fontSize: '12px', color: '#666', marginTop: '10px' }}>
                                     DEBUG: Selected Ministry: {selectedMinistry}, View Mode: {viewMode}, Session: {attendanceSession ? 'EXISTS' : 'NONE'}, Active: {attendanceSession?.isActive ? 'YES' : 'NO'}
                                 </div>
                             )}
                             <div className={styles.sessionControls}>
                                 {/* ALWAYS VISIBLE BUTTONS FOR TESTING */}
-                                <div style={{display: 'flex', gap: '10px', marginBottom: '15px', flexWrap: 'wrap'}}>
+                                <div style={{ display: 'flex', gap: '10px', marginBottom: '15px', flexWrap: 'wrap' }}>
                                     <button
                                         className={`${styles.actionButton} ${styles.startSession}`}
                                         onClick={startAttendanceSession}
                                         disabled={loading}
-                                        style={{backgroundColor: '#10b981', color: 'white', padding: '12px 24px', fontSize: '16px'}}
+                                        style={{ backgroundColor: '#10b981', color: 'white', padding: '12px 24px', fontSize: '16px' }}
                                     >
                                         <FontAwesomeIcon icon={faPlay} /> Open Session
                                     </button>
@@ -1166,7 +1321,7 @@ const MinistriesAdmin: React.FC = () => {
                                         className={`${styles.actionButton} ${styles.resetSession}`}
                                         onClick={resetAttendance}
                                         disabled={loading}
-                                        style={{backgroundColor: '#f59e0b', color: 'white', padding: '12px 24px', fontSize: '16px'}}
+                                        style={{ backgroundColor: '#f59e0b', color: 'white', padding: '12px 24px', fontSize: '16px' }}
                                     >
                                         <FontAwesomeIcon icon={faRedo} /> Reset Attendance
                                     </button>
@@ -1174,19 +1329,19 @@ const MinistriesAdmin: React.FC = () => {
                                         className={`${styles.actionButton} ${styles.endSession}`}
                                         onClick={endAttendanceSession}
                                         disabled={loading}
-                                        style={{backgroundColor: '#ef4444', color: 'white', padding: '12px 24px', fontSize: '16px'}}
+                                        style={{ backgroundColor: '#ef4444', color: 'white', padding: '12px 24px', fontSize: '16px' }}
                                     >
                                         <FontAwesomeIcon icon={faStop} /> Close Session
                                     </button>
                                 </div>
-                                
+
                                 {/* Show open button when no active session */}
                                 {(!attendanceSession || !attendanceSession.isActive) && (
-                                    <div style={{padding: '10px', background: '#f0f0f0', margin: '10px 0', borderRadius: '8px'}}>
+                                    <div style={{ padding: '10px', background: '#f0f0f0', margin: '10px 0', borderRadius: '8px' }}>
                                         <p><strong>Status:</strong> No active session - Click button above to open session</p>
                                     </div>
                                 )}
-                                
+
                                 {/* Show session controls when active */}
                                 {attendanceSession && attendanceSession.isActive && (
                                     <>
@@ -1233,7 +1388,7 @@ const MinistriesAdmin: React.FC = () => {
                                                 <div className={styles.statLabel}>Total Attendees</div>
                                             </div>
                                         </div>
-                                        
+
                                         <div className={styles.attendanceList}>
                                             <h3 className={styles.listTitle}>
                                                 <FontAwesomeIcon icon={faCalendarAlt} /> Attendance List
@@ -1257,7 +1412,7 @@ const MinistriesAdmin: React.FC = () => {
                                                 ))}
                                             </div>
                                         </div>
-                                        
+
                                         {/* Generate attendance form button */}
                                         {attendanceRecords.length > 0 && (
                                             <div className={styles.generateFormSection}>
@@ -1351,7 +1506,7 @@ const MinistriesAdmin: React.FC = () => {
                                             <h3>Generated Forms ({generatedForms.length})</h3>
                                             <p>Latest forms appear first</p>
                                         </div>
-                                        
+
                                         <div className={styles.formsGrid}>
                                             {generatedForms.map((form, index) => (
                                                 <div key={form.id} className={styles.formCard}>
@@ -1370,14 +1525,14 @@ const MinistriesAdmin: React.FC = () => {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    
+
                                                     <div className={styles.formDetails}>
                                                         <p><strong>Ministry:</strong> {form.ministry}</p>
                                                         <p><strong>Leader Role:</strong> {form.leaderRole}</p>
                                                         <p><strong>Session Date:</strong> {form.sessionDate}</p>
                                                         <p><strong>Generated:</strong> {new Date(form.createdAt).toLocaleString()}</p>
                                                     </div>
-                                                    
+
                                                     <div className={styles.formActions}>
                                                         <button
                                                             className={`${styles.actionButton} ${styles.download}`}
@@ -1401,6 +1556,194 @@ const MinistriesAdmin: React.FC = () => {
                                 )}
                             </div>
                         )}
+                    </div>
+                )}
+
+                {/* Ministry Registrations View */}
+                {viewMode === 'registrations' && (
+                    <div className={styles.contentArea}>
+                        <div className={styles.sectionHeader}>
+                            <h2 className={styles.sectionTitle}>
+                                <FontAwesomeIcon icon={faClipboardList} />
+                                {selectedMinistry ? `${ministryNames[selectedMinistry]} - Registrations` : 'Ministry Registrations'}
+                            </h2>
+                            <p className={styles.sectionDescription}>
+                                View new members who have registered to join via the online form
+                            </p>
+                        </div>
+
+                        {loading ? (
+                            <div className={styles.loading}>Loading registrations...</div>
+                        ) : (
+                            <div className={styles.registrationsList}>
+                                {ministryRegistrations.length === 0 ? (
+                                    <div className={styles.noData}>
+                                        <FontAwesomeIcon icon={faClipboardList} className={styles.noDataIcon} />
+                                        <p>No new registrations found for this ministry.</p>
+                                    </div>
+                                ) : (
+                                    <div className={styles.tableResponsive}>
+                                        <table className={styles.dataTable} style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
+                                            <thead>
+                                                <tr style={{ backgroundColor: '#730051', color: 'white', textAlign: 'left' }}>
+                                                    <th style={{ padding: '12px', borderBottom: '2px solid #ddd' }}>#</th>
+                                                    <th style={{ padding: '12px', borderBottom: '2px solid #ddd' }}>Name</th>
+                                                    <th style={{ padding: '12px', borderBottom: '2px solid #ddd' }}>Reg Number</th>
+                                                    <th style={{ padding: '12px', borderBottom: '2px solid #ddd' }}>Phone</th>
+                                                    <th style={{ padding: '12px', borderBottom: '2px solid #ddd' }}>Gender</th>
+                                                    <th style={{ padding: '12px', borderBottom: '2px solid #ddd' }}>Year</th>
+                                                    <th style={{ padding: '12px', borderBottom: '2px solid #ddd' }}>Course</th>
+                                                    <th style={{ padding: '12px', borderBottom: '2px solid #ddd' }}>Reason</th>
+                                                    <th style={{ padding: '12px', borderBottom: '2px solid #ddd' }}>Date</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {ministryRegistrations.map((reg, index) => (
+                                                    <tr key={reg._id} style={{ borderBottom: '1px solid #ddd', backgroundColor: index % 2 === 0 ? '#f9f9f9' : 'white' }}>
+                                                        <td style={{ padding: '10px' }}>{index + 1}</td>
+                                                        <td style={{ padding: '10px', fontWeight: 'bold' }}>{reg.fullName}</td>
+                                                        <td style={{ padding: '10px' }}>{reg.registrationNumber}</td>
+                                                        <td style={{ padding: '10px' }}>{reg.phoneNumber}</td>
+                                                        <td style={{ padding: '10px' }}>{reg.gender}</td>
+                                                        <td style={{ padding: '10px' }}>{reg.yearOfStudy}</td>
+                                                        <td style={{ padding: '10px' }}>{reg.course}</td>
+                                                        <td style={{ padding: '10px', maxWidth: '200px' }}>
+                                                            <div style={{ maxHeight: '60px', overflowY: 'auto', fontSize: '12px' }}>
+                                                                {reg.reasonForJoining}
+                                                            </div>
+                                                        </td>
+                                                        <td style={{ padding: '10px', fontSize: '12px' }}>
+                                                            {new Date(reg.createdAt).toLocaleDateString()}
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </div>
+                )}
+                {/* Messages View */}
+                {viewMode === 'messages' && (
+                    <div className={styles.contentArea}>
+                        <div className={styles.sectionHeader}>
+                            <h2 className={styles.sectionTitle}>
+                                <FontAwesomeIcon icon={faCommentDots} />
+                                {selectedMinistry ? `${ministryNames[selectedMinistry]} - Messages` : 'Ministry Messages'}
+                            </h2>
+                            <p className={styles.sectionDescription}>
+                                Read and respond to messages from members
+                            </p>
+                        </div>
+
+                        {loading ? (
+                            <div className={styles.loading}>Loading messages...</div>
+                        ) : (
+                            <div className={styles.messagesList}>
+                                {messages.length === 0 ? (
+                                    <div className={styles.noData}>
+                                        <FontAwesomeIcon icon={faCommentDots} className={styles.noDataIcon} />
+                                        <p>No messages found for your role.</p>
+                                    </div>
+                                ) : (
+                                    <div className={styles.messageGrid}>
+                                        {messages.map((msg) => (
+                                            <div key={msg._id} className={`${styles.messageCard} ${msg.status === 'new' ? styles.newMessage : ''}`}>
+                                                <div className={styles.messageHeader}>
+                                                    <div className={styles.messageSenderInfo}>
+                                                        <h4 className={styles.messageSubject}>{msg.subject}</h4>
+                                                        <p className={styles.sender}>
+                                                            From: {msg.isAnonymous ? 'Anonymous' : msg.senderInfo?.username || 'Guest'}
+                                                            {!msg.isAnonymous && msg.senderInfo?.phone && ` (${msg.senderInfo.phone})`}
+                                                        </p>
+                                                    </div>
+                                                    <div className={styles.messageMeta}>
+                                                        <span className={`${styles.statusBadge} ${styles[msg.status]}`}>
+                                                            {msg.status.toUpperCase()}
+                                                        </span>
+                                                        <span className={styles.date}>
+                                                            {new Date(msg.timestamp).toLocaleDateString()}
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                <div className={styles.messageBody}>
+                                                    <p>{msg.message}</p>
+                                                </div>
+
+                                                {msg.replyText && (
+                                                    <div className={styles.overseerReply}>
+                                                        <div className={styles.replyHeader}>
+                                                            <FontAwesomeIcon icon={faReply} /> Your Reply:
+                                                        </div>
+                                                        <p>{msg.replyText}</p>
+                                                        <span className={styles.replyDate}>
+                                                            {new Date(msg.repliedAt).toLocaleDateString()}
+                                                        </span>
+                                                    </div>
+                                                )}
+
+                                                <div className={styles.messageActions}>
+                                                    <button
+                                                        className={`${styles.actionButton} ${styles.replyButton}`}
+                                                        onClick={() => setSelectedMessage(msg)}
+                                                    >
+                                                        <FontAwesomeIcon icon={faReply} /> {msg.replyText ? 'View/Edit Reply' : 'Reply'}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {/* Reply Modal */}
+                {selectedMessage && (
+                    <div className={styles.modalOverlay}>
+                        <div className={styles.modalContent}>
+                            <div className={styles.modalHeader}>
+                                <h3>Reply to: {selectedMessage.subject}</h3>
+                                <button className={styles.closeModal} onClick={() => setSelectedMessage(null)}>
+                                    <FontAwesomeIcon icon={faTimes} />
+                                </button>
+                            </div>
+                            <div className={styles.modalBody}>
+                                <div className={styles.originalMessage}>
+                                    <strong>Original Message:</strong>
+                                    <p>{selectedMessage.message}</p>
+                                </div>
+                                <div className={styles.replyForm}>
+                                    <label>Your Response:</label>
+                                    <textarea
+                                        value={replyText || selectedMessage.replyText || ''}
+                                        onChange={(e) => setReplyText(e.target.value)}
+                                        placeholder="Type your response here..."
+                                        rows={6}
+                                        className={styles.textarea}
+                                    />
+                                </div>
+                            </div>
+                            <div className={styles.modalActions}>
+                                <button
+                                    className={styles.cancelButton}
+                                    onClick={() => setSelectedMessage(null)}
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    className={styles.confirmButton}
+                                    onClick={() => handleReply(selectedMessage._id)}
+                                    disabled={isReplying}
+                                >
+                                    {isReplying ? 'Sending...' : 'Send Reply'}
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 )}
             </div>

@@ -29,7 +29,7 @@ const InstrumentalistsCommitment: React.FC = () => {
     }, 5000); // Error disappears after 5 seconds
   };
 
-  
+
   useEffect(() => {
     // Set the current date as default
     const today = new Date().toISOString().split('T')[0]; // Format to YYYY-MM-DD
@@ -39,14 +39,19 @@ const InstrumentalistsCommitment: React.FC = () => {
   useEffect(() => {
     const fetchFormData = async () => {
       try {
-        const response = await axios.get(getApiUrl('commitmentFormUserDetails'), { withCredentials: true });
+        const response = await axios.get(`${getApiUrl('commitmentFormUserDetails')}?ministry=Wanazambe`, { withCredentials: true });
         const data = response.data;
         console.log(data);
-        
+
         // Populate only available fields
         if (data.username) setFullName(data.username);
         if (data.phone) setPhoneNumber(data.phone);
-        if (data.regNo) setRegNo(data.regNo);
+
+        // Comprehensive check for registration number in the response
+        const autoRegNo = (data.regNo || data.registrationNumber || data.reg || "").toString().trim();
+        console.log('Detected registration number:', autoRegNo);
+        setRegNo(autoRegNo);
+
         if (data.yearOfStudy) setYearOfStudy(data.yearOfStudy);
         if (data.reasonForJoining) setReasonForJoining(data.reasonForJoining);
         if (data.date) setDate(data.date);
@@ -62,7 +67,7 @@ const InstrumentalistsCommitment: React.FC = () => {
         console.error("Error fetching form data:", error);
       }
     };
-  
+
     fetchFormData();
   }, []);
 
@@ -117,15 +122,15 @@ const InstrumentalistsCommitment: React.FC = () => {
   const confirmSubmit = async () => {
     // Reset previous errors
     setErrors({});
-  
+
     // Validation
     let hasError = false;
     if (!fullName.trim()) {
       showError('fullName', 'Full name is required');
       hasError = true;
     }
-    if (!phoneNumber.trim()) {
-      showError('phoneNumber', 'Phone number is required');
+    if (!phoneNumber.trim() || !/^\d+$/.test(phoneNumber.replace(/\s/g, '')) || phoneNumber.replace(/\s/g, '').length < 10) {
+      showError('phoneNumber', 'Phone number must be at least 10 digits and contain only numbers');
       hasError = true;
     }
     if (!regNo.trim()) {
@@ -144,13 +149,13 @@ const InstrumentalistsCommitment: React.FC = () => {
       showError('signature', 'Signature is required');
       hasError = true;
     }
-  
+
     if (hasError) return; // Prevent submission if validation fails
-  
+
     // Proceed to submit
     setShowConfirmation(false);
     setIsSubmitting(true);
-  
+
     const signatureData = sigCanvas.current ? sigCanvas.current.toDataURL() : "";
     const formData = {
       fullName,
@@ -160,29 +165,35 @@ const InstrumentalistsCommitment: React.FC = () => {
       reasonForJoining,
       date,
       signature: signatureData,
+      ministry: 'Wanazambe'
     };
-  
+
     try {
       const response = await axios.post(getApiUrl('commitmentFormSubmit'), formData, {
         headers: {
           "Content-Type": "application/json",
         },
+        withCredentials: true
       });
-  
+
       if (response.status === 200) {
         alert("Thank you for your commitment!");
         setIsSubmitted(true);
       } else {
         alert("Submission failed. Please try again.");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error submitting form:", error);
-      alert("An error occurred. Please try again.");
+      const errorMessage = error.response?.data?.message || "An error occurred. Please try again.";
+      alert(errorMessage);
+      if (error.response?.status === 400 && errorMessage.includes('already submitted')) {
+        setHasSubmitted(true);
+      }
     } finally {
       setIsSubmitting(false);
     }
   };
-  
+
   return (
     <div className={styles.container}>
       <div className={styles.containerForm}>
@@ -192,10 +203,9 @@ const InstrumentalistsCommitment: React.FC = () => {
 
           {/* Status Display */}
           {hasSubmitted && (
-            <div className={`${styles.statusAlert} ${
-              commitmentStatus === 'approved' ? styles.approved :
+            <div className={`${styles.statusAlert} ${commitmentStatus === 'approved' ? styles.approved :
               commitmentStatus === 'revoked' ? styles.revoked : styles.pending
-            }`}>
+              }`}>
               {commitmentStatus === 'pending' && '⏳ Waiting for admin approval'}
               {commitmentStatus === 'approved' && '✅ Commitment form approved!'}
               {commitmentStatus === 'revoked' && '❌ Commitment form revoked'}
@@ -204,7 +214,8 @@ const InstrumentalistsCommitment: React.FC = () => {
 
           {/* Ministry Commitment */}
           <div className={styles.section}>
-            <h4 className={styles.sectionTitle}>🎶 Ministry Commitment</h4>
+            <h4 className={styles.sectionTitle}>📜 Ministry Overview</h4>
+            <input type="hidden" name="ministry" value="Wanazambe" />
             <p>
               I commit to serving as an instrumentalist, understanding that my role extends beyond playing music—it is a
               ministry to glorify God, support worship, and build unity. By signing this form, I agree to:
@@ -298,6 +309,7 @@ const InstrumentalistsCommitment: React.FC = () => {
                   value={regNo}
                   onChange={(e) => setRegNo(e.target.value)}
                   disabled={hasSubmitted}
+                  readOnly={regNo !== "" && !errors.regNo} // Only readOnly if we have a valid value and no current errors
                 />
               </div>
               <div className={styles.col}>
@@ -347,13 +359,13 @@ const InstrumentalistsCommitment: React.FC = () => {
 
           {/* Submit Button */}
           <div className={styles.textCenter}>
-            
-          {errors.phoneNumber && <div className={styles.error}>{errors.phoneNumber}</div>}
-          {errors.reasonForJoining && <div className={styles.error}>{errors.reasonForJoining}</div>}
-          {errors.fullName && <div className={styles.error}>{errors.fullName}</div>}
-          {errors.signature && <div className={styles.error}>{errors.signature}</div>}
-          {errors.croppedImage && <div className={styles.error}>{errors.croppedImage}</div>}
-          
+
+            {errors.phoneNumber && <div className={styles.error}>{errors.phoneNumber}</div>}
+            {errors.reasonForJoining && <div className={styles.error}>{errors.reasonForJoining}</div>}
+            {errors.fullName && <div className={styles.error}>{errors.fullName}</div>}
+            {errors.signature && <div className={styles.error}>{errors.signature}</div>}
+            {errors.croppedImage && <div className={styles.error}>{errors.croppedImage}</div>}
+
             <button
               className={styles.btnPrimary}
               onClick={handleSubmit}

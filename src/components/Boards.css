@@ -1,0 +1,306 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ================= BODY ================= */
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: #f4f6f9;
+  min-height: 100vh;
+}
+
+/* ================= HEADER ================= */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem 1.2rem;
+  background: #00c6ff;
+  color: #fff;
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.logo-image {
+  height: 90px;
+  width: auto;
+}
+
+.logo-text {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+/* KSUCU AI icon style */
+.ksucu-ai-icon {
+  color: #00c6ff; /* match header blue */
+  font-size: 1.5rem;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+
+nav a {
+  color: #fff;
+  text-decoration: none;
+  margin-left: 1rem;
+  font-weight: 500;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
+
+/* ================= MAIN ================= */
+main {
+  padding: 1.5rem;
+}
+
+main h1 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #1e3a8a;
+}
+
+/* ================= BOARDS ================= */
+.boards-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.board-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.board-image {
+  position: relative;
+  width: 100%;
+  height: 220px;
+  background: #f1f1f1;
+}
+
+.board-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.board-image i {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  font-size: 1.5rem;
+  color: #fff;
+  background: #1e3a8a;
+  padding: 8px;
+  border-radius: 50%;
+}
+
+.board-content {
+  padding: 1rem;
+  width: 100%;
+}
+
+.board-title {
+  color: #1e3a8a;
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.board-description {
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: #333;
+}
+
+/* ================= ACTIONS ================= */
+.board-actions {
+  margin-top: 0.8rem;
+}
+
+.upload-btn {
+  background: #00c6ff;
+  color: #fff;
+  padding: 0.4rem 0.7rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  border: none;
+  margin-right: 0.4rem;
+}
+
+/* ================= CONTACT BUTTON/CONTAINER ================= */
+.contact-btn {
+  background: #e5e7eb;
+  color: #111;
+  padding: 0.4rem 0.7rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  border: none;
+}
+
+.contact-btn.active {
+  background: #a8b4cf; /* darker shade of original light grey */
+  color: #fff;
+}
+
+/* small info container */
+.contact-container {
+  /* overlay style sized to content */
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.75rem 0.5rem;
+  background: #730051;
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  border-radius: 0 0 8px 8px;
+  z-index: 50;
+  width: max-content;
+  max-width: 90%;
+}
+
+.board-card {
+  position: relative;
+}
+
+.contact-box {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 180px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.contact-box img {
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  flex-shrink: 0;
+}
+
+.contact-details {
+  font-size: 0.85rem;
+  line-height: 1.2;
+}
+
+.contact-details a {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.contact-details a:hover {
+  text-decoration: underline;
+}
+
+/* ================= MODAL / UPLOAD STYLING ================= */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+}
+
+.preview img {
+  max-width: 100%;
+  display: block;
+  margin-top: 0.5rem;
+  border-radius: 4px;
+}
+
+.modal-actions {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+/* ================= SOCIAL ICONS ================= */
+.board-social-icons {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+}
+
+.social-icon-link {
+  font-size: 1.2rem;
+  color: #2563eb;
+}
+
+/* ================= FOOTER ================= */
+footer {
+  margin-top: 2rem;
+  padding: 1.2rem 0.8rem;
+  background: #730051;
+  color: #fff;
+  text-align: center;
+}
+
+.footer-text {
+  font-size: 0.8rem;
+  margin-top: 0.8rem;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 600px) {
+  .profile-cards-container {
+    justify-content: center;
+  }
+
+  .profile-name-dropdown {
+    font-size: 0.85rem;
+  }
+
+  .profile-phone-dropdown {
+    font-size: 0.75rem;
+    padding: 5px;
+  }
+
+  .social-icons {
+    gap: 1.2rem;
+    margin-bottom: 0.8rem;
+  }
+
+  footer {
+    padding: 1.2rem 0.8rem;
+  }
+
+  .footer-text {
+    font-size: 0.8rem;
+  }
+}

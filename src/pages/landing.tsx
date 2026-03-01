@@ -765,7 +765,7 @@ const LandingPage = () => {
             <div
               style={{
                 display: 'inline-block',
-                background: '#730051',
+                background: '#00c6ff',
                 color: 'white',
                 padding: '12px 24px',
                 borderRadius: '25px',
@@ -782,12 +782,12 @@ const LandingPage = () => {
               }}
               onMouseEnter={(e) => {
                 const target = e.target as HTMLElement;
-                target.style.background = '#5a0040';
+                target.style.background = '#0099cc';
                 target.style.transform = 'translateY(-2px)';
               }}
               onMouseLeave={(e) => {
                 const target = e.target as HTMLElement;
-                target.style.background = '#730051';
+                target.style.background = '#00c6ff';
                 target.style.transform = 'translateY(0)';
               }}
               onClick={() => {
@@ -926,7 +926,7 @@ const LandingPage = () => {
                         transition: 'border-color 0.2s',
                         color: '#333'
                       }}
-                      onFocus={(e) => e.target.style.borderColor = '#730051'}
+                      onFocus={(e) => e.target.style.borderColor = '#00c6ff'}
                       onBlur={(e) => e.target.style.borderColor = '#e0e0e0'}
                       autoFocus
                     />
@@ -971,7 +971,7 @@ const LandingPage = () => {
                       disabled={isSearching || searchQuery.length < 3}
                       style={{
                         padding: '0 20px',
-                        background: '#730051',
+                        background: '#00c6ff',
                         color: 'white',
                         border: 'none',
                         borderRadius: '12px',
@@ -990,7 +990,7 @@ const LandingPage = () => {
                         setSelectedUser(null);
                         setAttendanceData(prev => ({ ...prev, userType: 'visitor', registrationNumber: '' }));
                       }}
-                      style={{ color: '#730051', fontSize: '13px', fontWeight: '500', cursor: 'pointer', padding: '5px' }}
+                      style={{ color: '#00c6ff', fontSize: '13px', fontWeight: '500', cursor: 'pointer', padding: '5px' }}
                     >
                       Can't find Reg No? Click here
                     </span>
@@ -1029,7 +1029,7 @@ const LandingPage = () => {
                         marginBottom: '20px'
                       }}>
                         <div style={{
-                          width: '50px', height: '50px', borderRadius: '50%', background: '#730051',
+                          width: '50px', height: '50px', borderRadius: '50%', background: '#00c6ff',
                           color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px'
                         }}>
                           <FontAwesomeIcon icon={faUserCheck} />
@@ -1182,7 +1182,7 @@ const LandingPage = () => {
                       style={{
                         width: '100%',
                         padding: '14px',
-                        background: generalLoading ? '#e0e0e0' : 'linear-gradient(135deg, #730051 0%, #a0006e 100%)',
+                        background: generalLoading ? '#e0e0e0' : 'linear-gradient(135deg, #00c6ff 0%, #0072ff 100%)',
                         color: generalLoading ? '#888' : 'white',
                         border: 'none',
                         borderRadius: '30px',
@@ -1605,7 +1605,7 @@ const LandingPage = () => {
                   }}
                   style={{
                     padding: '12px 25px',
-                    background: '#730051',
+                    background: '#00c6ff',
                     color: 'white',
                     border: 'none',
                     borderRadius: '10px',
@@ -1635,25 +1635,14 @@ const LandingPage = () => {
             boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
           }}>
             <h3 style={{ color: '#730051', margin: '0 0 20px 0' }}>Overseer Access</h3>
-            <form onSubmit={async (e) => {
+            <form onSubmit={(e) => {
               e.preventDefault();
-              try {
-                const response = await fetch(getApiUrl('overseer/login'), {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  credentials: 'include',
-                  body: JSON.stringify({ password: adminPassword }),
-                });
-                if (response.ok) {
-                  sessionStorage.setItem('adminAuth', 'authenticated');
-                  setShowAdminAccess(false);
-                  setAdminPassword('');
-                  navigate('/worship-docket-admin');
-                } else {
-                  alert('Incorrect Password');
-                }
-              } catch {
-                alert('Login failed. Please try again.');
+              if (adminPassword === 'Overseer') {
+                setShowAdminAccess(false);
+                setAdminPassword('');
+                navigate('/signIn');
+              } else {
+                alert('Incorrect Password');
               }
             }}>
               <input
