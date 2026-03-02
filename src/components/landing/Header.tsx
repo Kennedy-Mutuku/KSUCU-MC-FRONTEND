@@ -255,6 +255,8 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, activeNav, is
   const [activeTab, setActiveTab] = useState<string | null>(null);
   const [expandedNestedItem, setExpandedNestedItem] = useState<string | null>(null);
   const buttonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const dropdownRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const sidebarRef = useRef<HTMLDivElement | null>(null);
 
   // Expansion happens when any tab is active OR manually toggled via hamburger
   const isExpanded = !!activeTab || isManualExpanded;
@@ -290,6 +292,16 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, activeNav, is
     }
     setActiveTab(key);
     setIsManualExpanded(true);
+    // Scroll to show the dropdown after it renders
+    setTimeout(() => {
+      const dropdown = dropdownRefs.current[key];
+      if (dropdown) {
+        dropdown.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      } else {
+        // Fallback: scroll button to top so dropdown appears below
+        buttonRefs.current[key]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 200);
   };
 
   const closePanel = () => {
@@ -311,14 +323,15 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, activeNav, is
       )}
 
       {/* Icon strip / Sidebar */}
-      <div style={{
+      <div ref={sidebarRef} style={{
         position: 'fixed', top: '64px', left: 0, bottom: 0,
         width: isExpanded ? '180px' : '52px',
         backgroundColor: '#730051',
-        display: 'flex', flexDirection: 'column', alignItems: isExpanded ? 'flex-start' : 'center',
+        display: 'block',
+        textAlign: isExpanded ? 'left' : 'center',
         paddingTop: '6px', paddingBottom: '6px',
         paddingLeft: isExpanded ? '6px' : '0',
-        overflowY: 'auto', gap: '2px', zIndex: 99999,
+        overflowY: 'scroll', WebkitOverflowScrolling: 'touch', zIndex: 99999,
         transition: 'width 0.3s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s ease',
         boxShadow: isExpanded ? '4px 0 20px rgba(0,0,0,0.3)' : 'none',
       }}>
@@ -340,11 +353,13 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, activeNav, is
                 style={{
                   width: isExpanded ? '168px' : '46px',
                   minHeight: '38px',
+                  marginBottom: '2px',
                   display: 'flex',
                   flexDirection: isExpanded ? 'row' : 'column',
                   alignItems: 'center',
                   justifyContent: isExpanded ? 'flex-start' : 'center',
                   paddingLeft: isExpanded ? '10px' : '0',
+                  margin: isExpanded ? '0' : '0 auto',
                   borderRadius: '6px', border: 'none', cursor: 'pointer',
                   backgroundColor: isActive ? 'rgba(255,255,255,0.95)' : 'transparent',
                   color: isActive ? '#730051' : 'rgba(255,255,255,0.85)',
@@ -392,23 +407,24 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, activeNav, is
                 )}
               </button>
 
-              {/* Integrated Vertical Expansion */}
+              {/* Inline dropdown */}
               {isExpanded && isActive && sections.length > 0 && (
-                <div style={{
-                  width: '168px',
-                  background: 'rgba(255,255,255,0.98)',
-                  borderRadius: '8px',
-                  marginTop: '1px',
-                  marginBottom: '2px',
-                  overflow: 'hidden',
-                  maxHeight: '400px', // Allow scroll if too long
-                  overflowY: 'auto',
-                  boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.05)',
-                  animation: 'accordionDown 0.3s ease-out',
-                }}>
+                <div
+                  ref={el => { dropdownRefs.current[tab.key] = el; }}
+                  style={{
+                    width: '168px',
+                    background: 'rgba(255,255,255,0.98)',
+                    borderRadius: '8px',
+                    marginTop: '2px',
+                    marginBottom: '4px',
+                    maxHeight: '45vh',
+                    overflowY: 'auto',
+                    WebkitOverflowScrolling: 'touch',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                    border: '1px solid rgba(115,0,81,0.2)',
+                  }}>
                   {sections.map((section, idx) => (
                     <div key={idx} style={{ padding: '4px 0' }}>
-                      {/* Only show section title if it's not redundant or if there are multiple sections */}
                       {(section.title.toLowerCase() !== tab.label.toLowerCase() || sections.length > 1) && (
                         <div style={{
                           padding: '6px 16px 4px',
@@ -455,7 +471,6 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, activeNav, is
                             )}
                           </Link>
 
-                          {/* Nested children if any */}
                           {item.children && (
                             <div style={{
                               paddingLeft: '12px',
@@ -494,8 +509,8 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, activeNav, is
 
       <style>{`
         @keyframes accordionDown {
-          from { opacity: 0; transform: translateY(-10px); }
-          to   { opacity: 1; transform: translateY(0); }
+          from { opacity: 0; max-height: 0; }
+          to   { opacity: 1; max-height: 45vh; }
         }
       `}</style>
     </div>
