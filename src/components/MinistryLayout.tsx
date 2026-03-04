@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styles from '../styles/ministryPage.module.css';
-import MinistryHeader from './MinistryHeader';
 import MinistryFooter from './MinistryFooter';
 import { Link } from 'react-router-dom';
 import MinistryRegistrationModal from './MinistryRegistrationModal';
@@ -177,7 +176,6 @@ const MinistryLayout: React.FC<MinistryLayoutProps> = ({
 
     return (
         <>
-            <MinistryHeader />
             <div className={styles.container}>
                 <div
                     className={styles.heroSection}

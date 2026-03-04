@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import styles from '../styles/ministries.module.css';
 
-import MinistryHeader from '../components/MinistryHeader';
 import MinistryFooter from '../components/MinistryFooter';
 import { useLocation } from 'react-router-dom';
 import PW from '../assets/praise-and-worship.jpg'
@@ -97,8 +96,6 @@ const MinistriesPage: React.FC = () => {
                 <img src={loadingAnime} alt="animation gif" />
             </div>
       )} */}
-
-      <MinistryHeader />
 
       <div className={styles.main}>
         <h2 className={styles['ministries--title']}>MINISTRIES</h2>
