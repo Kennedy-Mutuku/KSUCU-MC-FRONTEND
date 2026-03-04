@@ -62,12 +62,13 @@ const UserManagement: React.FC = () => {
       return;
     }
 
-    const filtered = users.filter(user => 
-      user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.phone.includes(searchTerm) ||
-      user.reg.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.course.toLowerCase().includes(searchTerm.toLowerCase())
+    const term = searchTerm.toLowerCase();
+    const filtered = users.filter(user =>
+      user.username?.toLowerCase().includes(term) ||
+      user.email?.toLowerCase().includes(term) ||
+      user.phone?.includes(searchTerm) ||
+      user.reg?.toLowerCase().includes(term) ||
+      user.course?.toLowerCase().includes(term)
     );
     
     setFilteredUsers(filtered);
