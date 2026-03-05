@@ -59,12 +59,7 @@ export const useOverseerAuth = () => {
   };
 
   useEffect(() => {
-    const storedAuth = sessionStorage.getItem('adminAuth');
-    if (storedAuth === 'authenticated') {
-      verify().finally(() => setLoading(false));
-    } else {
-      setLoading(false);
-    }
+    verify().finally(() => setLoading(false));
   }, []);
 
   return { authenticated, loading, login, logout, verify };

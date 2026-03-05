@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ModernNewsDisplay from '../components/ModernNewsDisplay';
 import styles from '../styles/worshipDocketAdmin.module.css';
@@ -14,43 +14,34 @@ import {
     faSignOutAlt,
     faComments
 } from '@fortawesome/free-solid-svg-icons';
+import { useOverseerAuth } from '../hooks/useOverseerAuth';
 
 const WorshipDocketAdmin: React.FC = () => {
     const navigate = useNavigate();
-    const [authenticated, setAuthenticated] = useState(false);
+    const { authenticated, loading: authLoading, login, logout } = useOverseerAuth();
     const [password, setPassword] = useState('');
     const [authError, setAuthError] = useState('');
     const [message, setMessage] = useState('');
     const [selectedRole, setSelectedRole] = useState<string>('');
+    const [loginLoading, setLoginLoading] = useState(false);
 
-    // Check for existing session login on mount
-    useEffect(() => {
-        const storedAuth = sessionStorage.getItem('adminAuth');
-        if (storedAuth === 'Overseer') {
-            setAuthenticated(true);
-        }
-    }, []);
-
-    const handleLogin = () => {
-        if (password === 'Overseer') {
-            setAuthenticated(true);
+    const handleLogin = async () => {
+        setLoginLoading(true);
+        const result = await login(password);
+        if (result.success) {
             setAuthError('');
             setMessage('Successfully logged in to Leadership Admin');
-
-            // Persist login for this session
-            sessionStorage.setItem('adminAuth', 'Overseer');
-
             setTimeout(() => setMessage(''), 3000);
         } else {
-            setAuthError('Invalid password');
+            setAuthError(result.message || 'Invalid password');
             setTimeout(() => setAuthError(''), 3000);
         }
         setPassword('');
+        setLoginLoading(false);
     };
 
-    const handleLogout = () => {
-        setAuthenticated(false);
-        sessionStorage.removeItem('adminAuth');
+    const handleLogout = async () => {
+        await logout();
         setMessage('Logged out successfully');
         setTimeout(() => setMessage(''), 3000);
     };
@@ -60,11 +51,18 @@ const WorshipDocketAdmin: React.FC = () => {
         setSelectedRole(role);
         setMessage(`Redirecting to attendance management...`);
         setTimeout(() => {
-            sessionStorage.setItem('adminAuth', 'Overseer');
             sessionStorage.setItem('leadershipRole', role);
             navigate(`/attendance-session-management?role=${encodeURIComponent(role)}`);
         }, 800);
     };
+
+    if (authLoading) {
+        return (
+            <div className={styles.container}>
+                <p style={{ textAlign: 'center', color: '#666', marginTop: '50px' }}>Verifying session...</p>
+            </div>
+        );
+    }
 
     if (!authenticated) {
         return (
@@ -88,14 +86,16 @@ const WorshipDocketAdmin: React.FC = () => {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
+                                disabled={loginLoading}
                             />
                         </div>
 
                         <button
                             className={styles.loginButton}
                             onClick={handleLogin}
+                            disabled={loginLoading}
                         >
-                            Access Admin Panel
+                            {loginLoading ? 'Logging in...' : 'Access Admin Panel'}
                         </button>
                     </div>
                 </div>
@@ -165,8 +165,6 @@ const WorshipDocketAdmin: React.FC = () => {
                             <button
                                 className={styles.functionButton}
                                 onClick={() => {
-                                    // Store authentication state
-                                    sessionStorage.setItem('adminAuth', 'Overseer');
                                     navigate('/news-admin');
                                 }}
                             >
@@ -188,8 +186,6 @@ const WorshipDocketAdmin: React.FC = () => {
                             <button
                                 className={styles.functionButton}
                                 onClick={() => {
-                                    // Store authentication state
-                                    sessionStorage.setItem('adminAuth', 'Overseer');
                                     navigate('/media-admin');
                                 }}
                             >
@@ -211,8 +207,6 @@ const WorshipDocketAdmin: React.FC = () => {
                             <button
                                 className={styles.functionButton}
                                 onClick={() => {
-                                    // Store authentication state
-                                    sessionStorage.setItem('adminAuth', 'Overseer');
                                     navigate('/requisitions-admin');
                                 }}
                             >
@@ -234,8 +228,6 @@ const WorshipDocketAdmin: React.FC = () => {
                             <button
                                 className={styles.functionButton}
                                 onClick={() => {
-                                    // Store authentication state
-                                    sessionStorage.setItem('adminAuth', 'Overseer');
                                     navigate('/adminBs');
                                 }}
                             >
@@ -257,8 +249,6 @@ const WorshipDocketAdmin: React.FC = () => {
                             <button
                                 className={styles.functionButton}
                                 onClick={() => {
-                                    // Store authentication state
-                                    sessionStorage.setItem('adminAuth', 'Overseer');
                                     navigate('/compassion-counseling-admin');
                                 }}
                             >
@@ -300,8 +290,6 @@ const WorshipDocketAdmin: React.FC = () => {
                             <button
                                 className={styles.functionButton}
                                 onClick={() => {
-                                    // Store authentication state
-                                    sessionStorage.setItem('adminAuth', 'Overseer');
                                     navigate('/chat-admin');
                                 }}
                             >
