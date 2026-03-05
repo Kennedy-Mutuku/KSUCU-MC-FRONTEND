@@ -320,13 +320,17 @@ export const getImageUrl = (imagePath: string): string => {
   // If it's already a full URL, return as is
   if (imagePath.startsWith('http')) return imagePath;
 
+  let url: string;
   // If it starts with /, treat as relative to base URL
   if (imagePath.startsWith('/')) {
-    return `${config.baseUrl}${imagePath}`;
+    url = `${config.baseUrl}${imagePath}`;
+  } else {
+    // Otherwise, prepend uploads path
+    url = `${config.baseUrl}/uploads/${imagePath}`;
   }
 
-  // Otherwise, prepend uploads path
-  return `${config.baseUrl}/uploads/${imagePath}`;
+  // Add cache version to bust CDN cached 404s
+  return `${url}?v=2`;
 };
 
 export const isDevMode = (): boolean => isDevelopment;
