@@ -48,11 +48,12 @@ interface RequisitionForm {
     releasedBySignature: string;
     date?: string;
   };
+  approvalSignature?: string;
 }
 
 const RequisitionsAdmin: React.FC = () => {
   const navigate = useNavigate();
-  const { authenticated, loading: authLoading } = useOverseerAuth();
+  const { authenticated } = useOverseerAuth();
   const [requisitions, setRequisitions] = useState<RequisitionForm[]>([]);
   const [filteredRequisitions, setFilteredRequisitions] = useState<
     RequisitionForm[]

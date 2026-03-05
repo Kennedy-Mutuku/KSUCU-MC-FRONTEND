@@ -106,12 +106,6 @@ const MinistryRegistrationsView: React.FC<MinistryRegistrationsViewProps> = ({ m
         return statusMatch && searchMatch;
     });
 
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString('en-GB', {
-            day: '2-digit', month: 'short'
-        });
-    };
-
     if (loading) {
         return (
             <div className="flex flex-col items-center justify-center p-20 animate-pulse">

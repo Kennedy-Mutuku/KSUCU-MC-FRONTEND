@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import styles from '../styles/Media.module.css';
 import loadingAnime from '../assets/Animation - 1716747954931.gif';
 import { FaYoutube, FaFacebook, FaTiktok, FaTwitter, FaImage, FaNewspaper, FaBook, FaTimes, FaSync } from 'react-icons/fa';
@@ -43,8 +43,6 @@ const Media: React.FC = () => {
     { event: "Missions Trip", date: "2025-03-30", link: "https://photos.app.goo.gl/example123" },
   ];
 
-  const navigate = useNavigate();
-  
   useEffect(() => {
     // Environment debugging  
     console.log('🔧 Media Environment Debug:');

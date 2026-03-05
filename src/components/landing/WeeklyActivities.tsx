@@ -1,4 +1,4 @@
-import { Calendar, Clock, MapPin } from 'lucide-react';
+import { Clock, MapPin } from 'lucide-react';
 
 interface Activity {
   day: string;

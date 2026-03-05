@@ -34,6 +34,7 @@ interface RequisitionForm {
     releasedByName: string;
     releasedBySignature: string;
   };
+  approvalSignature?: string;
 }
 
 const Requisitions: React.FC = () => {

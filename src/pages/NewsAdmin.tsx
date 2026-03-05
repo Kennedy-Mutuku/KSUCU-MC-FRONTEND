@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import styles from '../styles/NewsAdmin.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -26,8 +25,7 @@ interface NewsFormData {
 }
 
 const NewsAdmin: React.FC = () => {
-    const navigate = useNavigate();
-    const { authenticated, loading: authLoading, login } = useOverseerAuth();
+    const { authenticated, login } = useOverseerAuth();
     const [password, setPassword] = useState('');
     const [authError, setAuthError] = useState('');
     const [message, setMessage] = useState('');

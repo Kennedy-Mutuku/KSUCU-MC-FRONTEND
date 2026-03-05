@@ -28,7 +28,6 @@ interface RequisitionData {
 export const generateRequisitionPDF = (data: RequisitionData, requisitionId: string) => {
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.getWidth();
-  const pageHeight = doc.internal.pageSize.getHeight();
   let yPosition = 10;
 
   // Helper function to add text
@@ -44,11 +43,6 @@ export const generateRequisitionPDF = (data: RequisitionData, requisitionId: str
     else doc.setFont("helvetica", "normal");
     doc.text(text, x, y);
     yPosition = y + fontSize / 2 + 2;
-  };
-
-  const addLine = (x: number, y: number, length: number) => {
-    doc.setDrawColor(0);
-    doc.line(x, y, x + length, y);
   };
 
   // Title

@@ -1,6 +1,13 @@
-import React from 'react';
+import { ReactNode } from 'react';
 
-const Section = ({ id, title, children, background = 'white' }) => {
+interface SectionProps {
+    id: string;
+    title: string;
+    children: ReactNode;
+    background?: string;
+}
+
+const Section = ({ id, title, children, background = 'white' }: SectionProps) => {
     const bgClass = background === 'gray' ? 'bg-gray' : 'bg-white';
 
     return (

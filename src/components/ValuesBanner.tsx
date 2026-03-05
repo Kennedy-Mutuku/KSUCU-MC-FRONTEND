@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Shield, Heart, Award } from 'lucide-react';
 
 const ValuesBanner = () => {

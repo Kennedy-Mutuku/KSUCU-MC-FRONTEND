@@ -18,7 +18,7 @@ const NotificationBubble = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [, setIsLoggedIn] = useState(false);
 
     useEffect(() => {
         const checkAuth = async () => {

@@ -5,7 +5,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getApiUrl, getBaseUrl } from '../config/environment';
 import { formatDateTime } from '../utils/timeUtils';
 import { downloadAttendancePDF } from '../utils/attendanceReport';
-import cuLogo from '../assets/cuLogoUAR.png';
 import {
     faUsers,
     faPlay,
@@ -154,27 +153,6 @@ const AttendanceSessionManagement: React.FC = () => {
         if (!newSessionData.title) return setMessage('Please enter a session title');
         setLoading(true);
         try {
-            // Map leadership role to ministry enum if possible
-            const ministryMapping: Record<string, string> = {
-                'Choir': 'Choir',
-                'Praise and Worship': 'Praise and Worship',
-                'Wananzambe': 'Wananzambe',
-                'Ushering': 'Ushering',
-                'Creativity': 'Creativity',
-                'Compassion': 'Compassion',
-                'Intercessory': 'Intercessory',
-                'High School': 'High School',
-                'Church School': 'Church School'
-            };
-
-            let ministry = 'General';
-            for (const key in ministryMapping) {
-                if (leadershipRole.includes(key)) {
-                    ministry = ministryMapping[key];
-                    break;
-                }
-            }
-
             const response = await fetch(getApiUrl('attendanceSessionOpen'), {
                 method: 'POST',
                 credentials: 'include',

@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { UserCheck, HeartHandshake, GraduationCap, Megaphone } from 'lucide-react';
 
 const objectives = [

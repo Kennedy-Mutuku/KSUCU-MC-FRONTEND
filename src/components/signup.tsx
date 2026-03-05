@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import cuLogo from '../assets/KSUCU logo updated document.png';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import styles from '../styles/signup.module.css';
 import { ChevronDown, Copy, Check, LogIn, Home } from 'lucide-react';
 import { getApiUrl } from '../config/environment';
@@ -38,7 +38,6 @@ const ministriesList = [
 ];
 
 const SignUp: React.FC = () => {
-  const navigate = useNavigate();
   const [role, setRole] = useState<'student' | 'associate'>('student');
   const [formData, setFormData] = useState<FormData>({
     username: '',

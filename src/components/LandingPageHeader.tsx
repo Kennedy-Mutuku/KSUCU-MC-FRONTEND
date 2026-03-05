@@ -34,7 +34,7 @@ interface CountdownTime {
 const LandingPageHeader = () => {
   const [newsData, setNewsData] = useState<NewsData | null>(null);
   const [openCommission, setOpenCommision] = useState(false);
-  const [userData, setUserData] = useState<{ username: string; email: string; yos: number; phone: string; et: string; ministry: string } | null>(null);
+  const [userData, setUserData] = useState<{ username: string; email: string; yos: number; phone: string; et: string; ministry: string; profilePhoto?: string } | null>(null);
   const [countdown, setCountdown] = useState<CountdownTime | null>(null);
   const [eventPassed, setEventPassed] = useState<boolean>(false);
   const [generalLoading, setgeneralLoading] = useState(false);

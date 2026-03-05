@@ -58,7 +58,7 @@ const ContactUs = () => {
   const ministryNameParam = searchParams.get('ministryName');
 
   const [userData, setUserData] = useState<UserData | null>(null);
-  const [isAnonymous, setIsAnonymous] = useState(false);
+  const [isAnonymous, _setIsAnonymous] = useState(false);
   const [message, setMessage] = useState('');
   const [subject, setSubject] = useState(ministryNameParam ? `Message to ${ministryNameParam} Overseer` : '');
   const [category, setCategory] = useState(ministryId ? 'other' : 'feedback');
