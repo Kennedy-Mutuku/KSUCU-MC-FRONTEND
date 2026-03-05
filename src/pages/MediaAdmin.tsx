@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from '../styles/mediaAdmin.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -11,11 +11,15 @@ import {
     faCancel,
     faCalendarAlt,
     faEye,
-    faSync
+    faSync,
+    faExclamationTriangle,
+    faCheckCircle
 } from '@fortawesome/free-solid-svg-icons';
 import { getApiUrl, getImageUrl, getBaseUrl, isDevMode } from '../config/environment';
 import { useOverseerAuth } from '../hooks/useOverseerAuth';
 import OverseerLogoutButton from '../components/OverseerLogoutButton';
+import ToastContainer from '../components/ToastContainer';
+import { ToastProps } from '../components/Toast';
 
 interface MediaItem {
     _id?: string;
@@ -62,21 +66,38 @@ const MediaAdmin: React.FC = () => {
         link: '',
         imageUrl: ''
     });
+    const [newItemPreviewUrl, setNewItemPreviewUrl] = useState<string>('');
+    const [toasts, setToasts] = useState<Omit<ToastProps, 'onClose'>[]>([]);
+    const [confirmModal, setConfirmModal] = useState<{
+        show: boolean;
+        title: string;
+        message: string;
+        onConfirm: () => void;
+        type: 'danger' | 'warning';
+    }>({ show: false, title: '', message: '', onConfirm: () => {}, type: 'danger' });
 
-    // Helper function to format date for input field
+    const showToast = useCallback((message: string, type: ToastProps['type']) => {
+        const id = Date.now().toString();
+        setToasts(prev => [...prev, { id, message, type }]);
+    }, []);
+
+    const removeToast = useCallback((id: string) => {
+        setToasts(prev => prev.filter(t => t.id !== id));
+    }, []);
+
+    const showConfirm = (title: string, message: string, onConfirm: () => void, type: 'danger' | 'warning' = 'danger') => {
+        setConfirmModal({ show: true, title, message, onConfirm, type });
+    };
+
     const formatDateForInput = (dateStr: string): string => {
         if (!dateStr) return new Date().toISOString().split('T')[0];
-
         try {
-            // Handle various date formats
             if (dateStr.includes('-')) {
-                // Already in YYYY-MM-DD format or similar
                 const parts = dateStr.split('-');
                 if (parts.length === 3 && parts[0].length === 4) {
                     return dateStr;
                 }
             }
-
             const date = new Date(dateStr);
             if (isNaN(date.getTime())) {
                 return new Date().toISOString().split('T')[0];
@@ -88,13 +109,12 @@ const MediaAdmin: React.FC = () => {
     };
 
     useEffect(() => {
-        // Environment debugging
-        console.log('🔧 Environment Debug:');
-        console.log('  - isDev:', isDevMode());
-        console.log('  - baseUrl:', getBaseUrl());
-        console.log('  - hostname:', window.location.hostname);
-        console.log('  - sample imageUrl:', getImageUrl('/uploads/media/test.png'));
-
+        console.log('Environment Debug:', {
+            isDev: isDevMode(),
+            baseUrl: getBaseUrl(),
+            hostname: window.location.hostname,
+            sampleImageUrl: getImageUrl('/uploads/media/test.png')
+        });
         loadMediaItems();
     }, []);
 
@@ -103,10 +123,8 @@ const MediaAdmin: React.FC = () => {
         setSyncStatus('syncing');
 
         try {
-            // Add timestamp to completely bypass all caching
             const timestamp = new Date().getTime();
             const apiUrl = `${getApiUrl('api/media-items')}?t=${timestamp}`;
-            console.log('MediaAdmin: Fetching media items from API:', apiUrl);
 
             const response = await fetch(apiUrl, {
                 method: 'GET',
@@ -119,17 +137,11 @@ const MediaAdmin: React.FC = () => {
                 }
             });
 
-            console.log('MediaAdmin: Response status =', response.status);
-
             if (response.ok) {
                 const data = await response.json();
                 const apiItems = data.data || [];
-                console.log('MediaAdmin: Received', apiItems.length, 'items from API');
 
-                // Merge API items with default events (API items take priority)
                 const mergedItems = [...apiItems];
-
-                // Add default events that aren't already in the database
                 defaultEvents.forEach(defaultItem => {
                     const exists = apiItems.some((apiItem: MediaItem) =>
                         apiItem.event === defaultItem.event &&
@@ -140,25 +152,18 @@ const MediaAdmin: React.FC = () => {
                     }
                 });
 
-                console.log('MediaAdmin: Total items after merge:', mergedItems.length);
                 setMediaItems(mergedItems);
                 localStorage.setItem('ksucu-media-items', JSON.stringify(mergedItems));
                 setSyncStatus('success');
 
-                // Dispatch event for other components
                 window.dispatchEvent(new CustomEvent('mediaItemsUpdated', {
                     detail: mergedItems
                 }));
             } else {
-                console.log('MediaAdmin: API failed with status', response.status);
-                // Fallback to localStorage if API fails
                 const savedItems = localStorage.getItem('ksucu-media-items');
                 if (savedItems) {
-                    const parsedItems = JSON.parse(savedItems);
-                    console.log('MediaAdmin: Using cached items:', parsedItems.length);
-                    setMediaItems(parsedItems);
+                    setMediaItems(JSON.parse(savedItems));
                 } else {
-                    console.log('MediaAdmin: Using default events:', defaultEvents.length);
                     setMediaItems(defaultEvents);
                     localStorage.setItem('ksucu-media-items', JSON.stringify(defaultEvents));
                 }
@@ -166,14 +171,10 @@ const MediaAdmin: React.FC = () => {
             }
         } catch (error) {
             console.error('MediaAdmin: Error loading media items:', error);
-            // Fallback to localStorage, then default items
             const savedItems = localStorage.getItem('ksucu-media-items');
             if (savedItems) {
-                const parsedItems = JSON.parse(savedItems);
-                console.log('MediaAdmin: Using cached items:', parsedItems.length);
-                setMediaItems(parsedItems);
+                setMediaItems(JSON.parse(savedItems));
             } else {
-                console.log('MediaAdmin: Using default events:', defaultEvents.length);
                 setMediaItems(defaultEvents);
                 localStorage.setItem('ksucu-media-items', JSON.stringify(defaultEvents));
             }
@@ -184,7 +185,6 @@ const MediaAdmin: React.FC = () => {
         }
     };
 
-
     const handleAddNew = async () => {
         if (newItem.event && newItem.date && newItem.link) {
             setLoading(true);
@@ -192,36 +192,32 @@ const MediaAdmin: React.FC = () => {
             try {
                 const response = await fetch(getApiUrl('api/media-items'), {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     credentials: 'include',
                     body: JSON.stringify(newItem)
                 });
 
                 if (response.ok) {
-                    const data = await response.json();
-                    console.log('MediaAdmin: Successfully added new item:', data.data);
                     setSyncStatus('success');
                     setNewItem({ event: '', date: new Date().toISOString().split('T')[0], link: '', imageUrl: '' });
+                    setNewItemPreviewUrl('');
                     setIsAddingNew(false);
-                    // Reload to get fresh data from server
                     await loadMediaItems();
-                    alert('Media item added successfully!');
+                    showToast('Media item added successfully!', 'success');
                 } else {
                     setSyncStatus('error');
-                    alert('Failed to add media item. Please try again.');
+                    showToast('Failed to add media item. Please try again.', 'error');
                 }
             } catch (error) {
                 console.error('Error adding media item:', error);
                 setSyncStatus('error');
-                alert('Failed to add media item. Please try again.');
+                showToast('Failed to add media item. Please try again.', 'error');
             } finally {
                 setLoading(false);
                 setTimeout(() => setSyncStatus('idle'), 3000);
             }
         } else {
-            alert('Please fill in all required fields: Event Name, Date, and Photo Link');
+            showToast('Please fill in all required fields: Event Name, Date, and Photo Link', 'warning');
         }
     };
 
@@ -236,9 +232,7 @@ const MediaAdmin: React.FC = () => {
             const itemId = updatedItem._id || id;
             const response = await fetch(getApiUrl(`api/media-items/${itemId}`), {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
                 body: JSON.stringify(updatedItem)
             });
@@ -246,68 +240,77 @@ const MediaAdmin: React.FC = () => {
             if (response.ok) {
                 setSyncStatus('success');
                 setEditingItem(null);
-                // Reload to get fresh data from server
                 await loadMediaItems();
+                showToast('Media item updated successfully!', 'success');
             } else {
                 setSyncStatus('error');
-                alert('Failed to update media item. Please try again.');
+                showToast('Failed to update media item. Please try again.', 'error');
             }
         } catch (error) {
             console.error('Error updating media item:', error);
             setSyncStatus('error');
-            alert('Failed to update media item. Please try again.');
+            showToast('Failed to update media item. Please try again.', 'error');
         } finally {
             setLoading(false);
             setTimeout(() => setSyncStatus('idle'), 3000);
         }
     };
 
-    const handleDelete = async (id: string) => {
-        if (window.confirm('Are you sure you want to delete this media item?')) {
-            setLoading(true);
-            setSyncStatus('syncing');
-            try {
-                const item = mediaItems.find(i => (i._id || i.id) === id);
-                const itemId = item?._id || id;
+    const handleDelete = (id: string) => {
+        const item = mediaItems.find(i => (i._id || i.id) === id);
+        showConfirm(
+            'Delete Media Item',
+            `Are you sure you want to delete "${item?.event || 'this item'}"? This action cannot be undone.`,
+            async () => {
+                setConfirmModal(prev => ({ ...prev, show: false }));
+                setLoading(true);
+                setSyncStatus('syncing');
+                try {
+                    const itemId = item?._id || id;
+                    const response = await fetch(getApiUrl(`api/media-items/${itemId}`), {
+                        method: 'DELETE',
+                        credentials: 'include'
+                    });
 
-                const response = await fetch(getApiUrl(`api/media-items/${itemId}`), {
-                    method: 'DELETE',
-                    credentials: 'include'
-                });
-
-                if (response.ok) {
-                    setSyncStatus('success');
-                    // Reload to get fresh data from server
-                    await loadMediaItems();
-                } else {
+                    if (response.ok) {
+                        setSyncStatus('success');
+                        await loadMediaItems();
+                        showToast('Media item deleted successfully.', 'success');
+                    } else {
+                        setSyncStatus('error');
+                        showToast('Failed to delete media item. Please try again.', 'error');
+                    }
+                } catch (error) {
+                    console.error('Error deleting media item:', error);
                     setSyncStatus('error');
-                    alert('Failed to delete media item. Please try again.');
+                    showToast('Failed to delete media item. Please try again.', 'error');
+                } finally {
+                    setLoading(false);
+                    setTimeout(() => setSyncStatus('idle'), 3000);
                 }
-            } catch (error) {
-                console.error('Error deleting media item:', error);
-                setSyncStatus('error');
-                alert('Failed to delete media item. Please try again.');
-            } finally {
-                setLoading(false);
-                setTimeout(() => setSyncStatus('idle'), 3000);
-            }
-        }
+            },
+            'danger'
+        );
     };
 
     const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>, itemId?: string) => {
         const file = event.target.files?.[0];
         if (!file) return;
 
-        // Validate file type
         if (!file.type.startsWith('image/')) {
-            alert('Please select an image file (PNG, JPG, GIF, WebP)');
+            showToast('Please select an image file (PNG, JPG, GIF, WebP)', 'warning');
             return;
         }
 
-        // Validate file size (max 10MB)
         if (file.size > 10 * 1024 * 1024) {
-            alert('Image file is too large. Please select a file under 10MB.');
+            showToast('Image file is too large. Please select a file under 10MB.', 'warning');
             return;
+        }
+
+        // Show local preview immediately
+        if (!itemId) {
+            const blobUrl = URL.createObjectURL(file);
+            setNewItemPreviewUrl(blobUrl);
         }
 
         setLoading(true);
@@ -325,34 +328,27 @@ const MediaAdmin: React.FC = () => {
 
             if (response.ok) {
                 const data = await response.json();
-                // Store the raw imageUrl from backend (it's already a proper path like /uploads/media/...)
                 const imageUrl = data.imageUrl;
 
-                console.log('Image uploaded successfully:', imageUrl);
-
                 if (itemId) {
-                    // Update existing item with image URL and save to database
                     const item = mediaItems.find(i => (i._id || i.id) === itemId);
                     if (item) {
-                        const updatedItem = { ...item, imageUrl };
-                        console.log('🖼️ Updating item with image:', updatedItem);
-                        await handleSaveEdit(itemId, updatedItem);
+                        await handleSaveEdit(itemId, { ...item, imageUrl });
                     }
                 } else {
-                    // Update new item with server image URL
                     setNewItem(prev => ({ ...prev, imageUrl }));
                     setSyncStatus('success');
                 }
+                showToast('Image uploaded successfully!', 'success');
             } else {
                 const error = await response.json();
-                console.error('Upload failed:', error);
                 setSyncStatus('error');
-                alert(`Failed to upload image: ${error.message || 'Unknown error'}`);
+                showToast(`Failed to upload image: ${error.message || 'Unknown error'}`, 'error');
             }
         } catch (error) {
             console.error('Error uploading image:', error);
             setSyncStatus('error');
-            alert('Failed to upload image. Please try again later.');
+            showToast('Failed to upload image. Please try again later.', 'error');
         } finally {
             setLoading(false);
             setTimeout(() => setSyncStatus('idle'), 3000);
@@ -473,13 +469,12 @@ const MediaAdmin: React.FC = () => {
                                 className={styles.fileInput}
                             />
                         </div>
-                        {newItem.imageUrl && (
+                        {(newItemPreviewUrl || newItem.imageUrl) && (
                             <div className={styles.imagePreview}>
                                 <img
-                                    src={getImageUrl(newItem.imageUrl)}
+                                    src={newItemPreviewUrl || getImageUrl(newItem.imageUrl || '')}
                                     alt="Preview"
-                                    style={{ maxWidth: '200px', maxHeight: '200px', objectFit: 'cover' }}
-                                    onError={() => console.error('Preview image error:', newItem.imageUrl, 'Full URL:', getImageUrl(newItem.imageUrl || ''))}
+                                    style={{ maxWidth: '200px', maxHeight: '200px', objectFit: 'cover', borderRadius: '8px' }}
                                 />
                             </div>
                         )}
@@ -488,7 +483,7 @@ const MediaAdmin: React.FC = () => {
                                 <FontAwesomeIcon icon={faSave} />
                                 Add Item
                             </button>
-                            <button className={styles.cancelButton} onClick={() => setIsAddingNew(false)}>
+                            <button className={styles.cancelButton} onClick={() => { setIsAddingNew(false); setNewItemPreviewUrl(''); }}>
                                 <FontAwesomeIcon icon={faCancel} />
                                 Cancel
                             </button>
@@ -528,6 +523,36 @@ const MediaAdmin: React.FC = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Toast Notifications */}
+            <ToastContainer toasts={toasts} onClose={removeToast} />
+
+            {/* Confirmation Modal */}
+            {confirmModal.show && (
+                <div className={styles.modalOverlay} onClick={() => setConfirmModal(prev => ({ ...prev, show: false }))}>
+                    <div className={styles.confirmModal} onClick={e => e.stopPropagation()}>
+                        <div className={`${styles.confirmIcon} ${confirmModal.type === 'danger' ? styles.confirmDanger : styles.confirmWarning}`}>
+                            <FontAwesomeIcon icon={confirmModal.type === 'danger' ? faExclamationTriangle : faCheckCircle} />
+                        </div>
+                        <h3 className={styles.confirmTitle}>{confirmModal.title}</h3>
+                        <p className={styles.confirmMessage}>{confirmModal.message}</p>
+                        <div className={styles.confirmActions}>
+                            <button
+                                className={styles.confirmCancelBtn}
+                                onClick={() => setConfirmModal(prev => ({ ...prev, show: false }))}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                className={`${styles.confirmBtn} ${confirmModal.type === 'danger' ? styles.confirmBtnDanger : styles.confirmBtnWarning}`}
+                                onClick={confirmModal.onConfirm}
+                            >
+                                {confirmModal.type === 'danger' ? 'Delete' : 'Confirm'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </>
     );
 };
@@ -597,7 +622,6 @@ const MediaItemCard: React.FC<MediaItemCardProps> = ({
                                 src={getImageUrl(editData.imageUrl)}
                                 alt="Preview"
                                 style={{ maxWidth: '150px', maxHeight: '150px', objectFit: 'cover' }}
-                                onError={() => console.error('Edit preview image error:', editData.imageUrl, 'Full URL:', getImageUrl(editData.imageUrl || ''))}
                             />
                         </div>
                     )}
@@ -621,18 +645,14 @@ const MediaItemCard: React.FC<MediaItemCardProps> = ({
                     <img
                         src={getImageUrl(item.imageUrl || '')}
                         alt={item.event}
-                        onLoad={() => {
-                            console.log('✅ Image loaded successfully for:', item.event, 'URL:', getImageUrl(item.imageUrl || ''));
-                        }}
                         onError={(e) => {
-                            console.error('❌ Image load error for:', item.imageUrl, 'Full URL:', getImageUrl(item.imageUrl || ''));
                             e.currentTarget.style.display = 'none';
                             const parent = e.currentTarget.parentElement;
                             if (parent && !parent.querySelector('.fallback-icon')) {
                                 const fallbackDiv = document.createElement('div');
                                 fallbackDiv.className = 'fallback-icon';
                                 fallbackDiv.style.cssText = 'display: flex; align-items: center; justify-content: center; height: 100%; color: #999; font-size: 50px;';
-                                fallbackDiv.innerHTML = '📷';
+                                fallbackDiv.textContent = '\uD83D\uDCF7';
                                 parent.appendChild(fallbackDiv);
                             }
                         }}
