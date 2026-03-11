@@ -229,9 +229,7 @@ const SignIn: React.FC = () => {
             setWelcomeName(firstName);
             setShowWelcomeToast(true);
 
-            setTimeout(() => {
-                navigate(finalRoute);
-            }, 3000);
+            navigate(finalRoute);
 
             return; // Exit early to prevent any other state updates
 
