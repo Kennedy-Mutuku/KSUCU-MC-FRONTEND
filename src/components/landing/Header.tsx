@@ -615,7 +615,7 @@ const Header = () => {
       }
     };
     fetchUser();
-  }, []);
+  }, [location.pathname]);
 
   const handleMouseEnter = (key: string) => {
     if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
