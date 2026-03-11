@@ -192,7 +192,6 @@ const mobileNavTabs: { key: string; icon: React.ElementType; label: string; }[] 
   { key: 'governingdocs', icon: FileText, label: 'Governing Docs' },
   { key: 'committees', icon: UsersRound, label: 'Committees' },
   { key: 'attendance', icon: ClipboardList, label: 'Attendance' },
-  { key: 'signin', icon: LogIn, label: 'Sign In' },
   { key: 'feedback', icon: MessageSquare, label: 'Talk to us' },
 ];
 
@@ -743,7 +742,12 @@ const Header = () => {
                   <span className="text-[10px] capitalize leading-none tracking-tight">{userData.username}</span>
                 </button>
               ) : (
-                <Link to="/signIn" className="px-3 py-1 bg-[#730051] text-white font-medium text-[10px] rounded-full hover:bg-[#5a0040] transition-colors shadow-sm active:scale-95 whitespace-nowrap">Sign In</Link>
+                <Link to="/signIn" className="flex items-center gap-1 pl-1 pr-2 py-1 bg-purple-50 hover:bg-[#730051]/10 border border-[#730051]/20 rounded-full font-bold text-[#730051] transition-all shadow-sm active:scale-95 whitespace-nowrap">
+                  <div className="bg-[#730051] text-white p-0.5 rounded-full flex items-center justify-center">
+                    <LogIn size={12} strokeWidth={2.5} />
+                  </div>
+                  <span className="text-[10px] leading-none tracking-tight">Log In</span>
+                </Link>
               )}
             </div>
 
@@ -834,7 +838,12 @@ const Header = () => {
                     <span className="text-[11px] xl:text-sm capitalize leading-none tracking-tight">{userData.username}</span>
                   </button>
                 ) : (
-                  <Link to="/signIn" className="px-2.5 xl:px-5 py-1.5 xl:py-2 bg-[#730051] text-white font-medium text-[11px] xl:text-sm rounded-lg hover:bg-[#5a0040] transition-colors shadow-lg shadow-purple-900/10 active:scale-95 transform transition-all whitespace-nowrap">Sign In</Link>
+                  <Link to="/signIn" className="flex items-center gap-1.5 pl-1.5 pr-3 py-1 bg-purple-50 hover:bg-[#730051]/10 border border-[#730051]/20 rounded-full font-bold text-[#730051] transition-all shadow-sm active:scale-95 whitespace-nowrap">
+                    <div className="bg-[#730051] text-white p-1 rounded-full flex items-center justify-center">
+                      <LogIn size={14} className="xl:w-[16px] xl:h-[16px]" strokeWidth={2.5} />
+                    </div>
+                    <span className="text-[11px] xl:text-sm leading-none tracking-tight">Log In</span>
+                  </Link>
                 )}
               </div>
             </nav>
