@@ -108,7 +108,7 @@ const ChangeDetails: React.FC = () => {
         : [...prevSelected, id]
     );
   };
-  
+
   // useEffect(() => {
   //   setLoading(true)
   //   const fetchUserData = async () => {
@@ -123,12 +123,12 @@ const ChangeDetails: React.FC = () => {
   //         setError('Please complete your registration. Google sign-up doesn't provide this information.')
   //       }else{
   //         console.log('clear');
-          
+
   //       }
-        
+
   //       setFormData(response.data);
   //       console.log(response.data);
-        
+
   //     } catch (error: any) { 
   //       if(error.response.status = 400){
   //       setError('Email/Reg/Phone already exist 😖')
@@ -186,7 +186,12 @@ const ChangeDetails: React.FC = () => {
       if (error.response && error.response.status === 400) {
         setError('Email/Reg/Phone already exists 😖');
       } else if (error.response && error.response.status === 401) {
-        setIsAdminSession(true);
+        if (localStorage.getItem('adminSession') === 'true') {
+          setIsAdminSession(true);
+        } else {
+          // Regular user whose session expired — redirect to login
+          navigate('/signIn');
+        }
       } else {
         setError('Failed to load user data. Please try again.');
       }
@@ -198,7 +203,7 @@ const ChangeDetails: React.FC = () => {
   useEffect(() => {
     fetchUserData();
   }, []);
-  
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { id, value } = e.target;
@@ -213,7 +218,7 @@ const ChangeDetails: React.FC = () => {
       setShowDropdown(false);
     }
   };
-  
+
   function validateYOS(input: string) {
     const regex = /^[1-6]$/; // Matches only one digit between 1 and 6
     return regex.test(input);
@@ -233,7 +238,7 @@ const ChangeDetails: React.FC = () => {
     try {
       setLoading(true);
       console.log('Starting logout process...');
-      
+
       // Call logout API
       const response = await axios.post(getApiUrl('usersLogout'), {}, {
         withCredentials: true,
@@ -241,9 +246,9 @@ const ChangeDetails: React.FC = () => {
           'Content-Type': 'application/json'
         }
       });
-      
+
       console.log('Logout API response:', response);
-      
+
       // Clear cookies more thoroughly
       const cookiesToClear = ['loginToken', 'sessionToken', 'authToken', 'token'];
       cookiesToClear.forEach(cookieName => {
@@ -252,7 +257,7 @@ const ChangeDetails: React.FC = () => {
         Cookies.remove(cookieName, { domain: window.location.hostname });
         Cookies.remove(cookieName, { domain: `.${window.location.hostname}` });
       });
-      
+
       // Clear all cookies fallback
       document.cookie.split(";").forEach((cookie) => {
         const eqPos = cookie.indexOf("=");
@@ -261,22 +266,22 @@ const ChangeDetails: React.FC = () => {
         document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=${window.location.hostname}`;
         document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.${window.location.hostname}`;
       });
-      
+
       // Clear local storage and session storage
       localStorage.clear();
       sessionStorage.clear();
-      
+
       console.log('Logout successful, redirecting to login...');
-      
+
       // Show success message briefly before redirecting
       setSuccessMessage('Successfully logged out!');
       setTimeout(() => {
         navigate('/signIn', { replace: true });
       }, 1000);
-      
+
     } catch (error: any) {
       console.error('Logout API error:', error);
-      
+
       // Even if API fails, clear local data and redirect
       const cookiesToClear = ['loginToken', 'sessionToken', 'authToken', 'token'];
       cookiesToClear.forEach(cookieName => {
@@ -285,7 +290,7 @@ const ChangeDetails: React.FC = () => {
         Cookies.remove(cookieName, { domain: window.location.hostname });
         Cookies.remove(cookieName, { domain: `.${window.location.hostname}` });
       });
-      
+
       document.cookie.split(";").forEach((cookie) => {
         const eqPos = cookie.indexOf("=");
         const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
@@ -293,10 +298,10 @@ const ChangeDetails: React.FC = () => {
         document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=${window.location.hostname}`;
         document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.${window.location.hostname}`;
       });
-      
+
       localStorage.clear();
       sessionStorage.clear();
-      
+
       setError('Logged out successfully (with warning)');
       setTimeout(() => {
         navigate('/signIn', { replace: true });
@@ -463,7 +468,7 @@ const ChangeDetails: React.FC = () => {
     setPendingPayload(null);
     setFormData(prev => ({ ...prev, password: '', currentPassword: '' }));
   };
-  
+
   if (isAdminSession) {
     return (
       <div className={styles.body}>
@@ -557,7 +562,7 @@ const ChangeDetails: React.FC = () => {
             <p>Loading your details...</p>
           </div>
         )}
-        
+
         {error && <p className={styles.error}>{error}</p>}
         {successMessage && <p className={styles.success}>{successMessage}</p>}
 
@@ -581,7 +586,7 @@ const ChangeDetails: React.FC = () => {
 
           <div className={styles['form-div']}>
             <label htmlFor="email">E-mail</label>
-            <input type="email" id="email" className={styles['input']} value={formData.email} onChange={handleChange}  disabled={true} />
+            <input type="email" id="email" className={styles['input']} value={formData.email} onChange={handleChange} disabled={true} />
           </div>
 
           <div className={styles['form-div']}>
@@ -734,15 +739,15 @@ const ChangeDetails: React.FC = () => {
         </div>
 
         <div className={`${styles['submisions']} ${styles['submissions-change-details']}`}>
-          {loading ? <div className={styles['submitData']} >Updating</div> : 
-          <div className={styles['submitData']} onClick={handleSubmit}>Update</div>
+          {loading ? <div className={styles['submitData']} >Updating</div> :
+            <div className={styles['submitData']} onClick={handleSubmit}>Update</div>
           }
         </div>
 
         {/* Logout Button Section */}
-        <div style={{ 
-          marginTop: '30px', 
-          paddingTop: '20px', 
+        <div style={{
+          marginTop: '30px',
+          paddingTop: '20px',
           borderTop: '2px solid #e0e0e0',
           textAlign: 'center'
         }}>
@@ -784,90 +789,90 @@ const ChangeDetails: React.FC = () => {
         </div>
       </div>
 
-        {/* Loading animation */}
-        <div className={`${styles.loading} ${loading ? styles['loading-active'] : ''}`}>
-          <p>Loading...</p>
-        </div>
+      {/* Loading animation */}
+      <div className={`${styles.loading} ${loading ? styles['loading-active'] : ''}`}>
+        <p>Loading...</p>
+      </div>
 
-        {/* Password Confirmation Dialog */}
-        {showConfirmDialog && (
+      {/* Password Confirmation Dialog */}
+      {showConfirmDialog && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000,
+          padding: '20px'
+        }}>
           <div style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: 'rgba(0,0,0,0.5)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 1000,
-            padding: '20px'
+            backgroundColor: '#fff',
+            borderRadius: '16px',
+            padding: '30px',
+            maxWidth: '380px',
+            width: '100%',
+            textAlign: 'center',
+            boxShadow: '0 10px 40px rgba(0,0,0,0.2)'
           }}>
             <div style={{
-              backgroundColor: '#fff',
-              borderRadius: '16px',
-              padding: '30px',
-              maxWidth: '380px',
-              width: '100%',
-              textAlign: 'center',
-              boxShadow: '0 10px 40px rgba(0,0,0,0.2)'
+              width: '50px',
+              height: '50px',
+              borderRadius: '50%',
+              background: 'linear-gradient(135deg, #730051, #a0006e)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 16px'
             }}>
-              <div style={{
-                width: '50px',
-                height: '50px',
-                borderRadius: '50%',
-                background: 'linear-gradient(135deg, #730051, #a0006e)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                margin: '0 auto 16px'
-              }}>
-                <Eye size={24} color="#fff" />
-              </div>
-              <h3 style={{ margin: '0 0 8px', color: '#2c3e50', fontSize: '1.1rem' }}>Confirm Password Change</h3>
-              <p style={{ color: '#666', fontSize: '14px', marginBottom: '24px' }}>
-                Are you sure you want to change your password?
-              </p>
-              <div style={{ display: 'flex', gap: '12px' }}>
-                <button
-                  onClick={handleCancelPasswordChange}
-                  style={{
-                    flex: 1,
-                    padding: '12px',
-                    borderRadius: '10px',
-                    border: '1px solid #ddd',
-                    backgroundColor: '#f5f5f5',
-                    color: '#333',
-                    fontSize: '14px',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease'
-                  }}
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleConfirmPasswordChange}
-                  style={{
-                    flex: 1,
-                    padding: '12px',
-                    borderRadius: '10px',
-                    border: 'none',
-                    background: 'linear-gradient(135deg, #730051, #a0006e)',
-                    color: '#fff',
-                    fontSize: '14px',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease'
-                  }}
-                >
-                  Confirm
-                </button>
-              </div>
+              <Eye size={24} color="#fff" />
+            </div>
+            <h3 style={{ margin: '0 0 8px', color: '#2c3e50', fontSize: '1.1rem' }}>Confirm Password Change</h3>
+            <p style={{ color: '#666', fontSize: '14px', marginBottom: '24px' }}>
+              Are you sure you want to change your password?
+            </p>
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <button
+                onClick={handleCancelPasswordChange}
+                style={{
+                  flex: 1,
+                  padding: '12px',
+                  borderRadius: '10px',
+                  border: '1px solid #ddd',
+                  backgroundColor: '#f5f5f5',
+                  color: '#333',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmPasswordChange}
+                style={{
+                  flex: 1,
+                  padding: '12px',
+                  borderRadius: '10px',
+                  border: 'none',
+                  background: 'linear-gradient(135deg, #730051, #a0006e)',
+                  color: '#fff',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                Confirm
+              </button>
             </div>
           </div>
-        )}
+        </div>
+      )}
 
     </div>
   );
