@@ -712,21 +712,40 @@ const Header = () => {
               <Menu size={22} className="text-gray-700" />
             </button>
 
-            <Link to="/" className="md:hidden flex-1 flex items-center justify-center gap-2">
-              <img src={cuLogo} alt="KSUCU Logo" className="w-9 h-9 object-contain" />
-              <div className="flex flex-col items-center">
-                <span className="font-bold text-gray-900 leading-none text-[11px] tracking-tight" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+            <Link to="/" className="md:hidden flex-1 flex items-center justify-center gap-1 min-w-0 pr-1">
+              <img src={cuLogo} alt="KSUCU Logo" className="w-8 h-8 object-contain flex-shrink-0" />
+              <div className="flex flex-col items-center overflow-hidden min-w-0">
+                <span className="font-bold text-gray-900 leading-none text-[10px] tracking-tight truncate w-full text-center" style={{ fontFamily: 'Montserrat, sans-serif' }}>
                   KISII UNIVERSITY CHRISTIAN UNION
                 </span>
-                <div className="flex items-center gap-1.5 mt-0.5">
-                  <div className="h-[1px] w-3 bg-[#730051]/30"></div>
-                  <span className="text-[#730051] text-[10px] whitespace-nowrap" style={{ fontFamily: 'Satisfy, cursive' }}>
+                <div className="flex items-center justify-center gap-1 mt-0.5 w-full">
+                  <div className="h-[1px] w-2 bg-[#730051]/30 hidden sm:block"></div>
+                  <span className="text-[#730051] text-[9px] truncate" style={{ fontFamily: 'Satisfy, cursive' }}>
                     Transforming Campus, Impacting nations
                   </span>
-                  <div className="h-[1px] w-3 bg-[#730051]/30"></div>
+                  <div className="h-[1px] w-2 bg-[#730051]/30 hidden sm:block"></div>
                 </div>
               </div>
             </Link>
+
+            {/* Mobile User/Sign In Button */}
+            <div className="md:hidden flex-shrink-0">
+              {isAdmin ? (
+                <button onClick={handleAdminLogout} className="flex items-center gap-1 pl-1 pr-2 py-1 bg-[#730051] text-white rounded-full transition-all shadow-sm active:scale-95 whitespace-nowrap">
+                  <LogOut size={12} strokeWidth={2.5} />
+                  <span className="text-[10px] font-bold">Log Out</span>
+                </button>
+              ) : userData ? (
+                <button onClick={() => navigate('/changeDetails')} className="flex items-center gap-1 pl-1 pr-2 py-1 bg-purple-50 hover:bg-[#730051]/10 border border-[#730051]/20 rounded-full font-bold text-[#730051] transition-all shadow-sm active:scale-95 whitespace-nowrap">
+                  <div className="bg-[#730051] text-white p-0.5 rounded-full flex items-center justify-center">
+                    <User size={12} strokeWidth={2.5} />
+                  </div>
+                  <span className="text-[10px] capitalize leading-none tracking-tight">{userData.username}</span>
+                </button>
+              ) : (
+                <Link to="/signIn" className="px-3 py-1 bg-[#730051] text-white font-medium text-[10px] rounded-full hover:bg-[#5a0040] transition-colors shadow-sm active:scale-95 whitespace-nowrap">Sign In</Link>
+              )}
+            </div>
 
             <Link to="/" className="hidden md:flex items-center gap-2 xl:gap-3 flex-shrink-0">
               <img src={cuLogo} alt="KSUCU Logo" className="w-10 h-10 xl:w-14 xl:h-14 object-contain flex-shrink-0" />
@@ -808,9 +827,11 @@ const Header = () => {
                     <span className="hidden xl:inline">Log Out</span>
                   </button>
                 ) : userData ? (
-                  <button onClick={() => navigate('/changeDetails')} className="flex items-center gap-1.5 px-1.5 xl:px-3 py-2 rounded-lg font-medium text-[11px] xl:text-sm text-gray-700 hover:bg-gray-100 transition-colors whitespace-nowrap">
-                    <User size={16} className="xl:w-[18px] xl:h-[18px]" />
-                    <span className="hidden xl:inline">{userData.username}</span>
+                  <button onClick={() => navigate('/changeDetails')} className="flex items-center gap-1.5 pl-1.5 pr-3 py-1 bg-purple-50 hover:bg-[#730051]/10 border border-[#730051]/20 rounded-full font-bold text-[#730051] transition-all shadow-sm active:scale-95 whitespace-nowrap">
+                    <div className="bg-[#730051] text-white p-1 rounded-full flex items-center justify-center">
+                      <User size={14} className="xl:w-[16px] xl:h-[16px]" strokeWidth={2.5} />
+                    </div>
+                    <span className="text-[11px] xl:text-sm capitalize leading-none tracking-tight">{userData.username}</span>
                   </button>
                 ) : (
                   <Link to="/signIn" className="px-2.5 xl:px-5 py-1.5 xl:py-2 bg-[#730051] text-white font-medium text-[11px] xl:text-sm rounded-lg hover:bg-[#5a0040] transition-colors shadow-lg shadow-purple-900/10 active:scale-95 transform transition-all whitespace-nowrap">Sign In</Link>

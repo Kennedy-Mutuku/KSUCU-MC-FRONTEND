@@ -14,10 +14,8 @@ const WesoPage = lazy(() => import("./ets/Weso"));
 const CetPage = lazy(() => import("./ets/Cet"));
 const NoPage = lazy(() => import("./NoPage"));
 const SignIn = lazy(() => import("../components/signin"));
-const SignUp = lazy(() => import("../components/signup"));
 const Bs = lazy(() => import("../components/bibleStudy"));
 const SavedSouls = lazy(() => import("./savedSouls"));
-const Forgotpassword = lazy(() => import("../components/forgotPassword"));
 const ClassesSection = lazy(() => import("./classes"));
 const BoardsPage = lazy(() => import("./boards"));
 const ChangeDetails = lazy(() => import("../components/changeDetails"));
@@ -93,10 +91,8 @@ export const router = createBrowserRouter([
             { path: "/ets/weso", element: <WesoPage /> },
             { path: "/ets/cet", element: <CetPage /> },
             { path: "/signIn", element: <SignIn /> },
-            { path: "/signUp", element: <SignUp /> },
             { path: "/Bs", element: <Bs /> },
             { path: "/save", element: <SavedSouls /> },
-            { path: "/forgotPassword", element: <Forgotpassword /> },
             { path: "/fellowshipsandclasses", element: <ClassesSection /> },
             { path: "/boards", element: <BoardsPage /> },
             { path: "/changeDetails", element: <ChangeDetails /> },

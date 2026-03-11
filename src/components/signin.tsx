@@ -21,23 +21,26 @@ const SignIn: React.FC = () => {
         password: '',
     });
     const [showWhatsAppHelp, setShowWhatsAppHelp] = useState(false);
-    const [showSignupLink, setShowSignupLink] = useState(false);
-    const [failedEmail, setFailedEmail] = useState('');
 
-    const [resetSending, setResetSending] = useState(false);
-    const [resetSent, setResetSent] = useState(false);
+    const [forgotRegNo, setForgotRegNo] = useState('');
+    const [forgotEmail, setForgotEmail] = useState('');
+    const [forgotPhone, setForgotPhone] = useState('');
+    const [forgotError, setForgotError] = useState('');
 
-    const handleSendResetLink = async () => {
-        if (!failedEmail) return;
-        setResetSending(true);
-        try {
-            await axios.post(getApiUrl('usersForgetPassword'), { email: failedEmail });
-            setResetSent(true);
-        } catch (err: any) {
-            setError(err.response?.data?.message || 'Failed to send reset link. Please try again.');
-        } finally {
-            setResetSending(false);
+    const [showWelcomeToast, setShowWelcomeToast] = useState(false);
+    const [welcomeName, setWelcomeName] = useState('');
+
+    const handleSendResetLink = (adminPhone: string) => {
+        if (!forgotRegNo || !forgotEmail || !forgotPhone) {
+            setForgotError('Please fill in all fields (Reg No, Email, Phone).');
+            return;
         }
+        setForgotError('');
+
+        const message = `Hello KSUCU-MC SYSTEM ADMIN, I accidentally lost my KSUCU-MC PORTAL Password kindly help me reset it at your soonest convenience, below are my details:\nReg No: ${forgotRegNo}\nEmail: ${forgotEmail}\nPhone: ${forgotPhone}`;
+
+        const encodedMessage = encodeURIComponent(message);
+        window.open(`https://wa.me/254${adminPhone.substring(1)}?text=${encodedMessage}`, '_blank');
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -217,12 +220,21 @@ const SignIn: React.FC = () => {
             }
 
             // Check for profile photo if regular user login
+            let finalRoute = route;
             if (route === '/profile' && response.data.user && !response.data.user.profilePhoto) {
-                navigate('/welcome');
-            } else {
-                // Navigate to the specified route
-                navigate(route);
+                finalRoute = '/welcome';
             }
+
+            const firstName = response.data.user?.firstName || response.data.user?.username?.split(' ')[0] || 'User';
+            setWelcomeName(firstName);
+            setShowWelcomeToast(true);
+
+            setTimeout(() => {
+                navigate(finalRoute);
+            }, 3000);
+
+            return; // Exit early to prevent any other state updates
+
 
         } catch (error: any) {
             console.error('SignIn: Login error:', error);
@@ -236,34 +248,9 @@ const SignIn: React.FC = () => {
 
             // Reset help options
             setShowWhatsAppHelp(false);
-            setShowSignupLink(false);
 
-            if (error.response && error.response.status === 401) {
-                // Check if user exists in database
-                try {
-                    const checkResponse = await axios.post(getApiUrl('usersCheckExists'), {
-                        email: processedEmail
-                    });
-
-                    if (checkResponse.data.exists) {
-                        // User exists but wrong password - show WhatsApp help
-                        setError('Invalid password. Your account exists but the password is incorrect.');
-                        setShowWhatsAppHelp(true);
-                        setShowSignupLink(false);
-                        setFailedEmail(processedEmail);
-
-                    } else {
-                        // User doesn't exist - show signup link
-                        setError('Seems you don\'t have an account.');
-                        setShowSignupLink(true);
-                        setShowWhatsAppHelp(false);
-                    }
-                } catch (checkError) {
-                    console.error('Error checking user existence:', checkError);
-                    setError('Invalid credentials. Please check your email and password.');
-                }
-            } else if (error.response && error.response.status === 404) {
-                setError('Login endpoint not found. Please check your email format.');
+            if (error.response && (error.response.status === 401 || error.response.status === 404)) {
+                setError('Incorrect email or password, please enter correct details.');
             } else if (error.response) {
                 setError(error.response.data?.message || 'Login failed. Please try again.');
             } else if (error.code === 'ECONNABORTED' || error.code === 'ETIMEDOUT') {
@@ -333,134 +320,153 @@ const SignIn: React.FC = () => {
                             <p style={{ margin: '0 0 15px 0', color: '#730051', fontSize: '15px', fontWeight: 'bold', textAlign: 'center' }}>
                                 Forgot your password?
                             </p>
-                            {resetSent ? (
-                                <p style={{ margin: '0', color: '#16a34a', fontSize: '14px', textAlign: 'center', fontWeight: 'bold' }}>
-                                    Reset link sent! Check your email inbox.
-                                </p>
-                            ) : (
-                                <>
-                                    <p style={{ margin: '0 0 12px 0', color: '#555', fontSize: '13px', textAlign: 'center' }}>
-                                        We'll send a password reset link to <strong>{failedEmail}</strong>
-                                    </p>
-                                    <button
-                                        onClick={handleSendResetLink}
-                                        disabled={resetSending}
-                                        style={{
-                                            width: '100%',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            gap: '8px',
-                                            background: '#730051',
-                                            color: 'white',
-                                            padding: '12px 20px',
-                                            borderRadius: '25px',
-                                            border: 'none',
-                                            cursor: resetSending ? 'default' : 'pointer',
-                                            fontWeight: 'bold',
-                                            fontSize: '14px',
-                                            opacity: resetSending ? 0.7 : 1
-                                        }}
-                                    >
-                                        {resetSending ? 'Sending...' : 'Send Reset Link'}
-                                    </button>
-                                </>
-                            )}
-                            <p style={{ margin: '12px 0 0 0', color: '#730051', fontSize: '12px', textAlign: 'center' }}>
-                                Tip: Your default password is your phone number
+                            <p style={{ margin: '0 0 12px 0', color: '#555', fontSize: '13px', textAlign: 'center' }}>
+                                Please provide your details below and choose an admin to message on WhatsApp for a password reset.
                             </p>
-                        </div>
-                    )}
-
-                    {showSignupLink && (
-                        <div style={{
-                            background: '#f8f0f5',
-                            border: '1px solid #e0c0d6',
-                            borderRadius: '10px',
-                            padding: '15px',
-                            marginBottom: '15px',
-                            textAlign: 'center'
-                        }}>
-                            <p style={{ margin: '0 0 10px 0', color: '#730051', fontSize: '14px' }}>
-                                You don't have an account yet. Register now to get started!
-                            </p>
-                            <Link
-                                to="/signUp"
-                                style={{
-                                    display: 'inline-block',
-                                    background: '#730051',
-                                    color: 'white',
-                                    padding: '10px 25px',
-                                    borderRadius: '25px',
-                                    textDecoration: 'none',
-                                    fontWeight: 'bold',
-                                    fontSize: '14px'
-                                }}
-                            >
-                                Click here to Sign Up
-                            </Link>
-                        </div>
-                    )}
-
-                    <div style={{
-                        filter: showWhatsAppHelp ? 'blur(3px)' : 'none',
-                        pointerEvents: showWhatsAppHelp ? 'none' : 'auto',
-                        opacity: showWhatsAppHelp ? 0.5 : 1,
-                        transition: 'all 0.3s ease'
-                    }}>
-                        <h2 className={styles['text']}>Log in</h2>
-
-                        <form action="" className={styles['form']}>
-
-                            <div className={styles['form-div']}>
-                                <label htmlFor="email">E-mail</label>
+                            {forgotError && <p style={{ color: 'red', fontSize: '12px', textAlign: 'center', marginBottom: '10px' }}>{forgotError}</p>}
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '15px' }}>
+                                <input
+                                    type="text"
+                                    placeholder="Reg No (e.g., IN14/00000/22)"
+                                    value={forgotRegNo}
+                                    onChange={(e) => setForgotRegNo(e.target.value)}
+                                    className={styles['input']}
+                                    style={{ padding: '10px', borderRadius: '5px', border: '1px solid #ccc' }}
+                                />
                                 <input
                                     type="email"
-                                    id="email"
+                                    placeholder="Email"
+                                    value={forgotEmail}
+                                    onChange={(e) => setForgotEmail(e.target.value)}
                                     className={styles['input']}
-                                    value={formData.email}
-                                    onChange={handleChange}
-                                    placeholder="Enter your email"
-                                    required
+                                    style={{ padding: '10px', borderRadius: '5px', border: '1px solid #ccc' }}
+                                />
+                                <input
+                                    type="tel"
+                                    placeholder="Phone No (e.g., 0712345678)"
+                                    value={forgotPhone}
+                                    onChange={(e) => setForgotPhone(e.target.value)}
+                                    className={styles['input']}
+                                    style={{ padding: '10px', borderRadius: '5px', border: '1px solid #ccc' }}
                                 />
                             </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                <button
+                                    onClick={(e) => { e.preventDefault(); handleSendResetLink('0717481883'); }}
+                                    style={{
+                                        width: '100%',
+                                        background: '#25D366',
+                                        color: 'white',
+                                        padding: '12px 10px',
+                                        borderRadius: '25px',
+                                        border: 'none',
+                                        cursor: 'pointer',
+                                        fontWeight: 'bold',
+                                        fontSize: '14px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        gap: '8px',
+                                        transition: 'background 0.3s ease'
+                                    }}
+                                >
+                                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" /></svg>
+                                    Reset via Gent Admin
+                                </button>
+                                <button
+                                    onClick={(e) => { e.preventDefault(); handleSendResetLink('0726379173'); }}
+                                    style={{
+                                        width: '100%',
+                                        background: '#25D366',
+                                        color: 'white',
+                                        padding: '12px 10px',
+                                        borderRadius: '25px',
+                                        border: 'none',
+                                        cursor: 'pointer',
+                                        fontWeight: 'bold',
+                                        fontSize: '14px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        gap: '8px',
+                                        transition: 'background 0.3s ease'
+                                    }}
+                                >
+                                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" /></svg>
+                                    Reset via Lady Admin
+                                </button>
+                            </div>
+                            <div style={{ marginTop: '20px', textAlign: 'center' }}>
+                                <button
+                                    onClick={(e) => { e.preventDefault(); setShowWhatsAppHelp(false); }}
+                                    style={{
+                                        background: 'transparent',
+                                        border: 'none',
+                                        color: '#730051',
+                                        cursor: 'pointer',
+                                        textDecoration: 'underline',
+                                        fontSize: '14px',
+                                        fontWeight: 'bold'
+                                    }}
+                                >
+                                    ← Back to Log In
+                                </button>
+                            </div>
+                        </div>
+                    )}
 
-                            <div className={styles['form-div']}>
-                                <label htmlFor="password">Password</label>
-                                <section className={styles['password-wrapper']}>
+                    {!showWhatsAppHelp && (
+                        <div>
+                            <h2 className={styles['text']}>Log in</h2>
+
+                            <form action="" className={styles['form']}>
+
+                                <div className={styles['form-div']}>
+                                    <label htmlFor="email">E-mail</label>
                                     <input
-                                        type={showPassword ? "text" : "password"}
-                                        id="password"
-                                        className={styles['input-pswd']}
-                                        value={formData.password}
+                                        type="email"
+                                        id="email"
+                                        className={styles['input']}
+                                        value={formData.email}
                                         onChange={handleChange}
-                                        placeholder="Enter your password"
+                                        placeholder="Enter your email"
+                                        required
                                     />
-                                    <button type="button" className={styles['eye-button']} onClick={togglePasswordVisibility}>
-                                        {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                                    </button>
-                                </section>
+                                </div>
+
+                                <div className={styles['form-div']}>
+                                    <label htmlFor="password">Password</label>
+                                    <section className={styles['password-wrapper']}>
+                                        <input
+                                            type={showPassword ? "text" : "password"}
+                                            id="password"
+                                            className={styles['input-pswd']}
+                                            value={formData.password}
+                                            onChange={handleChange}
+                                            placeholder="Enter your password"
+                                        />
+                                        <button type="button" className={styles['eye-button']} onClick={togglePasswordVisibility}>
+                                            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                        </button>
+                                    </section>
+                                </div>
+
+                            </form>
+
+                            <div className={styles['submisions']}>
+                                <div className={styles['clearForm']} onClick={() => setFormData({ email: '', password: '' })}>Clear</div>
+                                <div className={styles['submitData']} onClick={handleSubmit}>Log In</div>
                             </div>
 
-                        </form>
+                            <div className={styles['form-footer']}>
+                                <p><button type="button" onClick={() => setShowWhatsAppHelp(true)} style={{ background: 'none', border: 'none', color: '#730051', cursor: 'pointer', textDecoration: 'underline', fontSize: '1em', fontFamily: 'inherit' }}>Forgot password?</button></p>
+                            </div>
 
-                        <div className={styles['submisions']}>
-                            <div className={styles['clearForm']} onClick={() => setFormData({ email: '', password: '' })}>Clear</div>
-                            <div className={styles['submitData']} onClick={handleSubmit}>Log In</div>
+                            <div className={styles['form-footer']}>
+                                <p><Link to={"/Home"}>← Back to Home</Link></p>
+                            </div>
                         </div>
-
-                        <div className={styles['form-footer']}>
-                            <p><Link to={'/forgotPassword'}>Forgot password?</Link></p>
-                        </div>
-
-                        <div className={styles['form-footer']}>
-                            <p><Link to={"/Home"}>← Back to Home</Link></p>
-                        </div>
-
-                        <div className={styles['signup-link']}>
-                            <p>Don't have an account? <Link to={"/signUp"} className={styles['register-link']}>Register here</Link></p>
-                        </div>
-                    </div>
+                    )}
 
                     {isDevMode() && (
                         <div style={{

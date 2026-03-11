@@ -32,6 +32,15 @@ const UserProfilePage: React.FC = () => {
         fetchUserData();
     }, []);
 
+    useEffect(() => {
+        if (!loading && userData) {
+            const timer = setTimeout(() => {
+                navigate('/');
+            }, 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [navigate, loading, userData]);
+
     const fetchUserData = async () => {
         console.log('📋 Profile: Starting to fetch user data...');
         try {
@@ -169,216 +178,29 @@ const UserProfilePage: React.FC = () => {
                         </div>
                     </Link>
 
-                    <h2 className={styles.text} style={{ marginTop: '10px', marginBottom: '10px', fontSize: '1.3rem' }}>Welcome back, {userData.username}!</h2>
+                    <h2 className={styles.text} style={{ marginTop: '10px', marginBottom: '10px', fontSize: '1.6rem', color: '#730051', textAlign: 'center' }}>
+                        Welcome back, {userData.username}!
+                    </h2>
 
-                    {/* Associate Badge */}
-                    {userData.role === 'associate' && (
-                        <div style={{
-                            display: 'inline-block',
-                            background: 'linear-gradient(135deg, #730051, #a0006e)',
-                            color: 'white',
-                            padding: '4px 16px',
-                            borderRadius: '20px',
-                            fontSize: '12px',
-                            fontWeight: 'bold',
-                            textAlign: 'center',
-                            marginBottom: '15px',
-                            letterSpacing: '0.5px'
-                        }}>
-                            Associate / Alumni {userData.graduationYear ? `\u2022 Class of ${userData.graduationYear}` : ''}
-                        </div>
-                    )}
-
-                    {/* Success/Error Messages */}
-                    {successMessage && (
-                        <div style={{
-                            backgroundColor: '#d4edda',
-                            color: '#155724',
-                            border: '1px solid #c3e6cb',
-                            padding: '10px',
-                            borderRadius: '5px',
-                            marginBottom: '15px',
-                            textAlign: 'center'
-                        }}>
-                            {successMessage}
-                        </div>
-                    )}
-
-                    {error && (
-                        <div style={{
-                            backgroundColor: '#f8d7da',
-                            color: '#721c24',
-                            border: '1px solid #f5c6cb',
-                            padding: '10px',
-                            borderRadius: '5px',
-                            marginBottom: '15px',
-                            textAlign: 'center'
-                        }}>
-                            {error}
-                        </div>
-                    )}
-
-                    {/* Continue to KSUCUMC Button */}
-                    <div style={{ textAlign: 'center', margin: '15px 0' }}>
-                        <button
-                            onClick={handleContinueToKSUCUMC}
-                            style={{
-                                backgroundColor: '#730051',
-                                color: 'white',
-                                border: 'none',
-                                padding: '12px 30px',
-                                borderRadius: '25px',
-                                fontSize: '14px',
-                                fontWeight: '600',
-                                cursor: 'pointer',
-                                boxShadow: '0 3px 6px rgba(115,0,81,0.3)',
-                                transition: 'all 0.3s ease',
-                                minWidth: '200px'
-                            }}
-                            onMouseOver={(e) => {
-                                e.currentTarget.style.backgroundColor = '#5a0040';
-                                e.currentTarget.style.transform = 'translateY(-1px)';
-                                e.currentTarget.style.boxShadow = '0 4px 8px rgba(115,0,81,0.4)';
-                            }}
-                            onMouseOut={(e) => {
-                                e.currentTarget.style.backgroundColor = '#730051';
-                                e.currentTarget.style.transform = 'translateY(0)';
-                                e.currentTarget.style.boxShadow = '0 3px 6px rgba(115,0,81,0.3)';
-                            }}
-                        >
-                            Continue to KSUCUMC
-                        </button>
-                    </div>
-
-                    <div className={styles.form} style={{ marginBottom: '15px' }}>
-                        <div className={styles['user-details']} style={{ padding: '8px' }}>
-                            <h3 style={{ marginBottom: '15px', color: '#2c3e50', textAlign: 'center', fontSize: '1.1rem' }}>Your Profile</h3>
-
-                            <div style={{ marginBottom: '10px', padding: '8px', backgroundColor: '#f8f9fa', borderRadius: '6px', border: '1px solid #dee2e6' }}>
-                                <strong style={{ color: '#495057', fontSize: '13px' }}>Name:</strong>
-                                <div style={{ marginTop: '3px', fontSize: '14px' }}>{userData.username}</div>
-                            </div>
-
-                            <div style={{ marginBottom: '10px', padding: '8px', backgroundColor: '#f8f9fa', borderRadius: '6px', border: '1px solid #dee2e6' }}>
-                                <strong style={{ color: '#495057', fontSize: '13px' }}>Email:</strong>
-                                <div style={{ marginTop: '3px', fontSize: '14px' }}>{userData.email}</div>
-                            </div>
-
-                            <div style={{ marginBottom: '10px', padding: '8px', backgroundColor: '#f8f9fa', borderRadius: '6px', border: '1px solid #dee2e6' }}>
-                                <strong style={{ color: '#495057', fontSize: '13px' }}>Phone:</strong>
-                                <div style={{ marginTop: '3px', fontSize: '14px' }}>{userData.phone}</div>
-                            </div>
-
-                            {userData.role !== 'associate' && userData.yos && (
-                                <div style={{ marginBottom: '10px', padding: '8px', backgroundColor: '#f8f9fa', borderRadius: '6px', border: '1px solid #dee2e6' }}>
-                                    <strong style={{ color: '#495057', fontSize: '13px' }}>Year of Study:</strong>
-                                    <div style={{ marginTop: '3px', fontSize: '14px' }}>Year {userData.yos}</div>
-                                </div>
-                            )}
-
-                            {userData.role !== 'associate' && userData.et && userData.et !== 'none' && (
-                                <div style={{ marginBottom: '10px', padding: '8px', backgroundColor: '#f8f9fa', borderRadius: '6px', border: '1px solid #dee2e6' }}>
-                                    <strong style={{ color: '#495057', fontSize: '13px' }}>Evangelistic Team:</strong>
-                                    <div style={{ marginTop: '3px', fontSize: '14px' }}>{userData.et}</div>
-                                </div>
-                            )}
-
-                            {userData.role !== 'associate' && userData.ministry && userData.ministry !== 'alumni' && (
-                                <div style={{ marginBottom: '10px', padding: '8px', backgroundColor: '#f8f9fa', borderRadius: '6px', border: '1px solid #dee2e6' }}>
-                                    <strong style={{ color: '#495057', fontSize: '13px' }}>Ministry:</strong>
-                                    <div style={{ marginTop: '3px', fontSize: '14px' }}>{userData.ministry}</div>
-                                </div>
-                            )}
-
-                            {userData.course && (
-                                <div style={{ marginBottom: '10px', padding: '8px', backgroundColor: '#f8f9fa', borderRadius: '6px', border: '1px solid #dee2e6' }}>
-                                    <strong style={{ color: '#495057', fontSize: '13px' }}>Course:</strong>
-                                    <div style={{ marginTop: '3px', fontSize: '14px' }}>{userData.course}</div>
-                                </div>
-                            )}
-
-                            {userData.reg && (
-                                <div style={{ marginBottom: '10px', padding: '8px', backgroundColor: '#f8f9fa', borderRadius: '6px', border: '1px solid #dee2e6' }}>
-                                    <strong style={{ color: '#495057', fontSize: '13px' }}>Registration:</strong>
-                                    <div style={{ marginTop: '3px', fontSize: '14px' }}>{userData.reg}</div>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-
-                    {/* Edit Details and Logout buttons */}
-                    <div style={{
-                        display: 'flex',
-                        gap: '10px',
-                        justifyContent: 'center',
+                    <p style={{
+                        color: '#666',
+                        fontSize: '0.9rem',
                         marginTop: '15px',
-                        marginBottom: '15px',
-                        flexWrap: 'wrap'
+                        textAlign: 'center',
+                        animation: 'pulse 2s infinite'
                     }}>
-                        <Link
-                            to="/changeDetails"
-                            style={{
-                                backgroundColor: '#28a745',
-                                color: 'white',
-                                textDecoration: 'none',
-                                padding: '8px 16px',
-                                borderRadius: '20px',
-                                fontSize: '13px',
-                                fontWeight: '500',
-                                cursor: 'pointer',
-                                boxShadow: '0 2px 4px rgba(40,167,69,0.3)',
-                                transition: 'all 0.3s ease',
-                                minWidth: '100px',
-                                textAlign: 'center',
-                                display: 'inline-block'
-                            }}
-                            onMouseOver={(e) => {
-                                e.currentTarget.style.backgroundColor = '#218838';
-                                e.currentTarget.style.transform = 'translateY(-1px)';
-                                e.currentTarget.style.boxShadow = '0 3px 6px rgba(40,167,69,0.4)';
-                            }}
-                            onMouseOut={(e) => {
-                                e.currentTarget.style.backgroundColor = '#28a745';
-                                e.currentTarget.style.transform = 'translateY(0)';
-                                e.currentTarget.style.boxShadow = '0 2px 4px rgba(40,167,69,0.3)';
-                            }}
-                        >
-                            Edit Details
-                        </Link>
+                        Redirecting you...
+                    </p>
 
-                        <button
-                            onClick={handleLogout}
-                            disabled={loggingOut}
-                            style={{
-                                backgroundColor: '#dc3545',
-                                color: 'white',
-                                border: 'none',
-                                padding: '8px 16px',
-                                borderRadius: '20px',
-                                fontSize: '13px',
-                                fontWeight: '500',
-                                cursor: loggingOut ? 'not-allowed' : 'pointer',
-                                opacity: loggingOut ? 0.6 : 1,
-                                transition: 'all 0.3s ease',
-                                boxShadow: '0 2px 4px rgba(220, 53, 69, 0.3)',
-                                minWidth: '100px'
-                            }}
-                            onMouseOver={(e) => {
-                                if (!loggingOut) {
-                                    e.currentTarget.style.backgroundColor = '#c82333';
-                                    e.currentTarget.style.transform = 'translateY(-1px)';
-                                    e.currentTarget.style.boxShadow = '0 3px 6px rgba(220, 53, 69, 0.4)';
-                                }
-                            }}
-                            onMouseOut={(e) => {
-                                e.currentTarget.style.backgroundColor = '#dc3545';
-                                e.currentTarget.style.transform = 'translateY(0)';
-                                e.currentTarget.style.boxShadow = '0 2px 4px rgba(220, 53, 69, 0.3)';
-                            }}
-                        >
-                            {loggingOut ? 'Logging Out...' : 'Log Out'}
-                        </button>
-                    </div>
+                    <style>
+                        {`
+                            @keyframes pulse {
+                                0% { opacity: 0.6; }
+                                50% { opacity: 1; }
+                                100% { opacity: 0.6; }
+                            }
+                        `}
+                    </style>
                 </div>
             </div>
         </>

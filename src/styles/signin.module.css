@@ -262,6 +262,8 @@
     .container {
         padding: 24px 16px 16px;
         border-radius: 14px;
+        width: 95%;
+        max-width: 360px;
     }
 
     .text {
@@ -271,7 +273,7 @@
 
     .form-div,
     .password-container {
-        padding: 0 4px;
+        padding: 0;
     }
 
     .form .input,

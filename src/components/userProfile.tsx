@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from '../styles/signin.module.css';
 import cuLogo from '../assets/KSUCU logo updated document.png';
@@ -24,129 +24,16 @@ interface UserProfileProps {
 
 const UserProfile: React.FC<UserProfileProps> = ({ userData, isLoading }) => {
     const navigate = useNavigate();
-    const [loggingOut, setLoggingOut] = useState(false);
-    const [successMessage, setSuccessMessage] = useState('');
 
-    const handleContinueToKSUCUMC = () => {
-        navigate('/');
-    };
-
-    const handleLogout = async () => {
-        try {
-            setLoggingOut(true);
-            console.log('🚪 Starting comprehensive logout process...');
-
-            // First, clear client-side data immediately
-            const performClientSideLogout = () => {
-                console.log('🧹 Clearing client-side data...');
-
-                // Clear all possible cookies
-                const cookiesToClear = ['loginToken', 'sessionToken', 'authToken', 'token', 'user_s'];
-                const domains = [
-                    undefined, // No domain
-                    window.location.hostname,
-                    `.${window.location.hostname}`,
-                    'ksucu-mc.co.ke',
-                    '.ksucu-mc.co.ke'
-                ];
-                const paths = ['/', '', undefined];
-
-                // Clear cookies with all combinations
-                cookiesToClear.forEach(cookieName => {
-                    domains.forEach(domain => {
-                        paths.forEach(path => {
-                            // Using js-cookie library
-                            Cookies.remove(cookieName, { path, domain });
-
-                            // Also use direct document.cookie manipulation
-                            const domainStr = domain ? `;domain=${domain}` : '';
-                            const pathStr = path ? `;path=${path}` : '';
-                            document.cookie = `${cookieName}=;expires=Thu, 01 Jan 1970 00:00:00 GMT${pathStr}${domainStr}`;
-                        });
-                    });
-                });
-
-                // Nuclear option: clear ALL cookies
-                document.cookie.split(";").forEach((cookie) => {
-                    const eqPos = cookie.indexOf("=");
-                    const name = eqPos > -1 ? cookie.substring(0, eqPos).trim() : cookie.trim();
-
-                    // Clear with different combinations
-                    document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
-                    document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=${window.location.hostname}`;
-                    document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.${window.location.hostname}`;
-                    if (window.location.hostname.includes('ksucu-mc.co.ke')) {
-                        document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.ksucu-mc.co.ke`;
-                        document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=ksucu-mc.co.ke`;
-                    }
-                });
-
-                // Clear storage
-                localStorage.clear();
-                sessionStorage.clear();
-
-                console.log('✅ Client-side cleanup completed');
-            };
-
-            // Perform client-side logout first
-            performClientSideLogout();
-
-            // Then try to call the server logout API
-            try {
-                console.log('📡 Calling server logout API...');
-                const response = await axios.post(getApiUrl('usersLogout'), {}, {
-                    withCredentials: true,
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    timeout: 5000 // 5 second timeout
-                });
-
-                console.log('✅ Server logout successful:', response.data);
-            } catch (apiError: any) {
-                console.warn('⚠️ Server logout API failed, but continuing with client-side logout:', apiError.message);
-                // Don't throw here - client-side logout is sufficient
-            }
-
-            // Final cleanup to be extra sure
-            performClientSideLogout();
-
-            console.log('🎉 Comprehensive logout completed');
-
-            // Show success message briefly before redirecting
-            setSuccessMessage('Successfully logged out!');
-            setTimeout(() => {
-                navigate('/signIn');
-            }, 1000);
-
-        } catch (error: any) {
-            console.error('❌ Logout process error:', error);
-
-            // Even if everything fails, force client-side logout
-            const performEmergencyLogout = () => {
-                // Nuclear option: clear everything
-                document.cookie.split(";").forEach((cookie) => {
-                    const name = cookie.split("=")[0].trim();
-                    document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
-                    document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=${window.location.hostname}`;
-                    document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.${window.location.hostname}`;
-                });
-
-                localStorage.clear();
-                sessionStorage.clear();
-            };
-
-            performEmergencyLogout();
-            setSuccessMessage('Logged out successfully!');
-
-            setTimeout(() => {
-                navigate('/signIn');
-            }, 1000);
-        } finally {
-            setLoggingOut(false);
+    // Auto-redirect to home after 3 seconds
+    useEffect(() => {
+        if (!isLoading) {
+            const timer = setTimeout(() => {
+                navigate('/');
+            }, 3000);
+            return () => clearTimeout(timer);
         }
-    };
-
+    }, [navigate, isLoading]);
 
     if (isLoading) {
         return (
@@ -159,201 +46,48 @@ const UserProfile: React.FC<UserProfileProps> = ({ userData, isLoading }) => {
     }
 
     return (
-        <>
+        <div className={styles.container} style={{
+            maxHeight: '95vh',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '40px 20px',
+            margin: '10px',
+            minHeight: '40vh'
+        }}>
+            <div className={styles['logo_signUp']} style={{ marginBottom: '20px' }}>
+                <img src={cuLogo} alt="CU logo" style={{ height: '80px' }} />
+            </div>
+
+            <h2 className={styles.text} style={{
+                margin: '10px 0',
+                fontSize: '1.6rem',
+                color: '#730051',
+                textAlign: 'center'
+            }}>
+                Welcome back, {userData.username}!
+            </h2>
+
+            <p style={{
+                color: '#666',
+                fontSize: '0.9rem',
+                marginTop: '15px',
+                animation: 'pulse 2s infinite'
+            }}>
+                Redirecting you...
+            </p>
+
             <style>
                 {`
-                    @media (max-width: 768px) {
-                        .profile-grid {
-                            grid-template-columns: 1fr !important;
-                        }
+                    @keyframes pulse {
+                        0% { opacity: 0.6; }
+                        50% { opacity: 1; }
+                        100% { opacity: 0.6; }
                     }
                 `}
             </style>
-            <div className={styles.container} style={{
-                maxHeight: '95vh',
-                overflowY: 'auto',
-                padding: '15px 20px',
-                margin: '10px'
-            }}>
-                <Link to={"/"} className={styles.logo_div}>
-                    <div className={styles['logo_signUp']} style={{ marginBottom: '10px' }}>
-                        <img src={cuLogo} alt="CU logo" style={{ height: '60px' }} />
-                    </div>
-                </Link>
-
-                <h2 className={styles.text} style={{ margin: '5px 0 10px 0', fontSize: '1.3rem' }}>Welcome back, {userData.username}!</h2>
-
-                {/* Success Message */}
-                {successMessage && (
-                    <div style={{
-                        backgroundColor: '#d4edda',
-                        color: '#155724',
-                        border: '1px solid #c3e6cb',
-                        padding: '8px',
-                        borderRadius: '5px',
-                        marginBottom: '10px',
-                        textAlign: 'center',
-                        fontSize: '14px'
-                    }}>
-                        {successMessage}
-                    </div>
-                )}
-
-                {/* Continue to KSUCUMC Button */}
-                <div style={{ textAlign: 'center', margin: '10px 0' }}>
-                    <button
-                        onClick={handleContinueToKSUCUMC}
-                        style={{
-                            backgroundColor: '#007bff',
-                            color: 'white',
-                            border: 'none',
-                            padding: '10px 25px',
-                            borderRadius: '20px',
-                            fontSize: '14px',
-                            fontWeight: '600',
-                            cursor: 'pointer',
-                            boxShadow: '0 2px 4px rgba(0,123,255,0.3)',
-                            transition: 'all 0.3s ease',
-                            minWidth: '180px'
-                        }}
-                        onMouseOver={(e) => {
-                            e.currentTarget.style.backgroundColor = '#0056b3';
-                            e.currentTarget.style.transform = 'translateY(-1px)';
-                            e.currentTarget.style.boxShadow = '0 3px 6px rgba(0,123,255,0.4)';
-                        }}
-                        onMouseOut={(e) => {
-                            e.currentTarget.style.backgroundColor = '#007bff';
-                            e.currentTarget.style.transform = 'translateY(0)';
-                            e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,123,255,0.3)';
-                        }}
-                    >
-                        Continue to KSUCUMC
-                    </button>
-                </div>
-
-                {/* Small Logout Button */}
-                <div style={{ textAlign: 'center', margin: '5px 0 15px 0' }}>
-                    <button
-                        onClick={handleLogout}
-                        disabled={loggingOut}
-                        style={{
-                            backgroundColor: '#dc3545',
-                            color: 'white',
-                            border: 'none',
-                            padding: '4px 12px',
-                            borderRadius: '12px',
-                            fontSize: '11px',
-                            fontWeight: '500',
-                            cursor: loggingOut ? 'not-allowed' : 'pointer',
-                            opacity: loggingOut ? 0.6 : 1,
-                            transition: 'all 0.3s ease',
-                            boxShadow: '0 1px 3px rgba(220, 53, 69, 0.3)',
-                            minWidth: '70px'
-                        }}
-                        onMouseOver={(e) => {
-                            if (!loggingOut) {
-                                e.currentTarget.style.backgroundColor = '#c82333';
-                                e.currentTarget.style.transform = 'translateY(-1px)';
-                            }
-                        }}
-                        onMouseOut={(e) => {
-                            e.currentTarget.style.backgroundColor = '#dc3545';
-                            e.currentTarget.style.transform = 'translateY(0)';
-                        }}
-                    >
-                        {loggingOut ? 'Logging out...' : 'Log out'}
-                    </button>
-                </div>
-
-                <div className={styles.form} style={{ margin: '5px 0' }}>
-                    <div className={styles['user-details']}>
-                        <h3 style={{ marginBottom: '8px', color: '#2c3e50', fontSize: '1.1rem' }}>Your Profile</h3>
-
-                        <div style={{
-                            display: 'grid',
-                            gridTemplateColumns: '1fr 1fr',
-                            gap: '6px',
-                            fontSize: '13px'
-                        }} className="profile-grid">
-                            <div className={styles['detail-item']} style={{ padding: '5px 8px', backgroundColor: '#f8f9fa', borderRadius: '4px' }}>
-                                <strong>Name:</strong><br />{userData.username}
-                            </div>
-
-                            <div className={styles['detail-item']} style={{ padding: '5px 8px', backgroundColor: '#f8f9fa', borderRadius: '4px' }}>
-                                <strong>Email:</strong><br />{userData.email}
-                            </div>
-
-                            <div className={styles['detail-item']} style={{ padding: '5px 8px', backgroundColor: '#f8f9fa', borderRadius: '4px' }}>
-                                <strong>Phone:</strong><br />{userData.phone}
-                            </div>
-
-                            <div className={styles['detail-item']} style={{ padding: '5px 8px', backgroundColor: '#f8f9fa', borderRadius: '4px' }}>
-                                <strong>Year of Study:</strong><br />Year {userData.yos}
-                            </div>
-
-                            <div className={styles['detail-item']} style={{ padding: '5px 8px', backgroundColor: '#f8f9fa', borderRadius: '4px' }}>
-                                <strong>Evangelistic Team:</strong><br />{userData.et}
-                            </div>
-
-                            <div className={styles['detail-item']} style={{ padding: '5px 8px', backgroundColor: '#f8f9fa', borderRadius: '4px' }}>
-                                <strong>Ministry:</strong><br />{userData.ministry}
-                            </div>
-
-                            {userData.course && (
-                                <div className={styles['detail-item']} style={{ padding: '5px 8px', backgroundColor: '#f8f9fa', borderRadius: '4px', gridColumn: '1 / -1' }}>
-                                    <strong>Course:</strong><br />{userData.course}
-                                </div>
-                            )}
-
-                            {userData.reg && (
-                                <div className={styles['detail-item']} style={{ padding: '5px 8px', backgroundColor: '#f8f9fa', borderRadius: '4px', gridColumn: '1 / -1' }}>
-                                    <strong>Registration:</strong><br />{userData.reg}
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                </div>
-
-                {/* Edit Details button */}
-                <div style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    marginTop: '10px',
-                    marginBottom: '10px'
-                }}>
-                    <Link
-                        to="/changeDetails"
-                        style={{
-                            backgroundColor: '#28a745',
-                            color: 'white',
-                            textDecoration: 'none',
-                            padding: '8px 16px',
-                            borderRadius: '16px',
-                            fontSize: '12px',
-                            fontWeight: '500',
-                            cursor: 'pointer',
-                            boxShadow: '0 2px 4px rgba(40,167,69,0.3)',
-                            transition: 'all 0.3s ease',
-                            minWidth: '100px',
-                            textAlign: 'center',
-                            display: 'inline-block'
-                        }}
-                        onMouseOver={(e) => {
-                            e.currentTarget.style.backgroundColor = '#218838';
-                            e.currentTarget.style.transform = 'translateY(-1px)';
-                            e.currentTarget.style.boxShadow = '0 3px 6px rgba(40,167,69,0.4)';
-                        }}
-                        onMouseOut={(e) => {
-                            e.currentTarget.style.backgroundColor = '#28a745';
-                            e.currentTarget.style.transform = 'translateY(0)';
-                            e.currentTarget.style.boxShadow = '0 2px 4px rgba(40,167,69,0.3)';
-                        }}
-                    >
-                        Edit Details
-                    </Link>
-                </div>
-            </div>
-        </>
+        </div>
     );
 };
 
