@@ -290,7 +290,7 @@ const UserManagement: React.FC = () => {
                 }}>
                     <h3 style={{ marginBottom: '20px', color: '#730051', borderBottom: '2px solid #730051', paddingBottom: '10px' }}>Edit User Details</h3>
                     <form onSubmit={handleUpdateSubmit}>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+                        <div className={styles.editFormGrid}>
                             <div style={{ marginBottom: '15px' }}>
                                 <label style={{ display: 'block', fontSize: '13px', fontWeight: 'bold', marginBottom: '5px' }}>Full Name</label>
                                 <input type="text" name="username" value={editFormData.username} onChange={handleEditChange} required style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }} />

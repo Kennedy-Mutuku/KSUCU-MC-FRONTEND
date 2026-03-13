@@ -5,7 +5,7 @@ import {
   Home, Building2, Globe, Music,
   UsersRound, GraduationCap, Crown, LogIn, LogOut,
   ClipboardList, BookOpen, Tv2, FileText, AlertCircle,
-  MessageSquare, Coins, Heart, Folder, Book, UserPlus
+  MessageSquare, Coins, Folder, Book, UserPlus
 } from 'lucide-react';
 
 import { getApiUrl, getImageUrl } from '../../config/environment';
@@ -184,7 +184,6 @@ const mobileNavTabs: { key: string; icon: React.ElementType; label: string; }[] 
   { key: 'biblestudy', icon: BookOpen, label: 'Bible Study' },
   { key: 'classes', icon: GraduationCap, label: 'Classes' },
   { key: 'financials', icon: Coins, label: 'Financials' },
-  { key: 'compassion', icon: Heart, label: 'Compassion' },
   { key: 'requisitions', icon: FileText, label: 'Requisitions' },
   { key: 'filemanager', icon: Folder, label: 'File Manager' },
   { key: 'library', icon: Book, label: 'Library' },
@@ -211,7 +210,6 @@ const getTabSections = (key: string, activeSessions: Session[]): TabSection[] =>
     case 'classes': return [{ title: 'Classes', icon: GraduationCap, items: organizationSections[6].items }];
     case 'feedback': return [{ title: 'Talk to us', icon: MessageSquare, items: [{ label: 'Submit Anonymously', href: '/recomendations' }, { label: 'Submit with Identity', href: '/recomendations' }] }];
     case 'financials': return [{ title: 'Financials', icon: Coins, items: [{ label: 'View Financial Statements', href: '/financial' }, { label: 'My Contributions', href: '/financial' }] }];
-    case 'compassion': return [{ title: 'Compassion', icon: Heart, items: [{ label: 'Request Support', href: '/compassion-counseling' }, { label: 'Support the Ministry', href: '/compassion-counseling' }] }];
     case 'requisitions': return [{ title: 'Requisitions', icon: FileText, items: [{ label: 'My Requisitions', href: '/requisitions' }, { label: 'New Requisition', href: '/requisitions' }] }];
     case 'filemanager': return [{ title: 'File Manager', icon: Folder, items: [{ label: 'My Documents', href: '/my-docs' }, { label: 'Shared Files', href: '/my-docs' }] }];
     case 'library': return [{ title: 'Library', icon: Book, items: [{ label: 'Search Books', href: '/library' }, { label: 'My Borrows', href: '/library' }] }];
@@ -282,6 +280,20 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, activeNav, is
       setExpandedNestedItem(null);
       setIsManualExpanded(false);
       onNavigate(userData ? '/changeDetails' : '/signIn');
+      return;
+    }
+    if (key === 'biblestudy') {
+      setActiveTab(null);
+      setExpandedNestedItem(null);
+      setIsManualExpanded(false);
+      onNavigate('/Bs');
+      return;
+    }
+    if (key === 'financials') {
+      setActiveTab(null);
+      setExpandedNestedItem(null);
+      setIsManualExpanded(false);
+      onNavigate('/financial');
       return;
     }
     if (key === 'feedback') {

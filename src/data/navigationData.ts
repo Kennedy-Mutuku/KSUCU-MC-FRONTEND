@@ -16,21 +16,8 @@ export const organizationSections: NavSection[] = [
     items: [
       { label: 'Talk to us', href: '/recomendations' },
       { label: 'Financials', href: '/financial' },
-      {
-        label: 'Compassion',
-        children: [
-          { label: 'Request Support', href: '/compassion-counseling' },
-          { label: 'Support the Ministry', href: '/compassion-counseling' },
-        ],
-      },
       { label: 'Requisitions', href: '/requisitions' },
-      {
-        label: 'Bible Study',
-        children: [
-          { label: 'Register for Bible Study', href: '/Bs' },
-          { label: 'View Current BS Groups', href: '/Bs' },
-        ],
-      },
+      { label: 'Bible Study', href: '/Bs' },
       { label: 'File Manager', href: '/my-docs' },
       { label: 'Library', href: '/library' },
       { label: 'Win a Soul', href: '/save' },
@@ -63,7 +50,6 @@ export const organizationSections: NavSection[] = [
       { label: 'Instrumentalists (Wananzambe)', href: '/ministries/wananzambe' },
       { label: 'High School', href: '/ministries/highSchool' },
       { label: 'Church School', href: '/ministries/churchSchool' },
-      { label: 'Compassion', href: '/ministries/compassion' },
       { label: 'Creativity', href: '/ministries/creativity' },
       { label: 'Intercessory', href: '/ministries/intercessory' },
       { label: 'Ushering & Hospitality', href: '/ministries/ushering' },

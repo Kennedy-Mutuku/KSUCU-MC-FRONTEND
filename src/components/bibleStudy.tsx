@@ -193,39 +193,41 @@ const Bs: React.FC = () => {
                 <h2 className={styles['text']}>Register</h2>
 
                 <form onSubmit={handleSubmit} className={styles['form']}>
-                    <div>
-                        <label htmlFor="name">Name</label>
-                        <input type="text" id="name" value={formData.name} onChange={handleChange} required />
-                    </div>
+                    <div className={styles.formGrid}>
+                        <div>
+                            <label htmlFor="name">Name</label>
+                            <input type="text" id="name" value={formData.name} onChange={handleChange} required />
+                        </div>
 
-                    <div>
-                        <label htmlFor="phone">Phone</label>
-                        <input type="number" id="phone" value={formData.phone} onChange={handleChange} required />
-                    </div>
+                        <div>
+                            <label htmlFor="phone">Phone</label>
+                            <input type="number" id="phone" value={formData.phone} onChange={handleChange} required />
+                        </div>
 
-                    <div>
-                        <label htmlFor="yos">Y.O.S</label>
-                        <select id="yos" name="yos" value={formData.yos} className={styles['inputs']} onChange={(e) => setFormData({ ...formData, yos: e.target.value })} required>
-                            <option className={styles['payment-option']} value="">--select Year of Study--</option>
-                            <option value="1" className={styles['payment-option']}> 1 </option>
-                            <option value="2" className={styles['payment-option']}> 2 </option>
-                            <option value="3" className={styles['payment-option']}> 3 </option>
-                            <option value="4" className={styles['payment-option']}> 4 </option>
-                            <option value="5" className={styles['payment-option']}> 5 </option>
-                            <option value="6" className={styles['payment-option']}> 6 </option>
-                        </select>
-                    </div>
+                        <div>
+                            <label htmlFor="yos">Y.O.S</label>
+                            <select id="yos" name="yos" value={formData.yos} className={styles['inputs']} onChange={(e) => setFormData({ ...formData, yos: e.target.value })} required>
+                                <option className={styles['payment-option']} value="">--select Year of Study--</option>
+                                <option value="1" className={styles['payment-option']}> 1 </option>
+                                <option value="2" className={styles['payment-option']}> 2 </option>
+                                <option value="3" className={styles['payment-option']}> 3 </option>
+                                <option value="4" className={styles['payment-option']}> 4 </option>
+                                <option value="5" className={styles['payment-option']}> 5 </option>
+                                <option value="6" className={styles['payment-option']}> 6 </option>
+                            </select>
+                        </div>
 
-                    <div>
-                        <label htmlFor="residence">Residence</label>
-                        <select id="residence" name="residence" value={formData.residence} className={styles['inputs']} onChange={(e) => setFormData({ ...formData, residence: e.target.value })} required>
-                            <option className={styles['payment-option']} value="">--select Residence--</option>
-                            {residences.map((residence) => (
-                                <option key={residence._id} value={residence.name} className={styles['payment-option']}>
-                                    {residence.name}
-                                </option>
-                            ))}
-                        </select>
+                        <div>
+                            <label htmlFor="residence">Residence</label>
+                            <select id="residence" name="residence" value={formData.residence} className={styles['inputs']} onChange={(e) => setFormData({ ...formData, residence: e.target.value })} required>
+                                <option className={styles['payment-option']} value="">--select Residence--</option>
+                                {residences.map((residence) => (
+                                    <option key={residence._id} value={residence.name} className={styles['payment-option']}>
+                                        {residence.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
 
                     {/* Gender selection */}

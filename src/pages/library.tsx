@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from '../styles/e-library.module.css';
-import { FaArrowLeft, FaSearch, FaBook } from 'react-icons/fa';
+import { FaArrowLeft, FaSearch, FaBook, FaFilter, FaChevronDown } from 'react-icons/fa';
 
 interface Book {
   title: string;
@@ -73,6 +73,7 @@ const Library: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [filteredBooks, setFilteredBooks] = useState<Book[]>(books);
   const [modalBook, setModalBook] = useState<Book | null>(null);
+  const [showFilters, setShowFilters] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -109,32 +110,48 @@ const Library: React.FC = () => {
         </div>
         <div className={styles.controls}>
           <div className={styles.searchFilter}>
-            <div className={styles.searchRow}>
-              <div className={styles.searchInputWrapper}>
-                <FaSearch className={styles.searchIcon} />
-                <input
-                  className={styles.searchInput}
-                  type="text"
-                  placeholder="Search for books..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
-              </div>
-              <select
-                className={styles.select}
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
+            <div className={styles.searchInputWrapper}>
+              <FaSearch className={styles.searchIcon} />
+              <input
+                className={styles.searchInput}
+                type="text"
+                placeholder="Search books..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+            
+            <div className={styles.filterSection}>
+              <button 
+                className={`${styles.filterButton} ${selectedCategory !== '' ? styles.filterActive : ''}`}
+                onClick={() => setShowFilters(!showFilters)}
               >
-                <option value="">All Categories</option>
-                <option value="Alter">Alter</option>
-                <option value="Faith">Faith</option>
-                <option value="Growth">Growth</option>
-                <option value="Hope">Hope</option>
-                <option value="Leadership">Leadership</option>
-                <option value="Ministry">Ministry</option>
-                <option value="Parenting">Parenting</option>
-                <option value="Prayer">Prayer</option>
-              </select>
+                <div className={styles.filterBtnLeft}>
+                  <FaFilter size={12} />
+                  <span>{selectedCategory || 'All Subjects'}</span>
+                </div>
+                <FaChevronDown size={10} className={`${styles.chevron} ${showFilters ? styles.chevronRotate : ''}`} />
+              </button>
+
+              {showFilters && (
+                <div className={styles.filterDropdown}>
+                  <button 
+                    className={`${styles.dropdownItem} ${selectedCategory === '' ? styles.activeItem : ''}`}
+                    onClick={() => { setSelectedCategory(''); setShowFilters(false); }}
+                  >
+                    All Subjects
+                  </button>
+                  {['Alter', 'Faith', 'Growth', 'Hope', 'Leadership', 'Ministry', 'Parenting', 'Prayer'].map(cat => (
+                    <button 
+                      key={cat}
+                      className={`${styles.dropdownItem} ${selectedCategory === cat ? styles.activeItem : ''}`}
+                      onClick={() => { setSelectedCategory(cat); setShowFilters(false); }}
+                    >
+                      {cat}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>

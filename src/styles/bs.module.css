@@ -1,11 +1,11 @@
 @import url(global.css);
 
 .bsTitle {
-    margin: 15px auto 10px auto;
+    margin: 10px auto 5px auto;
     width: 90%;
     max-width: 800px;
     text-align: center;
-    font-size: 2rem;
+    font-size: 1.8rem;
     font-weight: 700;
     color: #730051;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
@@ -25,12 +25,12 @@
 }
 
 .container {
-    max-width: 600px;
-    margin: 15px auto;
-    padding: 25px;
+    max-width: 650px; /* Slightly wider for grid balance */
+    margin: 10px auto;
+    padding: 15px 25px; /* Reduced vertical padding */
     background: #ffffff;
-    border-radius: 15px;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
     border: 1px solid #e2e8f0;
     position: relative;
     overflow: hidden;
@@ -47,44 +47,49 @@
 }
 
 .text {
-    margin-bottom: 20px;
-    font-size: 1.3rem;
-    font-weight: 600;
-    color: #2c3e50;
+    margin-bottom: 12px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #2d3748;
     text-align: center;
 }
 
 .form {
-    overflow: auto;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 12px;
+}
+
+.formGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
 }
 
 .form > div {
-    margin-bottom: 0;
+    margin-bottom: 0px;
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
 .form label {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #2c3e50;
-    margin-bottom: 5px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #4a5568;
+    margin-bottom: 2px;
 }
 
 .form input[type="text"],
 .form input[type="number"],
 .form select {
     width: 100%;
-    padding: 12px;
-    border: 2px solid #e2e8f0;
-    border-radius: 10px;
-    font-size: 0.95rem;
-    transition: all 0.3s ease;
-    background: #f8fafc;
+    padding: 10px 14px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    background: #ffffff;
     box-sizing: border-box;
 }
 
@@ -163,20 +168,19 @@
     text-align: center;
 }
 
-/* Bible Study Pastor Section - Clear and Clickable */
+/* Bible Study Pastor Section */
 .pastorSection {
-    margin: 18px 0;
+    margin: 12px 0;
 }
 
 .pastorCard {
-    background: #f8f9ff;
-    border: 2px solid #730051;
-    border-radius: 12px;
-    padding: 18px;
+    background: #f8fafc;
+    border: 1.5px solid #730051;
+    border-radius: 10px;
+    padding: 12px 16px;
     position: relative;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(115, 0, 81, 0.15);
 }
 
 .pastorCard::after {
@@ -254,8 +258,8 @@
 
 .submisions {
     display: flex;
-    gap: 16px;
-    margin-top: 20px;
+    gap: 12px;
+    margin-top: 15px;
     justify-content: center;
     align-items: center;
 }
@@ -466,67 +470,127 @@
 
 @media (max-width: 480px) {
     .container {
-        margin: 8px;
-        padding: 18px 12px;
+        margin: 5px auto;
+        padding: 10px 8px;
+        border-radius: 8px;
     }
 
     .bsTitle {
-        font-size: 1.6rem;
-        margin: 10px auto 6px auto;
+        font-size: 1.3rem; /* Smarter, smaller title */
+        margin: 4px auto 2px auto;
+    }
+
+    .bsTitle::after {
+        bottom: -4px;
+        width: 40px;
+        height: 2px;
     }
 
     .text {
-        font-size: 1.1rem;
-        margin-bottom: 14px;
+        font-size: 0.95rem;
+        margin-bottom: 6px;
     }
 
     .form {
-        gap: 12px;
+        gap: 6px; /* Tight gaps between fields */
     }
 
-    .radioItem {
-        padding: 8px 12px;
+    .form > div {
+        gap: 2px;
     }
 
-    .pastorCard {
-        padding: 14px;
-    }
-
-    .pastorTitle {
-        font-size: 0.95rem;
-    }
-
-    .pastorSubtitle {
-        font-size: 0.75rem;
-    }
-
-    .pastorCard::after {
-        font-size: 0.6rem;
-        padding: 2px 5px;
-        top: 6px;
-        right: 8px;
+    .form label {
+        font-size: 0.8rem;
+        margin-bottom: 1px;
     }
 
     .form input[type="text"],
     .form input[type="number"],
     .form select {
-        padding: 9px;
-        font-size: 0.9rem;
+        padding: 6px 8px;
+        font-size: 0.85rem;
+        border-radius: 6px;
+    }
+
+    .genderSection {
+        gap: 4px;
+    }
+
+    .radioGroup {
+        flex-direction: row; /* FORCE horizontal to save massive vertical space */
+        gap: 6px;
+    }
+
+    .radioItem {
+        padding: 5px 8px;
+        border-radius: 6px;
+        gap: 4px;
+        flex: 1;
+    }
+
+    .radioItem label {
+        font-size: 0.8rem;
+    }
+
+    .pastorSection {
+        margin: 6px 0;
+    }
+
+    .pastorCard {
+        padding: 8px 10px; /* Slimmer card */
+        border-radius: 8px;
+    }
+
+    .pastorTitle {
+        font-size: 0.85rem;
+        margin-bottom: 1px;
+    }
+
+    .pastorSubtitle {
+        font-size: 0.7rem;
+        line-height: 1.1;
+    }
+
+    .pastorCard::after {
+        font-size: 0.5rem;
+        padding: 1px 3px;
+        top: 3px;
+        right: 3px;
+    }
+
+    .submisions {
+        margin-top: 8px;
+        gap: 8px;
+        flex-direction: row; /* Side-by-side buttons for extreme density */
     }
 
     .clearForm,
     .submitData {
-        padding: 10px 20px;
-        font-size: 0.9rem;
+        padding: 7px 10px;
+        font-size: 0.8rem;
+        border-radius: 15px;
+        min-width: 0;
+        flex: 1;
     }
 
-    .submisions {
-        margin-top: 14px;
-        gap: 10px;
+    .submitDataButton {
+        font-size: 0.8rem;
+        gap: 3px;
     }
 
     .form-footer {
-        margin-top: 16px;
-        padding-top: 12px;
+        margin-top: 6px;
+        padding-top: 6px;
+    }
+
+    .form-footer p {
+        font-size: 0.8rem;
+    }
+
+    .error {
+        margin: 5px auto;
+        padding: 6px 10px;
+        font-size: 0.8rem;
+        border-radius: 6px;
     }
 }
