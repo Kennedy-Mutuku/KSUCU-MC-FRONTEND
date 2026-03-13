@@ -419,10 +419,10 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, activeNav, is
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '28px', height: '28px' }}>
                   {isUser ? (
                     userData?.profilePhoto ? (
-                      <img 
-                        src={getImageUrl(userData.profilePhoto)} 
-                        alt="" 
-                        style={{ width: '24px', height: '24px', borderRadius: '50%', objectFit: 'cover', border: '1.5px solid rgba(255,255,255,0.8)' }} 
+                      <img
+                        src={getImageUrl(userData.profilePhoto)}
+                        alt=""
+                        style={{ width: '24px', height: '24px', borderRadius: '50%', objectFit: 'cover', border: '1.5px solid rgba(255,255,255,0.8)' }}
                       />
                     ) : (
                       <User size={22} />
@@ -674,7 +674,7 @@ const Header = () => {
       }
     };
     fetchUser();
-    
+
     // Listen for manual user data updates (like profile photo changes)
     window.addEventListener('userDataUpdated', fetchUser);
     return () => window.removeEventListener('userDataUpdated', fetchUser);
