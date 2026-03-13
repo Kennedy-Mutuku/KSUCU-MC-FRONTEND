@@ -27,6 +27,7 @@ interface ApiConfig {
     admissionAdminAdmitUser: string;
     admissionAdminGetUsers: string;
     admissionAdminResetPassword: string;
+    admissionAdminUpdateUser: string;
     authGoogle: string;
     attendanceSession: string;
     attendanceSessionStatus: string;
@@ -132,6 +133,7 @@ const developmentConfig: ApiConfig = {
     admissionAdminAdmitUser: '/admissionadmin/admit-user',
     admissionAdminGetUsers: '/admissionadmin/users',
     admissionAdminResetPassword: '/admissionadmin/reset-password',
+    admissionAdminUpdateUser: '/admissionadmin/update-user/:userId',
     authGoogle: '/auth/google',
     attendanceSession: '/attendance/session',
     attendanceSessionStatus: '/attendance/session/status',
@@ -230,6 +232,7 @@ const productionConfig: ApiConfig = {
     admissionAdminAdmitUser: '/admissionadmin/admit-user',
     admissionAdminGetUsers: '/admissionadmin/users',
     admissionAdminResetPassword: '/admissionadmin/reset-password',
+    admissionAdminUpdateUser: '/admissionadmin/update-user/:userId',
     authGoogle: '/auth/google',
     attendanceSession: '/attendance/session',
     attendanceSessionStatus: '/attendance/session/status',
@@ -330,7 +333,10 @@ export const getImageUrl = (imagePath: string): string => {
   }
 
   // Add cache version to bust CDN cached 404s
-  return `${url}?v=2`;
+  // If the path already has a query, don't double up
+  if (imagePath.includes('?')) return url;
+  
+  return `${url}?v=${Date.now()}`;
 };
 
 export const isDevMode = (): boolean => isDevelopment;

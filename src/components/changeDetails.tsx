@@ -5,7 +5,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import styles from '../styles/changeDetails.module.css';
 import Cookies from 'js-cookie';
 import { ChevronDown, Eye, EyeOff } from 'lucide-react';
-import { getApiUrl } from '../config/environment';
+import { getApiUrl, getImageUrl } from '../config/environment';
+import ProfilePhotoUpload from './ProfilePhotoUpload';
+import { Camera, Trash2, X as CloseIcon, Upload } from 'lucide-react';
 
 type FormData = {
   username: string;
@@ -19,6 +21,7 @@ type FormData = {
   graduationYear: string;
   currentPassword: string;
   password: string;
+  profilePhoto?: string;
 };
 
 const ministriesList = [
@@ -62,6 +65,8 @@ const ChangeDetails: React.FC = () => {
   const [isAdminSession, setIsAdminSession] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<{ phone?: string; reg?: string }>({});
   const [checkingField, setCheckingField] = useState<string | null>(null);
+  const [showPhotoUpload, setShowPhotoUpload] = useState(false);
+  const [showFullSize, setShowFullSize] = useState(false);
   const [originalData, setOriginalData] = useState<{ phone: string; reg: string }>({ phone: '', reg: '' });
 
   const isAssociate = userRole === 'associate';
@@ -176,6 +181,7 @@ const ChangeDetails: React.FC = () => {
         graduationYear: response.data.graduationYear || '',
         currentPassword: '',
         password: '',
+        profilePhoto: response.data.profilePhoto || '',
       });
 
       setSelectedMinistries(ministriesArray);
@@ -306,6 +312,38 @@ const ChangeDetails: React.FC = () => {
       setTimeout(() => {
         navigate('/signIn', { replace: true });
       }, 1000);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePhotoUploadSuccess = (photoUrl: string) => {
+    // Add timestamp to the photo URL to force immediate re-render everywhere
+    const timestampedUrl = `${photoUrl}?t=${Date.now()}`;
+    setFormData(prev => ({ ...prev, profilePhoto: timestampedUrl }));
+    setShowPhotoUpload(false);
+    setSuccessMessage('Profile photo updated successfully! 📸');
+    
+    // Dispatch custom event to notify Header and other components
+    window.dispatchEvent(new CustomEvent('userDataUpdated'));
+    
+    setTimeout(() => setSuccessMessage(''), 3000);
+  };
+
+  const handleRemovePhoto = async () => {
+    try {
+      setLoading(true);
+      await axios.delete(getApiUrl('api/users/profile-photo'), { withCredentials: true });
+      setFormData(prev => ({ ...prev, profilePhoto: '' }));
+      setSuccessMessage('Profile photo removed successfully! ✨');
+      
+      // Dispatch custom event to notify Header and other components
+      window.dispatchEvent(new CustomEvent('userDataUpdated'));
+      
+      setTimeout(() => setSuccessMessage(''), 3000);
+    } catch (err) {
+      console.error('Error removing photo:', err);
+      setError('Failed to remove profile photo.');
     } finally {
       setLoading(false);
     }
@@ -565,6 +603,226 @@ const ChangeDetails: React.FC = () => {
 
         {error && <p className={styles.error}>{error}</p>}
         {successMessage && <p className={styles.success}>{successMessage}</p>}
+
+        {/* Profile Photo Section */}
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          marginBottom: '24px',
+          gap: '12px'
+        }}>
+          <div style={{
+            position: 'relative',
+            width: '110px',
+            height: '110px',
+            borderRadius: '50%',
+            overflow: 'hidden',
+            border: '4px solid #73005120',
+            boxShadow: '0 4px 15px rgba(115, 0, 81, 0.1)',
+            backgroundColor: '#f8f0f5',
+            transition: 'all 0.3s ease',
+            cursor: formData.profilePhoto ? 'zoom-in' : 'default',
+          }}
+          onClick={() => formData.profilePhoto && setShowFullSize(true)}
+          title={formData.profilePhoto ? "Click to view full size" : ""}
+        >
+            {formData.profilePhoto ? (
+              <img
+                src={getImageUrl(formData.profilePhoto)}
+                alt="Profile"
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            ) : (
+              <div style={{
+                width: '100%',
+                height: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#73005130'
+              }}>
+                <Upload size={40} />
+              </div>
+            )}
+          </div>
+
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button
+              onClick={() => setShowPhotoUpload(true)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '6px 14px',
+                backgroundColor: '#73005110',
+                color: '#730051',
+                border: '1.5px solid #73005130',
+                borderRadius: '20px',
+                fontSize: '12px',
+                fontWeight: '700',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#73005120';
+                e.currentTarget.style.transform = 'translateY(-1px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = '#73005110';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}
+            >
+              <Camera size={14} />
+              {formData.profilePhoto ? 'Change Photo' : 'Add Photo'}
+            </button>
+
+            {formData.profilePhoto && (
+              <button
+                onClick={handleRemovePhoto}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '6px 14px',
+                  backgroundColor: '#fee2e2',
+                  color: '#dc2626',
+                  border: '1.5px solid #fecaca',
+                  borderRadius: '20px',
+                  fontSize: '12px',
+                  fontWeight: '700',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#fecaca';
+                  e.currentTarget.style.transform = 'translateY(-1px)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = '#fee2e2';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                }}
+              >
+                <Trash2 size={14} />
+                Remove
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Photo Upload Modal */}
+        {showPhotoUpload && (
+          <div style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 10000,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '20px',
+            backgroundColor: 'rgba(0,0,0,0.6)',
+            backdropFilter: 'blur(4px)',
+          }}>
+            <div style={{
+              position: 'relative',
+              width: '100%',
+              maxWidth: '500px',
+              animation: 'modalSlideUp 0.3s ease-out'
+            }}>
+              <button
+                onClick={() => setShowPhotoUpload(false)}
+                style={{
+                  position: 'absolute',
+                  top: '-40px',
+                  right: '0',
+                  backgroundColor: 'white',
+                  border: 'none',
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  boxShadow: '0 2px 10px rgba(0,0,0,0.2)',
+                  zIndex: 1,
+                }}
+              >
+                <CloseIcon size={18} color="#730051" />
+              </button>
+              <ProfilePhotoUpload
+                onUploadSuccess={handlePhotoUploadSuccess}
+                onCancel={() => setShowPhotoUpload(false)}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Full Size Photo Viewer */}
+        {showFullSize && formData.profilePhoto && (
+          <div 
+            style={{
+              position: 'fixed',
+              inset: 0,
+              zIndex: 11000,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: 'rgba(0,0,0,0.9)',
+              backdropFilter: 'blur(8px)',
+              cursor: 'zoom-out',
+              animation: 'fadeIn 0.3s ease-out'
+            }}
+            onClick={() => setShowFullSize(false)}
+          >
+            <div 
+              style={{
+                position: 'relative',
+                width: 'auto',
+                height: 'auto',
+                maxWidth: '90vw',
+                maxHeight: '90vh',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setShowFullSize(false)}
+                style={{
+                  position: 'absolute',
+                  top: '-50px',
+                  right: '0',
+                  background: 'none',
+                  border: 'none',
+                  color: 'white',
+                  cursor: 'pointer',
+                  padding: '8px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  fontSize: '14px',
+                  fontWeight: '600'
+                }}
+              >
+                <CloseIcon size={24} />
+                Close
+              </button>
+              <img
+                src={getImageUrl(formData.profilePhoto)}
+                alt="Full Profile"
+                style={{
+                  maxWidth: '100%',
+                  maxHeight: '80vh',
+                  borderRadius: '12px',
+                  boxShadow: '0 20px 50px rgba(0,0,0,0.5)',
+                  objectFit: 'contain'
+                }}
+              />
+            </div>
+          </div>
+        )}
 
         <div className={styles['form']}>
 

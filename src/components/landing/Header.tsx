@@ -8,7 +8,7 @@ import {
   MessageSquare, Coins, Heart, Folder, Book, UserPlus
 } from 'lucide-react';
 
-import { getApiUrl } from '../../config/environment';
+import { getApiUrl, getImageUrl } from '../../config/environment';
 import { headerNavGroups, organizationSections, type NavItem, type NavSection } from '../../data/navigationData';
 import cuLogo from '../../assets/cuLogoUAR.png';
 import QuickAttendanceSign from '../attendance/QuickAttendanceSign';
@@ -16,6 +16,7 @@ import QuickAttendanceSign from '../attendance/QuickAttendanceSign';
 interface UserData {
   username: string;
   email: string;
+  profilePhoto?: string;
 }
 
 interface Session {
@@ -369,8 +370,20 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, activeNav, is
                   transform: isActive ? 'scale(1.02)' : 'scale(1)',
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '28px' }}>
-                  {isUser ? <User size={22} /> : <Icon size={22} />}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '28px', height: '28px' }}>
+                  {isUser ? (
+                    userData?.profilePhoto ? (
+                      <img 
+                        src={getImageUrl(userData.profilePhoto)} 
+                        alt="" 
+                        style={{ width: '24px', height: '24px', borderRadius: '50%', objectFit: 'cover', border: '1.5px solid rgba(255,255,255,0.8)' }} 
+                      />
+                    ) : (
+                      <User size={22} />
+                    )
+                  ) : (
+                    <Icon size={22} />
+                  )}
                 </div>
 
                 {isAttendance && hasActiveSessions && (
@@ -615,6 +628,10 @@ const Header = () => {
       }
     };
     fetchUser();
+    
+    // Listen for manual user data updates (like profile photo changes)
+    window.addEventListener('userDataUpdated', fetchUser);
+    return () => window.removeEventListener('userDataUpdated', fetchUser);
   }, [location.pathname]);
 
   const handleMouseEnter = (key: string) => {
@@ -735,9 +752,13 @@ const Header = () => {
                   <span className="text-[10px] font-bold">Log Out</span>
                 </button>
               ) : userData ? (
-                <button onClick={() => navigate('/changeDetails')} className="flex items-center gap-1 pl-1 pr-2 py-1 bg-purple-50 hover:bg-[#730051]/10 border border-[#730051]/20 rounded-full font-bold text-[#730051] transition-all shadow-sm active:scale-95 whitespace-nowrap">
-                  <div className="bg-[#730051] text-white p-0.5 rounded-full flex items-center justify-center">
-                    <User size={12} strokeWidth={2.5} />
+                <button onClick={() => navigate('/changeDetails')} className="flex items-center gap-1.5 pl-1.5 pr-2.5 py-1 bg-white hover:bg-purple-50 border border-[#730051]/20 rounded-full font-bold text-[#730051] transition-all shadow-sm active:scale-95 whitespace-nowrap group">
+                  <div className="w-6 h-6 rounded-full overflow-hidden border-2 border-[#730051] flex items-center justify-center bg-[#730051]/5 transition-transform group-hover:scale-110">
+                    {userData.profilePhoto ? (
+                      <img src={getImageUrl(userData.profilePhoto)} alt="" className="w-full h-full object-cover" />
+                    ) : (
+                      <User size={14} className="text-[#730051]" strokeWidth={2.5} />
+                    )}
                   </div>
                   <span className="text-[10px] capitalize leading-none tracking-tight">{userData.username}</span>
                 </button>
@@ -831,11 +852,15 @@ const Header = () => {
                     <span className="hidden xl:inline">Log Out</span>
                   </button>
                 ) : userData ? (
-                  <button onClick={() => navigate('/changeDetails')} className="flex items-center gap-1.5 pl-1.5 pr-3 py-1 bg-purple-50 hover:bg-[#730051]/10 border border-[#730051]/20 rounded-full font-bold text-[#730051] transition-all shadow-sm active:scale-95 whitespace-nowrap">
-                    <div className="bg-[#730051] text-white p-1 rounded-full flex items-center justify-center">
-                      <User size={14} className="xl:w-[16px] xl:h-[16px]" strokeWidth={2.5} />
+                  <button onClick={() => navigate('/changeDetails')} className="flex items-center gap-2 pl-1.5 pr-4 py-1.5 bg-white hover:bg-purple-50 border-2 border-[#730051]/10 hover:border-[#730051]/30 rounded-full font-bold text-[#730051] transition-all shadow-md hover:shadow-[#730051]/5 active:scale-95 whitespace-nowrap group">
+                    <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-[#730051] flex items-center justify-center bg-[#730051]/5 transition-all group-hover:ring-2 group-hover:ring-purple-200">
+                      {userData.profilePhoto ? (
+                        <img src={getImageUrl(userData.profilePhoto)} alt="" className="w-full h-full object-cover" />
+                      ) : (
+                        <User size={18} className="text-[#730051]" strokeWidth={2.5} />
+                      )}
                     </div>
-                    <span className="text-[11px] xl:text-sm capitalize leading-none tracking-tight">{userData.username}</span>
+                    <span className="text-[12px] xl:text-[13px] capitalize leading-none tracking-tight">{userData.username}</span>
                   </button>
                 ) : (
                   <Link to="/signIn" className="flex items-center gap-1.5 pl-1.5 pr-3 py-1 bg-purple-50 hover:bg-[#730051]/10 border border-[#730051]/20 rounded-full font-bold text-[#730051] transition-all shadow-sm active:scale-95 whitespace-nowrap">

@@ -266,6 +266,26 @@ const ProfilePhotoUpload: React.FC<ProfilePhotoUploadProps> = ({ onUploadSuccess
                 </div>
             ) : (
                 <div>
+                    {/* Enhanced Crop visibility styles */}
+                    <style>{`
+                        .ReactCrop__crop-selection {
+                            border: 2px dashed #ffffff !important;
+                            box-shadow: 0 0 10px rgba(0,0,0,0.5), inset 0 0 10px rgba(0,0,0,0.5) !important;
+                        }
+                        .ReactCrop__drag-handle {
+                            width: 12px !important;
+                            height: 12px !important;
+                            background-color: #730051 !important;
+                            border: 2px solid #ffffff !important;
+                            box-shadow: 0 0 5px rgba(0,0,0,0.5) !important;
+                        }
+                        .ReactCrop__drag-handle::after {
+                            display: none !important;
+                        }
+                        .ReactCrop__circular-selection {
+                            border: 2px dashed #ffffff !important;
+                        }
+                    `}</style>
                     {/* Image Cropper */}
                     <div style={{ marginBottom: '20px' }}>
                         <ReactCrop
