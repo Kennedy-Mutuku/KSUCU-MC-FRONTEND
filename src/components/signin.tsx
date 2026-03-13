@@ -27,8 +27,7 @@ const SignIn: React.FC = () => {
     const [forgotPhone, setForgotPhone] = useState('');
     const [forgotError, setForgotError] = useState('');
 
-    const [showWelcomeToast, setShowWelcomeToast] = useState(false);
-    const [welcomeName, setWelcomeName] = useState('');
+
 
     const handleSendResetLink = (adminPhone: string) => {
         if (!forgotRegNo || !forgotEmail || !forgotPhone) {
@@ -225,9 +224,7 @@ const SignIn: React.FC = () => {
                 finalRoute = '/welcome';
             }
 
-            const firstName = response.data.user?.firstName || response.data.user?.username?.split(' ')[0] || 'User';
-            setWelcomeName(firstName);
-            setShowWelcomeToast(true);
+
 
             navigate(finalRoute);
 

@@ -4,8 +4,6 @@ import styles from '../styles/signin.module.css';
 import cuLogo from '../assets/KSUCU logo updated document.png';
 import loadingAnime from '../assets/Animation - 1716747954931.gif';
 import { getApiUrl } from '../config/environment';
-import axios from 'axios';
-import Cookies from 'js-cookie';
 
 interface UserData {
     username: string;
@@ -25,8 +23,7 @@ const UserProfilePage: React.FC = () => {
     const [userData, setUserData] = useState<UserData | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const [loggingOut, setLoggingOut] = useState(false);
-    const [successMessage, setSuccessMessage] = useState('');
+
 
     useEffect(() => {
         fetchUserData();
@@ -76,71 +73,7 @@ const UserProfilePage: React.FC = () => {
         }
     };
 
-    const handleContinueToKSUCUMC = () => {
-        navigate('/');
-    };
 
-    const handleLogout = async () => {
-        try {
-            // window.alert('Starting logout...'); // Uncomment for debugging
-            setLoggingOut(true);
-            console.log('Starting logout process...');
-
-            // Call logout API
-            try {
-                const response = await axios.post(getApiUrl('usersLogout'), {}, {
-                    withCredentials: true,
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-                console.log('Logout API response:', response);
-            } catch (apiError) {
-                console.warn('Logout API failed, proceeding with local cleanup:', apiError);
-            }
-
-            // Clear cookies more thoroughly
-            const cookiesToClear = ['loginToken', 'sessionToken', 'authToken', 'token', 'socket_token', 'user_s'];
-            cookiesToClear.forEach(cookieName => {
-                Cookies.remove(cookieName);
-                Cookies.remove(cookieName, { path: '/' });
-                Cookies.remove(cookieName, { domain: window.location.hostname });
-                Cookies.remove(cookieName, { domain: `.${window.location.hostname}` });
-            });
-
-            // Clear all cookies fallback
-            document.cookie.split(";").forEach((cookie) => {
-                const eqPos = cookie.indexOf("=");
-                const name = eqPos > -1 ? cookie.substr(0, eqPos).trim() : cookie.trim();
-                document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
-                document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=${window.location.hostname}`;
-                document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.${window.location.hostname}`;
-            });
-
-            // Clear local storage and session storage
-            localStorage.clear();
-            sessionStorage.clear();
-
-            console.log('Logout successful, redirecting to login...');
-
-            // Show success message
-            setSuccessMessage('Successfully logged out!');
-            // window.alert('Logged out successfully!'); // Uncomment for debugging
-
-            setTimeout(() => {
-                navigate('/signIn', { replace: true });
-            }, 500);
-
-        } catch (error: any) {
-            console.error('Logout script error:', error);
-            // Even on error, force cleanup
-            localStorage.clear();
-            sessionStorage.clear();
-            navigate('/signIn', { replace: true });
-        } finally {
-            setLoggingOut(false);
-        }
-    };
 
 
     if (loading) {
