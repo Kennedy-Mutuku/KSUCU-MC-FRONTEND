@@ -14,13 +14,7 @@ export const organizationSections: NavSection[] = [
   {
     title: 'Quick Access',
     items: [
-      {
-        label: 'Feedback',
-        children: [
-          { label: 'Submit Anonymously', href: '/recomendations' },
-          { label: 'Submit with Identity', href: '/recomendations' },
-        ],
-      },
+      { label: 'Talk to us', href: '/recomendations' },
       { label: 'Financials', href: '/financial' },
       {
         label: 'Compassion',

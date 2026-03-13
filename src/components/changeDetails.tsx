@@ -614,8 +614,8 @@ const ChangeDetails: React.FC = () => {
         }}>
           <div style={{
             position: 'relative',
-            width: '110px',
-            height: '110px',
+            width: window.innerWidth < 480 ? '90px' : '110px',
+            height: window.innerWidth < 480 ? '90px' : '110px',
             borderRadius: '50%',
             overflow: 'hidden',
             border: '4px solid #73005120',
@@ -647,19 +647,19 @@ const ChangeDetails: React.FC = () => {
             )}
           </div>
 
-          <div style={{ display: 'flex', gap: '8px' }}>
+          <div style={{ display: 'flex', gap: '8px', marginTop: window.innerWidth < 480 ? '-4px' : '0' }}>
             <button
               onClick={() => setShowPhotoUpload(true)}
               style={{
                 display: 'flex',
                 alignItems: 'center',
                 gap: '6px',
-                padding: '6px 14px',
+                padding: window.innerWidth < 480 ? '5px 12px' : '6px 14px',
                 backgroundColor: '#73005110',
                 color: '#730051',
                 border: '1.5px solid #73005130',
                 borderRadius: '20px',
-                fontSize: '12px',
+                fontSize: window.innerWidth < 480 ? '11px' : '12px',
                 fontWeight: '700',
                 cursor: 'pointer',
                 transition: 'all 0.2s ease',
@@ -673,8 +673,8 @@ const ChangeDetails: React.FC = () => {
                 e.currentTarget.style.transform = 'translateY(0)';
               }}
             >
-              <Camera size={14} />
-              {formData.profilePhoto ? 'Change Photo' : 'Add Photo'}
+              <Camera size={window.innerWidth < 480 ? 12 : 14} />
+              {formData.profilePhoto ? 'Change' : 'Add'} Photo
             </button>
 
             {formData.profilePhoto && (
@@ -684,12 +684,12 @@ const ChangeDetails: React.FC = () => {
                   display: 'flex',
                   alignItems: 'center',
                   gap: '6px',
-                  padding: '6px 14px',
+                  padding: window.innerWidth < 480 ? '5px 12px' : '6px 14px',
                   backgroundColor: '#fee2e2',
                   color: '#dc2626',
                   border: '1.5px solid #fecaca',
                   borderRadius: '20px',
-                  fontSize: '12px',
+                  fontSize: window.innerWidth < 480 ? '11px' : '12px',
                   fontWeight: '700',
                   cursor: 'pointer',
                   transition: 'all 0.2s ease',
@@ -703,7 +703,7 @@ const ChangeDetails: React.FC = () => {
                   e.currentTarget.style.transform = 'translateY(0)';
                 }}
               >
-                <Trash2 size={14} />
+                <Trash2 size={window.innerWidth < 480 ? 12 : 14} />
                 Remove
               </button>
             )}

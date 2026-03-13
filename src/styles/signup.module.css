@@ -18,67 +18,106 @@
 /* Mobile-specific styles */
 @media (max-width: 480px) {
     .body {
-        padding: 50px 0 100px;
+        padding: 20px 0 60px; /* Reduced vertical padding */
     }
 
     .container {
-        width: 98%;
-        padding: 10px 0;
-        border-radius: 10px;
+        width: 96%;
+        padding: 8px 0;
+        border-radius: 12px;
     }
 
     .logo_signUp img {
-        height: 6vh;
-        max-height: 60px;
+        height: 5vh;
+        max-height: 50px;
+        margin-bottom: 5px;
     }
 
     .text {
-        font-size: 1.1em;
-        margin: 8px 0;
+        font-size: 1.15em;
+        margin: 5px 0 10px;
+        font-weight: 700;
     }
 
     .form {
-        width: 95%;
+        width: 98%; /* Slightly wider for better space usage */
     }
 
     .form-div,
     .password-container {
-        width: 90%;
-        margin: 0 auto 8px auto;
+        width: 96%;
+        margin: 0 auto 10px auto; /* Tighter vertical spacing */
     }
 
     .form label {
-        width: 32%;
-        font-size: 0.8em;
+        width: 30%;
+        font-size: 0.85em; /* Slightly larger for visibility */
+        color: #333;
     }
 
     .form .input,
     .form select,
     .ministry-container {
-        width: 68%;
-        font-size: 0.8em;
-        padding: 8px;
+        width: 70%;
+        font-size: 0.95em; /* Larger for better readability */
+        padding: 10px 12px; /* Better touch target */
+        border-radius: 8px;
+    }
+
+    /* Enlarge & Widen Ministry Selection for Phone */
+    .ministry-header {
+        padding: 12px;
+        font-size: 1em;
+    }
+
+    .ministry-menu {
+        max-height: 300px; /* More room to scroll */
+        width: 160%; /* Even wider for maximum ease of use */
+        left: 50%; /* Center horizontally */
+        transform: translateX(-50%);
+        min-width: 250px;
+        box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+        border: 1px solid rgba(115, 0, 81, 0.2);
+        z-index: 1000;
+    }
+
+    .ministry-item {
+        padding: 14px 12px; /* Much larger touch area */
+        font-size: 1.05em; /* Easily readable */
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .ministry-item:last-child {
+        border-bottom: none;
+    }
+
+    .ministry-item input[type="checkbox"] {
+        width: 22px; /* Large checkbox for easy tapping */
+        height: 22px;
+        margin-right: 15px;
     }
 
     .submisions {
-        width: 90%;
-        padding: 5px 5px 10px 5px;
+        width: 96%;
+        padding: 15px 5px;
+        gap: 10px;
     }
 
     .clearForm,
     .submitData {
-        padding: 6px 12px;
-        font-size: 0.85em;
+        padding: 14px 16px; /* Larger buttons */
+        font-size: 1em;
+        border-radius: 10px;
     }
 
     .info-note {
-        margin: 0 auto 10px auto !important;
+        margin: 5px auto 10px auto !important;
         padding: 8px !important;
-        width: 90%;
+        width: 96%;
     }
 
     .info-note p {
-        font-size: 11px !important;
+        font-size: 12px !important;
     }
 }
 

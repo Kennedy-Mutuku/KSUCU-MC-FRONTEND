@@ -710,93 +710,71 @@
 /* Responsive Design */
 @media (max-width: 768px) {
     .container {
-        padding: 70px 10px 20px;
+        padding: 60px 5px 10px; /* Further reduced padding */
         min-height: auto;
     }
 
     .header {
-        margin-bottom: 20px;
-        padding: 25px 30px;
-        background: linear-gradient(135deg, #730051 0%, #730051 100%);
-        border-radius: 25px;
-        box-shadow: 0 5px 15px rgba(115, 0, 81, 0.3);
-        transition: all 0.3s ease;
-    }
-
-    .header:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(115, 0, 81, 0.4);
+        margin-bottom: 10px; /* Extremely tight margin */
+        padding: 10px 15px; /* Extremely compact header */
+        border-radius: 12px;
     }
 
     .header h1 {
-        font-size: 1.8rem;
-        flex-direction: column;
-        gap: 10px;
-        color: white;
+        font-size: 1.25rem; /* Even smaller title */
+        gap: 6px;
     }
 
     .header p {
-        font-size: 0.95rem;
-        color: rgba(255, 255, 255, 0.95);
+        font-size: 0.8rem;
+    }
+
+    .contactInfo {
+        padding: 4px 8px;
+        margin-top: 6px;
+    }
+
+    .contactInfo p {
+        font-size: 0.8rem;
     }
 
     .requisitionForm {
-        border-radius: 10px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        border-radius: 8px;
     }
 
     .section {
-        padding: 20px 15px;
+        padding: 8px 6px; /* Extreme section padding */
     }
 
     .section h3 {
-        font-size: 1.2rem;
-        margin-bottom: 15px;
+        font-size: 0.95rem;
+        margin-bottom: 6px;
     }
 
     .formRow {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
+        gap: 6px; /* Minimal gap */
+        margin-bottom: 8px;
     }
 
     .formGroup {
-        width: 100%;
+        gap: 2px; /* Compact label/input gap */
     }
 
     .formGroup label {
-        font-size: 0.85rem;
-        margin-bottom: 5px;
+        font-size: 0.8rem;
+        margin-bottom: 2px;
     }
 
     .formGroup input {
-        padding: 10px 12px;
-        font-size: 0.95rem;
-        width: 100%;
-        box-sizing: border-box;
-        border: 2px solid #730051;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-        background: white;
-    }
-
-    .formGroup input:focus {
-        outline: none;
-        border-color: #730051;
-        box-shadow: 0 0 0 3px rgba(115, 0, 81, 0.1);
-    }
-
-    .formGroup input:invalid {
-        border-color: #730051;
+        padding: 8px 10px;
+        font-size: 0.9rem;
+        border-radius: 6px;
     }
 
     /* Items Grid Mobile Layout */
     .itemsGrid {
-        margin-bottom: 15px;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        border: 2px solid #730051;
-        border-radius: 8px;
+        margin-bottom: 10px;
+        border-radius: 6px;
     }
 
     .gridHeader {
@@ -890,13 +868,15 @@
     .addButton {
         width: 100%;
         justify-content: center;
-        padding: 12px 20px;
+        padding: 10px 15px; /* Compact button */
+        font-size: 0.9rem;
     }
 
     /* Modal Actions */
     .modalActions {
         flex-direction: column;
         width: 100%;
+        gap: 8px;
     }
 
     .modalActions button {
@@ -940,19 +920,19 @@
 
     /* Submit Section Mobile */
     .submitSection {
-        padding: 20px 15px;
+        padding: 12px 15px; /* Slimmer submit area */
         position: sticky;
         bottom: 0;
         background: white;
         border-top: 1px solid #e9ecef;
-        box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.08);
         z-index: 10;
     }
 
     .submitButton {
         width: 100%;
-        padding: 12px 30px;
-        font-size: 1rem;
+        padding: 10px 20px;
+        font-size: 0.95rem;
     }
 
     /* Alerts Mobile */

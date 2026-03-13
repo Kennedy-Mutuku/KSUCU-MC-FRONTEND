@@ -188,10 +188,9 @@ const mobileNavTabs: { key: string; icon: React.ElementType; label: string; }[] 
   { key: 'requisitions', icon: FileText, label: 'Requisitions' },
   { key: 'filemanager', icon: Folder, label: 'File Manager' },
   { key: 'library', icon: Book, label: 'Library' },
-  { key: 'winasoul', icon: UserPlus, label: 'Win a Soul' },
+  { key: 'winasoul', icon: UserPlus, label: 'Evangelism' },
   { key: 'leadership', icon: Crown, label: 'Leadership' },
   { key: 'governingdocs', icon: FileText, label: 'Governing Docs' },
-  { key: 'committees', icon: UsersRound, label: 'Committees' },
   { key: 'attendance', icon: ClipboardList, label: 'Attendance' },
   { key: 'feedback', icon: MessageSquare, label: 'Talk to us' },
 ];
@@ -285,9 +284,44 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, activeNav, is
       onNavigate(userData ? '/changeDetails' : '/signIn');
       return;
     }
+    if (key === 'feedback') {
+      setActiveTab(null);
+      setExpandedNestedItem(null);
+      setIsManualExpanded(false);
+      onNavigate('/recomendations');
+      return;
+    }
     if (activeTab === key) {
       setActiveTab(null);
       setExpandedNestedItem(null);
+      return;
+    }
+    if (key === 'winasoul') {
+      setActiveTab(null);
+      setExpandedNestedItem(null);
+      setIsManualExpanded(false);
+      onNavigate('/save');
+      return;
+    }
+    if (key === 'library') {
+      setActiveTab(null);
+      setExpandedNestedItem(null);
+      setIsManualExpanded(false);
+      onNavigate('/library');
+      return;
+    }
+    if (key === 'filemanager') {
+      setActiveTab(null);
+      setExpandedNestedItem(null);
+      setIsManualExpanded(false);
+      onNavigate('/my-docs');
+      return;
+    }
+    if (key === 'requisitions') {
+      setActiveTab(null);
+      setExpandedNestedItem(null);
+      setIsManualExpanded(false);
+      onNavigate('/requisitions');
       return;
     }
     setActiveTab(key);

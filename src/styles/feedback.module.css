@@ -1,37 +1,37 @@
 @import url(bs.module.css);
 
 .container {
-    max-width: 800px;
+    max-width: 700px; /* Slightly narrower for better focus */
     margin: 0 auto;
-    padding: 20px;
+    padding: 10px 20px; /* Reduced vertical padding */
 }
 
 .form {
     background: white;
-    padding: 30px;
-    border-radius: 20px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    padding: 20px 25px; /* Reduced padding */
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
     border: 1px solid rgba(115, 0, 81, 0.1);
 }
 
 .form div {
-    margin-bottom: 20px;
+    margin-bottom: 12px; /* Tighter vertical spacing */
 }
 
 .form label {
     display: block;
     font-weight: 600;
     color: #2c3e50;
-    margin-bottom: 8px;
-    font-size: 1rem;
+    margin-bottom: 4px; /* Reduced label margin */
+    font-size: 0.95rem;
 }
 
 .inputs {
     width: 100%;
-    padding: 15px 18px;
+    padding: 10px 14px; /* More compact inputs */
     border: 2px solid rgba(115, 0, 81, 0.1);
-    border-radius: 12px;
-    font-size: 1rem;
+    border-radius: 10px;
+    font-size: 0.95rem;
     transition: all 0.3s ease;
     background: white;
     color: #2c3e50;
@@ -51,10 +51,10 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    background: rgba(115, 0, 81, 0.05);
-    padding: 15px;
-    border-radius: 12px;
-    border: 1px solid rgba(115, 0, 81, 0.1);
+    background: rgba(115, 0, 81, 0.04);
+    padding: 10px 15px; /* Reduced padding */
+    border-radius: 10px;
+    border: 1px solid rgba(115, 0, 81, 0.08);
 }
 
 .checkboxContainer label {
@@ -108,20 +108,20 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 25px;
+    margin-top: 15px; /* Reduced margin */
 }
 
 .submitButton {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    padding: 18px 32px;
+    gap: 8px;
+    padding: 12px 28px; /* Compact but prominent button */
     background: linear-gradient(135deg, #730051, #8e1a6b);
     color: white;
     border: none;
-    border-radius: 12px;
-    font-size: 1.1rem;
+    border-radius: 10px;
+    font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -152,68 +152,102 @@
 
 .text {
     text-align: center;
-    color: #2c3e50;
-    font-size: 1.3rem;
+    color: #4b5563;
+    font-size: 1.1rem;
     font-weight: 600;
-    margin-bottom: 30px;
+    margin-bottom: 15px; /* Significantly reduced margin */
 }
 
-/* Mobile Responsiveness */
+/* Consolidated & Ultra-Compact Mobile Responsiveness */
 @media (max-width: 767px) {
     .container {
-        padding: 15px;
+        padding: 5px 8px;
     }
     
     .form {
-        padding: 20px;
-    }
-    
-    .inputs {
         padding: 12px 15px;
-        font-size: 16px; /* Prevent iOS zoom */
-    }
-    
-    .submitButton {
-        padding: 16px 24px;
-        font-size: 1rem;
-        width: 100%;
-    }
-    
-    .text {
-        font-size: 1.1rem;
-    }
-    
-    .checkboxContainer {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-    }
-}
-
-@media (max-width: 767px) {
-    .container {
-        padding: 10px;
-    }
-    
-    .form {
-        padding: 15px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
     }
     
     .form div {
-        margin-bottom: 15px;
+        margin-bottom: 8px;
+    }
+
+    .form label {
+        font-size: 0.85rem;
+        margin-bottom: 2px;
+        font-weight: 500;
     }
     
     .inputs {
-        padding: 10px 12px;
+        padding: 10px;
+        font-size: 15px; /* Compact but legible */
+        border-radius: 6px;
+    }
+
+    textarea.inputs {
+        rows: 4;
+        min-height: 80px; /* Reduced height for single-screen fit */
     }
     
     .submitButton {
-        padding: 14px 20px;
+        padding: 12px 18px;
         font-size: 0.95rem;
+        width: 100%;
+        border-radius: 8px;
+        margin-top: 5px;
+    }
+    
+    .text {
+        font-size: 0.95rem;
+        margin-bottom: 10px;
+        line-height: 1.2;
+        padding: 0 5px;
+    }
+    
+    .checkboxContainer {
+        padding: 8px 10px;
+        gap: 8px;
+        border-radius: 8px;
+        margin-top: 2px;
+    }
+
+    .checkboxContainer label {
+        font-size: 0.8rem;
+        line-height: 1.2;
+    }
+
+    .checkboxContainer input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
     }
     
     .userInfo,
     .loginNote {
-        padding: 12px;
+        padding: 8px;
+        border-radius: 6px;
+        margin-bottom: 8px;
+    }
+
+    .userInfo p {
+        font-size: 0.75rem;
+        margin: 2px 0;
+    }
+}
+
+/* Landscape/Extra small devices - Full Compact Mode */
+@media (max-width: 480px) {
+    .form {
+        padding: 10px;
+    }
+    
+    .submitButton {
+        padding: 10px 14px;
+        font-size: 0.9rem;
+    }
+    
+    .text {
+        display: none; /* Hide sub-header on tiny screens to save maximum space */
     }
 }

@@ -31,7 +31,7 @@ const SignatureField: React.FC<{
     const container = containerRef.current;
     const ratio = Math.max(window.devicePixelRatio || 1, 1);
     const width = container.offsetWidth;
-    const height = 150;
+    const height = window.innerWidth < 768 ? 100 : 150; // Extremely compact on mobile
 
     canvas.width = width * ratio;
     canvas.height = height * ratio;
@@ -66,7 +66,7 @@ const SignatureField: React.FC<{
       if (!container) return;
       sigRef.current.fromDataURL(signatureData, {
         width: container.offsetWidth,
-        height: 150,
+        height: window.innerWidth < 768 ? 100 : 150,
         ratio: 1,
       });
     } else if (!signatureData) {
@@ -108,7 +108,7 @@ const SignatureField: React.FC<{
           velocityFilterWeight={0.7}
           canvasProps={{
             className: `w-full block ${disabled ? "cursor-not-allowed opacity-40" : "cursor-crosshair"}`,
-            style: { height: "150px", touchAction: "none" },
+            style: { height: window.innerWidth < 768 ? "100px" : "150px", touchAction: "none" },
           }}
           onEnd={handleEnd}
           onBegin={() => {
@@ -146,26 +146,26 @@ const AssetTransferForm: React.FC<AssetTransferFormProps> = ({
   return (
     <div className="w-full bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
       {/* Title */}
-      <div className="bg-gradient-to-r from-[#730051] to-[#a0006e] px-6 py-4">
-        <h2 className="text-base sm:text-lg font-bold tracking-wide text-white text-center">
-          ASSET TRANSFER FORM
+      <div className="bg-gradient-to-r from-[#730051] to-[#a0006e] px-4 py-2 sm:px-6 sm:py-4">
+        <h2 className="text-xs sm:text-lg font-bold tracking-wide text-white text-center uppercase">
+          Asset Transfer Form
         </h2>
       </div>
 
       {/* Two Column Layout - stacks on mobile */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-0 md:divide-x divide-gray-200">
         {/* LEFT SIDE - ASSETS RECEIVED BY */}
-        <div className="p-5 sm:p-6">
-          <div className="mb-2">
-            <h3 className="text-sm font-bold tracking-wide text-[#730051] mb-1">
+        <div className="p-3 sm:p-6">
+          <div className="mb-1">
+            <h3 className="text-xs sm:text-sm font-bold tracking-wide text-[#730051] mb-0.5">
               ASSETS RECEIVED BY
             </h3>
-            <div className="h-0.5 w-12 bg-[#730051]/30 rounded-full mb-5"></div>
+            <div className="h-0.5 w-8 bg-[#730051]/30 rounded-full mb-3"></div>
           </div>
 
           {/* Name Field */}
-          <div className="mb-6">
-            <label className="text-xs font-bold tracking-wider block mb-2 text-gray-700">
+          <div className="mb-3 sm:mb-6">
+            <label className="text-[10px] sm:text-xs font-bold tracking-wider block mb-1 text-gray-700">
               NAME:
             </label>
             <input
@@ -177,7 +177,7 @@ const AssetTransferForm: React.FC<AssetTransferFormProps> = ({
                   receivedByName: e.target.value,
                 })
               }
-              className="w-full border-b-2 border-gray-300 focus:border-[#730051] bg-transparent px-0 py-2 text-sm transition-colors focus:outline-none"
+              className="w-full border-b border-gray-300 focus:border-[#730051] bg-transparent px-0 py-1 text-sm transition-colors focus:outline-none"
               placeholder="Enter full name"
             />
           </div>
@@ -195,64 +195,57 @@ const AssetTransferForm: React.FC<AssetTransferFormProps> = ({
           />
         </div>
 
-        {/* Divider on mobile */}
-        <div className="md:hidden border-t border-gray-200"></div>
+        {/* Divider and RIGHT SIDE - ASSETS RELEASED BY (Conditional) */}
+        {!isRequesterOnly && (
+          <>
+            <div className="md:hidden border-t border-gray-200"></div>
+            <div className="p-3 sm:p-6">
+              <div className="mb-1">
+                <h3 className="text-xs sm:text-sm font-bold tracking-wide text-[#730051] mb-0.5">
+                  ASSETS RELEASED BY
+                </h3>
+                <div className="h-0.5 w-8 bg-[#730051]/30 rounded-full mb-3"></div>
+              </div>
 
-        {/* RIGHT SIDE - ASSETS RELEASED BY */}
-        <div
-          className={`p-5 sm:p-6 ${isRequesterOnly ? "opacity-50 pointer-events-none" : ""}`}
-        >
-          <div className="mb-2">
-            <h3 className="text-sm font-bold tracking-wide text-[#730051] mb-1">
-              ASSETS RELEASED BY
-              {isRequesterOnly && (
-                <span className="text-xs font-normal ml-2 text-gray-400">
-                  (Staff Only)
-                </span>
-              )}
-            </h3>
-            <div className="h-0.5 w-12 bg-[#730051]/30 rounded-full mb-5"></div>
-          </div>
+              {/* Name Field */}
+              <div className="mb-3 sm:mb-6">
+                <label className="text-[10px] sm:text-xs font-bold tracking-wider block mb-1 text-gray-700">
+                  NAME:
+                </label>
+                <input
+                  type="text"
+                  value={data.releasedByName}
+                  onChange={(e) =>
+                    onDataChange({
+                      ...data,
+                      releasedByName: e.target.value,
+                    })
+                  }
+                  className="w-full border-b border-gray-300 focus:border-[#730051] bg-transparent px-0 py-1 text-sm transition-colors focus:outline-none"
+                  placeholder="Enter full name"
+                />
+              </div>
 
-          {/* Name Field */}
-          <div className="mb-6">
-            <label className="text-xs font-bold tracking-wider block mb-2 text-gray-700">
-              NAME:
-            </label>
-            <input
-              type="text"
-              value={data.releasedByName}
-              onChange={(e) =>
-                onDataChange({
-                  ...data,
-                  releasedByName: e.target.value,
-                })
-              }
-              disabled={isRequesterOnly}
-              className="w-full border-b-2 border-gray-300 focus:border-[#730051] bg-transparent px-0 py-2 text-sm transition-colors focus:outline-none disabled:opacity-50"
-              placeholder="Enter full name"
-            />
-          </div>
-
-          {/* Signature */}
-          <SignatureField
-            label="SIGNATURE:"
-            signatureData={data.releasedBySignature}
-            onEnd={(dataUrl) =>
-              onDataChange({ ...data, releasedBySignature: dataUrl })
-            }
-            onClear={() =>
-              onDataChange({ ...data, releasedBySignature: "" })
-            }
-            disabled={isRequesterOnly}
-          />
-        </div>
+              {/* Signature */}
+              <SignatureField
+                label="SIGNATURE:"
+                signatureData={data.releasedBySignature}
+                onEnd={(dataUrl) =>
+                  onDataChange({ ...data, releasedBySignature: dataUrl })
+                }
+                onClear={() =>
+                  onDataChange({ ...data, releasedBySignature: "" })
+                }
+              />
+            </div>
+          </>
+        )}
       </div>
 
       {/* Date Field */}
-      <div className="px-5 sm:px-6 py-4 border-t border-gray-200 bg-gray-50/50 flex flex-col sm:flex-row items-start sm:items-center gap-2">
-        <label className="text-sm font-bold tracking-wider text-gray-700 whitespace-nowrap">
-          DATE:
+      <div className="px-4 sm:px-6 py-2 sm:py-4 border-t border-gray-200 bg-gray-50/50 flex flex-col sm:flex-row items-start sm:items-center gap-1 sm:gap-2">
+        <label className="text-[10px] sm:text-sm font-bold tracking-wider text-gray-700 whitespace-nowrap uppercase">
+          Date:
         </label>
         <input
           type="date"
@@ -264,7 +257,7 @@ const AssetTransferForm: React.FC<AssetTransferFormProps> = ({
             })
           }
           disabled={isRequesterOnly && !data.date}
-          className="px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#730051]/20 focus:border-[#730051] disabled:opacity-50 w-full sm:w-auto"
+          className="px-2 py-1 text-xs sm:text-sm border border-gray-300 rounded bg-white focus:outline-none focus:ring-1 focus:ring-[#730051]/20 focus:border-[#730051] disabled:opacity-50 w-full sm:w-auto"
         />
       </div>
     </div>
