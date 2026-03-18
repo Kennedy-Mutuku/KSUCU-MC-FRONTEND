@@ -261,7 +261,8 @@
   }
   
   .galleryGrid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr); /* Enforce 2 columns on mobile too */
+    gap: 12px; /* Reduce gap for mobile */
   }
 }
 
@@ -692,19 +693,20 @@
 }
 
 
-/* This covers the ENTIRE screen */
+/* This covers the content area, respecting header and sidebar */
 .modalOverlay {
-  position: fixed; /* Fixes it to the viewport, not the document */
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.8); /* Dark semi-transparent backdrop */
+  position: fixed; 
+  top: 64px; /* Ensure header is always visible */
+  left: 52px; /* Ensure sidebar is always visible */
+  width: calc(100vw - 52px);
+  height: calc(100vh - 64px);
+  background: rgba(0, 0, 0, 0.8); 
   display: flex;
   justify-content: center;
-  align-items: center;
-  z-index: 9999; /* Higher than header and footer */
-  backdrop-filter: blur(8px); /* Blurs the page behind the modal */
+  align-items: flex-start; /* Start from top to keep header consistent */
+  padding-top: 2vh;
+  z-index: 9998; 
+  backdrop-filter: blur(8px);
 }
 
 /* This is the white box containing the gallery */
@@ -750,8 +752,8 @@
 /* --- Gallery Grid (Inside Modal) --- */
 .galleryGrid {
   display: grid;
-  /* Force 3 columns on desktop to match Recent Events */
-  grid-template-columns: repeat(3, 1fr); 
+  /* Updated to 2 columns as requested */
+  grid-template-columns: repeat(2, 1fr); 
   gap: 25px;
   padding: 10px;
 }
@@ -838,8 +840,8 @@
 
 @media (max-width: 600px) {
   .galleryGrid {
-    grid-template-columns: 1fr;
-    gap: 20px;
+    grid-template-columns: repeat(2, 1fr); /* Consistently 2 columns */
+    gap: 12px;
   }
 }
 
