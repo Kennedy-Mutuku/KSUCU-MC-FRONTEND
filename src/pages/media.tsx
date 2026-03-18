@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styles from '../styles/Media.module.css';
 import loadingAnime from '../assets/Animation - 1716747954931.gif';
-import { FaYoutube, FaFacebook, FaTiktok, FaTwitter, FaImage, FaNewspaper, FaBook, FaTimes, FaSync } from 'react-icons/fa';
+import { FaYoutube, FaFacebook, FaTiktok, FaTwitter, FaImage, FaNewspaper, FaBook, FaTimes, FaSync, FaSearch } from 'react-icons/fa';
 import { getApiUrl, getImageUrl, getBaseUrl, isDevMode } from '../config/environment';
 
 interface MediaItem {
@@ -22,6 +22,7 @@ const Media: React.FC = () => {
   const [generalLoading, setGeneralLoading] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [events, setEvents] = useState<MediaItem[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
 
   // Default events as fallback
   const defaultEvents: MediaItem[] = [
@@ -203,44 +204,70 @@ const Media: React.FC = () => {
       setGeneralLoading(false);      
     }
   };
-  // Sort events to show newest first - prioritize by createdAt, then by date
-  const sortedEvents = [...events].sort((a, b) => {
-    // First, prioritize items with createdAt timestamps (from backend)
-    if (a.createdAt && b.createdAt) {
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-    }
+  // Helper to parse messy date strings
+  const parseManualDate = (dateStr: string) => {
+    if (!dateStr) return 0;
     
-    // If only one has createdAt, prioritize it
-    if (a.createdAt) return -1;
-    if (b.createdAt) return 1;
+    // Check for standard YYYY-MM-DD
+    const standardDate = new Date(dateStr);
+    if (!isNaN(standardDate.getTime())) return standardDate.getTime();
     
-    // Then prioritize items with newer IDs (recently added locally)
-    const aId = parseInt(a.id || '0');
-    const bId = parseInt(b.id || '0');
+    const lower = dateStr.toLowerCase();
+    const months: { [key: string]: number } = {
+      jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5, 
+      jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11
+    };
     
-    // If both have timestamp IDs, sort by ID (newest first)
-    if (aId > 1000000000000 && bId > 1000000000000) { // Both are timestamp IDs
-      return bId - aId;
-    }
+    let year = 2025; // Default for these items
+    let month = -1;
+    let day = 1;
     
-    // If only one has a timestamp ID, prioritize it
-    if (aId > 1000000000000) return -1;
-    if (bId > 1000000000000) return 1;
-    
-    // For items without timestamp IDs, sort by date string (newest first)
-    try {
-      const dateA = new Date(a.date);
-      const dateB = new Date(b.date);
-      if (!isNaN(dateA.getTime()) && !isNaN(dateB.getTime())) {
-        return dateB.getTime() - dateA.getTime();
+    // Extract month
+    for (const [mName, mIndex] of Object.entries(months)) {
+      if (lower.includes(mName)) {
+        month = mIndex;
+        break;
       }
-    } catch (error) {
-      // If date parsing fails, maintain original order
     }
     
-    // Fallback: maintain original order
+    // Extract first number found as day
+    const dayMatch = dateStr.match(/\d+/);
+    if (dayMatch) day = parseInt(dayMatch[0]);
+    
+    if (month !== -1) {
+      return new Date(year, month, day).getTime();
+    }
+    
     return 0;
-  });
+  };
+
+  // Sort and filter events
+  const sortedEvents = [...events]
+    .filter(item => 
+      item.event.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.date.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .sort((a, b) => {
+      // First, prioritize items with createdAt timestamps (from backend)
+      if (a.createdAt && b.createdAt) {
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      }
+      
+      if (a.createdAt) return -1;
+      if (b.createdAt) return 1;
+      
+      // Fallback to manual date parsing
+      const timeA = parseManualDate(a.date);
+      const timeB = parseManualDate(b.date);
+      
+      if (timeA !== timeB) return timeB - timeA;
+      
+      // Then prioritize items with newer IDs (recently added locally)
+      const aId = parseInt(a.id || '0');
+      const bId = parseInt(b.id || '0');
+      
+      return bId - aId;
+    });
   
   return (
     <>
@@ -320,6 +347,21 @@ const Media: React.FC = () => {
             </Link>
           </div>
         </section>
+
+        <div className={styles.container}>
+          <div className={styles.searchContainer}>
+            <div className={styles.searchWrapper}>
+              <FaSearch className={styles.searchIcon} />
+              <input 
+                type="text" 
+                placeholder="Search events, photos or dates..." 
+                className={styles.searchInput}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+          </div>
+        </div>
 
         {/* Content Categories */}
         <section className={styles.contentSection}>
@@ -448,7 +490,19 @@ const Media: React.FC = () => {
           <div className={styles.modalOverlay} onClick={() => setShowMediaEvents(false)}>
             <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
               <div className={styles.modalHeader}>
-                <h3>Photo Gallery - All Events</h3>
+                <div className={styles.modalTitleArea}>
+                  <h3>Photo Gallery</h3>
+                  <div className={styles.modalSearchWrapper}>
+                    <FaSearch className={styles.modalSearchIcon} />
+                    <input 
+                      type="text" 
+                      placeholder="Search gallery..." 
+                      className={styles.modalSearchInput}
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                  </div>
+                </div>
                 <div className={styles.modalHeaderActions}>
                   <button className={styles.refreshBtn} onClick={loadMediaItems} title="Refresh gallery">
                     <FaSync />

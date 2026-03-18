@@ -1,118 +1,193 @@
-/* Media.module.css */
+/* Media.module.css - Optimized & Compressed Version */
 
 .main {
-  background-color: #f8f9fa; /* Light grey background like the image */
-  padding-bottom: 50px;
+  background-color: #f8f9fa;
+  padding-bottom: 30px;
 }
 
-/* Hero Section with Background Image support */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+/* Hero Section */
 .heroSection {
   background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
-              url('../assets/hero-bg.jpg'); /* Replace with your image path */
+              url('../assets/hero-bg.jpg');
   background-size: cover;
   background-position: center;
-  height: 300px;
+  height: 200px; /* Compressed desktop height */
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
   text-align: center;
+  position: relative;
+  border-radius: 0 0 25px 25px;
 }
 
 .heroTitle {
-  font-size: 2.5rem;
+  font-size: 1.8rem;
   font-weight: 800;
-  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin: 0;
+  letter-spacing: 1px;
+}
+
+.heroSubtitle {
+  font-size: 0.9rem;
+  margin-top: 8px;
+  opacity: 0.9;
+}
+
+.backButton {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(5px);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 0.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Sections & Titles */
+.contentSection, .eventsSection, .socialSection {
+  padding: 20px 0;
+}
+
+.sectionTitle {
+  color: #2d3436;
+  font-size: 1.5rem;
+  margin: 10px 0 15px;
+  font-weight: 800;
+  text-align: center;
   text-transform: uppercase;
 }
 
-/* Section Titles */
-.sectionTitle {
-  color: #2d3436;
-  font-size: 1.8rem;
-  margin-bottom: 30px;
-  font-weight: 700;
+/* Search Bar Styles */
+.searchContainer {
+  margin-top: -30px; /* Pull it slightly into the hero area bottom */
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  z-index: 10;
 }
 
-/* Content Grid & Cards (Explore Our Content) */
+.searchWrapper {
+  display: flex;
+  align-items: center;
+  background: white;
+  padding: 12px 25px;
+  border-radius: 50px;
+  width: 100%;
+  max-width: 600px;
+  box-shadow: 0 15px 35px rgba(125, 10, 61, 0.1);
+  border: 1px solid rgba(125, 10, 61, 0.1);
+  transition: all 0.3s ease;
+}
+
+.searchWrapper:focus-within {
+  border-color: #7d0a3d;
+  box-shadow: 0 15px 40px rgba(125, 10, 61, 0.15);
+  transform: translateY(-2px);
+}
+
+.searchIcon {
+  color: #7d0a3d;
+  margin-right: 15px;
+  font-size: 1.2rem;
+}
+
+.searchInput {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 1rem;
+  color: #2d3436;
+  background: transparent;
+}
+
+.searchInput::placeholder {
+  color: #b2bec3;
+}
+
+/* Category Grid (Explore Our Content) */
 .contentGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 25px;
-  padding: 20px 0;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
 }
 
 .contentCard {
   background: #ffffff;
-  border-radius: 20px; /* Highly rounded corners from image */
-  padding: 30px;
+  border-radius: 15px;
+  padding: 20px;
   text-align: center;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
   cursor: pointer;
   text-decoration: none;
-  display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .contentCard:hover {
-  transform: translateY(-10px);
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(125, 10, 61, 0.1);
 }
 
 .contentIcon {
-  width: 70px;
-  height: 70px;
-  border-radius: 15px;
-  margin: 0 auto 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  margin-bottom: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 30px;
-  color: white !important; /* Forces icon to be white */
-  background-color: #7d0a3d !important; /* Uniform deep purple/maroon */
+  font-size: 24px;
+  color: white !important;
+  background-color: #7d0a3d !important;
 }
 
 .contentCard h3 {
   color: #2d3436;
-  font-size: 1.25rem;
-  margin-bottom: 10px;
+  font-size: 1.1rem;
+  margin-bottom: 5px;
+  font-weight: 700;
 }
 
 .contentCard p {
   color: #636e72;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
+  line-height: 1.3;
 }
 
-/* View All Events Button */
-.viewAllBtn {
-  background-color: #7d0a3d;
-  color: white;
-  padding: 12px 30px;
-  border-radius: 50px; /* Pill shape */
-  border: none;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.3s ease;
+/* Events Grid */
+.eventsPreview {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
 }
 
-.viewAllBtn:hover {
-  background-color: #5a072c;
-}
-
-/* Event Cards (Recent Events) */
 .eventCard {
   background: white;
-  border-radius: 20px;
+  border-radius: 15px;
   overflow: hidden;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
 }
 
 .eventImage {
-  height: 200px;
+  height: 150px;
   background-color: #eee;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
 }
 
 .eventImage img {
@@ -122,791 +197,254 @@
 }
 
 .eventContent {
-  padding: 20px;
+  padding: 15px;
+}
+
+.eventContent h4 {
+  font-size: 1rem;
+  margin-bottom: 5px;
+  color: #2d3436;
+}
+
+.eventDate {
+  font-size: 0.75rem;
+  color: #b2bec3;
+  margin-bottom: 10px;
 }
 
 .viewPhotosBtn {
   color: #7d0a3d;
   font-weight: 700;
   text-decoration: none;
+  font-size: 0.85rem;
+  padding: 6px 12px;
+  border: 1px solid #7d0a3d;
+  border-radius: 6px;
   display: inline-block;
-  margin-top: 10px;
 }
 
-/* Social Media Section - Circular Icons */
+/* Social Media */
 .socialGrid {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
 }
 
 .socialCard {
   background: white;
-  border-radius: 20px;
-  padding: 25px;
-  width: 200px;
+  border-radius: 15px;
+  padding: 15px;
   text-align: center;
   text-decoration: none;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
 .socialIcon {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%; /* Pure circles like the image icons */
-  margin: 0 auto 15px;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  margin: 0 auto 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
+  font-size: 20px;
   color: white;
-  transition: opacity 0.3s ease;
-}
-
-.socialCard:hover .socialIcon {
-  opacity: 0.8;
 }
 
 .socialCard h3 {
-  color: #2d3436;
+  font-size: 0.9rem;
+  margin-bottom: 3px;
+}
+
+.socialCard p {
+  font-size: 0.7rem;
+}
+
+/* Modal Styles */
+.modalOverlay {
+  position: fixed;
+  top: 64px;
+  left: 52px;
+  width: calc(100vw - 52px);
+  height: calc(100vh - 64px);
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 2vh;
+  z-index: 9998;
+  backdrop-filter: blur(8px);
+}
+
+.modal {
+  background: #ffffff;
+  width: 95%;
+  max-width: 1000px;
+  max-height: 85vh;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+
+.modalHeader {
+  padding: 15px 25px;
+  border-bottom: 1px solid #f1f1f1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  background: #ffffff;
+}
+
+.modalTitleArea {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modalTitleArea h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #7d0a3d;
+  font-weight: 800;
+}
+
+.modalSearchWrapper {
+  display: flex;
+  align-items: center;
+  background: #f8f9fa;
+  padding: 10px 18px;
+  border-radius: 12px;
+  width: 100%;
+  border: 1px solid #eee;
+  transition: all 0.3s ease;
+  margin-top: 5px;
+}
+
+.modalSearchWrapper:focus-within {
+  background: #fff;
+  border-color: #7d0a3d;
+  box-shadow: 0 4px 12px rgba(125, 10, 61, 0.08);
+}
+
+.modalSearchIcon {
+  color: #7d0a3d;
+  margin-right: 12px;
   font-size: 1.1rem;
 }
 
-/* Container Utility */
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
+.modalSearchInput {
+  border: none;
+  outline: none;
+  background: transparent;
+  width: 100%;
+  font-size: 1rem;
+  color: #2d3436;
+}
+
+.modalBody {
+  padding: 15px;
+  overflow-y: auto;
+}
+
+.galleryGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.galleryItem {
+  background: white;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  border: 1px solid transparent;
+}
+
+.galleryImagePlaceholder {
+  height: 140px;
+}
+
+.galleryItemContent {
+  padding: 12px;
+}
+
+.galleryItemContent h4 {
+  font-size: 0.95rem;
+  margin-bottom: 4px;
+}
+
+.galleryDate {
+  font-size: 0.75rem;
+  margin-bottom: 8px;
+}
+
+.galleryViewBtn {
+  font-size: 0.8rem;
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: 1px solid #7d0a3d;
+  color: #7d0a3d;
+  text-decoration: none;
+  text-align: center;
+  display: block;
 }
 
 /* --- Responsive Adjustments --- */
 
-/* For Tablets (Small screens/Pads) */
-@media (max-width: 992px) {
-  .heroTitle {
-    font-size: 2rem;
-  }
-  
-  .contentGrid {
-    grid-template-columns: repeat(2, 1fr); /* 2 columns on tablets */
-    gap: 15px;
-  }
-
-  .socialGrid {
-    gap: 15px;
-  }
-  
-  .socialCard {
-    width: 45%; /* Two per row on tablets */
+@media (max-width: 1024px) {
+  .contentGrid, .eventsPreview {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
-/* For Mobile Phones */
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .heroSection {
-    height: 200px; /* Shorter hero on mobile */
-    padding: 20px;
+    height: 150px;
+    min-height: 150px;
   }
 
   .heroTitle {
-    font-size: 1.5rem;
-  }
-
-  .heroSubtitle {
-    font-size: 0.9rem;
+    font-size: 1.2rem;
   }
 
   .sectionTitle {
-    font-size: 1.4rem;
-    text-align: center;
+    font-size: 1.2rem;
   }
 
   .contentGrid {
-    grid-template-columns: 1fr; /* Single column stack */
-  }
-
-  .contentCard {
-    padding: 20px;
-  }
-
-  .eventsPreview {
-    display: grid;
-    grid-template-columns: 1fr; /* Single column for events */
-    gap: 20px;
-  }
-
-  .socialGrid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Keep social as 2x2 grid */
+    grid-template-columns: repeat(2, 1fr);
     gap: 10px;
   }
 
-  .socialCard {
-    width: 100%; /* Fill the grid cell */
-    padding: 15px;
-  }
-
-  .socialIcon {
-    width: 50px;
-    height: 50px;
-    font-size: 20px;
-  }
-  
-  /* Make the modal full screen on mobile */
-  .modal {
-    width: 95%;
-    height: 90vh;
-    margin: 10px auto;
-  }
-  
-  .galleryGrid {
-    grid-template-columns: repeat(2, 1fr); /* Enforce 2 columns on mobile too */
-    gap: 12px; /* Reduce gap for mobile */
-  }
-}
-
-/* For Very Large Screens */
-@media (min-width: 1400px) {
-  .container {
-    max-width: 1300px; /* Wider content area for large monitors */
-  }
-  
-  .contentGrid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-
-
-
-/* --- Desktop & Laptop Specific Resizing --- */
-
-/* This targets standard laptops and desktops */
-@media (min-width: 1024px) {
-  .container {
-    max-width: 1100px; /* Constrains the width so cards aren't too long */
-    margin: 0 auto;
-  }
-
-  /* Force 3 columns for "Explore Our Content" */
-  .contentGrid {
-    grid-template-columns: repeat(3, 1fr) !important;
-    gap: 30px;
-    padding: 40px 0;
-  }
-
-  /* Force 3 columns for "Recent Events" */
-  .eventsPreview {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr) !important;
-    gap: 25px;
-  }
-
-  /* Ensure the cards themselves don't grow too tall */
   .contentCard {
-    min-height: 250px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    padding: 12px;
   }
 
-  /* Keep social media in a neat row of 4 or 2x2 depending on preference */
-  .socialGrid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
+  .contentIcon {
+    width: 35px;
+    height: 35px;
+    font-size: 16px;
   }
-}
 
-/* Limit the Image height in Event Cards to keep them uniform */
-.eventImage {
-  height: 180px; /* Fixed height for laptop screens */
-  width: 100%;
-}
-
-.eventImage img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* Prevents image distortion */
-}
-
-
-
-/* --- Typography & Card Alignment Refinements --- */
-
-@media (min-width: 1024px) {
-  /* Content Card (Explore Our Content) Font Tweaks */
   .contentCard h3 {
-    font-size: 1.2rem; /* Slightly smaller to fit 3-col width */
-    margin-top: 15px;
-    font-weight: 700;
-    line-height: 1.2;
-  }
-
-  .contentCard p {
     font-size: 0.85rem;
-    line-height: 1.4;
-    padding: 0 10px;
   }
 
-  /* Recent Events Typography */
-  .eventContent h4 {
-    font-size: 1.1rem;
-    height: 2.4em; /* Limits title to 2 lines for uniform card height */
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    margin-bottom: 8px;
-    color: #2d3436;
-  }
-
-  .eventDate {
-    font-size: 0.8rem;
-    color: #b2bec3;
-    margin-bottom: 15px;
-  }
-
-  /* Button alignment within Event Cards */
-  .eventContent {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 160px; /* Ensures all content areas are the same height */
-  }
-
-  .viewPhotosBtn {
-    align-self: flex-start;
-    font-size: 0.9rem;
-    padding: 8px 16px;
-    border: 1.5px solid #7d0a3d;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-  }
-
-  .viewPhotosBtn:hover {
-    background-color: #7d0a3d;
-    color: white;
-  }
-}
-
-/* Subtle touch: adding a divider between sections for better scannability */
-.contentSection, .eventsSection {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-  padding-bottom: 60px;
-  margin-bottom: 40px;
-}
-
-
-/* --- Global Spacing & Typography Refinements --- */
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
-}
-
-/* Base Grid Spacing (Desktop) */
-.contentGrid, 
-.eventsPreview, 
-.socialGrid {
-  display: grid;
-  gap: 30px; /* Healthy space between cards */
-  padding: 20px 0;
-}
-
-/* --- Mobile & Small Screen Fixes (Max-width: 768px) --- */
-@media (max-width: 768px) {
-  /* Increase vertical spacing so cards don't "touch" */
-  .contentGrid, 
-  .eventsPreview {
-    grid-template-columns: 1fr;
-    gap: 25px; /* Ensures vertical separation on mobile */
-    padding: 10px 5px;
-  }
-
-  /* Social Grid - 2 columns with space */
-  .socialGrid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
-  }
-
-  /* Font Resizing for mobile fit */
-  .contentCard h3 {
-    font-size: 1.1rem; /* Smaller to prevent overflow */
-    margin-bottom: 8px;
-  }
-
-  .contentCard p {
-    font-size: 0.85rem;
-    padding: 0 5px;
-    line-height: 1.3;
-  }
-
-  .eventContent h4 {
-    font-size: 1rem;
-    margin-bottom: 5px;
-  }
-
-  .eventDate {
-    font-size: 0.75rem;
-  }
-
-  /* Adjust Padding inside cards so text has room */
-  .contentCard, 
-  .eventContent, 
-  .socialCard {
-    padding: 20px 15px; 
-  }
-
-  /* Hero adjustments for mobile */
-  .heroTitle {
-    font-size: 1.6rem;
-    padding: 0 10px;
-  }
-}
-
-/* --- Tablet Adjustments (769px to 1023px) --- */
-@media (min-width: 769px) and (max-width: 1023px) {
-  .contentGrid, 
   .eventsPreview {
     grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-  }
-
-  .contentCard h3 {
-    font-size: 1.15rem;
-  }
-}
-
-/* --- Laptop/Desktop (1024px and up) --- */
-@media (min-width: 1024px) {
-  .contentGrid, 
-  .eventsPreview {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 35px; /* Professional wide spacing */
-  }
-
-  /* Ensure text doesn't hit the edges of the card */
-  .contentCard {
-    padding: 40px 25px;
-  }
-}
-
-
-
-/* --- Base Card Styles with Smooth Transitions --- */
-.contentCard, 
-.eventCard, 
-.socialCard {
-  background: #ffffff;
-  border-radius: 20px;
-  /* Soft, barely-there shadow for the idle state */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); 
-  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); /* Smooth "ease-out" feel */
-  cursor: pointer;
-  position: relative;
-  top: 0; /* Necessary for the "lifting" animation */
-}
-
-/* --- Hover Elevation Effects --- */
-.contentCard:hover, 
-.eventCard:hover, 
-.socialCard:hover {
-  /* Lifts the card up slightly */
-  top: -8px; 
-  /* Deepens and spreads the shadow to look like it's further from the "ground" */
-  box-shadow: 0 20px 40px rgba(125, 10, 61, 0.12); /* Subtle tint of your maroon flair */
-  /* Slight scale up for extra "pop" */
-  transform: scale(1.02);
-}
-
-/* Specific flair for the Icon on hover */
-.contentCard:hover .contentIcon {
-  transform: rotate(-5deg) scale(1.1);
-  background-color: #9b0d4c !important; /* Slightly brighter maroon */
-  transition: all 0.3s ease;
-}
-
-/* --- Refined Spacing for All Screens --- */
-@media (max-width: 768px) {
-  .contentGrid, .eventsPreview {
-    gap: 30px; /* Increased gap to ensure hover shadows don't overlap neighboring cards */
-    padding: 20px 10px;
-  }
-}
-
-@media (min-width: 1024px) {
-  .contentGrid, .eventsPreview {
-    gap: 40px; /* Generous spacing for laptop screens */
-  }
-}
-
-
-/* --- Header Centering & Sizing --- */
-.sectionTitle {
-  text-align: center; /* Centers the "Explore Our Content" and "Recent Events" */
-  font-size: 2.2rem; /* Increased size */
-  font-weight: 800;
-  color: #2d3436;
-  margin-bottom: 50px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-/* --- View All Events Button (Call to Action) --- */
-.viewAllContainer {
-  display: flex;
-  justify-content: center; /* Centers the button container */
-  margin-top: 50px;
-  padding-bottom: 20px;
-}
-
-.viewAllBtn {
-  background-color: #7d0a3d; /* Your signature Maroon */
-  color: #ffffff;
-  padding: 16px 45px; /* Large, clickable area */
-  font-size: 1.1rem;
-  font-weight: 700;
-  border: 2px solid #7d0a3d; /* Border matches background for smooth transition */
-  border-radius: 50px; /* Modern pill shape */
-  cursor: pointer;
-  transition: all 0.3s ease-in-out;
-  box-shadow: 0 10px 20px rgba(125, 10, 61, 0.2); /* Soft maroon glow */
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-/* --- CTA Hover Effect (White Flip) --- */
-.viewAllBtn:hover {
-  background-color: #ffffff; /* Turns background white */
-  color: #7d0a3d; /* Text turns Maroon */
-  border-color: #7d0a3d; /* Keep the border visible */
-  transform: translateY(-3px); /* Subtle lift */
-  box-shadow: 0 15px 30px rgba(125, 10, 61, 0.3); /* Deeper shadow on hover */
-}
-
-/* --- Responsive Adjustments for Headers --- */
-@media (max-width: 768px) {
-  .sectionTitle {
-    font-size: 1.6rem; /* Scaled down for mobile but still bold */
-    margin-bottom: 30px;
-  }
-  
-  .viewAllBtn {
-    width: 80%; /* Makes button easier to tap on mobile */
-    padding: 14px 20px;
-    font-size: 1rem;
-  }
-}
-
-
-/* --- View All Events Button (Refined for Mobile) --- */
-.viewAllContainer {
-  display: flex;
-  justify-content: center; /* Keeps button centered */
-  margin-top: 40px;
-  padding: 0 20px; /* Prevents button from touching screen edges */
-}
-
-.viewAllBtn {
-  background-color: #7d0a3d;
-  color: #ffffff;
-  padding: 14px 35px;
-  font-size: 1rem;
-  font-weight: 700;
-  border: 2px solid #7d0a3d;
-  border-radius: 50px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 8px 20px rgba(125, 10, 61, 0.2);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  
-  /* The Fix: prevents it from spreading too wide on small screens */
-  width: auto; 
-  min-width: 200px;
-  max-width: 280px; 
-  white-space: nowrap; /* Keeps text on one line */
-}
-
-/* --- The White Hover Flip --- */
-.viewAllBtn:hover {
-  background-color: #ffffff; /* Turns white on hover */
-  color: #7d0a3d;           /* Text turns maroon */
-  border-color: #7d0a3d;   /* Border stays maroon for definition */
-  transform: translateY(-3px);
-  box-shadow: 0 12px 25px rgba(125, 10, 61, 0.3);
-}
-
-/* --- Small Mobile Adjustment --- */
-@media (max-width: 480px) {
-  .viewAllBtn {
-    min-width: 180px;
-    padding: 12px 25px;
-    font-size: 0.9rem;
-  }
-}
-
-
-/* --- Section Spacing Fix --- */
-.contentSection {
-  /* Adds a significant gap between the Hero and the first set of cards */
-  padding-top: 80px; 
-  padding-bottom: 60px;
-  background-color: #f8f9fa; /* Light background to make white cards pop */
-}
-
-/* Ensure the header isn't touching the top of its container */
-.contentSection .sectionTitle {
-  margin-top: 0;
-  margin-bottom: 60px; /* Space between title and the grid cards */
-}
-
-/* --- Base Modal Styles (Awaiting your refinements) --- */
-.modalOverlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.85); /* Darker overlay for focus */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  backdrop-filter: blur(5px); /* Blurs background for a modern look */
-}
-
-.modal {
-  background: white;
-  width: 90%;
-  max-width: 1100px;
-  height: 85vh;
-  border-radius: 25px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0 25px 50px rgba(0,0,0,0.3);
-}
-
-
-/* This covers the content area, respecting header and sidebar */
-.modalOverlay {
-  position: fixed; 
-  top: 64px; /* Ensure header is always visible */
-  left: 52px; /* Ensure sidebar is always visible */
-  width: calc(100vw - 52px);
-  height: calc(100vh - 64px);
-  background: rgba(0, 0, 0, 0.8); 
-  display: flex;
-  justify-content: center;
-  align-items: flex-start; /* Start from top to keep header consistent */
-  padding-top: 2vh;
-  z-index: 9998; 
-  backdrop-filter: blur(8px);
-}
-
-/* This is the white box containing the gallery */
-.modal {
-  position: relative;
-  background: #ffffff;
-  width: 90%;
-  max-width: 1000px;
-  max-height: 85vh; /* Prevents it from going off-screen */
-  border-radius: 25px;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden; /* Keeps the header fixed and body scrollable */
-  animation: modalPop 0.3s ease-out;
-}
-
-/* Fix the header of the modal */
-.modalHeader {
-  padding: 20px 25px;
-  background: white;
-  border-bottom: 1px solid #eee;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: sticky;
-  top: 0;
-}
-
-/* Allow the gallery inside to scroll without moving the whole modal */
-.modalBody {
-  padding: 25px;
-  overflow-y: auto; /* Enable scrolling inside the modal */
-  flex: 1;
-}
-
-/* Simple pop-in animation */
-@keyframes modalPop {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
-}
-
-
-/* --- Gallery Grid (Inside Modal) --- */
-.galleryGrid {
-  display: grid;
-  /* Updated to 2 columns as requested */
-  grid-template-columns: repeat(2, 1fr); 
-  gap: 25px;
-  padding: 10px;
-}
-
-/* --- Gallery Item (Matching Event Card style) --- */
-.galleryItem {
-  background: white;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-  display: flex;
-  flex-direction: column;
-  transition: all 0.3s ease;
-  border: 1px solid transparent; /* Placeholder for the hover flair */
-}
-
-.galleryImagePlaceholder {
-  height: 180px;
-  width: 100%;
-  background-color: #f0f0f0;
-  overflow: hidden;
-}
-
-.galleryImagePlaceholder img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.galleryItemContent {
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  flex-grow: 1;
-}
-
-/* --- The Thin Purple Line Hover Flair --- */
-/* Applying this to BOTH Recent Events and Gallery Items */
-.eventCard:hover, 
-.galleryItem:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 25px rgba(0,0,0,0.1);
-  /* The flair: a thin maroon/purple border */
-  border: 1.5px solid #7d0a3d; 
-}
-
-/* --- Gallery Typography to match Events --- */
-.galleryItemContent h4 {
-  font-size: 1.1rem;
-  margin-bottom: 8px;
-  color: #2d3436;
-}
-
-.galleryDate {
-  font-size: 0.85rem;
-  color: #636e72;
-  margin-bottom: 15px;
-}
-
-.galleryViewBtn {
-  color: #7d0a3d;
-  font-weight: 700;
-  text-decoration: none;
-  font-size: 0.9rem;
-  border: 1px solid #7d0a3d;
-  padding: 8px 15px;
-  border-radius: 8px;
-  text-align: center;
-  transition: all 0.3s ease;
-}
-
-.galleryViewBtn:hover {
-  background-color: #7d0a3d;
-  color: white;
-}
-
-/* --- Responsive Modal Gallery --- */
-@media (max-width: 992px) {
-  .galleryGrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 600px) {
-  .galleryGrid {
-    grid-template-columns: repeat(2, 1fr); /* Consistently 2 columns */
     gap: 12px;
   }
-}
-
-/*image on hero section*/
-.heroSection {
-  position: relative;
-  height: 350px;
-  display: flex;
-  flex-direction: column; /* Allows items to stack vertically */
-  align-items: center;
-  justify-content: center;
-  color: white;
-  text-align: center;
-  /* Add your image below */
-  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
-              url('../assets/amptheatre.jpg'); 
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed; /* Optional: adds a slight parallax effect */
-  border-radius: 0 0 30px 30px; /* Optional: softens the bottom edge */
-}
-
-
-.backButton {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(5px);
-  color: white;
-  padding: 8px 15px;
-  border-radius: 8px;
-  text-decoration: none;
-  font-size: 0.9rem;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  transition: all 0.3s ease;
-}
-
-.backButton:hover {
-  background: rgba(255, 255, 255, 0.4);
-  transform: translateX(-5px); /* Moves slightly left on hover */
-}
-
-
-
-
-/* --- Mobile Specific Adjustments --- */
-@media (max-width: 768px) {
-  .heroSection {
-    /* On mobile, we make it even taller relative to the width 
-       so the image "reveals" more of its height */
-    min-height: 550px; 
-    background-attachment: scroll; /* Disabling fixed background on mobile for better performance */
-    
-    /* This ensures that if the image has faces or a specific focus, 
-       it stays centered as the screen narrows */
-    background-position: center; 
+  
+  .socialGrid {
+    grid-template-columns: repeat(2, 1fr);
   }
+}
 
-  .heroTitle {
-    font-size: 1.8rem; /* Keeps the text fitting inside the expanded area */
-    line-height: 1.2;
+@media (max-width: 480px) {
+  .container {
+    padding: 0 10px;
   }
 }
