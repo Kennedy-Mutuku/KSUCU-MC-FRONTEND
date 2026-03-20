@@ -4,6 +4,7 @@ import {
   ForumsSection,
   AboutSection,
 } from '../components/landing';
+import LiveAttendanceBanner from '../components/landing/LiveAttendanceBanner';
 
 const LandingPageNew = () => {
 
@@ -20,6 +21,9 @@ const LandingPageNew = () => {
             </p>
           </div>
         </section>
+
+        {/* Live Attendance Sessions — appears only when sessions are active */}
+        <LiveAttendanceBanner />
 
         <WeeklyActivities />
         <ForumsSection />

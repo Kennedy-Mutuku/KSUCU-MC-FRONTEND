@@ -1,6 +1,4 @@
 import React, { useRef, useEffect } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSignature } from '@fortawesome/free-solid-svg-icons';
 
 interface SignaturePadProps {
     onSignatureChange: (signature: string) => void;
@@ -33,11 +31,7 @@ const SignaturePad: React.FC<SignaturePadProps> = ({ onSignatureChange, loading 
 
         const draw = (e: MouseEvent | TouchEvent) => {
             if (!isDrawing || !ctx || loading) return;
-
-            // Prevent scrolling while drawing on touch devices
-            if ('touches' in e) {
-                e.preventDefault();
-            }
+            if ('touches' in e) e.preventDefault();
 
             const rect = canvas.getBoundingClientRect();
             const clientX = 'touches' in e ? e.touches[0].clientX : (e as MouseEvent).clientX;
@@ -45,11 +39,9 @@ const SignaturePad: React.FC<SignaturePadProps> = ({ onSignatureChange, loading 
             const currentX = clientX - rect.left;
             const currentY = clientY - rect.top;
 
-            ctx.lineWidth = 2.5;
+            ctx.lineWidth = 2;
             ctx.lineCap = 'round';
             ctx.strokeStyle = '#730051';
-            ctx.shadowBlur = 1;
-            ctx.shadowColor = '#730051';
             ctx.beginPath();
             ctx.moveTo(lastX, lastY);
             ctx.lineTo(currentX, currentY);
@@ -96,47 +88,30 @@ const SignaturePad: React.FC<SignaturePadProps> = ({ onSignatureChange, loading 
     };
 
     return (
-        <div style={{
-            border: '2px solid rgba(0, 198, 255, 0.3)',
-            borderRadius: '12px',
-            padding: '8px',
-            background: 'rgba(255, 255, 255, 0.05)'
-        }}>
-            <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.9rem', color: 'rgba(255, 255, 255, 0.8)' }}>
-                <FontAwesomeIcon icon={faSignature} /> Digital Signature *
-            </label>
-            <canvas
-                ref={canvasRef}
-                width={400}
-                height={140}
-                style={{
-                    width: '100%',
-                    height: '140px',
-                    borderRadius: '8px',
-                    background: 'rgba(0, 0, 0, 0.2)',
-                    cursor: 'crosshair',
-                    touchAction: 'none'
-                }}
-            />
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '8px' }}>
-                <small style={{ color: 'rgba(255, 255, 255, 0.6)' }}>✍️ Please sign in the box</small>
+        <div className="border border-gray-200 rounded-lg p-2 bg-white">
+            <div className="flex items-center justify-between mb-1.5 px-1">
+                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">✍ Draw your signature</span>
                 <button
                     type="button"
                     disabled={loading}
                     onClick={clearSignature}
-                    style={{
-                        padding: '5px 12px',
-                        background: 'rgba(255,255,255,0.1)',
-                        color: 'white',
-                        border: '1px solid rgba(255,255,255,0.2)',
-                        borderRadius: '15px',
-                        fontSize: '0.75rem',
-                        cursor: 'pointer'
-                    }}
+                    className="text-[10px] font-semibold text-gray-400 hover:text-red-500 transition-colors px-2 py-0.5 rounded"
                 >
-                    Clear Signature
+                    Clear
                 </button>
             </div>
+            <canvas
+                ref={canvasRef}
+                width={400}
+                height={120}
+                className="w-full rounded-md cursor-crosshair"
+                style={{
+                    height: '100px',
+                    background: '#fafafa',
+                    border: '1px dashed #e5e7eb',
+                    touchAction: 'none'
+                }}
+            />
         </div>
     );
 };

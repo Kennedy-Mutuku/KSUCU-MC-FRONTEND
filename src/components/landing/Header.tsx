@@ -336,6 +336,24 @@ const MobileSidebarMenu = ({ userData, activeSessions, onNavigate, activeNav, is
       onNavigate('/requisitions');
       return;
     }
+    if (key === 'attendance') {
+      setActiveTab(null);
+      setExpandedNestedItem(null);
+      setIsManualExpanded(false);
+      // Scroll to the inline attendance section on the landing page
+      const el = document.getElementById('live-attendance');
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else {
+        // Navigate home first, then scroll after render
+        onNavigate('/');
+        setTimeout(() => {
+          const target = document.getElementById('live-attendance');
+          if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 600);
+      }
+      return;
+    }
     setActiveTab(key);
     setIsManualExpanded(true);
     // Scroll to show the dropdown after it renders
@@ -728,8 +746,8 @@ const Header = () => {
   );
 
   const renderAttendanceDropdown = () => (
-    <div className="absolute top-full right-0 mt-1 bg-white rounded-xl shadow-2xl border border-gray-100 py-3 min-w-[280px] z-50 animate-in fade-in slide-in-from-top-2 duration-200">
-      <div className="px-4 py-2 border-b border-gray-50 mb-2">
+    <div className="absolute top-full right-0 mt-1 bg-white rounded-xl shadow-2xl border border-gray-100 py-3 min-w-[240px] z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+      <div className="px-4 py-2 border-b border-gray-50 mb-1">
         <h4 className="text-xs font-black text-[#730051] uppercase tracking-wider">Active Sessions</h4>
       </div>
       {activeSessions.length === 0 ? (
@@ -738,23 +756,26 @@ const Header = () => {
           <p className="text-xs font-bold text-gray-400">No sessions currently open</p>
         </div>
       ) : (
-        <div className="max-h-[350px] overflow-y-auto px-2 space-y-1">
+        <div className="max-h-[350px] overflow-y-auto px-2 space-y-0.5">
           {activeSessions.map((s) => (
-            <div key={s._id} className="w-full text-left px-3 py-3 rounded-lg hover:bg-purple-50 transition-all group border border-transparent hover:border-purple-100">
-              <div className="flex items-center justify-between gap-3 mb-2">
-                <div className="min-w-0 flex-1">
-                  <h5 className="text-sm font-bold text-gray-900 group-hover:text-[#730051] truncate">{s.title}</h5>
-                  <p className="text-[10px] text-gray-400 font-bold uppercase tracking-tight">{s.leadershipRole}</p>
-                </div>
-                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse flex-shrink-0" />
-              </div>
-              <button
-                onClick={(e) => { e.stopPropagation(); setSigningSession(s); closeDropdown(); }}
-                className="w-full py-1.5 bg-white border border-gray-200 text-[#730051] text-[10px] font-black rounded-lg shadow-sm hover:bg-[#730051] hover:text-white hover:border-[#730051] transition-all transform active:scale-95 flex items-center justify-center gap-1.5"
-              >
-                Sign Attendance
-              </button>
-            </div>
+            <button
+              key={s._id}
+              onClick={() => {
+                closeDropdown();
+                const el = document.getElementById(`attendance-session-${s._id}`);
+                if (el) {
+                  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  // Quick highlight flash
+                  el.style.boxShadow = '0 0 0 3px rgba(115,0,81,0.4)';
+                  setTimeout(() => { el.style.boxShadow = ''; }, 1500);
+                }
+              }}
+              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-purple-50 transition-all text-left group"
+            >
+              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse flex-shrink-0" />
+              <span className="text-sm font-bold text-gray-800 group-hover:text-[#730051] truncate flex-1">{s.title}</span>
+              <svg className="w-3.5 h-3.5 text-gray-300 group-hover:text-[#730051] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" /></svg>
+            </button>
           ))}
         </div>
       )}
