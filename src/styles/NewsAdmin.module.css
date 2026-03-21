@@ -561,73 +561,363 @@
     100% { transform: translateX(100%); }
 }
 
-/* Responsive Design */
+/* Responsive Design - Tablet */
 @media (max-width: 768px) {
     .container {
-        padding: 15px;
+        padding: 12px;
     }
-    
+
     .loginCard {
         padding: 30px 20px;
         margin: 20px auto;
+        border-radius: 16px;
     }
-    
+
+    .lockIcon {
+        font-size: 2.2rem;
+        margin-bottom: 14px;
+    }
+
+    .loginCard h2 {
+        font-size: 1.5rem;
+        margin-bottom: 8px;
+    }
+
+    .loginCard p {
+        font-size: 0.95rem;
+        margin-bottom: 20px;
+    }
+
+    .adminHeader {
+        margin-bottom: 20px;
+    }
+
     .adminHeader h1 {
-        font-size: 2rem;
-        flex-direction: column;
-        gap: 10px;
+        font-size: 1.4rem;
+        gap: 8px;
     }
-    
+
+    .adminHeader p {
+        font-size: 0.9rem;
+    }
+
+    .newsFormCard {
+        padding: 16px 14px;
+        border-radius: 14px;
+        margin-bottom: 20px;
+    }
+
     .cardHeader {
         flex-direction: column;
-        gap: 15px;
+        gap: 10px;
         align-items: stretch;
+        margin-bottom: 18px;
+        padding-bottom: 14px;
     }
-    
+
     .cardHeader h2 {
+        font-size: 1.15rem;
+        justify-content: center;
         text-align: center;
+        gap: 8px;
+    }
+
+    .actionButtons {
         justify-content: center;
     }
-    
+
+    .previewButton {
+        padding: 8px 16px;
+        font-size: 0.85rem;
+        border-radius: 8px;
+        justify-content: center;
+    }
+
+    .newsForm {
+        gap: 16px;
+    }
+
     .formRow {
         grid-template-columns: 1fr;
-        gap: 15px;
+        gap: 12px;
     }
-    
+
+    .formGroup label {
+        font-size: 0.9rem;
+        gap: 6px;
+    }
+
+    .formGroup small {
+        font-size: 0.78rem;
+    }
+
+    .textInput,
+    .dateInput,
+    .timeInput,
+    .textArea {
+        padding: 10px 12px;
+        font-size: 0.9rem;
+        border-radius: 8px;
+        border-width: 1.5px;
+    }
+
+    .textArea {
+        min-height: 80px;
+    }
+
+    .sectionDivider {
+        margin: 16px 0 12px;
+        padding: 12px 14px;
+        border-radius: 10px;
+    }
+
+    .sectionDivider h3 {
+        font-size: 1rem;
+        margin-bottom: 4px;
+    }
+
+    .sectionDivider p {
+        font-size: 0.82rem;
+    }
+
+    .wordCounter {
+        font-size: 0.8rem;
+        padding: 3px 8px;
+    }
+
     .formActions {
-        flex-direction: column-reverse;
+        flex-direction: row;
+        gap: 10px;
+        margin-top: 14px;
+        padding-top: 14px;
+        justify-content: stretch;
     }
-    
-    .newsFormCard {
-        padding: 20px 15px;
+
+    .submitButton,
+    .clearButton {
+        padding: 11px 16px;
+        font-size: 0.85rem;
+        border-radius: 8px;
+        flex: 1;
+        justify-content: center;
     }
-    
+
+    /* Preview */
+    .previewSection {
+        padding: 14px;
+        border-radius: 12px;
+    }
+
+    .newsPreview {
+        padding: 16px;
+        border-radius: 12px;
+    }
+
+    .previewContent h2 {
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+    }
+
+    .previewBody {
+        font-size: 0.95rem;
+    }
+
+    .previewEventInfo {
+        padding: 14px;
+        border-radius: 8px;
+        margin-bottom: 14px;
+    }
+
+    .previewEventInfo h4 {
+        font-size: 1rem;
+        margin-bottom: 6px;
+    }
+
+    /* Current News */
+    .currentNewsCard {
+        padding: 16px;
+        border-radius: 12px;
+    }
+
+    .currentNewsCard h3 {
+        font-size: 1.1rem;
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+
+    .currentNewsContent h4 {
+        font-size: 1rem;
+    }
+
+    .currentNewsContent p {
+        font-size: 0.9rem;
+    }
+
     .imagePreview img {
         width: 150px;
         height: 90px;
     }
-    
-    .previewContent h2 {
-        font-size: 1.6rem;
+
+    .message {
+        padding: 10px 14px;
+        font-size: 0.88rem;
+        border-radius: 8px;
+        margin-bottom: 16px;
     }
 }
 
+/* Responsive Design - Mobile */
 @media (max-width: 480px) {
+    .container {
+        padding: 8px;
+    }
+
+    .loginCard {
+        padding: 24px 16px;
+        margin: 12px auto;
+        border-radius: 14px;
+        box-shadow: 0 8px 20px rgba(115, 0, 81, 0.3);
+    }
+
+    .loginCard h2 {
+        font-size: 1.3rem;
+    }
+
+    .loginCard p {
+        font-size: 0.88rem;
+        margin-bottom: 18px;
+    }
+
     .passwordInput {
         max-width: 100%;
-    }
-    
-    .formActions {
-        gap: 10px;
-    }
-    
-    .submitButton,
-    .clearButton {
-        padding: 12px 20px;
+        padding: 12px 16px;
         font-size: 0.9rem;
     }
-    
+
+    .loginButton {
+        padding: 12px 28px;
+        font-size: 0.95rem;
+    }
+
+    .adminHeader {
+        margin-bottom: 14px;
+    }
+
+    .adminHeader h1 {
+        font-size: 1.2rem;
+        gap: 6px;
+    }
+
+    .adminHeader p {
+        font-size: 0.82rem;
+    }
+
+    .newsFormCard {
+        padding: 14px 12px;
+        border-radius: 12px;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+        margin-bottom: 16px;
+    }
+
+    .cardHeader {
+        margin-bottom: 14px;
+        padding-bottom: 10px;
+        gap: 8px;
+    }
+
+    .cardHeader h2 {
+        font-size: 1.05rem;
+    }
+
+    .newsForm {
+        gap: 12px;
+    }
+
+    .formGroup label {
+        font-size: 0.85rem;
+    }
+
+    .textInput,
+    .dateInput,
+    .timeInput,
     .textArea {
-        min-height: 100px;
+        padding: 9px 10px;
+        font-size: 0.88rem;
+    }
+
+    .textArea {
+        min-height: 70px;
+        rows: 2;
+    }
+
+    .sectionDivider {
+        margin: 10px 0 8px;
+        padding: 10px 12px;
+    }
+
+    .sectionDivider h3 {
+        font-size: 0.92rem;
+    }
+
+    .sectionDivider p {
+        font-size: 0.78rem;
+    }
+
+    .formActions {
+        gap: 8px;
+        margin-top: 10px;
+        padding-top: 10px;
+    }
+
+    .submitButton,
+    .clearButton {
+        padding: 10px 12px;
+        font-size: 0.82rem;
+        gap: 6px;
+    }
+
+    .previewSection {
+        padding: 10px;
+    }
+
+    .newsPreview {
+        padding: 12px;
+    }
+
+    .previewContent h2 {
+        font-size: 1.1rem;
+    }
+
+    .previewBody {
+        font-size: 0.88rem;
+        line-height: 1.5;
+    }
+
+    .currentNewsCard {
+        padding: 12px;
+        border-radius: 10px;
+    }
+
+    .currentNewsCard h3 {
+        font-size: 1rem;
+    }
+
+    .currentNewsContent h4 {
+        font-size: 0.92rem;
+    }
+
+    .currentNewsContent p {
+        font-size: 0.85rem;
+    }
+
+    .currentEventInfo {
+        padding: 6px 10px;
+        font-size: 0.82rem;
+    }
+
+    .message {
+        padding: 8px 12px;
+        font-size: 0.84rem;
+        margin-bottom: 12px;
     }
 }

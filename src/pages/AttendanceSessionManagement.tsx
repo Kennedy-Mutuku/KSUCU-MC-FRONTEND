@@ -8,14 +8,16 @@ import { downloadAttendancePDF } from '../utils/attendanceReport';
 import {
     faUsers,
     faPlay,
-    faStop,
+    faEye,
     faDownload,
     faArrowLeft,
     faLink,
     faClock,
     faTrash,
     faHistory,
-    faRotateRight
+    faRotateRight,
+    faStop,
+    faTimes
 } from '@fortawesome/free-solid-svg-icons';
 import { io } from 'socket.io-client';
 
@@ -49,7 +51,7 @@ const AttendanceSessionManagement: React.FC = () => {
     const [searchParams] = useSearchParams();
     const [leadershipRole, setLeadershipRole] = useState<string>('');
     const [activeSessions, setActiveSessions] = useState<AttendanceSession[]>([]);
-    const [selectedSession, setSelectedSession] = useState<AttendanceSession | null>(null);
+    const [viewingSession, setViewingSession] = useState<AttendanceSession | null>(null);
     const [attendanceRecords, setAttendanceRecords] = useState<AttendanceRecord[]>([]);
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState('');
@@ -60,7 +62,8 @@ const AttendanceSessionManagement: React.FC = () => {
         ministry: 'General'
     });
     const [allSessions, setAllSessions] = useState<AttendanceSession[]>([]);
-    const [showArchive, setShowArchive] = useState(false);
+
+    const closedSessions = allSessions.filter(s => !s.isActive);
 
     useEffect(() => {
         const role = searchParams.get('role');
@@ -77,56 +80,55 @@ const AttendanceSessionManagement: React.FC = () => {
         return () => clearInterval(refreshInterval);
     }, [searchParams]);
 
-    // Socket.IO for real-time updates
+    // Socket.IO for real-time updates on viewed session
     useEffect(() => {
-        if (!selectedSession?._id) return;
+        if (!viewingSession?._id) return;
 
         const socket = io(getBaseUrl(), { withCredentials: true });
 
         socket.on('newAttendance', (data: { record: AttendanceRecord, sessionId: string }) => {
-            if (data.sessionId === selectedSession._id) {
+            if (data.sessionId === viewingSession._id) {
                 setAttendanceRecords(prev => {
                     if (prev.find(r => r._id === data.record._id)) return prev;
                     return [data.record, ...prev];
                 });
-                // Also update the count in activeSessions
                 setActiveSessions(prev => prev.map(s =>
+                    s._id === data.sessionId ? { ...s, attendanceCount: s.attendanceCount + 1 } : s
+                ));
+                setAllSessions(prev => prev.map(s =>
                     s._id === data.sessionId ? { ...s, attendanceCount: s.attendanceCount + 1 } : s
                 ));
             }
         });
 
-        return () => {
-            socket.disconnect();
-        };
-    }, [selectedSession?._id]);
+        return () => { socket.disconnect(); };
+    }, [viewingSession?._id]);
 
     const loadSessionData = async () => {
         try {
-            const timestamp = Date.now();
-            const response = await fetch(`${getApiUrl('attendanceSessionStatus')}?t=${timestamp}`, {
+            const response = await fetch(`${getApiUrl('attendanceSessionStatus')}?all=true&t=${Date.now()}`, {
                 credentials: 'include',
                 headers: { 'Cache-Control': 'no-cache' }
             });
 
             if (response.ok) {
                 const data = await response.json();
-                const sessions = data.sessions || [];
+                const sessions: AttendanceSession[] = data.sessions || [];
                 setAllSessions(sessions);
-                setActiveSessions(sessions.filter((s: AttendanceSession) => s.isActive));
+                setActiveSessions(sessions.filter(s => s.isActive));
 
-                if (selectedSession) {
-                    const updated = sessions.find((s: AttendanceSession) => s._id === selectedSession._id);
+                // Update viewed session if still exists
+                if (viewingSession) {
+                    const updated = sessions.find(s => s._id === viewingSession._id);
                     if (updated) {
-                        setSelectedSession(updated);
+                        setViewingSession(updated);
                         fetchRecords(updated._id);
-                    } else if (selectedSession.isActive) {
-                        setSelectedSession(null);
+                    } else {
+                        setViewingSession(null);
                         setAttendanceRecords([]);
                     }
                 }
             }
-
         } catch (error) {
             console.error('Error loading session data:', error);
         }
@@ -135,13 +137,11 @@ const AttendanceSessionManagement: React.FC = () => {
     const fetchRecords = async (sessionId: string) => {
         if (!sessionId) return;
         try {
-            const timestamp = Date.now();
-            const recordsResponse = await fetch(`${getApiUrl('attendanceRecords')}/${sessionId}?t=${timestamp}&role=${encodeURIComponent(leadershipRole)}`, {
+            const res = await fetch(`${getApiUrl('attendanceRecords')}/${sessionId}?t=${Date.now()}&role=${encodeURIComponent(leadershipRole)}`, {
                 credentials: 'include'
             });
-            if (recordsResponse.ok) {
-                const data = await recordsResponse.json();
-                // ONLY update records if it's still for the currently selected session
+            if (res.ok) {
+                const data = await res.json();
                 setAttendanceRecords(data.records || []);
             }
         } catch (err) {
@@ -166,26 +166,25 @@ const AttendanceSessionManagement: React.FC = () => {
             });
 
             if (response.ok) {
-                const data = await response.json();
-                setMessage('Session opened successfully!');
+                setMessage('Session created!');
                 setShowStartForm(false);
                 setNewSessionData({ title: '', durationMinutes: 60, ministry: 'General' });
                 loadSessionData();
-                setSelectedSession(data.session);
             } else {
                 const err = await response.json();
                 setMessage(err.message || 'Error opening session');
             }
-        } catch (error) {
+        } catch {
             setMessage('Network error starting session');
         } finally {
             setLoading(false);
-            setTimeout(() => setMessage(''), 5000);
+            setTimeout(() => setMessage(''), 4000);
         }
     };
 
-    const closeSession = async (sessionId: string) => {
-        if (!confirm('Are you sure you want to close this session?')) return;
+    // "Delete" from active = close session + move to history (stops users from seeing it)
+    const deactivateSession = async (sessionId: string) => {
+        if (!confirm('Remove this session from active? It will stop for users and move to history.')) return;
         setLoading(true);
         try {
             const response = await fetch(getApiUrl('attendanceSessionClose'), {
@@ -195,26 +194,27 @@ const AttendanceSessionManagement: React.FC = () => {
                 body: JSON.stringify({ sessionId, leadershipRole })
             });
             if (response.ok) {
-                setMessage('Session closed successfully!');
-                loadSessionData();
-                if (selectedSession?._id === sessionId) {
-                    setSelectedSession(null);
+                setMessage('Session stopped and moved to history.');
+                if (viewingSession?._id === sessionId) {
+                    setViewingSession(null);
                     setAttendanceRecords([]);
                 }
+                loadSessionData();
             } else {
                 const err = await response.json();
                 setMessage(err.message || 'Error closing session');
             }
-        } catch (error) {
+        } catch {
             setMessage('Error closing session');
         } finally {
             setLoading(false);
-            setTimeout(() => setMessage(''), 5000);
+            setTimeout(() => setMessage(''), 4000);
         }
     };
 
-    const deleteSession = async (sessionId: string) => {
-        if (!confirm('WARNING: This will permanently delete the session and ALL its records. Continue?')) return;
+    // "Delete" from history = permanent delete
+    const permanentlyDelete = async (sessionId: string) => {
+        if (!confirm('Permanently delete this session and all its records? This cannot be undone.')) return;
         setLoading(true);
         try {
             const response = await fetch(getApiUrl('attendanceSessionDelete'), {
@@ -224,18 +224,18 @@ const AttendanceSessionManagement: React.FC = () => {
                 body: JSON.stringify({ sessionId })
             });
             if (response.ok) {
-                setMessage('Session and records deleted!');
-                loadSessionData();
-                if (selectedSession?._id === sessionId) {
-                    setSelectedSession(null);
+                setMessage('Session permanently deleted.');
+                if (viewingSession?._id === sessionId) {
+                    setViewingSession(null);
                     setAttendanceRecords([]);
                 }
+                loadSessionData();
             }
-        } catch (error) {
+        } catch {
             setMessage('Error deleting session');
         } finally {
             setLoading(false);
-            setTimeout(() => setMessage(''), 5000);
+            setTimeout(() => setMessage(''), 4000);
         }
     };
 
@@ -253,59 +253,39 @@ const AttendanceSessionManagement: React.FC = () => {
                 setMessage('Session re-opened!');
                 loadSessionData();
             }
-        } catch (error) {
+        } catch {
             setMessage('Error re-opening session');
         } finally {
             setLoading(false);
-            setTimeout(() => setMessage(''), 5000);
-        }
-    };
-
-    const extendSession = async (sessionId: string) => {
-        const mins = prompt('How many minutes to add?', '30');
-        if (!mins || isNaN(parseInt(mins))) return;
-
-        try {
-            const response = await fetch(getApiUrl('attendanceSessionExtend'), {
-                method: 'POST',
-                credentials: 'include',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ sessionId, additionalMinutes: parseInt(mins) })
-            });
-            if (response.ok) {
-                setMessage('Session extended!');
-                loadSessionData();
-            }
-        } catch (error) {
-            setMessage('Error extending session');
+            setTimeout(() => setMessage(''), 4000);
         }
     };
 
     const copyLink = (shortId: string) => {
         const url = `${window.location.origin}/sign-attendance/${shortId}`;
         navigator.clipboard.writeText(url);
-        alert('Shareable link copied to clipboard!');
+        setMessage('Link copied to clipboard!');
+        setTimeout(() => setMessage(''), 3000);
     };
 
-    const handleDownloadPDF = async () => {
-        if (!selectedSession?._id) return;
-
+    const handleDownloadPDF = async (session: AttendanceSession) => {
+        if (!session?._id) return;
         setLoading(true);
-        setMessage('Preparing PDF (fetching high-quality signature data)...');
+        setMessage('Generating PDF...');
 
         try {
-            const response = await fetch(`${getApiUrl('attendanceRecords')}/${selectedSession._id}?signatures=true&role=${encodeURIComponent(leadershipRole)}`, {
+            const response = await fetch(`${getApiUrl('attendanceRecords')}/${session._id}?signatures=true&role=${encodeURIComponent(leadershipRole)}`, {
                 credentials: 'include'
             });
 
             if (response.ok) {
                 const data = await response.json();
-                downloadAttendancePDF(data.records || [], leadershipRole, selectedSession as any);
-                setMessage('PDF Generated!');
+                downloadAttendancePDF(data.records || [], leadershipRole, session as any);
+                setMessage('PDF downloaded!');
             } else {
-                setMessage('Error fetching full signature data');
+                setMessage('Error generating PDF');
             }
-        } catch (err) {
+        } catch {
             setMessage('Network error generating PDF');
         } finally {
             setLoading(false);
@@ -313,205 +293,196 @@ const AttendanceSessionManagement: React.FC = () => {
         }
     };
 
+    const viewSession = (session: AttendanceSession) => {
+        setViewingSession(session);
+        fetchRecords(session._id);
+    };
+
     return (
-        <>
-            <div className={styles.pageWrapper}>
-                <div className={styles.container}>
-                    <div className={styles.header}>
-                        <button onClick={() => navigate('/worship-docket-admin')} className={styles.backButton}>
-                            <FontAwesomeIcon icon={faArrowLeft} /> Back to Dashboard
+        <div className={styles.pageWrapper}>
+            <div className={styles.container}>
+                {/* Header */}
+                <div className={styles.header}>
+                    <button onClick={() => navigate('/worship-docket-admin')} className={styles.backButton}>
+                        <FontAwesomeIcon icon={faArrowLeft} /> Back
+                    </button>
+                    <h1><FontAwesomeIcon icon={faUsers} /> Attendance Management</h1>
+                </div>
+
+                {message && (
+                    <div className={`${styles.message} ${message.toLowerCase().includes('error') ? styles.errorMessage : ''}`}>
+                        {message}
+                    </div>
+                )}
+
+                {/* Create Session */}
+                <div className={styles.adminActions}>
+                    {!showStartForm ? (
+                        <button onClick={() => setShowStartForm(true)} className={styles.startButton}>
+                            <FontAwesomeIcon icon={faPlay} /> Create New Attendance Session
                         </button>
-                        <h1><FontAwesomeIcon icon={faUsers} /> Attendance Management</h1>
-                        <p>Centralized control for all church meeting sessions</p>
-                    </div>
-
-                    {message && (
-                        <div className={`${styles.message} ${message.includes('error') || message.includes('Error') ? styles.errorMessage : ''}`}>
-                            {message}
-                        </div>
-                    )}
-
-                    <div className={styles.adminActions}>
-                        {!showStartForm ? (
-                            <button onClick={() => setShowStartForm(true)} className={styles.startButton}>
-                                <FontAwesomeIcon icon={faPlay} /> Create New Attendance Session
-                            </button>
-                        ) : (
-                            <div className={styles.startForm}>
-                                <h3>Start New Meeting</h3>
-                                <div className={styles.formGroup}>
-                                    <label>Session Title (e.g., Sunday Service)</label>
-                                    <input
-                                        type="text"
-                                        className={styles.formInput}
-                                        value={newSessionData.title}
-                                        onChange={(e) => setNewSessionData({ ...newSessionData, title: e.target.value })}
-                                        placeholder="What meeting is this?"
-                                    />
-                                </div>
-                                <div className={styles.formGroup}>
-                                    <label>Duration (Minutes)</label>
-                                    <input
-                                        type="number"
-                                        className={styles.formInput}
-                                        value={newSessionData.durationMinutes}
-                                        onChange={(e) => setNewSessionData({ ...newSessionData, durationMinutes: parseInt(e.target.value) || 0 })}
-                                    />
-                                </div>
-                                <div className={styles.formActions}>
-                                    <button onClick={startSession} disabled={loading} className={styles.submitButton}>
-                                        {loading ? 'Starting...' : 'Start Session Now'}
-                                    </button>
-                                    <button onClick={() => setShowStartForm(false)} className={styles.cancelButton}>Cancel</button>
-                                </div>
+                    ) : (
+                        <div className={styles.startForm}>
+                            <h3>New Session</h3>
+                            <div className={styles.formGroup}>
+                                <label>Session Title</label>
+                                <input
+                                    type="text"
+                                    className={styles.formInput}
+                                    value={newSessionData.title}
+                                    onChange={(e) => setNewSessionData({ ...newSessionData, title: e.target.value })}
+                                    placeholder="e.g. Sunday Service, Bible Study"
+                                    onKeyDown={(e) => e.key === 'Enter' && startSession()}
+                                />
                             </div>
-                        )}
-                    </div>
-
-                    <div className={styles.sessionsOverview}>
-                        <div className={styles.sectionHeader}>
-                            <h2>Active Sessions</h2>
-                            <div className={styles.headerActions}>
-                                <span className={styles.badge}>{activeSessions.length}</span>
-                                <button
-                                    className={`${styles.archiveToggle} ${showArchive ? styles.activeToggle : ''}`}
-                                    onClick={() => setShowArchive(!showArchive)}
-                                    title="Session Archive"
-                                >
-                                    <FontAwesomeIcon icon={faHistory} /> {showArchive ? 'Hide Archive' : 'Show Archive'}
+                            <div className={styles.formActions}>
+                                <button onClick={startSession} disabled={loading} className={styles.submitButton}>
+                                    {loading ? 'Starting...' : 'Start Session'}
                                 </button>
-                            </div>
-                        </div>
-                        {activeSessions.length === 0 ? (
-                            <div className={styles.emptyText}>
-                                <FontAwesomeIcon icon={faClock} style={{ fontSize: '2rem', marginBottom: '1rem', opacity: 0.3 }} />
-                                <p>No sessions currently active.</p>
-                            </div>
-                        ) : (
-                            <div className={styles.sessionList}>
-                                {activeSessions.map(session => (
-                                    <div
-                                        key={session._id}
-                                        className={`${styles.sessionPill} ${selectedSession?._id === session._id ? styles.selectedPill : ''}`}
-                                        onClick={() => {
-                                            setSelectedSession(session);
-                                            fetchRecords(session._id);
-                                        }}
-                                    >
-                                        <div className={styles.pillInfo}>
-                                            <h4>{session.title}</h4>
-                                            <div className={styles.pillMeta}>
-                                                <span>{session.attendanceCount} signed in</span>
-                                                <span className={styles.timeTag}>
-                                                    <FontAwesomeIcon icon={faClock} /> {formatDateTime(session.startTime).split(',')[1]}
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div className={styles.pillActions}>
-                                            <button onClick={(e) => { e.stopPropagation(); copyLink(session.shortId); }} title="Copy Link"><FontAwesomeIcon icon={faLink} /></button>
-                                            <button onClick={(e) => { e.stopPropagation(); extendSession(session._id); }} title="Extend Time"><FontAwesomeIcon icon={faClock} /></button>
-                                            <button onClick={(e) => { e.stopPropagation(); closeSession(session._id); }} className={styles.stopIcon} title="Close Session"><FontAwesomeIcon icon={faStop} /></button>
-                                            <button onClick={(e) => { e.stopPropagation(); deleteSession(session._id); }} className={styles.deleteIcon} title="Delete Full Session"><FontAwesomeIcon icon={faTrash} /></button>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-
-                    {showArchive && (
-                        <div className={styles.archiveSection}>
-                            <div className={styles.sectionHeader}>
-                                <h2>Previous Attendances</h2>
-                                <span className={styles.badge}>{allSessions.filter(s => !s.isActive).length}</span>
-                            </div>
-                            <div className={styles.archiveList}>
-                                {allSessions.filter(s => !s.isActive).length === 0 ? (
-                                    <p className={styles.emptyText}>No historical records found.</p>
-                                ) : (
-                                    allSessions.filter(s => !s.isActive).map(session => (
-                                        <div
-                                            key={session._id}
-                                            className={`${styles.archivePill} ${selectedSession?._id === session._id ? styles.selectedPill : ''}`}
-                                            onClick={() => {
-                                                setSelectedSession(session);
-                                                fetchRecords(session._id);
-                                            }}
-                                        >
-                                            <div className={styles.pillInfo}>
-                                                <h4>{session.title}</h4>
-                                                <div className={styles.pillMeta}>
-                                                    <span>{formatDateTime(session.startTime).split(',')[0]}</span>
-                                                    <span>{session.attendanceCount} members</span>
-                                                </div>
-                                            </div>
-                                            <div className={styles.pillActions}>
-                                                <button onClick={(e) => { e.stopPropagation(); reopenSession(session._id); }} title="Re-open Session"><FontAwesomeIcon icon={faRotateRight} /></button>
-                                                <button
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        setSelectedSession(session);
-                                                        handleDownloadPDF();
-                                                    }}
-                                                    className={styles.downloadIcon}
-                                                    title="Quick PDF Export"
-                                                >
-                                                    <FontAwesomeIcon icon={faDownload} />
-                                                </button>
-                                                <button onClick={(e) => { e.stopPropagation(); deleteSession(session._id); }} className={styles.deleteIcon} title="Delete Record"><FontAwesomeIcon icon={faTrash} /></button>
-                                            </div>
-                                        </div>
-                                    ))
-                                )}
-                            </div>
-                        </div>
-                    )}
-
-                    {selectedSession && (
-                        <div className={styles.recordsSection}>
-                            <div className={styles.recordsHeader}>
-                                <div>
-                                    <h2>{selectedSession.title}</h2>
-                                    <p>{attendanceRecords.length} attendees recorded</p>
-                                </div>
-                                <button onClick={handleDownloadPDF} className={styles.downloadButton} disabled={loading}>
-                                    <FontAwesomeIcon icon={faDownload} /> {loading ? 'Processing...' : 'Export PDF'}
-                                </button>
-                            </div>
-                            <div className={styles.tableWrapper}>
-                                <table className={styles.recordsTable}>
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Type</th>
-                                            <th>Reg No</th>
-                                            <th>Course</th>
-                                            <th>Time</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {attendanceRecords.map(record => (
-                                            <tr key={record._id}>
-                                                <td><strong>{record.userName}</strong></td>
-                                                <td><span className={styles.typeBadge}>{record.userType || 'student'}</span></td>
-                                                <td><span className={styles.regBadge}>{record.regNo}</span></td>
-                                                <td><span className={styles.courseTag}>{record.course || 'N/A'}</span></td>
-                                                <td className={styles.timeCell}>{record.signedAt ? formatDateTime(record.signedAt).split(',')[1] : 'N/A'}</td>
-                                            </tr>
-                                        ))}
-                                        {attendanceRecords.length === 0 && (
-                                            <tr>
-                                                <td colSpan={5} className={styles.noRecords}>No one has signed in yet.</td>
-                                            </tr>
-                                        )}
-                                    </tbody>
-                                </table>
+                                <button onClick={() => setShowStartForm(false)} className={styles.cancelButton}>Cancel</button>
                             </div>
                         </div>
                     )}
                 </div>
+
+                {/* Active Sessions */}
+                <div className={styles.section}>
+                    <div className={styles.sectionHeader}>
+                        <h2><FontAwesomeIcon icon={faPlay} className={styles.sectionIcon} /> Active Sessions</h2>
+                        <span className={styles.badge}>{activeSessions.length}</span>
+                    </div>
+
+                    {activeSessions.length === 0 ? (
+                        <div className={styles.emptyText}>
+                            <p>No active sessions. Create one above.</p>
+                        </div>
+                    ) : (
+                        <div className={styles.sessionList}>
+                            {activeSessions.map(session => (
+                                <div key={session._id} className={`${styles.sessionCard} ${viewingSession?._id === session._id ? styles.selectedCard : ''}`}>
+                                    <div className={styles.cardHeader}>
+                                        <div className={styles.cardLiveDot} />
+                                        <h4>{session.title}</h4>
+                                        <span className={styles.countBadge}>{session.attendanceCount} signed</span>
+                                    </div>
+                                    <div className={styles.cardMeta}>
+                                        <span><FontAwesomeIcon icon={faClock} /> {formatDateTime(session.startTime).split(',')[1]?.trim()}</span>
+                                    </div>
+                                    <div className={styles.cardActions}>
+                                        <button className={styles.btnView} onClick={() => viewSession(session)}>
+                                            <FontAwesomeIcon icon={faEye} /> View
+                                        </button>
+                                        <button className={styles.btnLink} onClick={() => copyLink(session.shortId)}>
+                                            <FontAwesomeIcon icon={faLink} /> Copy Link
+                                        </button>
+                                        <button className={styles.btnPdf} onClick={() => handleDownloadPDF(session)}>
+                                            <FontAwesomeIcon icon={faDownload} /> PDF
+                                        </button>
+                                        <button className={styles.btnDelete} onClick={() => deactivateSession(session._id)} title="Stop & move to history">
+                                            <FontAwesomeIcon icon={faTrash} />
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                {/* Session History - always visible */}
+                <div className={styles.section}>
+                    <div className={styles.sectionHeader}>
+                        <h2><FontAwesomeIcon icon={faHistory} className={styles.sectionIcon} /> Session History</h2>
+                        <span className={styles.badge}>{closedSessions.length}</span>
+                    </div>
+
+                    {closedSessions.length === 0 ? (
+                        <div className={styles.emptyText}><p>No past sessions yet.</p></div>
+                    ) : (
+                        <div className={styles.sessionList}>
+                            {closedSessions.map(session => (
+                                <div key={session._id} className={`${styles.historyCard} ${viewingSession?._id === session._id ? styles.selectedCard : ''}`}>
+                                    <div className={styles.cardHeader}>
+                                        <h4>{session.title}</h4>
+                                        <span className={styles.countBadge}>{session.attendanceCount} members</span>
+                                    </div>
+                                    <div className={styles.cardMeta}>
+                                        <span><FontAwesomeIcon icon={faClock} /> {formatDateTime(session.startTime)}</span>
+                                    </div>
+                                    <div className={styles.cardActions}>
+                                        <button className={styles.btnView} onClick={() => viewSession(session)}>
+                                            <FontAwesomeIcon icon={faEye} /> View
+                                        </button>
+                                        <button className={styles.btnPdf} onClick={() => handleDownloadPDF(session)}>
+                                            <FontAwesomeIcon icon={faDownload} /> PDF
+                                        </button>
+                                        <button className={styles.btnReopen} onClick={() => reopenSession(session._id)} title="Re-activate">
+                                            <FontAwesomeIcon icon={faRotateRight} />
+                                        </button>
+                                        <button className={styles.btnDeletePerm} onClick={() => permanentlyDelete(session._id)} title="Delete permanently">
+                                            <FontAwesomeIcon icon={faTrash} />
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                {/* Live View Panel */}
+                {viewingSession && (
+                    <div className={styles.recordsSection}>
+                        <div className={styles.recordsHeader}>
+                            <div>
+                                <h2>
+                                    {viewingSession.isActive && <span className={styles.liveBadge}>LIVE</span>}
+                                    {viewingSession.title}
+                                </h2>
+                                <p>{attendanceRecords.length} attendees</p>
+                            </div>
+                            <div className={styles.recordsActions}>
+                                <button onClick={() => handleDownloadPDF(viewingSession)} className={styles.downloadButton} disabled={loading}>
+                                    <FontAwesomeIcon icon={faDownload} /> {loading ? '...' : 'PDF'}
+                                </button>
+                                <button onClick={() => { setViewingSession(null); setAttendanceRecords([]); }} className={styles.closeViewBtn} title="Close view">
+                                    <FontAwesomeIcon icon={faTimes} />
+                                </button>
+                            </div>
+                        </div>
+                        <div className={styles.tableWrapper}>
+                            <table className={styles.recordsTable}>
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Reg No</th>
+                                        <th>Type</th>
+                                        <th>Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {attendanceRecords.map((record, idx) => (
+                                        <tr key={record._id} className={idx === 0 && viewingSession.isActive ? styles.newRow : ''}>
+                                            <td className={styles.numCell}>{idx + 1}</td>
+                                            <td><strong>{record.userName}</strong></td>
+                                            <td><span className={styles.regBadge}>{record.regNo}</span></td>
+                                            <td><span className={styles.typeBadge}>{record.userType || 'student'}</span></td>
+                                            <td className={styles.timeCell}>{record.signedAt ? formatDateTime(record.signedAt).split(',')[1]?.trim() : '—'}</td>
+                                        </tr>
+                                    ))}
+                                    {attendanceRecords.length === 0 && (
+                                        <tr>
+                                            <td colSpan={5} className={styles.noRecords}>
+                                                {viewingSession.isActive ? 'Waiting for members to sign in...' : 'No records found.'}
+                                            </td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                )}
             </div>
-        </>
+        </div>
     );
 };
 

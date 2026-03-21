@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ModernNewsDisplay from '../components/ModernNewsDisplay';
 import styles from '../styles/worshipDocketAdmin.module.css';
@@ -12,7 +12,8 @@ import {
     faBookOpen,
     faHeart,
     faSignOutAlt,
-    faComments
+    faComments,
+    faSearch
 } from '@fortawesome/free-solid-svg-icons';
 import { useOverseerAuth } from '../hooks/useOverseerAuth';
 
@@ -24,6 +25,7 @@ const WorshipDocketAdmin: React.FC = () => {
     const [message, setMessage] = useState('');
     const [selectedRole, setSelectedRole] = useState<string>('');
     const [loginLoading, setLoginLoading] = useState(false);
+    const [search, setSearch] = useState('');
 
     const handleLogin = async () => {
         setLoginLoading(true);
@@ -55,6 +57,16 @@ const WorshipDocketAdmin: React.FC = () => {
             navigate(`/attendance-session-management?role=${encodeURIComponent(role)}`);
         }, 800);
     };
+
+    const adminModules = useMemo(() => [
+        { title: 'Attendance', desc: 'Multi-session attendance manager', icon: faUsers, keywords: ['session', 'sign', 'register', 'leadership'], action: handleRoleSelection },
+        { title: 'News', desc: 'Manage news, events & photos', icon: faNewspaper, keywords: ['events', 'updates', 'photos', 'countdown'], action: () => navigate('/news-admin') },
+        { title: 'Media Gallery', desc: 'Photos & media management', icon: faUsers, keywords: ['gallery', 'images', 'upload'], action: () => navigate('/media-admin') },
+        { title: 'Requisitions', desc: 'Equipment requests & approvals', icon: faBox, keywords: ['equipment', 'approve', 'request', 'supplies'], action: () => navigate('/requisitions-admin') },
+        { title: 'Bible Study', desc: 'Registrations & group management', icon: faBookOpen, keywords: ['groups', 'residence', 'bs', 'study'], action: () => navigate('/adminBs') },
+        { title: 'Compassion', desc: 'Help requests & donations', icon: faHeart, keywords: ['counseling', 'donate', 'support', 'help'], action: () => navigate('/compassion-counseling-admin') },
+        { title: 'Chat', desc: 'Community chat moderation', icon: faComments, keywords: ['moderate', 'messages', 'ban', 'community'], action: () => navigate('/chat-admin') },
+    ], [navigate]);
 
     if (authLoading) {
         return (
@@ -107,34 +119,18 @@ const WorshipDocketAdmin: React.FC = () => {
         <>
             <div className={styles.container}>
                 <div className={styles.adminHeader}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-                        <div>
-                            <h1>
-                                <FontAwesomeIcon icon={faUsers} />
-                                Leadership Attendance Administration
-                            </h1>
-                            <p>Centralized management for all church attendance sessions</p>
-                        </div>
-                        <button
-                            onClick={handleLogout}
-                            title="Sign out of admin session"
-                            style={{
-                                background: 'transparent',
-                                border: '1px solid #730051',
-                                color: '#730051',
-                                padding: '8px 15px',
-                                borderRadius: '5px',
-                                cursor: 'pointer',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '8px',
-                                fontSize: '14px'
-                            }}
-                        >
-                            <FontAwesomeIcon icon={faSignOutAlt} />
-                            Log Out
-                        </button>
-                    </div>
+                    <h1>
+                        <FontAwesomeIcon icon={faUsers} />
+                        Overseer Dashboard
+                    </h1>
+                    <button
+                        onClick={handleLogout}
+                        className={styles.logoutBtn}
+                        title="Sign out"
+                    >
+                        <FontAwesomeIcon icon={faSignOutAlt} />
+                        Log Out
+                    </button>
                 </div>
 
                 {message && (
@@ -144,161 +140,45 @@ const WorshipDocketAdmin: React.FC = () => {
                     </div>
                 )}
 
-                {/* Admin Dashboard Overview */}
-                <div className={styles.dashboardOverview}>
-                    <h2>Password Overseer Dashboard</h2>
-                    <p>Welcome! Here are all available administrative functions organized for easy access:</p>
+                {/* Search */}
+                <div className={styles.searchBar}>
+                    <FontAwesomeIcon icon={faSearch} className={styles.searchIcon} />
+                    <input
+                        type="text"
+                        className={styles.searchInput}
+                        placeholder="Search modules... e.g. attendance, news, chat"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                    />
                 </div>
 
                 {/* Main Admin Functions Grid */}
                 <div className={styles.adminFunctionsGrid}>
-
-                    {/* 1. News Administration */}
-                    <div className={styles.functionCard}>
-                        <div className={styles.functionNumber}>1</div>
-                        <div className={styles.functionContent}>
-                            <h3>
-                                <FontAwesomeIcon icon={faNewspaper} />
-                                News Administration
-                            </h3>
-                            <p>Update news, manage events with countdown timers, and add photos</p>
-                            <button
-                                className={styles.functionButton}
-                                onClick={() => {
-                                    navigate('/news-admin');
-                                }}
-                            >
-                                News Admin
-                                <FontAwesomeIcon icon={faArrowRight} className={styles.arrowIcon} />
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* 2. Media Management */}
-                    <div className={styles.functionCard}>
-                        <div className={styles.functionNumber}>2</div>
-                        <div className={styles.functionContent}>
-                            <h3>
-                                <FontAwesomeIcon icon={faUsers} />
-                                Media Management
-                            </h3>
-                            <p>Manage photos and media for the KSUCU website gallery</p>
-                            <button
-                                className={styles.functionButton}
-                                onClick={() => {
-                                    navigate('/media-admin');
-                                }}
-                            >
-                                Manage Media Gallery
-                                <FontAwesomeIcon icon={faArrowRight} className={styles.arrowIcon} />
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* 3. Requisitions Management */}
-                    <div className={styles.functionCard}>
-                        <div className={styles.functionNumber}>3</div>
-                        <div className={styles.functionContent}>
-                            <h3>
-                                <FontAwesomeIcon icon={faBox} />
-                                Requisitions Management
-                            </h3>
-                            <p>View, approve, and manage equipment requisition requests from members</p>
-                            <button
-                                className={styles.functionButton}
-                                onClick={() => {
-                                    navigate('/requisitions-admin');
-                                }}
-                            >
-                                Manage Requisitions
-                                <FontAwesomeIcon icon={faArrowRight} className={styles.arrowIcon} />
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* 4. Bible Study Administration */}
-                    <div className={styles.functionCard}>
-                        <div className={styles.functionNumber}>4</div>
-                        <div className={styles.functionContent}>
-                            <h3>
-                                <FontAwesomeIcon icon={faBookOpen} />
-                                Bible Study Administration
-                            </h3>
-                            <p>Manage Bible study registrations, residences, and create balanced groups</p>
-                            <button
-                                className={styles.functionButton}
-                                onClick={() => {
-                                    navigate('/adminBs');
-                                }}
-                            >
-                                Bible Study Admin
-                                <FontAwesomeIcon icon={faArrowRight} className={styles.arrowIcon} />
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* 5. Compassion & Counseling Administration */}
-                    <div className={styles.functionCard}>
-                        <div className={styles.functionNumber}>5</div>
-                        <div className={styles.functionContent}>
-                            <h3>
-                                <FontAwesomeIcon icon={faHeart} />
-                                Compassion & Counseling Administration
-                            </h3>
-                            <p>Manage help requests, donations, and support those in need</p>
-                            <button
-                                className={styles.functionButton}
-                                onClick={() => {
-                                    navigate('/compassion-counseling-admin');
-                                }}
-                            >
-                                Compassion Admin
-                                <FontAwesomeIcon icon={faArrowRight} className={styles.arrowIcon} />
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* 6. Leadership Attendance Management */}
-                    <div className={styles.functionCard}>
-                        <div className={styles.functionNumber}>6</div>
-                        <div className={styles.functionContent}>
-                            <h3>
-                                <FontAwesomeIcon icon={faUsers} />
-                                Multi-Session Attendance
-                            </h3>
-                            <p>Create and manage multiple shareable attendance sessions with custom titles and durations.</p>
-                            <button
-                                className={styles.functionButton}
-                                onClick={handleRoleSelection}
-                                disabled={selectedRole !== ''}
-                            >
-                                Open Attendance Manager
-                                <FontAwesomeIcon icon={faArrowRight} className={styles.arrowIcon} />
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* 7. Community Chat Management */}
-                    <div className={styles.functionCard}>
-                        <div className={styles.functionNumber}>7</div>
-                        <div className={styles.functionContent}>
-                            <h3>
-                                <FontAwesomeIcon icon={faComments} />
-                                Community Chat Management
-                            </h3>
-                            <p>Manage the KSUCU-MC community chat: moderate messages, ban users, and oversee chat activity</p>
-                            <button
-                                className={styles.functionButton}
-                                onClick={() => {
-                                    navigate('/chat-admin');
-                                }}
-                            >
-                                Chat Admin
-                                <FontAwesomeIcon icon={faArrowRight} className={styles.arrowIcon} />
-                            </button>
-                        </div>
-                    </div>
-
+                    {adminModules
+                        .filter(m => {
+                            if (!search.trim()) return true;
+                            const q = search.toLowerCase();
+                            return m.title.toLowerCase().includes(q) ||
+                                   m.desc.toLowerCase().includes(q) ||
+                                   m.keywords.some(k => k.includes(q));
+                        })
+                        .map((m, i) => (
+                            <div className={styles.functionCard} key={m.title}>
+                                <div className={styles.functionNumber}>{i + 1}</div>
+                                <div className={styles.functionContent}>
+                                    <h3><FontAwesomeIcon icon={m.icon} /> {m.title}</h3>
+                                    <p>{m.desc}</p>
+                                    <button
+                                        className={styles.functionButton}
+                                        onClick={m.action}
+                                        disabled={m.title === 'Attendance' && selectedRole !== ''}
+                                    >
+                                        Open <FontAwesomeIcon icon={faArrowRight} className={styles.arrowIcon} />
+                                    </button>
+                                </div>
+                            </div>
+                        ))
+                    }
                 </div>
 
                 {/* News Display Section - Moved to bottom */}
@@ -306,11 +186,8 @@ const WorshipDocketAdmin: React.FC = () => {
                     <div className={styles.newsDisplayCard}>
                         <h2>
                             <FontAwesomeIcon icon={faNewspaper} />
-                            Latest News & Upcoming Events
+                            Latest News & Events
                         </h2>
-                        <p className={styles.newsDescription}>
-                            Current news updates and countdown to upcoming events
-                        </p>
                         <div className={styles.newsDisplayContainer}>
                             <ModernNewsDisplay />
                         </div>

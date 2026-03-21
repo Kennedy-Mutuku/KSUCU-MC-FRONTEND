@@ -1,32 +1,33 @@
 /* MediaAdmin Styles */
 .container {
-  max-width: 1200px;
+  max-width: 960px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1rem;
   min-height: calc(100vh - 200px);
 }
 
 .header {
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 1.5rem;
   background: linear-gradient(135deg, #730051, #a0006e);
   color: white;
-  padding: 2rem;
-  border-radius: 12px;
+  padding: 1.25rem 1rem;
+  border-radius: 10px;
 }
 
 .header h1 {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
+  font-size: 1.4rem;
+  margin-bottom: 0.4rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
+  gap: 0.5rem;
 }
 
 .header p {
-  font-size: 1.1rem;
+  font-size: 0.88rem;
   opacity: 0.9;
+  margin: 0;
 }
 
 /* Sync Status Indicator */
@@ -77,21 +78,21 @@
 .refreshSection {
   display: flex;
   justify-content: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .refreshButton {
   background: #730051;
   color: white;
   border: none;
-  padding: 0.75rem 1.5rem;
+  padding: 0.5rem 1.2rem;
   border-radius: 8px;
-  font-size: 1rem;
+  font-size: 0.88rem;
   font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
   transition: all 0.3s ease;
 }
 
@@ -110,21 +111,21 @@
 .addSection {
   display: flex;
   justify-content: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .addButton {
   background: #28a745;
   color: white;
   border: none;
-  padding: 1rem 2rem;
+  padding: 0.6rem 1.4rem;
   border-radius: 8px;
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
   transition: all 0.3s ease;
 }
 
@@ -136,36 +137,37 @@
 /* Add Form */
 .addForm {
   background: white;
-  border: 2px solid #e0e0e0;
-  border-radius: 12px;
-  padding: 2rem;
-  margin-bottom: 2rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1.5px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 1.2rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
 .addForm h3 {
   color: #333;
-  margin-bottom: 1.5rem;
-  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
 }
 
 .formGroup {
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.8rem;
 }
 
 .formGroup label {
   display: block;
   font-weight: 600;
   color: #555;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.3rem;
+  font-size: 0.85rem;
 }
 
 .formGroup input {
   width: 100%;
-  padding: 0.75rem;
-  border: 2px solid #ddd;
+  padding: 0.55rem 0.7rem;
+  border: 1.5px solid #ddd;
   border-radius: 6px;
-  font-size: 1rem;
+  font-size: 0.9rem;
   transition: border-color 0.3s ease;
 }
 
@@ -227,20 +229,21 @@
 
 .formActions {
   display: flex;
-  gap: 1rem;
+  gap: 0.6rem;
   justify-content: flex-end;
-  margin-top: 2rem;
+  margin-top: 0.8rem;
 }
 
 .saveButton, .cancelButton {
-  padding: 0.75rem 1.5rem;
+  padding: 0.5rem 1rem;
   border: none;
   border-radius: 6px;
   font-weight: 600;
+  font-size: 0.85rem;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.3rem;
   transition: all 0.3s ease;
 }
 
@@ -264,42 +267,47 @@
 
 /* Media List */
 .mediaList {
-  margin-top: 3rem;
+  margin-top: 1.5rem;
 }
 
 .mediaList h2 {
   color: #333;
-  margin-bottom: 2rem;
-  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
 }
 
 .mediaGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 0.8rem;
 }
 
 /* Media Card */
 .mediaCard {
   background: white;
-  border-radius: 12px;
+  border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s ease;
+  border: 1px solid #eee;
+  display: flex;
+  flex-direction: row;
 }
 
 .mediaCard:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  border-color: #d0d0d0;
 }
 
 .mediaCard.editing {
-  border: 2px solid #730051;
+  border: 1.5px solid #730051;
+  flex-direction: column;
 }
 
 .mediaImage {
-  height: 200px;
+  width: 90px;
+  min-height: 90px;
+  flex-shrink: 0;
   overflow: hidden;
 }
 
@@ -310,51 +318,61 @@
 }
 
 .mediaPlaceholder {
-  height: 200px;
+  width: 90px;
+  min-height: 90px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  color: #6c757d;
-  font-size: 3rem;
+  background: linear-gradient(135deg, #f5f5f5, #e9ecef);
+  color: #aaa;
+  font-size: 1.5rem;
 }
 
 .mediaContent {
-  padding: 1.5rem;
+  padding: 0.6rem 0.8rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+  min-width: 0;
 }
 
 .mediaContent h4 {
   color: #333;
-  margin-bottom: 0.5rem;
-  font-size: 1.2rem;
+  margin: 0 0 0.2rem;
+  font-size: 0.88rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .mediaDate {
-  color: #666;
-  margin-bottom: 1rem;
+  color: #888;
+  margin: 0 0 0.4rem;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.9rem;
+  gap: 0.3rem;
+  font-size: 0.75rem;
 }
 
 .mediaActions {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.3rem;
   flex-wrap: wrap;
 }
 
 .viewButton, .editButton, .deleteButton {
-  padding: 0.5rem 1rem;
+  padding: 0.25rem 0.55rem;
   border: none;
-  border-radius: 6px;
+  border-radius: 4px;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 0.72rem;
   font-weight: 600;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
-  transition: all 0.3s ease;
+  gap: 0.2rem;
+  transition: all 0.2s ease;
   text-decoration: none;
 }
 
@@ -388,16 +406,16 @@
 
 /* Edit Form */
 .editForm {
-  padding: 1.5rem;
+  padding: 0.8rem;
 }
 
 .editForm input {
   width: 100%;
-  padding: 0.75rem;
-  margin-bottom: 1rem;
-  border: 2px solid #ddd;
+  padding: 0.5rem 0.7rem;
+  margin-bottom: 0.5rem;
+  border: 1.5px solid #ddd;
   border-radius: 6px;
-  font-size: 1rem;
+  font-size: 0.88rem;
 }
 
 .editForm input:focus {
@@ -444,33 +462,140 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .container {
-    padding: 1rem;
+    padding: 0.6rem;
   }
-  
+
+  .header {
+    padding: 1rem 0.8rem;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+  }
+
   .header h1 {
-    font-size: 2rem;
-    flex-direction: column;
-    gap: 0.5rem;
+    font-size: 1.15rem;
+    gap: 0.4rem;
   }
-  
+
+  .header p {
+    font-size: 0.8rem;
+  }
+
+  .addSection,
+  .refreshSection {
+    margin-bottom: 0.8rem;
+  }
+
+  .addButton {
+    padding: 0.5rem 1rem;
+    font-size: 0.82rem;
+  }
+
+  .refreshButton {
+    padding: 0.4rem 1rem;
+    font-size: 0.82rem;
+  }
+
+  .addForm {
+    padding: 1rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .addForm h3 {
+    font-size: 1rem;
+    margin-bottom: 0.7rem;
+  }
+
+  .mediaList {
+    margin-top: 1rem;
+  }
+
+  .mediaList h2 {
+    font-size: 1.05rem;
+    margin-bottom: 0.7rem;
+  }
+
   .mediaGrid {
     grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-  
-  .formActions {
-    flex-direction: column;
-  }
-  
-  .mediaActions {
-    flex-direction: column;
     gap: 0.5rem;
   }
-  
-  .mediaActions button,
-  .mediaActions a {
-    text-align: center;
-    justify-content: center;
+
+  .mediaCard {
+    flex-direction: row;
+    border-radius: 8px;
+  }
+
+  .mediaImage {
+    width: 72px;
+    min-height: 72px;
+  }
+
+  .mediaPlaceholder {
+    width: 72px;
+    min-height: 72px;
+    font-size: 1.2rem;
+  }
+
+  .mediaContent {
+    padding: 0.5rem 0.6rem;
+  }
+
+  .mediaContent h4 {
+    font-size: 0.84rem;
+  }
+
+  .mediaDate {
+    font-size: 0.7rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .mediaActions {
+    flex-direction: row;
+    gap: 0.25rem;
+  }
+
+  .viewButton, .editButton, .deleteButton {
+    padding: 0.2rem 0.45rem;
+    font-size: 0.68rem;
+  }
+
+  .editForm {
+    padding: 0.7rem;
+  }
+
+  .editForm input {
+    padding: 0.45rem 0.6rem;
+    font-size: 0.85rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .formActions {
+    flex-direction: row;
+  }
+
+  .imagePreview img {
+    max-width: 120px;
+    max-height: 80px;
+  }
+
+  .syncStatus {
+    top: 60px;
+    right: 8px;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.75rem;
+    border-radius: 6px;
+  }
+
+  .confirmModal {
+    padding: 1.4rem;
+    border-radius: 12px;
+  }
+
+  .confirmTitle {
+    font-size: 1.05rem;
+  }
+
+  .confirmMessage {
+    font-size: 0.85rem;
   }
 }
 

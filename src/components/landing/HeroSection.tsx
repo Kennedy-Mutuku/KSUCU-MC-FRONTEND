@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // Import community images
 import gentsImg from '../../assets/gents.jpg';
@@ -30,6 +31,7 @@ const slides: Slide[] = [
 ];
 
 const HeroSection = () => {
+  const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [previousSlide, setPreviousSlide] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -136,13 +138,13 @@ const HeroSection = () => {
 
           {/* CTA Buttons */}
           <div className="flex flex-row gap-3 md:gap-4 justify-center items-center">
-            <a
-              href="/signUp"
-              className="px-6 py-2.5 md:px-10 md:py-4 bg-[#730051] text-white text-sm md:text-lg font-semibold rounded-full hover:bg-[#5a0040] transition-all duration-300 hover:-translate-y-1 border-2 border-white/40"
+            <button
+              onClick={() => navigate('/signIn')}
+              className="px-6 py-2.5 md:px-10 md:py-4 bg-[#730051] text-white text-sm md:text-lg font-semibold rounded-full hover:bg-[#5a0040] transition-all duration-300 hover:-translate-y-1 border-2 border-white/40 cursor-pointer"
               style={{ boxShadow: '0 8px 25px rgba(0, 0, 0, 0.4)' }}
             >
               Join Us Today
-            </a>
+            </button>
             <a
               href="#about"
               className="px-6 py-2.5 md:px-10 md:py-4 bg-white/90 backdrop-blur-md text-[#730051] text-sm md:text-lg font-semibold rounded-full hover:bg-white transition-all duration-300 border-2 border-[#730051]"

@@ -251,8 +251,29 @@
     border: 1px solid #fecaca;
 }
 
+/* Registration two-column grid - stacks on mobile */
+.reg-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+}
+
+.reg-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
 /* Mobile */
 @media (max-width: 480px) {
+    .reg-row {
+        grid-template-columns: 1fr;
+    }
+
+    .reg-buttons {
+        grid-template-columns: 1fr;
+    }
     .body {
         padding: 10px;
         padding-bottom: 100px;

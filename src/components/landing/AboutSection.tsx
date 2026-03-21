@@ -126,7 +126,7 @@ const AboutSection = () => {
                 Register for Bible Study
               </Link>
               <Link
-                to="/signUp"
+                to="/signIn"
                 className="inline-flex items-center gap-2 px-5 py-2.5 border border-[#730051] text-[#730051] font-medium rounded-lg hover:bg-purple-50 transition-colors"
               >
                 Join KSUCU

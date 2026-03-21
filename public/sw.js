@@ -32,15 +32,33 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(request.url);
   
   // Skip service worker for API calls entirely - let browser handle them
-  if (request.url.includes('/users/') || 
-      request.url.includes('/attendance/') || 
+  if (request.method !== 'GET' ||
+      request.url.includes('/users/') ||
+      request.url.includes('/attendance/') ||
       request.url.includes('/api/') ||
-      request.url.includes('localhost:3000') || 
+      request.url.includes('/overseer/') ||
+      request.url.includes('/adminnews/') ||
+      request.url.includes('/adminmission/') ||
+      request.url.includes('/adminBs/') ||
+      request.url.includes('/sadmin/') ||
+      request.url.includes('/admissionadmin/') ||
+      request.url.includes('/news/') ||
+      request.url.includes('/messages/') ||
+      request.url.includes('/chat/') ||
+      request.url.includes('/commitmentForm/') ||
+      request.url.includes('/polling-officer/') ||
+      request.url.includes('/documents/') ||
+      request.url.includes('/minutes/') ||
+      request.url.includes('/media-items') ||
+      request.url.includes('/requisitions') ||
+      request.url.includes('/settings/') ||
+      request.url.includes('localhost:3000') ||
       request.url.includes('localhost:5000') ||
       (url.hostname === 'ksucu-mc.co.ke' && (
         url.pathname.includes('/users/') ||
         url.pathname.includes('/attendance/') ||
-        url.pathname.includes('/api/')
+        url.pathname.includes('/api/') ||
+        url.pathname.includes('/overseer/')
       ))) {
     // Don't intercept API calls at all
     return;

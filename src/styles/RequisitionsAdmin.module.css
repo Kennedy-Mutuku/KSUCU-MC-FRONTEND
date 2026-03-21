@@ -3,46 +3,45 @@
 .container {
     min-height: 100vh;
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    padding: 100px 20px 40px;
+    padding: 80px 16px 30px;
+    max-width: 960px;
+    margin: 0 auto;
 }
 
 .header {
     text-align: center;
-    margin-bottom: 40px;
-    padding: 30px 20px;
+    margin-bottom: 16px;
+    padding: 16px 14px;
     background: white;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    max-width: 1200px;
-    margin: 0 auto 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
 }
 
 .header h1 {
     color: #730051;
-    font-size: 2.5rem;
+    font-size: 1.4rem;
     font-weight: 700;
-    margin-bottom: 10px;
+    margin-bottom: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 15px;
+    gap: 8px;
 }
 
 .header p {
     color: #666;
-    font-size: 1.1rem;
+    font-size: 0.88rem;
     margin: 0;
 }
 
 /* Admin Settings */
 .adminSettings {
-    max-width: 1200px;
-    margin: 0 auto 20px;
+    margin: 0 auto 12px;
     background: white;
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    border-left: 4px solid #730051;
+    padding: 14px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    border-left: 3px solid #730051;
 }
 
 .phoneSettingRow {
@@ -54,21 +53,21 @@
 .phoneSettingRow label {
     font-weight: 600;
     color: #730051;
-    font-size: 1rem;
+    font-size: 0.88rem;
 }
 
 .phoneInputGroup {
     display: flex;
-    gap: 10px;
+    gap: 8px;
     align-items: center;
 }
 
 .phoneInput {
     flex: 1;
-    padding: 10px 15px;
-    border: 2px solid #e9ecef;
-    border-radius: 8px;
-    font-size: 1rem;
+    padding: 8px 12px;
+    border: 1.5px solid #e9ecef;
+    border-radius: 7px;
+    font-size: 0.9rem;
     transition: all 0.3s ease;
 }
 
@@ -82,9 +81,10 @@
     background: #28a745;
     color: white;
     border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
+    padding: 8px 16px;
+    border-radius: 7px;
     font-weight: 600;
+    font-size: 0.85rem;
     cursor: pointer;
     transition: all 0.3s ease;
 }
@@ -96,18 +96,17 @@
 
 /* Filters Section */
 .filtersSection {
-    max-width: 1200px;
-    margin: 0 auto 30px;
+    margin: 0 auto 14px;
     background: white;
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    padding: 12px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
 }
 
 .filterRow {
     display: grid;
     grid-template-columns: 1fr auto;
-    gap: 20px;
+    gap: 10px;
     align-items: center;
 }
 
@@ -117,10 +116,10 @@
 
 .searchInput {
     width: 100%;
-    padding: 12px 15px;
-    border: 2px solid #e9ecef;
-    border-radius: 8px;
-    font-size: 1rem;
+    padding: 8px 12px;
+    border: 1.5px solid #e9ecef;
+    border-radius: 7px;
+    font-size: 0.9rem;
     transition: all 0.3s ease;
 }
 
@@ -139,38 +138,39 @@
 }
 
 .filterSelect {
-    padding: 12px 15px;
-    border: 2px solid #e9ecef;
-    border-radius: 8px;
-    font-size: 1rem;
+    padding: 8px 12px;
+    border: 1.5px solid #e9ecef;
+    border-radius: 7px;
+    font-size: 0.88rem;
     background: white;
     cursor: pointer;
 }
 
 /* Requisitions Table */
 .requisitionsTable {
-    max-width: 1200px;
     margin: 0 auto;
 }
 
 .statsBar {
     background: white;
-    padding: 15px 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    margin-bottom: 20px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    margin-bottom: 12px;
     display: flex;
-    gap: 30px;
+    gap: 16px;
     font-weight: 600;
+    font-size: 0.85rem;
     color: #730051;
+    flex-wrap: wrap;
 }
 
 .emptyState {
     background: white;
-    padding: 60px 20px;
-    border-radius: 15px;
+    padding: 30px 16px;
+    border-radius: 10px;
     text-align: center;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
     color: #666;
 }
 
@@ -182,8 +182,8 @@
 /* Table Container */
 .tableContainer {
     background: white;
-    border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
     overflow: hidden;
 }
 
@@ -196,10 +196,10 @@
 .requisitionsGrid th {
     background: #730051;
     color: white;
-    padding: 15px 20px;
+    padding: 10px 12px;
     text-align: center;
     font-weight: 600;
-    font-size: 1.1rem;
+    font-size: 0.88rem;
     border-right: 1px solid rgba(255, 255, 255, 0.2);
 }
 
@@ -209,7 +209,7 @@
 
 .statusColumn {
     vertical-align: top;
-    padding: 20px;
+    padding: 10px;
     width: 33.33%;
     border-right: 1px solid #e9ecef;
     background: #f8f9fa;
@@ -221,53 +221,48 @@
 
 .requisitionItem {
     background: white;
-    border-radius: 10px;
-    padding: 15px;
-    margin-bottom: 15px;
-    border-left: 4px solid #730051;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 8px;
+    border-left: 3px solid #730051;
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
 }
 
 .requisitionItem:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .itemHeader {
-    margin-bottom: 12px;
-    border-bottom: 2px solid #730051;
-    padding-bottom: 8px;
+    margin-bottom: 6px;
+    border-bottom: 1.5px solid #730051;
+    padding-bottom: 4px;
 }
 
 .commodityTitle {
-    font-size: 1.1rem;
+    font-size: 0.88rem;
     color: #730051;
     font-weight: 700;
     line-height: 1.3;
     text-transform: capitalize;
-    background: linear-gradient(135deg, #730051 0%, #730051 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
 }
 
 .itemMeta {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    margin-bottom: 10px;
+    gap: 2px;
+    margin-bottom: 6px;
 }
 
 .itemMeta span {
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     color: #666;
 }
 
 .itemActions {
     display: flex;
-    gap: 8px;
+    gap: 4px;
     justify-content: flex-end;
 }
 
@@ -275,11 +270,11 @@
     background: #730051;
     color: white;
     border: none;
-    padding: 6px 8px;
-    border-radius: 6px;
+    padding: 4px 6px;
+    border-radius: 4px;
     cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 0.85rem;
+    transition: all 0.2s ease;
+    font-size: 0.75rem;
 }
 
 .actionButton:hover {
@@ -289,19 +284,18 @@
 
 .requisitionCard {
     background: white;
-    border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     overflow: hidden;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
 }
 
 .requisitionCard:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.1);
 }
 
 .cardHeader {
-    padding: 20px 20px 10px;
+    padding: 10px 12px 8px;
     border-bottom: 1px solid #e9ecef;
 }
 
@@ -309,13 +303,13 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: 4px;
 }
 
 .cardTitle h4 {
     margin: 0;
     color: #730051;
-    font-size: 1.2rem;
+    font-size: 0.95rem;
 }
 
 .statusBadge {
@@ -329,38 +323,38 @@
 
 .cardMeta {
     color: #666;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
 }
 
 .cardBody {
-    padding: 15px 20px;
+    padding: 8px 12px;
 }
 
 .cardBody p {
-    margin: 5px 0;
+    margin: 3px 0;
     color: #333;
-    font-size: 0.9rem;
+    font-size: 0.82rem;
 }
 
 .cardActions {
-    padding: 15px 20px;
+    padding: 8px 12px;
     background: #f8f9fa;
     display: flex;
-    gap: 10px;
+    gap: 6px;
     justify-content: flex-end;
 }
 
 .cardActions button {
-    width: 35px;
-    height: 35px;
+    width: 28px;
+    height: 28px;
     border: none;
-    border-radius: 8px;
+    border-radius: 6px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s ease;
-    font-size: 14px;
+    transition: all 0.2s ease;
+    font-size: 12px;
 }
 
 .viewButton {
@@ -478,7 +472,7 @@
 .modalHeader {
     background: linear-gradient(135deg, #730051 0%, #730051 100%);
     color: white;
-    padding: 20px;
+    padding: 14px 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -486,16 +480,16 @@
 
 .modalHeader h3 {
     margin: 0;
-    font-size: 1.5rem;
+    font-size: 1.1rem;
 }
 
 .closeButton {
     background: rgba(255, 255, 255, 0.2);
     border: none;
     color: white;
-    width: 35px;
-    height: 35px;
-    border-radius: 8px;
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -503,39 +497,40 @@
 }
 
 .modalBody {
-    padding: 30px;
+    padding: 16px;
 }
 
 .detailsGrid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 30px;
+    gap: 16px;
 }
 
 .detailSection h4 {
     color: #730051;
-    margin-bottom: 15px;
-    font-size: 1.2rem;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 6px;
 }
 
 .detailSection p {
-    margin: 8px 0;
+    margin: 4px 0;
     color: #333;
+    font-size: 0.88rem;
 }
 
 .itemDetail {
     background: #f8f9fa;
-    padding: 10px 15px;
-    border-radius: 8px;
-    margin-bottom: 10px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    margin-bottom: 6px;
 }
 
 .itemDetail p {
-    margin: 5px 0;
-    font-size: 0.9rem;
+    margin: 3px 0;
+    font-size: 0.82rem;
 }
 
 /* Edit Form */
@@ -544,22 +539,23 @@
 }
 
 .formGroup {
-    margin-bottom: 20px;
+    margin-bottom: 12px;
 }
 
 .formGroup label {
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 3px;
     font-weight: 600;
     color: #333;
+    font-size: 0.85rem;
 }
 
 .formGroup input, .formGroup textarea {
     width: 100%;
-    padding: 12px 15px;
-    border: 2px solid #e9ecef;
-    border-radius: 8px;
-    font-size: 1rem;
+    padding: 8px 10px;
+    border: 1.5px solid #e9ecef;
+    border-radius: 7px;
+    font-size: 0.9rem;
     transition: all 0.3s ease;
 }
 
@@ -571,72 +567,73 @@
 
 .actionButtons {
     display: flex;
-    gap: 15px;
-    margin-bottom: 20px;
+    gap: 8px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
 }
 
 .approveButton, .releaseButton, .returnButton {
     background: #28a745;
     color: white;
     border: none;
-    padding: 12px 20px;
-    border-radius: 8px;
+    padding: 8px 14px;
+    border-radius: 7px;
     font-weight: 600;
+    font-size: 0.85rem;
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 8px;
-    transition: all 0.3s ease;
+    gap: 5px;
+    transition: all 0.2s ease;
 }
 
 .approveButton:hover, .releaseButton:hover, .returnButton:hover {
     background: #218838;
-    transform: translateY(-1px);
 }
 
 .rejectButton {
     background: #dc3545;
     color: white;
     border: none;
-    padding: 12px 20px;
-    border-radius: 8px;
+    padding: 8px 14px;
+    border-radius: 7px;
     font-weight: 600;
+    font-size: 0.85rem;
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 8px;
-    transition: all 0.3s ease;
+    gap: 5px;
+    transition: all 0.2s ease;
 }
 
 .rejectButton:hover {
     background: #c82333;
-    transform: translateY(-1px);
 }
 
 .pendingButton {
     background: #ffc107;
     color: #212529;
     border: none;
-    padding: 12px 20px;
-    border-radius: 8px;
+    padding: 8px 14px;
+    border-radius: 7px;
     font-weight: 600;
+    font-size: 0.85rem;
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 8px;
-    transition: all 0.3s ease;
+    gap: 5px;
+    transition: all 0.2s ease;
 }
 
 .pendingButton:hover {
     background: #e0a800;
-    transform: translateY(-1px);
 }
 
 .releaseSection {
     background: #f8f9fa;
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 20px;
+    padding: 14px;
+    border-radius: 8px;
+    margin-bottom: 12px;
 }
 
 .releaseButton:disabled {
@@ -647,96 +644,203 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    .container {
+        padding: 70px 8px 16px;
+    }
+
+    .header {
+        padding: 12px 10px;
+        margin-bottom: 10px;
+        border-radius: 8px;
+    }
+
+    .header h1 {
+        font-size: 1.15rem;
+        gap: 6px;
+    }
+
+    .header p {
+        font-size: 0.8rem;
+    }
+
     .adminSettings {
-        padding: 15px;
-        margin-bottom: 15px;
+        padding: 10px;
+        margin-bottom: 8px;
+        border-radius: 8px;
+    }
+
+    .phoneSettingRow label {
+        font-size: 0.82rem;
     }
 
     .phoneInputGroup {
         flex-direction: column;
         align-items: stretch;
+        gap: 6px;
+    }
+
+    .phoneInput {
+        padding: 7px 10px;
+        font-size: 0.85rem;
     }
 
     .savePhoneButton {
-        margin-top: 10px;
+        padding: 7px 14px;
+        font-size: 0.82rem;
     }
 
-    /* Table Mobile Layout - Keep columns visible */
-    .tableContainer {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    .requisitionsGrid {
-        min-width: 600px;
-    }
-
-    .requisitionsGrid th {
-        padding: 12px 15px;
-        font-size: 0.9rem;
-    }
-
-    .statusColumn {
-        padding: 15px;
-        min-width: 200px;
-    }
-
-    .requisitionItem {
-        padding: 12px;
-        margin-bottom: 12px;
-    }
-
-    .itemHeader {
-        margin-bottom: 10px;
-        padding-bottom: 6px;
-    }
-
-    .commodityTitle {
-        font-size: 1rem;
-    }
-
-    .itemMeta span {
-        font-size: 0.8rem;
-    }
-
-    .actionButton {
-        padding: 5px 6px;
-        font-size: 0.8rem;
-    }
-    .container {
-        padding: 80px 10px 20px;
-    }
-
-    .header h1 {
-        font-size: 2rem;
-        flex-direction: column;
-        gap: 10px;
+    .filtersSection {
+        padding: 8px;
+        margin-bottom: 8px;
+        border-radius: 8px;
     }
 
     .filterRow {
         grid-template-columns: 1fr;
-        gap: 15px;
+        gap: 6px;
+    }
+
+    .searchInput {
+        padding: 7px 10px;
+        font-size: 0.85rem;
+    }
+
+    .filterSelect {
+        padding: 7px 10px;
+        font-size: 0.82rem;
     }
 
     .statsBar {
-        flex-direction: column;
-        gap: 10px;
+        padding: 8px 10px;
+        gap: 8px;
+        font-size: 0.78rem;
+        border-radius: 6px;
+        margin-bottom: 8px;
+    }
+
+    /* Table Mobile Layout */
+    .tableContainer {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        border-radius: 8px;
     }
 
     .requisitionsGrid {
-        grid-template-columns: 1fr;
+        min-width: 500px;
+    }
+
+    .requisitionsGrid th {
+        padding: 8px 6px;
+        font-size: 0.78rem;
+    }
+
+    .statusColumn {
+        padding: 6px;
+        min-width: 160px;
+    }
+
+    .requisitionItem {
+        padding: 8px;
+        margin-bottom: 6px;
+        border-radius: 6px;
+    }
+
+    .commodityTitle {
+        font-size: 0.8rem;
+    }
+
+    .itemMeta span {
+        font-size: 0.7rem;
+    }
+
+    .actionButton {
+        padding: 3px 5px;
+        font-size: 0.7rem;
+    }
+
+    .emptyState {
+        padding: 20px 12px;
+    }
+
+    /* Cards */
+    .cardHeader {
+        padding: 8px 10px 6px;
+    }
+
+    .cardTitle h4 {
+        font-size: 0.85rem;
+    }
+
+    .cardBody {
+        padding: 6px 10px;
+    }
+
+    .cardActions {
+        padding: 6px 10px;
+        gap: 4px;
+        flex-wrap: wrap;
+    }
+
+    .cardActions button {
+        width: 26px;
+        height: 26px;
+        font-size: 11px;
+    }
+
+    /* Modal */
+    .detailsModal,
+    .editModal {
+        width: 95%;
+        max-height: 88vh;
+        border-radius: 10px;
+    }
+
+    .modalHeader {
+        padding: 10px 12px;
+    }
+
+    .modalHeader h3 {
+        font-size: 0.95rem;
+    }
+
+    .modalBody {
+        padding: 12px;
     }
 
     .detailsGrid {
         grid-template-columns: 1fr;
-        gap: 20px;
-    }
-
-    .cardActions {
-        flex-wrap: wrap;
+        gap: 10px;
     }
 
     .actionButtons {
-        flex-direction: column;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .approveButton, .releaseButton, .returnButton,
+    .rejectButton, .pendingButton {
+        padding: 7px 10px;
+        font-size: 0.78rem;
+    }
+
+    .signatureSection {
+        margin: 10px 0;
+    }
+
+    .signatureNote {
+        padding: 8px 10px;
+        font-size: 0.82rem;
+    }
+
+    .statusInfo {
+        padding: 10px 12px;
+        margin-bottom: 10px;
+        border-radius: 7px;
+    }
+
+    .releaseSection {
+        padding: 10px;
+        margin-bottom: 10px;
     }
 }
