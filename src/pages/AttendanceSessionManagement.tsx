@@ -16,7 +16,6 @@ import {
     faTrash,
     faHistory,
     faRotateRight,
-    faStop,
     faTimes
 } from '@fortawesome/free-solid-svg-icons';
 import { io } from 'socket.io-client';
@@ -281,7 +280,7 @@ const AttendanceSessionManagement: React.FC = () => {
             if (response.ok) {
                 const data = await response.json();
                 downloadAttendancePDF(data.records || [], leadershipRole, session as any);
-                setMessage('PDF downloaded!');
+                setMessage('PDF ready!');
             } else {
                 setMessage('Error generating PDF');
             }

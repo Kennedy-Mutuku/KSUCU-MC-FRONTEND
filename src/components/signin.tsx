@@ -4,7 +4,7 @@ import styles from '../styles/signin.module.css';
 import cuLogo from '../assets/KSUCU logo updated document.png';
 import { Link, useNavigate } from 'react-router-dom';
 import loadingAnime from '../assets/Animation - 1716747954931.gif';
-import { Eye, EyeOff, ChevronDown, UserPlus, Shield, CheckCircle } from 'lucide-react'
+import { Eye, EyeOff, ChevronDown, Shield } from 'lucide-react'
 import { getApiUrl, isDevMode } from '../config/environment';
 import UserProfile from './userProfile';
 import ErrorBoundary from './ErrorBoundary';
