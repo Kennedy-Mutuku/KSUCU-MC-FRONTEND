@@ -1,7 +1,7 @@
-/* Media.module.css - Optimized & Compressed Version */
+/* Media.module.css - Creative Redesign */
 
 .main {
-  background-color: #f8f9fa;
+  background-color: #f5f3f7;
   padding-bottom: 30px;
 }
 
@@ -11,110 +11,170 @@
   padding: 0 15px;
 }
 
-/* Hero Section */
+/* ===== Hero Section ===== */
 .heroSection {
-  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
-              url('../assets/hero-bg.jpg');
-  background-size: cover;
-  background-position: center;
-  height: 200px; /* Compressed desktop height */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  text-align: center;
   position: relative;
-  border-radius: 0 0 25px 25px;
+  min-height: 340px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 0 0 32px 32px;
 }
 
-.heroTitle {
-  font-size: 1.8rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  margin: 0;
-  letter-spacing: 1px;
+.heroBgImage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
 }
 
-.heroSubtitle {
-  font-size: 0.9rem;
-  margin-top: 8px;
-  opacity: 0.9;
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    175deg,
+    rgba(115, 0, 81, 0.15) 0%,
+    rgba(115, 0, 81, 0.55) 40%,
+    rgba(20, 0, 15, 0.88) 100%
+  );
+}
+
+.heroContent {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 720px;
+  padding: 0 24px 32px;
+  text-align: center;
+  color: #fff;
 }
 
 .backButton {
   position: absolute;
-  top: 15px;
-  left: 15px;
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(5px);
-  color: white;
-  padding: 6px 12px;
-  border-radius: 6px;
+  top: -200px;
+  left: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #fff;
+  padding: 7px 16px;
+  border-radius: 50px;
   text-decoration: none;
   font-size: 0.8rem;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  transition: all 0.3s ease;
 }
 
-/* Sections & Titles */
-.contentSection, .eventsSection, .socialSection {
-  padding: 20px 0;
+.backButton:hover {
+  background: rgba(255, 255, 255, 0.28);
+  transform: translateX(-3px);
 }
 
-.sectionTitle {
-  color: #2d3436;
-  font-size: 1.5rem;
-  margin: 10px 0 15px;
-  font-weight: 800;
-  text-align: center;
+.heroBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 6px 18px;
+  border-radius: 50px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  margin-bottom: 14px;
 }
 
-/* Search Bar Styles */
-.searchContainer {
-  margin-top: -30px; /* Pull it slightly into the hero area bottom */
-  margin-bottom: 20px;
-  display: flex;
-  justify-content: center;
-  position: relative;
-  z-index: 10;
+.heroTitle {
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin: 0 0 10px;
+  line-height: 1.15;
+  letter-spacing: -0.5px;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
 }
 
+.heroHighlight {
+  background: linear-gradient(135deg, #f8c8dc, #e8a0c0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.heroSubtitle {
+  font-size: 0.95rem;
+  margin: 0 0 22px;
+  opacity: 0.85;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+/* Search — inside hero */
 .searchWrapper {
   display: flex;
   align-items: center;
-  background: white;
-  padding: 12px 25px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 12px 22px;
   border-radius: 50px;
   width: 100%;
-  max-width: 600px;
-  box-shadow: 0 15px 35px rgba(125, 10, 61, 0.1);
-  border: 1px solid rgba(125, 10, 61, 0.1);
+  max-width: 520px;
+  margin: 0 auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.6);
   transition: all 0.3s ease;
 }
 
 .searchWrapper:focus-within {
-  border-color: #7d0a3d;
-  box-shadow: 0 15px 40px rgba(125, 10, 61, 0.15);
+  background: #fff;
+  box-shadow: 0 8px 40px rgba(125, 10, 61, 0.22);
   transform: translateY(-2px);
 }
 
 .searchIcon {
   color: #7d0a3d;
-  margin-right: 15px;
-  font-size: 1.2rem;
+  margin-right: 12px;
+  font-size: 1rem;
+  flex-shrink: 0;
 }
 
 .searchInput {
   border: none;
   outline: none;
   width: 100%;
-  font-size: 1rem;
+  font-size: 0.92rem;
   color: #2d3436;
   background: transparent;
 }
 
 .searchInput::placeholder {
-  color: #b2bec3;
+  color: #aaa;
+}
+
+/* ===== Sections & Titles ===== */
+.contentSection, .eventsSection, .socialSection {
+  padding: 28px 0;
+}
+
+.sectionTitle {
+  color: #2d3436;
+  font-size: 1.4rem;
+  margin: 10px 0 18px;
+  font-weight: 800;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 /* Category Grid (Explore Our Content) */
@@ -183,21 +243,38 @@
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0,0,0,0.05);
   transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
 }
 
 .eventImage {
   height: 150px;
+  min-height: 150px;
+  flex-shrink: 0;
   background-color: #eee;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .eventImage img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
+}
+
+.eventImage svg {
+  font-size: 2.5rem;
+  color: #ccc;
 }
 
 .eventContent {
   padding: 15px;
+  background: #fff;
+  position: relative;
+  z-index: 1;
 }
 
 .eventContent h4 {
@@ -261,26 +338,49 @@
 }
 
 /* Modal Styles */
+/* Mobile-first: sidebar is 52px wide, header is 64px tall */
 .modalOverlay {
   position: fixed;
   top: 64px;
   left: 52px;
   width: calc(100vw - 52px);
   height: calc(100vh - 64px);
-  background: rgba(0, 0, 0, 0.75);
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding-top: 2vh;
-  z-index: 9998;
-  backdrop-filter: blur(8px);
+  padding: 12px;
+  z-index: 99990;
+  backdrop-filter: blur(6px);
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+/* Desktop (md+): no sidebar, full width, header 64px */
+@media (min-width: 768px) {
+  .modalOverlay {
+    left: 0;
+    width: 100vw;
+    top: 64px;
+    height: calc(100vh - 64px);
+    padding: 20px;
+  }
+
+}
+
+/* Large desktop (xl+): header is 80px */
+@media (min-width: 1280px) {
+  .modalOverlay {
+    top: 80px;
+    height: calc(100vh - 80px);
+  }
 }
 
 .modal {
   background: #ffffff;
-  width: 95%;
-  max-width: 1000px;
-  max-height: 85vh;
+  width: 100%;
+  max-width: 900px;
+  max-height: calc(100vh - 100px);
   border-radius: 20px;
   display: flex;
   flex-direction: column;
@@ -289,38 +389,31 @@
 }
 
 .modalHeader {
-  padding: 15px 25px;
-  border-bottom: 1px solid #f1f1f1;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid #f0f0f0;
   background: #ffffff;
+  flex-shrink: 0;
 }
 
-.modalTitleArea {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.modalTitleArea h3 {
-  margin: 0;
-  font-size: 1.25rem;
+.modalTitle {
+  margin: 0 0 12px;
+  font-size: 1.3rem;
   color: #7d0a3d;
   font-weight: 800;
+  text-align: center;
+  letter-spacing: 0.3px;
 }
 
 .modalSearchWrapper {
   display: flex;
   align-items: center;
-  background: #f8f9fa;
-  padding: 10px 18px;
-  border-radius: 12px;
+  background: #f5f5f7;
+  padding: 10px 16px;
+  border-radius: 50px;
   width: 100%;
-  border: 1px solid #eee;
+  border: 1px solid #e8e8e8;
   transition: all 0.3s ease;
-  margin-top: 5px;
+  box-sizing: border-box;
 }
 
 .modalSearchWrapper:focus-within {
@@ -331,8 +424,9 @@
 
 .modalSearchIcon {
   color: #7d0a3d;
-  margin-right: 12px;
-  font-size: 1.1rem;
+  margin-right: 10px;
+  font-size: 0.95rem;
+  flex-shrink: 0;
 }
 
 .modalSearchInput {
@@ -340,7 +434,7 @@
   outline: none;
   background: transparent;
   width: 100%;
-  font-size: 1rem;
+  font-size: 0.9rem;
   color: #2d3436;
 }
 
@@ -353,43 +447,103 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 12px;
+  min-width: 0;
 }
 
 .galleryItem {
   background: white;
-  border-radius: 15px;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-  border: 1px solid transparent;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  border: 1px solid #eee;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.galleryItem:hover {
+  box-shadow: 0 6px 20px rgba(125, 10, 61, 0.12);
+  transform: translateY(-2px);
 }
 
 .galleryImagePlaceholder {
-  height: 140px;
+  height: 130px;
+  min-height: 130px;
+  max-height: 130px;
+  flex: 0 0 130px;
+  overflow: hidden;
+  background-color: #f0eef2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.galleryImagePlaceholder img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.galleryImagePlaceholder svg {
+  font-size: 2rem;
+  color: #c5c0ca;
 }
 
 .galleryItemContent {
-  padding: 12px;
+  padding: 10px 12px 12px;
+  background: #fff;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .galleryItemContent h4 {
-  font-size: 0.95rem;
-  margin-bottom: 4px;
+  font-size: 0.88rem;
+  margin: 0 0 3px;
+  color: #2d3436;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .galleryDate {
-  font-size: 0.75rem;
-  margin-bottom: 8px;
+  font-size: 0.7rem;
+  margin: 0 0 8px;
+  color: #999;
 }
 
 .galleryViewBtn {
-  font-size: 0.8rem;
-  padding: 5px 10px;
-  border-radius: 6px;
-  border: 1px solid #7d0a3d;
+  font-size: 0.78rem;
+  padding: 6px 0;
+  border-radius: 8px;
+  border: 1.5px solid #7d0a3d;
   color: #7d0a3d;
+  font-weight: 600;
   text-decoration: none;
   text-align: center;
   display: block;
+  margin-top: auto;
+  transition: all 0.2s ease;
+}
+
+.galleryViewBtn:hover {
+  background: #7d0a3d;
+  color: #fff;
+}
+
+/* Desktop gallery: 3 columns */
+@media (min-width: 768px) {
+  .galleryGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
 }
 
 /* --- Responsive Adjustments --- */
@@ -402,12 +556,25 @@
 
 @media (max-width: 768px) {
   .heroSection {
-    height: 150px;
-    min-height: 150px;
+    min-height: 280px;
+    border-radius: 0 0 24px 24px;
   }
 
   .heroTitle {
-    font-size: 1.2rem;
+    font-size: 1.6rem;
+  }
+
+  .heroSubtitle {
+    font-size: 0.85rem;
+  }
+
+  .backButton {
+    top: -160px;
+  }
+
+  .heroBadge {
+    font-size: 0.7rem;
+    padding: 5px 14px;
   }
 
   .sectionTitle {
@@ -437,7 +604,7 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
   }
-  
+
   .socialGrid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -446,5 +613,92 @@
 @media (max-width: 480px) {
   .container {
     padding: 0 10px;
+  }
+
+  .heroSection {
+    min-height: 260px;
+    border-radius: 0 0 20px 20px;
+  }
+
+  .heroContent {
+    padding: 0 16px 24px;
+  }
+
+  .heroTitle {
+    font-size: 1.35rem;
+  }
+
+  .heroSubtitle {
+    font-size: 0.8rem;
+    margin-bottom: 16px;
+  }
+
+  .backButton {
+    top: -145px;
+    padding: 5px 12px;
+    font-size: 0.75rem;
+  }
+
+  .searchWrapper {
+    padding: 10px 16px;
+  }
+
+  .searchInput {
+    font-size: 0.85rem;
+  }
+
+  .contentGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .galleryGrid {
+    gap: 8px;
+  }
+
+  .galleryImagePlaceholder {
+    height: 95px;
+    min-height: 95px;
+    max-height: 95px;
+    flex: 0 0 95px;
+  }
+
+  .galleryItemContent {
+    padding: 8px 8px 10px;
+  }
+
+  .galleryItemContent h4 {
+    font-size: 0.75rem;
+  }
+
+  .galleryDate {
+    font-size: 0.6rem;
+    margin-bottom: 5px;
+  }
+
+  .galleryViewBtn {
+    font-size: 0.68rem;
+    padding: 5px 0;
+    border-radius: 6px;
+  }
+
+  .modalHeader {
+    padding: 14px 14px 10px;
+  }
+
+  .modalTitle {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+  }
+
+  .modalSearchWrapper {
+    padding: 8px 12px;
+  }
+
+  .modalSearchInput {
+    font-size: 0.82rem;
+  }
+
+  .modalBody {
+    padding: 10px;
   }
 }

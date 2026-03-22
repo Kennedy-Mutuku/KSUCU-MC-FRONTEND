@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styles from '../styles/Media.module.css';
 import loadingAnime from '../assets/Animation - 1716747954931.gif';
-import { FaYoutube, FaFacebook, FaTiktok, FaTwitter, FaImage, FaNewspaper, FaBook, FaTimes, FaSync, FaSearch } from 'react-icons/fa';
+import { FaYoutube, FaFacebook, FaTiktok, FaTwitter, FaImage, FaNewspaper, FaBook, FaSearch, FaCamera, FaArrowLeft } from 'react-icons/fa';
 import { getApiUrl, getImageUrl, getBaseUrl, isDevMode } from '../config/environment';
+import heroImg from '../assets/praise-and-worship.jpg';
 
 interface MediaItem {
   _id?: string;
@@ -27,7 +28,7 @@ const Media: React.FC = () => {
   // Default events as fallback
   const defaultEvents: MediaItem[] = [
     { event: "Subcomm photos", date: "2025-01-20", link: "https://photos.app.goo.gl/PrxWoMuyRNEet22b7" },
-    { event: "Sunday service", date: "2025-22-13", link: "https://photos.app.goo.gl/Vt6HDo1xEtgA3Nmn9" },
+    { event: "Sunday service", date: "2025-02-13", link: "https://photos.app.goo.gl/Vt6HDo1xEtgA3Nmn9" },
     { event: "Worship Weekend", date: "2025-02-10", link: "https://photos.app.goo.gl/wbNV3coJREGEUSZX7" },
     { event: "Bible Study weekend", date: "2025-01-26", link: "https://photos.app.goo.gl/otVcso25sG6fkxjR8" },
     { event: "Evangelism photos", date: "2025-02-02", link: "https://photos.app.goo.gl/JvqV19BaGGZwrVFS7" },
@@ -338,30 +339,34 @@ const Media: React.FC = () => {
 
         {/* Hero Section */}
         <section className={styles.heroSection}>
+          <img src={heroImg} alt="KSUCU-MC Community" className={styles.heroBgImage} />
+          <div className={styles.heroOverlay}></div>
           <div className={styles.heroContent}>
-            <h1 className={styles.heroTitle}>WELCOME TO THE <br />KSUCU-MC MEDIA HUB</h1>
-            <p className={styles.heroSubtitle}>Stay connected through our digital platforms and explore our content</p>
-
             <Link to="/" className={styles.backButton}>
-               <p>Back to Home</p> 
+              <FaArrowLeft /> <span>Home</span>
             </Link>
-          </div>
-        </section>
-
-        <div className={styles.container}>
-          <div className={styles.searchContainer}>
+            <div className={styles.heroBadge}>
+              <FaCamera />
+              <span>Media Hub</span>
+            </div>
+            <h1 className={styles.heroTitle}>
+              Capturing Our <br /><span className={styles.heroHighlight}>Moments Together</span>
+            </h1>
+            <p className={styles.heroSubtitle}>
+              Relive the worship, fellowship, and community through our gallery
+            </p>
             <div className={styles.searchWrapper}>
               <FaSearch className={styles.searchIcon} />
-              <input 
-                type="text" 
-                placeholder="Search events, photos or dates..." 
+              <input
+                type="text"
+                placeholder="Search events, photos or dates..."
                 className={styles.searchInput}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
           </div>
-        </div>
+        </section>
 
         {/* Content Categories */}
         <section className={styles.contentSection}>
@@ -490,26 +495,16 @@ const Media: React.FC = () => {
           <div className={styles.modalOverlay} onClick={() => setShowMediaEvents(false)}>
             <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
               <div className={styles.modalHeader}>
-                <div className={styles.modalTitleArea}>
-                  <h3>Photo Gallery</h3>
-                  <div className={styles.modalSearchWrapper}>
-                    <FaSearch className={styles.modalSearchIcon} />
-                    <input 
-                      type="text" 
-                      placeholder="Search gallery..." 
-                      className={styles.modalSearchInput}
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                    />
-                  </div>
-                </div>
-                <div className={styles.modalHeaderActions}>
-                  <button className={styles.refreshBtn} onClick={loadMediaItems} title="Refresh gallery">
-                    <FaSync />
-                  </button>
-                  <button className={styles.closeBtn} onClick={() => setShowMediaEvents(false)}>
-                    <FaTimes />
-                  </button>
+                <h3 className={styles.modalTitle}>Photo Gallery</h3>
+                <div className={styles.modalSearchWrapper}>
+                  <FaSearch className={styles.modalSearchIcon} />
+                  <input
+                    type="text"
+                    placeholder="Search gallery..."
+                    className={styles.modalSearchInput}
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
                 </div>
               </div>
               <div className={styles.modalBody}>
